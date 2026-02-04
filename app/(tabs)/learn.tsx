@@ -24,6 +24,40 @@ interface Algorithm {
   isUnlocked: boolean;
 }
 
+// Tree Algorithms
+const treeAlgorithms: Algorithm[] = [
+  {
+    id: 'bst-insert',
+    name: 'Binary Search Tree',
+    category: 'trees',
+    difficulty: 'Medium',
+    timeComplexity: 'O(log n)',
+    spaceComplexity: 'O(n)',
+    description: 'Insert and search in a balanced tree structure',
+    isUnlocked: true,
+  },
+  {
+    id: 'heap-sort',
+    name: 'Heap & Heap Sort',
+    category: 'trees',
+    difficulty: 'Medium',
+    timeComplexity: 'O(n log n)',
+    spaceComplexity: 'O(1)',
+    description: 'Build heaps and sort using the heap property',
+    isUnlocked: true,
+  },
+  {
+    id: 'tree-traversal',
+    name: 'Tree Traversals',
+    category: 'trees',
+    difficulty: 'Easy',
+    timeComplexity: 'O(n)',
+    spaceComplexity: 'O(h)',
+    description: 'In-order, Pre-order, Post-order, and Level-order',
+    isUnlocked: true,
+  },
+];
+
 const algorithms: Algorithm[] = [
   // Sorting
   {
@@ -154,8 +188,9 @@ const algorithms: Algorithm[] = [
 const categories = [
   { id: 'all', name: 'All', icon: 'apps' as const },
   { id: 'sorting', name: 'Sorting', icon: 'bar-chart' as const, color: Colors.alertCoral },
+  { id: 'trees', name: 'Trees', icon: 'git-branch' as const, color: Colors.actionTeal },
   { id: 'searching', name: 'Searching', icon: 'search' as const, color: Colors.actionTeal },
-  { id: 'graphs', name: 'Graphs', icon: 'git-branch' as const, color: Colors.logicGold },
+  { id: 'graphs', name: 'Graphs', icon: 'git-network' as const, color: Colors.logicGold },
   { id: 'dynamic-programming', name: 'DP', icon: 'layers' as const, color: Colors.info },
 ];
 
@@ -180,6 +215,8 @@ function AlgorithmCard({ algorithm, index }: { algorithm: Algorithm; index: numb
   const handlePress = () => {
     if (algorithm.category === 'graphs') {
       router.push('/game/grid-escape');
+    } else if (algorithm.category === 'trees') {
+      router.push('/visualizer/tree');
     } else if (algorithm.category === 'sorting') {
       router.push(`/visualizer/${algorithm.id}`);
     } else {
@@ -237,6 +274,7 @@ function AlgorithmCard({ algorithm, index }: { algorithm: Algorithm; index: numb
 }
 
 export default function LearnScreen() {
+  const router = useRouter();
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ category?: string }>();
   const [selectedCategory, setSelectedCategory] = React.useState(params.category || 'all');
@@ -248,18 +286,30 @@ export default function LearnScreen() {
   }, [params.category]);
 
   const filteredAlgorithms = React.useMemo(() => {
+    const allAlgorithms = [...algorithms, ...treeAlgorithms];
     if (selectedCategory === 'all') {
-      return algorithms;
+      return allAlgorithms;
     }
-    return algorithms.filter((alg) => alg.category === selectedCategory);
+    return allAlgorithms.filter((alg) => alg.category === selectedCategory);
   }, [selectedCategory]);
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header */}
       <Animated.View entering={FadeInDown.delay(0)} style={styles.header}>
-        <Text style={styles.title}>Learn</Text>
-        <Text style={styles.subtitle}>Master algorithms step by step</Text>
+        <View style={styles.headerTop}>
+          <View>
+            <Text style={styles.title}>Learn</Text>
+            <Text style={styles.subtitle}>Master algorithms step by step</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.libraryButton}
+            onPress={() => router.push('/library')}
+          >
+            <Ionicons name="library" size={20} color={Colors.logicGold} />
+            <Text style={styles.libraryButtonText}>Library</Text>
+          </TouchableOpacity>
+        </View>
       </Animated.View>
 
       {/* Category Tabs */}
@@ -321,6 +371,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.md,
   },
+  headerTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
   title: {
     fontSize: FontSizes.title,
     fontWeight: '700',
@@ -330,6 +385,22 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.md,
     color: Colors.gray400,
     marginTop: 2,
+  },
+  libraryButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.logicGold + '20',
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    borderColor: Colors.logicGold + '40',
+    gap: Spacing.xs,
+  },
+  libraryButtonText: {
+    fontSize: FontSizes.sm,
+    fontWeight: '600',
+    color: Colors.logicGold,
   },
   categoriesContainer: {
     paddingHorizontal: Spacing.lg,

@@ -50,6 +50,25 @@ export default function RootLayout() {
             animation: 'slide_from_right',
           }}
         />
+        <Stack.Screen
+          name="visualizer/tree"
+          options={{
+            presentation: 'modal',
+            animation: 'slide_from_bottom',
+          }}
+        />
+        <Stack.Screen
+          name="library/index"
+          options={{
+            animation: 'slide_from_right',
+          }}
+        />
+        <Stack.Screen
+          name="library/[lessonId]"
+          options={{
+            animation: 'slide_from_right',
+          }}
+        />
       </Stack>
     </GestureHandlerRootView>
   );
