@@ -42,14 +42,14 @@ const BAR_GAP = 4;
 type AlgorithmType = 'sorting' | 'searching';
 type Step = SortStep | SearchStep;
 
-// Type guard for SearchStep
-function isSearchStep(step: Step): step is SearchStep {
-  return 'target' in step && 'searchRange' in step;
+// Type guard for SearchStep - safely handles undefined/null
+function isSearchStep(step: Step | undefined | null): step is SearchStep {
+  return step != null && 'target' in step && 'searchRange' in step;
 }
 
-// Type guard for SortStep
-function isSortStep(step: Step): step is SortStep {
-  return 'swapping' in step && !('target' in step);
+// Type guard for SortStep - safely handles undefined/null
+function isSortStep(step: Step | undefined | null): step is SortStep {
+  return step != null && 'swapping' in step && !('target' in step);
 }
 
 interface BarProps {
