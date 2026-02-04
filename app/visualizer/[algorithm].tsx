@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState, MutableRefObject } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,8 @@ import {
   ScrollView,
   Dimensions,
   Platform,
+  TextInput,
+  Modal,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,8 +18,6 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
-  withTiming,
-  runOnJS,
 } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
@@ -28,27 +28,47 @@ import {
   generateRandomArray,
   SortingAlgorithmKey,
 } from '@/utils/algorithms/sorting';
+import {
+  searchingAlgorithms,
+  SearchStep,
+  SearchingAlgorithmKey,
+  generateRandomArrayForSearch,
+} from '@/utils/algorithms/searching';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CANVAS_PADDING = Spacing.lg * 2;
 const BAR_GAP = 4;
 
+type AlgorithmType = 'sorting' | 'searching';
+type Step = SortStep | SearchStep;
+
+// Type guard for SearchStep
+function isSearchStep(step: Step): step is SearchStep {
+  return 'target' in step && 'searchRange' in step;
+}
+
+// Type guard for SortStep
+function isSortStep(step: Step): step is SortStep {
+  return 'swapping' in step && !('target' in step);
+}
+
 interface BarProps {
   value: number;
   maxValue: number;
   index: number;
-  state: 'default' | 'comparing' | 'swapping' | 'sorted' | 'pivot';
+  state: 'default' | 'comparing' | 'swapping' | 'sorted' | 'pivot' | 'found' | 'eliminated' | 'active-range';
   totalBars: number;
+  showLabel?: boolean;
 }
 
-function Bar({ value, maxValue, index, state, totalBars }: BarProps) {
+function Bar({ value, maxValue, index, state, totalBars, showLabel = true }: BarProps) {
   const barWidth = (SCREEN_WIDTH - CANVAS_PADDING - BAR_GAP * (totalBars - 1)) / totalBars;
   const maxHeight = 180;
   const height = (value / maxValue) * maxHeight;
 
   const animatedStyle = useAnimatedStyle(() => {
     let scale = 1;
-    if (state === 'comparing') scale = 1.05;
+    if (state === 'comparing' || state === 'found') scale = 1.05;
     if (state === 'swapping') scale = 1.1;
 
     return {
@@ -66,6 +86,12 @@ function Bar({ value, maxValue, index, state, totalBars }: BarProps) {
         return Colors.success;
       case 'pivot':
         return Colors.info;
+      case 'found':
+        return Colors.success;
+      case 'eliminated':
+        return Colors.gray600;
+      case 'active-range':
+        return Colors.actionTeal;
       default:
         return Colors.actionTeal;
     }
@@ -81,10 +107,11 @@ function Bar({ value, maxValue, index, state, totalBars }: BarProps) {
           height,
           backgroundColor: getBarColor(),
           marginRight: index < totalBars - 1 ? BAR_GAP : 0,
+          opacity: state === 'eliminated' ? 0.4 : 1,
         },
       ]}
     >
-      {barWidth > 20 && (
+      {barWidth > 20 && showLabel && (
         <Text style={styles.barLabel}>{value}</Text>
       )}
     </Animated.View>
@@ -152,18 +179,18 @@ interface ComplexityTrackerProps {
   timeComplexity: string;
   spaceComplexity: string;
   arraySize: number;
+  algorithmType: AlgorithmType;
+  target?: number;
 }
 
-function ComplexityTracker({ operationsCount, timeComplexity, spaceComplexity, arraySize }: ComplexityTrackerProps) {
-  // Estimate Big O based on operations
-  const getEstimatedComplexity = () => {
-    const n = arraySize;
-    if (operationsCount <= n * 2) return 'O(n)';
-    if (operationsCount <= n * Math.log2(n) * 2) return 'O(n log n)';
-    if (operationsCount <= n * n * 1.5) return 'O(n²)';
-    return 'O(n²)';
-  };
-
+function ComplexityTracker({
+  operationsCount,
+  timeComplexity,
+  spaceComplexity,
+  arraySize,
+  algorithmType,
+  target,
+}: ComplexityTrackerProps) {
   return (
     <View style={styles.complexityTracker}>
       <Text style={styles.complexityTitle}>Complexity Live-Tracker</Text>
@@ -182,7 +209,41 @@ function ComplexityTracker({ operationsCount, timeComplexity, spaceComplexity, a
             {operationsCount}
           </Text>
         </View>
+        {algorithmType === 'searching' && target !== undefined && (
+          <View style={styles.complexityStat}>
+            <Text style={styles.complexityLabel}>Target:</Text>
+            <Text style={[styles.complexityValue, { color: Colors.alertCoral }]}>
+              {target}
+            </Text>
+          </View>
+        )}
       </View>
+    </View>
+  );
+}
+
+interface InsightPanelProps {
+  operation: string;
+  algorithmType: AlgorithmType;
+  found?: boolean;
+}
+
+function InsightPanel({ operation, algorithmType, found }: InsightPanelProps) {
+  return (
+    <View style={[styles.insightPanel, found && styles.insightPanelFound]}>
+      <View style={styles.insightHeader}>
+        <Ionicons
+          name={found ? "checkmark-circle" : "information-circle"}
+          size={20}
+          color={found ? Colors.success : Colors.actionTeal}
+        />
+        <Text style={styles.insightTitle}>
+          {found ? "Target Found!" : "Live Commentary"}
+        </Text>
+      </View>
+      <Text style={[styles.insightText, found && styles.insightTextFound]}>
+        {operation}
+      </Text>
     </View>
   );
 }
@@ -268,21 +329,166 @@ function PlaybackControls({
   );
 }
 
+interface InputDashboardProps {
+  visible: boolean;
+  onClose: () => void;
+  algorithmType: AlgorithmType;
+  currentArray: number[];
+  currentTarget: number;
+  onApply: (array: number[], target?: number) => void;
+}
+
+function InputDashboard({
+  visible,
+  onClose,
+  algorithmType,
+  currentArray,
+  currentTarget,
+  onApply
+}: InputDashboardProps) {
+  const [arrayInput, setArrayInput] = useState(currentArray.join(', '));
+  const [targetInput, setTargetInput] = useState(currentTarget.toString());
+  const [arraySize, setArraySize] = useState(10);
+
+  const handleGenerateRandom = () => {
+    if (algorithmType === 'searching') {
+      const { array, target } = generateRandomArrayForSearch(arraySize);
+      setArrayInput(array.join(', '));
+      setTargetInput(target.toString());
+    } else {
+      const array = generateRandomArray(arraySize);
+      setArrayInput(array.join(', '));
+    }
+  };
+
+  const handleApply = () => {
+    const array = arrayInput
+      .split(',')
+      .map(s => parseInt(s.trim(), 10))
+      .filter(n => !isNaN(n));
+
+    if (array.length === 0) {
+      return;
+    }
+
+    const target = parseInt(targetInput, 10) || currentTarget;
+    onApply(array, algorithmType === 'searching' ? target : undefined);
+    onClose();
+  };
+
+  return (
+    <Modal visible={visible} animationType="slide" transparent>
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Input Dashboard</Text>
+            <TouchableOpacity onPress={onClose} style={styles.modalCloseButton}>
+              <Ionicons name="close" size={24} color={Colors.gray400} />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.inputSection}>
+            <Text style={styles.inputLabel}>Array (comma-separated)</Text>
+            <TextInput
+              style={styles.textInput}
+              value={arrayInput}
+              onChangeText={setArrayInput}
+              placeholder="e.g., 5, 2, 8, 1, 9"
+              placeholderTextColor={Colors.gray500}
+              keyboardType="numeric"
+              multiline
+            />
+          </View>
+
+          {algorithmType === 'searching' && (
+            <View style={styles.inputSection}>
+              <Text style={styles.inputLabel}>Target Value</Text>
+              <TextInput
+                style={styles.textInput}
+                value={targetInput}
+                onChangeText={setTargetInput}
+                placeholder="e.g., 8"
+                placeholderTextColor={Colors.gray500}
+                keyboardType="numeric"
+              />
+            </View>
+          )}
+
+          <View style={styles.inputSection}>
+            <Text style={styles.inputLabel}>Random Array Size: {arraySize}</Text>
+            <View style={styles.sizeButtons}>
+              {[5, 8, 10, 12, 15].map(size => (
+                <TouchableOpacity
+                  key={size}
+                  style={[
+                    styles.sizeButton,
+                    arraySize === size && styles.sizeButtonActive,
+                  ]}
+                  onPress={() => setArraySize(size)}
+                >
+                  <Text
+                    style={[
+                      styles.sizeButtonText,
+                      arraySize === size && styles.sizeButtonTextActive,
+                    ]}
+                  >
+                    {size}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
+          <View style={styles.modalActions}>
+            <TouchableOpacity
+              style={[styles.modalButton, styles.modalButtonSecondary]}
+              onPress={handleGenerateRandom}
+            >
+              <Ionicons name="shuffle" size={18} color={Colors.actionTeal} />
+              <Text style={styles.modalButtonSecondaryText}>Generate Random</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.modalButton, styles.modalButtonPrimary]}
+              onPress={handleApply}
+            >
+              <Text style={styles.modalButtonPrimaryText}>Apply</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
 export default function VisualizerScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ algorithm: string }>();
-  const algorithmId = params.algorithm as SortingAlgorithmKey;
+  const algorithmId = params.algorithm;
 
   const { visualizationSettings, setVisualizationSpeed, completeAlgorithm, addXP } = useAppStore();
 
-  const algorithm = sortingAlgorithms[algorithmId];
+  // Determine algorithm type and get algorithm
+  const algorithmType: AlgorithmType = algorithmId in searchingAlgorithms ? 'searching' : 'sorting';
+
+  const sortingAlgorithm = algorithmType === 'sorting'
+    ? sortingAlgorithms[algorithmId as SortingAlgorithmKey]
+    : null;
+
+  const searchingAlgorithm = algorithmType === 'searching'
+    ? searchingAlgorithms[algorithmId as SearchingAlgorithmKey]
+    : null;
+
+  const algorithm = sortingAlgorithm || searchingAlgorithm;
+
   const [array, setArray] = useState<number[]>([]);
-  const [steps, setSteps] = useState<SortStep[]>([]);
+  const [target, setTarget] = useState<number>(0);
+  const [steps, setSteps] = useState<Step[]>([]);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showPython, setShowPython] = useState(false);
   const [operationsCount, setOperationsCount] = useState(0);
+  const [showInputDashboard, setShowInputDashboard] = useState(false);
 
   const playIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -296,17 +502,44 @@ export default function VisualizerScreen() {
     }
   }, [algorithmId]);
 
-  const resetVisualization = useCallback(() => {
-    const newArray = generateRandomArray(visualizationSettings.arraySize);
-    setArray(newArray);
+  const resetVisualization = useCallback((customArray?: number[], customTarget?: number) => {
+    let newArray: number[];
+    let newTarget: number;
 
-    // Generate all steps
-    const generator = algorithm.generator(newArray);
-    const allSteps: SortStep[] = [];
-    for (const step of generator) {
-      allSteps.push(step);
+    if (algorithmType === 'searching') {
+      if (customArray && customTarget !== undefined) {
+        newArray = customArray;
+        newTarget = customTarget;
+      } else {
+        const generated = generateRandomArrayForSearch(visualizationSettings.arraySize);
+        newArray = generated.array;
+        newTarget = generated.target;
+      }
+      setArray(newArray);
+      setTarget(newTarget);
+
+      if (searchingAlgorithm) {
+        const generator = searchingAlgorithm.generator(newArray, newTarget);
+        const allSteps: SearchStep[] = [];
+        for (const step of generator) {
+          allSteps.push(step);
+        }
+        setSteps(allSteps);
+      }
+    } else {
+      newArray = customArray || generateRandomArray(visualizationSettings.arraySize);
+      setArray(newArray);
+
+      if (sortingAlgorithm) {
+        const generator = sortingAlgorithm.generator(newArray);
+        const allSteps: SortStep[] = [];
+        for (const step of generator) {
+          allSteps.push(step);
+        }
+        setSteps(allSteps);
+      }
     }
-    setSteps(allSteps);
+
     setCurrentStepIndex(0);
     setOperationsCount(0);
     setIsPlaying(false);
@@ -314,7 +547,7 @@ export default function VisualizerScreen() {
     if (playIntervalRef.current) {
       clearInterval(playIntervalRef.current);
     }
-  }, [algorithm, visualizationSettings.arraySize]);
+  }, [algorithm, algorithmType, sortingAlgorithm, searchingAlgorithm, visualizationSettings.arraySize]);
 
   // Auto-play
   useEffect(() => {
@@ -324,10 +557,14 @@ export default function VisualizerScreen() {
           const next = prev + 1;
           setOperationsCount((count) => count + 1);
 
-          // Trigger haptic feedback on swap
+          // Trigger haptic feedback on comparison/action
           const step = steps[next];
-          if (step?.swapping?.length > 0) {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          if (step) {
+            if (isSearchStep(step) && step.comparing.length > 0) {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            } else if (isSortStep(step) && (step.swapping?.length > 0 || step.comparing?.length > 0)) {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            }
           }
 
           if (next >= steps.length - 1) {
@@ -376,22 +613,49 @@ export default function VisualizerScreen() {
     }
   };
 
+  const handleInputApply = (newArray: number[], newTarget?: number) => {
+    resetVisualization(newArray, newTarget);
+  };
+
   const getBarState = (index: number): BarProps['state'] => {
     if (!currentStep) return 'default';
-    if (currentStep.sorted?.includes(index)) return 'sorted';
-    if (currentStep.pivot === index) return 'pivot';
-    if (currentStep.swapping?.includes(index)) return 'swapping';
-    if (currentStep.comparing?.includes(index)) return 'comparing';
+
+    if (isSearchStep(currentStep)) {
+      if (currentStep.found && currentStep.comparing?.includes(index)) return 'found';
+      if (currentStep.eliminated?.includes(index)) return 'eliminated';
+      if (currentStep.comparing?.includes(index)) return 'comparing';
+      if (index >= currentStep.searchRange.left && index <= currentStep.searchRange.right) {
+        return 'active-range';
+      }
+      return 'default';
+    }
+
+    if (isSortStep(currentStep)) {
+      if (currentStep.sorted?.includes(index)) return 'sorted';
+      if (currentStep.pivot === index) return 'pivot';
+      if (currentStep.swapping?.includes(index)) return 'swapping';
+      if (currentStep.comparing?.includes(index)) return 'comparing';
+    }
+
     return 'default';
   };
 
   if (!algorithm) {
     return (
       <View style={[styles.container, { paddingTop: insets.top }]}>
-        <Text style={styles.errorText}>Algorithm not found</Text>
+        <View style={styles.errorContainer}>
+          <Ionicons name="alert-circle" size={64} color={Colors.alertCoral} />
+          <Text style={styles.errorText}>Algorithm not found</Text>
+          <Text style={styles.errorSubtext}>The algorithm "{algorithmId}" is not available.</Text>
+          <TouchableOpacity style={styles.backToLearnButton} onPress={() => router.back()}>
+            <Text style={styles.backToLearnText}>Go Back</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
+
+  const isFound = isSearchStep(currentStep) && currentStep?.found;
 
   return (
     <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
@@ -403,8 +667,11 @@ export default function VisualizerScreen() {
         <Text style={styles.title} numberOfLines={1}>
           {algorithm.info.name} Visualization
         </Text>
-        <TouchableOpacity style={styles.settingsButton} onPress={resetVisualization}>
-          <Ionicons name="refresh" size={22} color={Colors.gray400} />
+        <TouchableOpacity
+          style={styles.settingsButton}
+          onPress={() => setShowInputDashboard(true)}
+        >
+          <Ionicons name="settings" size={22} color={Colors.gray400} />
         </TouchableOpacity>
       </Animated.View>
 
@@ -414,7 +681,7 @@ export default function VisualizerScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Interactive Canvas */}
-        <View style={styles.canvasContainer}>
+        <View style={[styles.canvasContainer, isFound && styles.canvasContainerFound]}>
           <View style={styles.canvas}>
             {(currentStep?.array || array).map((value, index) => (
               <Bar
@@ -427,10 +694,30 @@ export default function VisualizerScreen() {
               />
             ))}
           </View>
-          {currentStep && (
-            <Text style={styles.operationText}>{currentStep.operation}</Text>
+
+          {/* Search Range Indicator for searching algorithms */}
+          {algorithmType === 'searching' && isSearchStep(currentStep) && (
+            <View style={styles.searchRangeIndicator}>
+              <Text style={styles.searchRangeText}>
+                Search Range: [{currentStep.searchRange.left}, {currentStep.searchRange.right}]
+              </Text>
+              {currentStep.currentIndex >= 0 && (
+                <Text style={styles.currentIndexText}>
+                  Checking Index: {currentStep.currentIndex}
+                </Text>
+              )}
+            </View>
           )}
         </View>
+
+        {/* Insight Panel */}
+        {currentStep && (
+          <InsightPanel
+            operation={currentStep.operation}
+            algorithmType={algorithmType}
+            found={isFound}
+          />
+        )}
 
         {/* Complexity Tracker */}
         {visualizationSettings.showComplexity && (
@@ -439,6 +726,8 @@ export default function VisualizerScreen() {
             timeComplexity={algorithm.info.timeComplexity.average}
             spaceComplexity={algorithm.info.spaceComplexity}
             arraySize={array.length}
+            algorithmType={algorithmType}
+            target={algorithmType === 'searching' ? target : undefined}
           />
         )}
 
@@ -461,11 +750,21 @@ export default function VisualizerScreen() {
         onPause={handlePause}
         onStepBackward={handleStepBackward}
         onStepForward={handleStepForward}
-        onReset={resetVisualization}
+        onReset={() => resetVisualization()}
         speed={visualizationSettings.speed}
         onSpeedChange={setVisualizationSpeed}
         canStepBackward={currentStepIndex > 0}
         canStepForward={currentStepIndex < steps.length - 1}
+      />
+
+      {/* Input Dashboard Modal */}
+      <InputDashboard
+        visible={showInputDashboard}
+        onClose={() => setShowInputDashboard(false)}
+        algorithmType={algorithmType}
+        currentArray={array}
+        currentTarget={target}
+        onApply={handleInputApply}
       />
     </View>
   );
@@ -519,6 +818,10 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.lg,
     ...Shadows.small,
   },
+  canvasContainerFound: {
+    borderWidth: 2,
+    borderColor: Colors.success,
+  },
   canvas: {
     flexDirection: 'row',
     alignItems: 'flex-end',
@@ -537,12 +840,56 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: Colors.white,
   },
-  operationText: {
-    fontSize: FontSizes.sm,
-    color: Colors.gray400,
-    textAlign: 'center',
+  searchRangeIndicator: {
     marginTop: Spacing.md,
-    fontStyle: 'italic',
+    paddingTop: Spacing.md,
+    borderTopWidth: 1,
+    borderTopColor: Colors.gray700,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  searchRangeText: {
+    fontSize: FontSizes.sm,
+    color: Colors.actionTeal,
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+  },
+  currentIndexText: {
+    fontSize: FontSizes.sm,
+    color: Colors.logicGold,
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+  },
+  insightPanel: {
+    backgroundColor: Colors.cardBackground,
+    borderRadius: BorderRadius.xl,
+    padding: Spacing.lg,
+    marginBottom: Spacing.lg,
+    borderLeftWidth: 4,
+    borderLeftColor: Colors.actionTeal,
+    ...Shadows.small,
+  },
+  insightPanelFound: {
+    borderLeftColor: Colors.success,
+    backgroundColor: Colors.success + '15',
+  },
+  insightHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: Spacing.sm,
+  },
+  insightTitle: {
+    fontSize: FontSizes.md,
+    fontWeight: '600',
+    color: Colors.actionTeal,
+    marginLeft: Spacing.sm,
+  },
+  insightText: {
+    fontSize: FontSizes.md,
+    color: Colors.gray300,
+    lineHeight: 22,
+  },
+  insightTextFound: {
+    color: Colors.success,
+    fontWeight: '600',
   },
   complexityTracker: {
     backgroundColor: Colors.cardBackground,
@@ -560,9 +907,11 @@ const styles = StyleSheet.create({
   complexityStats: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
   },
   complexityStat: {
     alignItems: 'center',
+    minWidth: 70,
   },
   complexityLabel: {
     fontSize: FontSizes.xs,
@@ -693,10 +1042,137 @@ const styles = StyleSheet.create({
     minWidth: 36,
     textAlign: 'center',
   },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.xl,
+  },
   errorText: {
-    fontSize: FontSizes.lg,
+    fontSize: FontSizes.xxl,
+    fontWeight: '600',
     color: Colors.alertCoral,
     textAlign: 'center',
-    marginTop: 100,
+    marginTop: Spacing.lg,
+  },
+  errorSubtext: {
+    fontSize: FontSizes.md,
+    color: Colors.gray400,
+    textAlign: 'center',
+    marginTop: Spacing.sm,
+  },
+  backToLearnButton: {
+    backgroundColor: Colors.actionTeal,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.xxl,
+    borderRadius: BorderRadius.lg,
+    marginTop: Spacing.xl,
+  },
+  backToLearnText: {
+    fontSize: FontSizes.md,
+    fontWeight: '600',
+    color: Colors.midnightBlue,
+  },
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: Colors.cardBackground,
+    borderTopLeftRadius: BorderRadius.xxl,
+    borderTopRightRadius: BorderRadius.xxl,
+    padding: Spacing.xl,
+    maxHeight: '80%',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: Spacing.xl,
+  },
+  modalTitle: {
+    fontSize: FontSizes.xl,
+    fontWeight: '600',
+    color: Colors.white,
+  },
+  modalCloseButton: {
+    padding: Spacing.sm,
+  },
+  inputSection: {
+    marginBottom: Spacing.lg,
+  },
+  inputLabel: {
+    fontSize: FontSizes.sm,
+    fontWeight: '500',
+    color: Colors.gray400,
+    marginBottom: Spacing.sm,
+  },
+  textInput: {
+    backgroundColor: Colors.midnightBlueDark,
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.md,
+    fontSize: FontSizes.md,
+    color: Colors.white,
+    borderWidth: 1,
+    borderColor: Colors.gray700,
+    minHeight: 50,
+  },
+  sizeButtons: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
+    marginTop: Spacing.sm,
+  },
+  sizeButton: {
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    borderRadius: BorderRadius.md,
+    backgroundColor: Colors.gray700,
+    minWidth: 44,
+    alignItems: 'center',
+  },
+  sizeButtonActive: {
+    backgroundColor: Colors.actionTeal,
+  },
+  sizeButtonText: {
+    fontSize: FontSizes.sm,
+    fontWeight: '500',
+    color: Colors.gray400,
+  },
+  sizeButtonTextActive: {
+    color: Colors.midnightBlue,
+  },
+  modalActions: {
+    flexDirection: 'row',
+    gap: Spacing.md,
+    marginTop: Spacing.lg,
+  },
+  modalButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: Spacing.md,
+    borderRadius: BorderRadius.lg,
+    gap: Spacing.sm,
+  },
+  modalButtonSecondary: {
+    backgroundColor: Colors.actionTeal + '20',
+    borderWidth: 1,
+    borderColor: Colors.actionTeal,
+  },
+  modalButtonSecondaryText: {
+    fontSize: FontSizes.md,
+    fontWeight: '600',
+    color: Colors.actionTeal,
+  },
+  modalButtonPrimary: {
+    backgroundColor: Colors.actionTeal,
+  },
+  modalButtonPrimaryText: {
+    fontSize: FontSizes.md,
+    fontWeight: '600',
+    color: Colors.midnightBlue,
   },
 });
