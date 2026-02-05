@@ -71,12 +71,24 @@ export interface VisualizationSettings {
   showCode: boolean;
 }
 
+// Guest Mode State
+export interface GuestState {
+  isGuest: boolean;
+  guestUsername: string;
+}
+
+const initialGuestState: GuestState = {
+  isGuest: false,
+  guestUsername: 'Guest',
+};
+
 // Store Interface
 interface AppState {
   // User Progress
   userProgress: UserProgress;
   gameState: GameState;
   visualizationSettings: VisualizationSettings;
+  guestState: GuestState;
 
   // Actions
   completeAlgorithm: (algorithmId: string, xp: number) => void;
@@ -90,6 +102,10 @@ interface AppState {
   updateHighScore: (game: 'sorterBest' | 'gridEscapeWins', score: number) => void;
   completeDailyChallenge: () => void;
   resetProgress: () => void;
+
+  // Guest Mode Actions
+  setGuestMode: (isGuest: boolean, username?: string) => void;
+  clearGuestMode: () => void;
 
   // Quiz & Mastery Actions
   recordQuizScore: (algorithmId: string, score: number, correctAnswers: number, totalQuestions: number) => void;
@@ -154,6 +170,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   userProgress: initialUserProgress,
   gameState: initialGameState,
   visualizationSettings: initialVisualizationSettings,
+  guestState: initialGuestState,
 
   completeAlgorithm: (algorithmId: string, xp: number) => {
     set((state) => {
@@ -315,6 +332,22 @@ export const useAppStore = create<AppState>((set, get) => ({
       userProgress: initialUserProgress,
       gameState: initialGameState,
       visualizationSettings: initialVisualizationSettings,
+    });
+  },
+
+  // Guest Mode Actions
+  setGuestMode: (isGuest: boolean, username?: string) => {
+    set({
+      guestState: {
+        isGuest,
+        guestUsername: username || 'Guest',
+      },
+    });
+  },
+
+  clearGuestMode: () => {
+    set({
+      guestState: initialGuestState,
     });
   },
 

@@ -1,8 +1,26 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { View, StyleSheet, Platform } from 'react-native';
+import { BlurView } from 'expo-blur';
 import { Colors, Spacing } from '@/constants/theme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Platform } from 'react-native';
+
+function TabBarIcon({
+  name,
+  focused,
+  color,
+}: {
+  name: keyof typeof Ionicons.glyphMap;
+  focused: boolean;
+  color: string;
+}) {
+  return (
+    <View style={[styles.iconContainer, focused && styles.iconContainerFocused]}>
+      <Ionicons name={name} size={22} color={color} />
+      {focused && <View style={[styles.glowDot, { backgroundColor: color }]} />}
+    </View>
+  );
+}
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
@@ -11,21 +29,35 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: Colors.accent,
+        tabBarActiveTintColor: Colors.neonCyan,
         tabBarInactiveTintColor: Colors.gray500,
         tabBarStyle: {
-          backgroundColor: Colors.backgroundDark,
-          borderTopColor: Colors.gray800,
+          backgroundColor: 'rgba(10, 14, 23, 0.95)',
+          borderTopColor: Colors.neonBorderCyan,
           borderTopWidth: 1,
           paddingBottom: Platform.OS === 'ios' ? insets.bottom : Spacing.sm,
           paddingTop: Spacing.sm,
           height: Platform.OS === 'ios' ? 80 + insets.bottom : 70,
+          elevation: 0,
+          shadowColor: Colors.neonCyan,
+          shadowOffset: { width: 0, height: -4 },
+          shadowOpacity: 0.15,
+          shadowRadius: 10,
         },
         tabBarLabelStyle: {
           fontSize: 10,
           fontWeight: '600',
           marginTop: 2,
         },
+        tabBarBackground: () => (
+          Platform.OS === 'ios' ? (
+            <BlurView
+              intensity={30}
+              tint="dark"
+              style={StyleSheet.absoluteFillObject}
+            />
+          ) : null
+        ),
       }}
     >
       <Tabs.Screen
@@ -33,10 +65,10 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons
+            <TabBarIcon
               name={focused ? 'home' : 'home-outline'}
-              size={22}
               color={color}
+              focused={focused}
             />
           ),
         }}
@@ -46,10 +78,10 @@ export default function TabLayout() {
         options={{
           title: 'Learn',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons
+            <TabBarIcon
               name={focused ? 'book' : 'book-outline'}
-              size={22}
               color={color}
+              focused={focused}
             />
           ),
         }}
@@ -59,10 +91,10 @@ export default function TabLayout() {
         options={{
           title: 'Play',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons
+            <TabBarIcon
               name={focused ? 'game-controller' : 'game-controller-outline'}
-              size={22}
               color={color}
+              focused={focused}
             />
           ),
         }}
@@ -72,10 +104,10 @@ export default function TabLayout() {
         options={{
           title: 'Stats',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons
+            <TabBarIcon
               name={focused ? 'stats-chart' : 'stats-chart-outline'}
-              size={22}
               color={color}
+              focused={focused}
             />
           ),
         }}
@@ -85,10 +117,10 @@ export default function TabLayout() {
         options={{
           title: 'Profile',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons
+            <TabBarIcon
               name={focused ? 'person' : 'person-outline'}
-              size={22}
               color={color}
+              focused={focused}
             />
           ),
         }}
@@ -96,3 +128,25 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  iconContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 4,
+  },
+  iconContainerFocused: {
+    transform: [{ scale: 1.05 }],
+  },
+  glowDot: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    marginTop: 4,
+    shadowColor: Colors.neonCyan,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 1,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+});

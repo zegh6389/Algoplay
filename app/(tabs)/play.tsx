@@ -5,11 +5,12 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  ImageBackground,
+  Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as Haptics from 'expo-haptics';
 import Animated, {
   FadeInDown,
   useAnimatedStyle,
@@ -17,10 +18,13 @@ import Animated, {
   withSpring,
   withRepeat,
   withSequence,
+  withTiming,
+  Easing,
 } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
+import { Colors, Spacing, FontSizes, BorderRadius } from '@/constants/theme';
 import { useAppStore } from '@/store/useAppStore';
+import CyberBackground from '@/components/CyberBackground';
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
@@ -40,7 +44,7 @@ const games: GameCard[] = [
     title: 'Battle Arena',
     description: 'High-stakes algorithm battles! Watch two algorithms race head-to-head.',
     icon: 'flash',
-    gradientColors: [Colors.accent, Colors.electricPurple] as const,
+    gradientColors: [Colors.neonCyan, Colors.neonPurple] as const,
     route: '/game/battle-arena',
     badge: 'NEW',
   },
@@ -49,7 +53,7 @@ const games: GameCard[] = [
     title: 'The Sorter',
     description: 'Race against algorithms! Manually sort elements faster than the computer.',
     icon: 'swap-vertical',
-    gradientColors: [Colors.alertCoral, Colors.alertCoralDark] as const,
+    gradientColors: [Colors.neonPink, Colors.neonPurple] as const,
     route: '/game/the-sorter',
     badge: 'Popular',
   },
@@ -58,7 +62,7 @@ const games: GameCard[] = [
     title: 'Grid Escape',
     description: 'Place obstacles and watch pathfinding algorithms find the exit.',
     icon: 'grid',
-    gradientColors: [Colors.accent, Colors.accentDark] as const,
+    gradientColors: [Colors.neonCyan, Colors.neonLime] as const,
     route: '/game/grid-escape',
   },
   {
@@ -66,7 +70,7 @@ const games: GameCard[] = [
     title: 'Race Mode',
     description: 'Pit two algorithms against each other on the same dataset.',
     icon: 'flag',
-    gradientColors: [Colors.logicGold, Colors.logicGoldDark] as const,
+    gradientColors: [Colors.neonYellow, Colors.neonOrange] as const,
     route: '/game/race-mode',
   },
 ];
@@ -74,10 +78,22 @@ const games: GameCard[] = [
 function GameCardComponent({ game, index }: { game: GameCard; index: number }) {
   const router = useRouter();
   const scale = useSharedValue(1);
-  const { gameState } = useAppStore();
+  const glowOpacity = useSharedValue(0.3);
+
+  React.useEffect(() => {
+    glowOpacity.value = withRepeat(
+      withTiming(0.6, { duration: 2000, easing: Easing.inOut(Easing.ease) }),
+      -1,
+      true
+    );
+  }, []);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
+  }));
+
+  const glowStyle = useAnimatedStyle(() => ({
+    shadowOpacity: glowOpacity.value,
   }));
 
   const handlePressIn = () => {
@@ -88,11 +104,18 @@ function GameCardComponent({ game, index }: { game: GameCard; index: number }) {
     scale.value = withSpring(1);
   };
 
+  const handlePress = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+    router.push(game.route as any);
+  };
+
   return (
     <Animated.View entering={FadeInDown.delay(index * 100).springify()}>
       <AnimatedTouchable
-        style={[styles.gameCard, animatedStyle]}
-        onPress={() => router.push(game.route as any)}
+        style={[styles.gameCard, animatedStyle, glowStyle, { shadowColor: game.gradientColors[0] }]}
+        onPress={handlePress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         activeOpacity={0.9}
@@ -225,6 +248,9 @@ export default function PlayScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
+      {/* Cyber Background */}
+      <CyberBackground showGrid showParticles showMatrix={false} intensity="low" />
+
       {/* Header */}
       <Animated.View entering={FadeInDown.delay(0)} style={styles.header}>
         <Text style={styles.title}>Play</Text>
@@ -260,11 +286,16 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.md,
+    zIndex: 10,
   },
   title: {
     fontSize: FontSizes.title,
     fontWeight: '700',
     color: Colors.textPrimary,
+    textShadowColor: Colors.neonCyan,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+    letterSpacing: 1,
   },
   subtitle: {
     fontSize: FontSizes.md,
@@ -280,16 +311,24 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: FontSizes.xl,
-    fontWeight: '600',
+    fontWeight: '700',
     color: Colors.textPrimary,
     marginBottom: Spacing.md,
     marginTop: Spacing.lg,
+    textShadowColor: Colors.neonCyan,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 6,
+    letterSpacing: 0.5,
   },
   gameCard: {
     marginBottom: Spacing.md,
     borderRadius: BorderRadius.xl,
     overflow: 'hidden',
-    ...Shadows.medium,
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 12,
+    elevation: 6,
+    borderWidth: 1,
+    borderColor: Colors.neonBorderCyan,
   },
   gameCardGradient: {
     padding: Spacing.lg,
@@ -359,8 +398,12 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.xl,
     padding: Spacing.lg,
     borderWidth: 1,
-    borderColor: Colors.logicGold + '40',
-    ...Shadows.small,
+    borderColor: Colors.neonYellow + '40',
+    shadowColor: Colors.neonYellow,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
   },
   dailyChallengeCompleted: {
     borderColor: Colors.success + '40',
@@ -421,7 +464,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.cardBackground,
     borderRadius: BorderRadius.xl,
     padding: Spacing.md,
-    ...Shadows.small,
+    borderWidth: 1,
+    borderColor: Colors.neonBorderCyan,
   },
   highScoreIcon: {
     width: 40,

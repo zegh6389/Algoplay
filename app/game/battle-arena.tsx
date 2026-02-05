@@ -6,17 +6,18 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
+  Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
 import Animated, {
   FadeIn,
   FadeInDown,
-  FadeInLeft,
-  FadeInRight,
+  FadeInUp,
   FadeOut,
   useAnimatedStyle,
   useSharedValue,
@@ -24,11 +25,14 @@ import Animated, {
   withSequence,
   withDelay,
   withTiming,
+  withRepeat,
   runOnJS,
   Easing,
+  interpolate,
 } from 'react-native-reanimated';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows, BattleColors } from '@/constants/theme';
 import { useAppStore } from '@/store/useAppStore';
+import CyberBackground from '@/components/CyberBackground';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -85,53 +89,86 @@ const initialBattleState: BattleState = {
   time2: 0,
 };
 
-// Algorithm Selection Card
+// Glowing Algorithm Selection Card
 function AlgorithmCard({
   algorithm,
   selected,
   onSelect,
   color,
   disabled,
+  index,
 }: {
   algorithm: typeof SORTING_ALGORITHMS[0];
   selected: boolean;
   onSelect: () => void;
   color: string;
   disabled: boolean;
+  index: number;
 }) {
   const scale = useSharedValue(1);
+  const glowOpacity = useSharedValue(selected ? 0.6 : 0);
+
+  useEffect(() => {
+    glowOpacity.value = withTiming(selected ? 0.6 : 0, { duration: 300 });
+  }, [selected]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
   }));
 
+  const glowStyle = useAnimatedStyle(() => ({
+    opacity: glowOpacity.value,
+  }));
+
+  const handlePress = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    onSelect();
+  };
+
   return (
-    <Animated.View style={animatedStyle}>
+    <Animated.View
+      entering={FadeInDown.delay(index * 80).springify()}
+      style={animatedStyle}
+    >
       <TouchableOpacity
         style={[
           styles.algorithmCard,
           selected && { borderColor: color, borderWidth: 2 },
           disabled && styles.algorithmCardDisabled,
         ]}
-        onPress={onSelect}
+        onPress={handlePress}
         onPressIn={() => (scale.value = withSpring(0.95))}
         onPressOut={() => (scale.value = withSpring(1))}
         disabled={disabled}
         activeOpacity={0.8}
       >
+        {/* Glow effect */}
+        <Animated.View
+          style={[
+            styles.cardGlow,
+            { backgroundColor: color, shadowColor: color },
+            glowStyle,
+          ]}
+        />
         <View style={[styles.algorithmIcon, { backgroundColor: color + '20' }]}>
-          <Ionicons name="code-slash" size={20} color={color} />
+          <Ionicons name="code-slash" size={18} color={color} />
         </View>
-        <Text style={styles.algorithmName}>{algorithm.shortName}</Text>
+        <Text style={[styles.algorithmName, selected && { color }]}>
+          {algorithm.shortName}
+        </Text>
         {selected && (
-          <Ionicons name="checkmark-circle" size={18} color={color} style={styles.checkIcon} />
+          <View style={[styles.checkBadge, { backgroundColor: color }]}>
+            <Ionicons name="checkmark" size={12} color={Colors.background} />
+          </View>
         )}
       </TouchableOpacity>
     </Animated.View>
   );
 }
 
-// Battle Visualizer Bar
+// Battle Visualizer Bar with glow
 function BattleBar({
   value,
   maxValue,
@@ -140,6 +177,7 @@ function BattleBar({
   color,
   index,
   totalBars,
+  isTopPanel,
 }: {
   value: number;
   maxValue: number;
@@ -148,13 +186,14 @@ function BattleBar({
   color: string;
   index: number;
   totalBars: number;
+  isTopPanel: boolean;
 }) {
   const height = (value / maxValue) * 100;
-  const barWidth = (SCREEN_WIDTH / 2 - Spacing.lg * 2) / totalBars - 2;
+  const barWidth = Math.max(4, (SCREEN_WIDTH - Spacing.lg * 4) / totalBars - 2);
 
   let barColor = color + '60';
-  if (isComparing) barColor = Colors.logicGold;
-  if (isSorted) barColor = Colors.success;
+  if (isComparing) barColor = Colors.neonYellow;
+  if (isSorted) barColor = Colors.neonLime;
 
   return (
     <View
@@ -164,15 +203,19 @@ function BattleBar({
           height: `${height}%`,
           width: barWidth,
           backgroundColor: barColor,
+          shadowColor: barColor,
+          shadowOpacity: isComparing || isSorted ? 0.8 : 0.3,
+          shadowRadius: isComparing || isSorted ? 6 : 2,
         },
+        isTopPanel && styles.battleBarTop,
       ]}
     />
   );
 }
 
-// Battle Panel for each algorithm
+// Vertical Battle Panel for each algorithm
 function BattlePanel({
-  side,
+  position,
   algorithm,
   array,
   operations,
@@ -182,7 +225,7 @@ function BattlePanel({
   time,
   isWinner,
 }: {
-  side: 'left' | 'right';
+  position: 'top' | 'bottom';
   algorithm: typeof SORTING_ALGORITHMS[0] | null;
   array: number[];
   operations: number;
@@ -192,30 +235,46 @@ function BattlePanel({
   time: number;
   isWinner: boolean;
 }) {
-  const color = side === 'left' ? BattleColors.player1 : BattleColors.player2;
+  const color = position === 'top' ? BattleColors.player1 : BattleColors.player2;
   const maxValue = Math.max(...array, 1);
+  const isTopPanel = position === 'top';
 
-  const EnterAnimation = side === 'left' ? FadeInLeft : FadeInRight;
+  const EnterAnimation = position === 'top' ? FadeInUp : FadeInDown;
 
   return (
     <Animated.View
       entering={EnterAnimation.delay(300).springify()}
-      style={[styles.battlePanel, side === 'right' && styles.battlePanelRight]}
+      style={[
+        styles.battlePanel,
+        { borderColor: color + '40' },
+        isWinner && styles.winnerPanel,
+      ]}
     >
-      {/* Header */}
-      <View style={[styles.panelHeader, { borderBottomColor: color + '30' }]}>
-        <Text style={[styles.panelTitle, { color }]}>{algorithm?.name || 'Select Algorithm'}</Text>
+      {/* Header with glowing text */}
+      <View style={styles.panelHeader}>
+        <View style={styles.panelTitleRow}>
+          <View style={[styles.playerIndicator, { backgroundColor: color }]} />
+          <Text style={[styles.panelTitle, { color }]}>
+            {algorithm?.name || 'Select Algorithm'}
+          </Text>
+        </View>
         {isWinner && (
-          <View style={styles.winnerBadge}>
-            <Ionicons name="trophy" size={14} color={Colors.logicGold} />
+          <View style={[styles.winnerBadge, { shadowColor: BattleColors.winner }]}>
+            <Ionicons name="trophy" size={12} color={BattleColors.winner} />
             <Text style={styles.winnerText}>WINNER</Text>
           </View>
         )}
       </View>
 
-      {/* Visualization */}
-      <View style={styles.visualizationContainer}>
-        <View style={styles.barsContainer}>
+      {/* Visualization - bars grow from bottom for top panel, from top for bottom */}
+      <View style={[
+        styles.visualizationContainer,
+        isTopPanel ? styles.visualizationTop : styles.visualizationBottom,
+      ]}>
+        <View style={[
+          styles.barsContainer,
+          isTopPanel && styles.barsContainerTop,
+        ]}>
           {array.map((value, index) => (
             <BattleBar
               key={index}
@@ -226,27 +285,35 @@ function BattlePanel({
               color={color}
               index={index}
               totalBars={array.length}
+              isTopPanel={isTopPanel}
             />
           ))}
         </View>
       </View>
 
-      {/* Stats */}
-      <View style={styles.statsRow}>
-        <View style={styles.statItem}>
-          <Ionicons name="swap-horizontal" size={14} color={Colors.gray400} />
-          <Text style={styles.statValue}>{operations}</Text>
-          <Text style={styles.statLabel}>ops</Text>
+      {/* Mini Stats Row */}
+      <View style={styles.miniStatsRow}>
+        <View style={styles.miniStat}>
+          <Ionicons name="swap-horizontal" size={12} color={Colors.gray400} />
+          <Text style={styles.miniStatValue}>{operations}</Text>
         </View>
-        <View style={styles.statItem}>
-          <Ionicons name="time" size={14} color={Colors.gray400} />
-          <Text style={styles.statValue}>{time.toFixed(0)}</Text>
-          <Text style={styles.statLabel}>ms</Text>
+        <View style={styles.miniStat}>
+          <Ionicons name="time" size={12} color={Colors.gray400} />
+          <Text style={styles.miniStatValue}>{time.toFixed(0)}ms</Text>
         </View>
-        <View style={[styles.statusBadge, finished && { backgroundColor: Colors.success + '20' }]}>
-          <View style={[styles.statusDot, { backgroundColor: finished ? Colors.success : color }]} />
-          <Text style={[styles.statusText, finished && { color: Colors.success }]}>
-            {finished ? 'Done' : 'Running'}
+        <View style={[
+          styles.statusIndicator,
+          { backgroundColor: finished ? Colors.neonLime + '20' : color + '20' },
+        ]}>
+          <View style={[
+            styles.statusDot,
+            { backgroundColor: finished ? Colors.neonLime : color },
+          ]} />
+          <Text style={[
+            styles.statusText,
+            { color: finished ? Colors.neonLime : color },
+          ]}>
+            {finished ? 'Done' : 'Racing'}
           </Text>
         </View>
       </View>
@@ -254,13 +321,83 @@ function BattlePanel({
   );
 }
 
-// Countdown Overlay
+// Floating HUD Component
+function FloatingHUD({
+  time,
+  operations1,
+  operations2,
+  phase,
+}: {
+  time: number;
+  operations1: number;
+  operations2: number;
+  phase: string;
+}) {
+  const pulse = useSharedValue(1);
+
+  useEffect(() => {
+    if (phase === 'racing') {
+      pulse.value = withRepeat(
+        withSequence(
+          withTiming(1.05, { duration: 500 }),
+          withTiming(1, { duration: 500 })
+        ),
+        -1,
+        true
+      );
+    }
+  }, [phase]);
+
+  const pulseStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: pulse.value }],
+  }));
+
+  return (
+    <Animated.View entering={FadeIn.delay(500)} style={styles.hudContainer}>
+      <BlurView intensity={40} tint="dark" style={styles.hudBlur}>
+        <Animated.View style={[styles.hudContent, pulseStyle]}>
+          {/* VS Badge */}
+          <View style={styles.vsBadge}>
+            <LinearGradient
+              colors={[Colors.neonCyan + '40', Colors.neonPurple + '40']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.vsGradient}
+            >
+              <Text style={styles.vsText}>VS</Text>
+            </LinearGradient>
+          </View>
+
+          {/* Time Display */}
+          <View style={styles.hudStats}>
+            <View style={styles.hudStatItem}>
+              <Ionicons name="timer-outline" size={16} color={Colors.neonCyan} />
+              <Text style={styles.hudStatValue}>{(time / 1000).toFixed(1)}s</Text>
+            </View>
+            <View style={styles.hudDivider} />
+            <View style={styles.hudStatItem}>
+              <Ionicons name="analytics-outline" size={16} color={Colors.neonPurple} />
+              <Text style={styles.hudStatValue}>{operations1 + operations2} ops</Text>
+            </View>
+          </View>
+        </Animated.View>
+      </BlurView>
+    </Animated.View>
+  );
+}
+
+// Countdown Overlay with cyber effect
 function CountdownOverlay({ count, onComplete }: { count: number; onComplete: () => void }) {
   const scale = useSharedValue(0.5);
   const opacity = useSharedValue(1);
+  const rotation = useSharedValue(0);
 
   useEffect(() => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    }
     scale.value = withSpring(1, { damping: 8 });
+    rotation.value = withTiming(360, { duration: 800 });
     if (count === 0) {
       opacity.value = withTiming(0, { duration: 300 }, () => {
         runOnJS(onComplete)();
@@ -277,7 +414,7 @@ function CountdownOverlay({ count, onComplete }: { count: number; onComplete: ()
     <View style={styles.countdownOverlay}>
       <Animated.View style={[styles.countdownContainer, animatedStyle]}>
         <LinearGradient
-          colors={[Colors.accent + '20', Colors.electricPurple + '20']}
+          colors={[Colors.neonCyan + '30', Colors.neonPurple + '30']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.countdownGradient}
@@ -291,7 +428,7 @@ function CountdownOverlay({ count, onComplete }: { count: number; onComplete: ()
   );
 }
 
-// Winner Podium Screen
+// Winner Podium Screen with cyber aesthetic
 function WinnerPodium({
   winner,
   algorithm1,
@@ -312,21 +449,32 @@ function WinnerPodium({
   const winnerAlgo = winner === 'algorithm1' ? algorithm1 : winner === 'algorithm2' ? algorithm2 : null;
   const winnerColor = winner === 'algorithm1' ? BattleColors.player1 : winner === 'algorithm2' ? BattleColors.player2 : Colors.gray400;
 
+  useEffect(() => {
+    if (Platform.OS !== 'web') {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }
+  }, []);
+
   return (
     <Animated.View entering={FadeIn.duration(500)} style={styles.podiumContainer}>
-      <BlurView intensity={40} tint="dark" style={styles.podiumBlur}>
-        {/* Trophy */}
+      <BlurView intensity={50} tint="dark" style={styles.podiumBlur}>
+        {/* Trophy with glow */}
         <Animated.View entering={FadeInDown.delay(200).springify()} style={styles.trophyContainer}>
-          <LinearGradient
-            colors={[Colors.logicGold, Colors.logicGoldDark]}
-            style={styles.trophyGradient}
-          >
-            <Ionicons name="trophy" size={48} color={Colors.background} />
-          </LinearGradient>
+          <View style={[styles.trophyGlow, { shadowColor: BattleColors.winner }]}>
+            <LinearGradient
+              colors={[BattleColors.winner, Colors.neonOrange]}
+              style={styles.trophyGradient}
+            >
+              <Ionicons name="trophy" size={48} color={Colors.background} />
+            </LinearGradient>
+          </View>
         </Animated.View>
 
         {/* Winner Name */}
-        <Animated.Text entering={FadeInDown.delay(400).springify()} style={styles.winnerTitle}>
+        <Animated.Text
+          entering={FadeInDown.delay(400).springify()}
+          style={[styles.winnerTitle, { textShadowColor: winnerColor }]}
+        >
           {winner === 'tie' ? "It's a Tie!" : `${winnerAlgo?.name} Wins!`}
         </Animated.Text>
 
@@ -334,15 +482,19 @@ function WinnerPodium({
         <Animated.View entering={FadeInDown.delay(600).springify()} style={styles.comparisonCard}>
           <View style={styles.comparisonRow}>
             <View style={[styles.comparisonSide, { alignItems: 'flex-end' }]}>
-              <Text style={[styles.algoNameSmall, { color: BattleColors.player1 }]}>{algorithm1.shortName}</Text>
+              <Text style={[styles.algoNameSmall, { color: BattleColors.player1 }]}>
+                {algorithm1.shortName}
+              </Text>
               <Text style={styles.comparisonValue}>{stats.ops1} ops</Text>
               <Text style={styles.comparisonSubvalue}>{stats.time1.toFixed(0)}ms</Text>
             </View>
-            <View style={styles.vsContainer}>
-              <Text style={styles.vsText}>VS</Text>
+            <View style={styles.vsContainerSmall}>
+              <Text style={styles.vsTextSmall}>VS</Text>
             </View>
             <View style={[styles.comparisonSide, { alignItems: 'flex-start' }]}>
-              <Text style={[styles.algoNameSmall, { color: BattleColors.player2 }]}>{algorithm2.shortName}</Text>
+              <Text style={[styles.algoNameSmall, { color: BattleColors.player2 }]}>
+                {algorithm2.shortName}
+              </Text>
               <Text style={styles.comparisonValue}>{stats.ops2} ops</Text>
               <Text style={styles.comparisonSubvalue}>{stats.time2.toFixed(0)}ms</Text>
             </View>
@@ -352,20 +504,37 @@ function WinnerPodium({
         {/* AI Explanation */}
         <Animated.View entering={FadeInDown.delay(800).springify()} style={styles.explanationCard}>
           <View style={styles.explanationHeader}>
-            <Ionicons name="sparkles" size={16} color={Colors.electricPurple} />
-            <Text style={styles.explanationTitle}>Why {winnerAlgo?.name || 'they tied'}?</Text>
+            <Ionicons name="sparkles" size={16} color={Colors.neonPurple} />
+            <Text style={styles.explanationTitle}>
+              Why {winnerAlgo?.name || 'they tied'}?
+            </Text>
           </View>
           <Text style={styles.explanationText}>{explanation}</Text>
         </Animated.View>
 
         {/* Actions */}
         <Animated.View entering={FadeInDown.delay(1000).springify()} style={styles.podiumActions}>
-          <TouchableOpacity style={styles.rematchButton} onPress={onRematch}>
+          <TouchableOpacity
+            style={styles.rematchButton}
+            onPress={onRematch}
+            activeOpacity={0.8}
+          >
             <Ionicons name="refresh" size={20} color={Colors.textPrimary} />
             <Text style={styles.rematchText}>Rematch</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.newBattleButton} onPress={onNewBattle}>
-            <Text style={styles.newBattleText}>New Battle</Text>
+          <TouchableOpacity
+            style={[styles.newBattleButton, { shadowColor: Colors.neonCyan }]}
+            onPress={onNewBattle}
+            activeOpacity={0.8}
+          >
+            <LinearGradient
+              colors={[Colors.neonCyan, Colors.accentDark]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.newBattleGradient}
+            >
+              <Text style={styles.newBattleText}>New Battle</Text>
+            </LinearGradient>
           </TouchableOpacity>
         </Animated.View>
       </BlurView>
@@ -381,17 +550,22 @@ export default function BattleArenaScreen() {
   const [battleState, setBattleState] = useState<BattleState>(initialBattleState);
   const [countdown, setCountdown] = useState(3);
   const [aiExplanation, setAiExplanation] = useState('');
+  const [raceTime, setRaceTime] = useState(0);
 
   const battleRef = useRef<{ running: boolean }>({ running: false });
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Generate random array
   const generateArray = useCallback((size: number = 15) => {
     return Array.from({ length: size }, () => Math.floor(Math.random() * 100) + 5);
   }, []);
 
-  // Handle algorithm selection
+  // Handle algorithm selection with haptic
   const selectAlgorithm = (slot: 1 | 2, algorithm: typeof SORTING_ALGORITHMS[0]) => {
+    if (Platform.OS !== 'web') {
+      Haptics.selectionAsync();
+    }
     if (slot === 1) {
       setBattleState((prev) => ({ ...prev, algorithm1: algorithm }));
     } else {
@@ -401,6 +575,9 @@ export default function BattleArenaScreen() {
 
   // Start battle countdown
   const startBattle = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    }
     const array = generateArray(15);
     setBattleState((prev) => ({
       ...prev,
@@ -420,8 +597,8 @@ export default function BattleArenaScreen() {
       time2: 0,
     }));
     setCountdown(3);
+    setRaceTime(0);
 
-    // Countdown timer
     let count = 3;
     const countdownInterval = setInterval(() => {
       count--;
@@ -440,6 +617,12 @@ export default function BattleArenaScreen() {
       startTime: Date.now(),
     }));
     battleRef.current.running = true;
+
+    // Start race timer
+    timerRef.current = setInterval(() => {
+      setRaceTime((prev) => prev + 100);
+    }, 100);
+
     runSortingRace();
   };
 
@@ -633,6 +816,7 @@ export default function BattleArenaScreen() {
     intervalRef.current = setInterval(() => {
       if (!battleRef.current.running) {
         if (intervalRef.current) clearInterval(intervalRef.current);
+        if (timerRef.current) clearInterval(timerRef.current);
         return;
       }
 
@@ -674,6 +858,7 @@ export default function BattleArenaScreen() {
         if (finished1 && finished2) {
           battleRef.current.running = false;
           if (intervalRef.current) clearInterval(intervalRef.current);
+          if (timerRef.current) clearInterval(timerRef.current);
 
           const winner = newState.operations1 < newState.operations2
             ? 'algorithm1'
@@ -701,7 +886,7 @@ export default function BattleArenaScreen() {
     }, 50);
   };
 
-  // Generate AI explanation using newell-ai
+  // Generate AI explanation
   const generateExplanation = async (
     algo1: typeof SORTING_ALGORITHMS[0],
     algo2: typeof SORTING_ALGORITHMS[0],
@@ -709,7 +894,6 @@ export default function BattleArenaScreen() {
   ) => {
     const winner = stats.ops1 < stats.ops2 ? algo1.name : stats.ops2 < stats.ops1 ? algo2.name : null;
 
-    // Default explanation based on algorithm characteristics
     const explanations: Record<string, Record<string, string>> = {
       'quick-sort': {
         default: `Quick Sort typically performs well due to its efficient partitioning strategy and good cache locality. With ${stats.ops1} operations, it demonstrates its O(n log n) average-case performance.`,
@@ -749,11 +933,15 @@ export default function BattleArenaScreen() {
     return () => {
       battleRef.current.running = false;
       if (intervalRef.current) clearInterval(intervalRef.current);
+      if (timerRef.current) clearInterval(timerRef.current);
     };
   }, []);
 
   // Handle rematch
   const handleRematch = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
     const array = generateArray(15);
     setBattleState((prev) => ({
       ...prev,
@@ -773,6 +961,7 @@ export default function BattleArenaScreen() {
       time2: 0,
     }));
     setCountdown(3);
+    setRaceTime(0);
 
     let count = 3;
     const countdownInterval = setInterval(() => {
@@ -786,20 +975,30 @@ export default function BattleArenaScreen() {
 
   // Handle new battle
   const handleNewBattle = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
     setBattleState(initialBattleState);
     setAiExplanation('');
+    setRaceTime(0);
   };
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <LinearGradient
-        colors={[Colors.background, Colors.backgroundDark]}
-        style={StyleSheet.absoluteFillObject}
-      />
+      {/* Animated Cyber Background */}
+      <CyberBackground showGrid showParticles showMatrix={false} intensity="low" />
 
       {/* Header */}
       <Animated.View entering={FadeInDown.delay(100)} style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => {
+            if (Platform.OS !== 'web') {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            }
+            router.back();
+          }}
+        >
           <Ionicons name="close" size={24} color={Colors.textPrimary} />
         </TouchableOpacity>
         <View style={styles.headerCenter}>
@@ -811,16 +1010,18 @@ export default function BattleArenaScreen() {
 
       {battleState.phase === 'selection' && (
         <ScrollView style={styles.selectionContainer} contentContainerStyle={styles.selectionContent}>
-          {/* Player 1 Selection */}
+          {/* Player 1 Selection (Cyan) */}
           <Animated.View entering={FadeInDown.delay(200).springify()} style={styles.selectionSection}>
             <View style={styles.sectionHeader}>
               <View style={[styles.playerBadge, { backgroundColor: BattleColors.player1 }]}>
                 <Text style={styles.playerBadgeText}>P1</Text>
               </View>
-              <Text style={styles.sectionTitle}>Select Algorithm 1</Text>
+              <Text style={[styles.sectionTitle, { color: BattleColors.player1 }]}>
+                Select Algorithm 1
+              </Text>
             </View>
             <View style={styles.algorithmsGrid}>
-              {SORTING_ALGORITHMS.map((algo) => (
+              {SORTING_ALGORITHMS.map((algo, index) => (
                 <AlgorithmCard
                   key={algo.id}
                   algorithm={algo}
@@ -828,6 +1029,7 @@ export default function BattleArenaScreen() {
                   onSelect={() => selectAlgorithm(1, algo)}
                   color={BattleColors.player1}
                   disabled={battleState.algorithm2?.id === algo.id}
+                  index={index}
                 />
               ))}
             </View>
@@ -835,23 +1037,32 @@ export default function BattleArenaScreen() {
 
           {/* VS Divider */}
           <Animated.View entering={FadeIn.delay(400)} style={styles.vsDivider}>
-            <View style={styles.vsLine} />
+            <View style={[styles.vsLine, { backgroundColor: BattleColors.player1 }]} />
             <View style={styles.vsCircle}>
-              <Text style={styles.vsText}>VS</Text>
+              <LinearGradient
+                colors={[BattleColors.player1, BattleColors.player2]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.vsCircleGradient}
+              >
+                <Text style={styles.vsTextSelection}>VS</Text>
+              </LinearGradient>
             </View>
-            <View style={styles.vsLine} />
+            <View style={[styles.vsLine, { backgroundColor: BattleColors.player2 }]} />
           </Animated.View>
 
-          {/* Player 2 Selection */}
+          {/* Player 2 Selection (Purple) */}
           <Animated.View entering={FadeInDown.delay(300).springify()} style={styles.selectionSection}>
             <View style={styles.sectionHeader}>
               <View style={[styles.playerBadge, { backgroundColor: BattleColors.player2 }]}>
                 <Text style={styles.playerBadgeText}>P2</Text>
               </View>
-              <Text style={styles.sectionTitle}>Select Algorithm 2</Text>
+              <Text style={[styles.sectionTitle, { color: BattleColors.player2 }]}>
+                Select Algorithm 2
+              </Text>
             </View>
             <View style={styles.algorithmsGrid}>
-              {SORTING_ALGORITHMS.map((algo) => (
+              {SORTING_ALGORITHMS.map((algo, index) => (
                 <AlgorithmCard
                   key={algo.id}
                   algorithm={algo}
@@ -859,6 +1070,7 @@ export default function BattleArenaScreen() {
                   onSelect={() => selectAlgorithm(2, algo)}
                   color={BattleColors.player2}
                   disabled={battleState.algorithm1?.id === algo.id}
+                  index={index}
                 />
               ))}
             </View>
@@ -878,14 +1090,14 @@ export default function BattleArenaScreen() {
               <LinearGradient
                 colors={
                   battleState.algorithm1 && battleState.algorithm2
-                    ? [Colors.accent, Colors.electricPurple]
+                    ? [Colors.neonCyan, Colors.neonPurple]
                     : [Colors.gray600, Colors.gray700]
                 }
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.startButtonGradient}
               >
-                <Ionicons name="flash" size={24} color={Colors.textPrimary} />
+                <Ionicons name="flash" size={24} color={Colors.background} />
                 <Text style={styles.startButtonText}>Start Battle</Text>
               </LinearGradient>
             </TouchableOpacity>
@@ -895,34 +1107,39 @@ export default function BattleArenaScreen() {
 
       {(battleState.phase === 'countdown' || battleState.phase === 'racing') && (
         <View style={styles.battleContainer}>
-          {/* Battle Panels */}
-          <View style={styles.panelsRow}>
-            <BattlePanel
-              side="left"
-              algorithm={battleState.algorithm1}
-              array={battleState.array1}
-              operations={battleState.operations1}
-              comparing={battleState.comparing1}
-              sorted={battleState.sorted1}
-              finished={battleState.finished1}
-              time={battleState.time1}
-              isWinner={battleState.winner === 'algorithm1'}
-            />
-            <View style={styles.centerDivider}>
-              <Text style={styles.centerVs}>VS</Text>
-            </View>
-            <BattlePanel
-              side="right"
-              algorithm={battleState.algorithm2}
-              array={battleState.array2}
-              operations={battleState.operations2}
-              comparing={battleState.comparing2}
-              sorted={battleState.sorted2}
-              finished={battleState.finished2}
-              time={battleState.time2}
-              isWinner={battleState.winner === 'algorithm2'}
-            />
-          </View>
+          {/* Top Panel (Cyan) */}
+          <BattlePanel
+            position="top"
+            algorithm={battleState.algorithm1}
+            array={battleState.array1}
+            operations={battleState.operations1}
+            comparing={battleState.comparing1}
+            sorted={battleState.sorted1}
+            finished={battleState.finished1}
+            time={battleState.time1}
+            isWinner={battleState.winner === 'algorithm1'}
+          />
+
+          {/* Floating HUD */}
+          <FloatingHUD
+            time={raceTime}
+            operations1={battleState.operations1}
+            operations2={battleState.operations2}
+            phase={battleState.phase}
+          />
+
+          {/* Bottom Panel (Purple) */}
+          <BattlePanel
+            position="bottom"
+            algorithm={battleState.algorithm2}
+            array={battleState.array2}
+            operations={battleState.operations2}
+            comparing={battleState.comparing2}
+            sorted={battleState.sorted2}
+            finished={battleState.finished2}
+            time={battleState.time2}
+            isWinner={battleState.winner === 'algorithm2'}
+          />
 
           {/* Countdown Overlay */}
           {battleState.phase === 'countdown' && (
@@ -962,6 +1179,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.md,
+    zIndex: 10,
   },
   backButton: {
     width: 44,
@@ -970,6 +1188,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.cardBackground,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.neonBorderCyan,
   },
   headerCenter: {
     alignItems: 'center',
@@ -978,6 +1198,9 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.xl,
     fontWeight: '700',
     color: Colors.textPrimary,
+    textShadowColor: Colors.neonCyan,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 8,
   },
   headerSubtitle: {
     fontSize: FontSizes.sm,
@@ -993,7 +1216,7 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.xxxl,
   },
   selectionSection: {
-    marginBottom: Spacing.lg,
+    marginBottom: Spacing.md,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -1009,12 +1232,11 @@ const styles = StyleSheet.create({
   playerBadgeText: {
     fontSize: FontSizes.xs,
     fontWeight: '700',
-    color: Colors.textPrimary,
+    color: Colors.background,
   },
   sectionTitle: {
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.textPrimary,
   },
   algorithmsGrid: {
     flexDirection: 'row',
@@ -1029,15 +1251,24 @@ const styles = StyleSheet.create({
     padding: Spacing.sm,
     paddingRight: Spacing.md,
     borderWidth: 1,
-    borderColor: Colors.gray700,
-    minWidth: 110,
+    borderColor: Colors.glassBorder,
+    minWidth: 105,
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  cardGlow: {
+    ...StyleSheet.absoluteFillObject,
+    opacity: 0,
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 15,
+    shadowOpacity: 0.8,
   },
   algorithmCardDisabled: {
     opacity: 0.4,
   },
   algorithmIcon: {
-    width: 36,
-    height: 36,
+    width: 32,
+    height: 32,
     borderRadius: BorderRadius.md,
     justifyContent: 'center',
     alignItems: 'center',
@@ -1049,7 +1280,12 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
     flex: 1,
   },
-  checkIcon: {
+  checkBadge: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginLeft: Spacing.xs,
   },
   vsDivider: {
@@ -1059,24 +1295,25 @@ const styles = StyleSheet.create({
   },
   vsLine: {
     flex: 1,
-    height: 1,
-    backgroundColor: Colors.gray700,
+    height: 2,
+    opacity: 0.5,
   },
   vsCircle: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: Colors.cardBackground,
+    marginHorizontal: Spacing.md,
+    borderRadius: 30,
+    overflow: 'hidden',
+    ...Shadows.glow,
+  },
+  vsCircleGradient: {
+    width: 60,
+    height: 60,
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: Spacing.md,
-    borderWidth: 2,
-    borderColor: Colors.gray600,
   },
-  vsText: {
-    fontSize: FontSizes.md,
-    fontWeight: '700',
-    color: Colors.gray400,
+  vsTextSelection: {
+    fontSize: FontSizes.lg,
+    fontWeight: '800',
+    color: Colors.white,
   },
   startButtonContainer: {
     marginTop: Spacing.xl,
@@ -1084,7 +1321,7 @@ const styles = StyleSheet.create({
   startButton: {
     borderRadius: BorderRadius.xl,
     overflow: 'hidden',
-    ...Shadows.medium,
+    ...Shadows.glow,
   },
   startButtonDisabled: {
     opacity: 0.6,
@@ -1099,16 +1336,13 @@ const styles = StyleSheet.create({
   startButtonText: {
     fontSize: FontSizes.xl,
     fontWeight: '700',
-    color: Colors.textPrimary,
+    color: Colors.background,
   },
-  // Battle Phase
+  // Battle Phase - Vertical Stack
   battleContainer: {
     flex: 1,
-    padding: Spacing.md,
-  },
-  panelsRow: {
-    flex: 1,
-    flexDirection: 'row',
+    paddingHorizontal: Spacing.md,
+    paddingBottom: Spacing.md,
   },
   battlePanel: {
     flex: 1,
@@ -1116,41 +1350,64 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.xl,
     padding: Spacing.md,
     borderWidth: 1,
-    borderColor: BattleColors.player1 + '30',
+    marginVertical: Spacing.xs,
   },
-  battlePanelRight: {
-    borderColor: BattleColors.player2 + '30',
+  winnerPanel: {
+    borderWidth: 2,
+    borderColor: BattleColors.winner + '60',
+    shadowColor: BattleColors.winner,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
   },
   panelHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingBottom: Spacing.sm,
     marginBottom: Spacing.sm,
-    borderBottomWidth: 1,
+  },
+  panelTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+  },
+  playerIndicator: {
+    width: 4,
+    height: 20,
+    borderRadius: 2,
   },
   panelTitle: {
-    fontSize: FontSizes.sm,
-    fontWeight: '600',
+    fontSize: FontSizes.md,
+    fontWeight: '700',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 6,
   },
   winnerBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.logicGold + '20',
+    backgroundColor: BattleColors.winner + '20',
     paddingHorizontal: Spacing.sm,
-    paddingVertical: 2,
+    paddingVertical: 4,
     borderRadius: BorderRadius.sm,
     gap: 4,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
   },
   winnerText: {
-    fontSize: 8,
+    fontSize: 10,
     fontWeight: '700',
-    color: Colors.logicGold,
+    color: BattleColors.winner,
   },
   visualizationContainer: {
     flex: 1,
-    justifyContent: 'flex-end',
     paddingVertical: Spacing.sm,
+  },
+  visualizationTop: {
+    justifyContent: 'flex-end',
+  },
+  visualizationBottom: {
+    justifyContent: 'flex-start',
   },
   barsContainer: {
     flexDirection: 'row',
@@ -1159,36 +1416,40 @@ const styles = StyleSheet.create({
     height: '100%',
     gap: 2,
   },
+  barsContainerTop: {
+    alignItems: 'flex-start',
+    transform: [{ scaleY: -1 }],
+  },
   battleBar: {
     borderRadius: 2,
     minHeight: 4,
+    shadowOffset: { width: 0, height: 0 },
+    elevation: 4,
   },
-  statsRow: {
+  battleBarTop: {
+    transform: [{ scaleY: -1 }],
+  },
+  miniStatsRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingTop: Spacing.sm,
     borderTopWidth: 1,
-    borderTopColor: Colors.gray700,
+    borderTopColor: Colors.glassBorder,
   },
-  statItem: {
+  miniStat: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
   },
-  statValue: {
+  miniStatValue: {
     fontSize: FontSizes.sm,
     fontWeight: '600',
     color: Colors.textPrimary,
   },
-  statLabel: {
-    fontSize: FontSizes.xs,
-    color: Colors.gray500,
-  },
-  statusBadge: {
+  statusIndicator: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.gray700 + '50',
     paddingHorizontal: Spacing.sm,
     paddingVertical: 4,
     borderRadius: BorderRadius.sm,
@@ -1201,41 +1462,93 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: FontSizes.xs,
-    fontWeight: '500',
-    color: Colors.gray400,
+    fontWeight: '600',
   },
-  centerDivider: {
-    width: 30,
-    justifyContent: 'center',
+  // Floating HUD
+  hudContainer: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -80 }, { translateY: -40 }],
+    zIndex: 100,
+  },
+  hudBlur: {
+    borderRadius: BorderRadius.xl,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: Colors.glassBorder,
+  },
+  hudContent: {
+    padding: Spacing.md,
     alignItems: 'center',
   },
-  centerVs: {
+  vsBadge: {
+    marginBottom: Spacing.sm,
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  vsGradient: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+  },
+  vsText: {
+    fontSize: FontSizes.md,
+    fontWeight: '800',
+    color: Colors.white,
+  },
+  hudStats: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.md,
+  },
+  hudStatItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  hudStatValue: {
     fontSize: FontSizes.sm,
     fontWeight: '700',
-    color: Colors.gray500,
+    color: Colors.textPrimary,
+  },
+  hudDivider: {
+    width: 1,
+    height: 16,
+    backgroundColor: Colors.glassBorder,
   },
   // Countdown
   countdownOverlay: {
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(5, 8, 16, 0.85)',
+    zIndex: 200,
   },
   countdownContainer: {
     width: 150,
     height: 150,
     borderRadius: 75,
     overflow: 'hidden',
+    ...Shadows.glow,
   },
   countdownGradient: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 2,
+    borderColor: Colors.neonCyan + '50',
+    borderRadius: 75,
   },
   countdownText: {
     fontSize: 64,
     fontWeight: '800',
     color: Colors.textPrimary,
+    textShadowColor: Colors.neonCyan,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 20,
   },
   // Winner Podium
   podiumContainer: {
@@ -1244,6 +1557,7 @@ const styles = StyleSheet.create({
     left: Spacing.lg,
     right: Spacing.lg,
     bottom: Spacing.xxxl,
+    zIndex: 300,
   },
   podiumBlur: {
     flex: 1,
@@ -1252,10 +1566,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: Colors.glassBorder,
+    borderColor: Colors.neonBorderCyan,
   },
   trophyContainer: {
     marginBottom: Spacing.lg,
+  },
+  trophyGlow: {
+    borderRadius: 50,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 20,
   },
   trophyGradient: {
     width: 100,
@@ -1263,7 +1583,6 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    ...Shadows.large,
   },
   winnerTitle: {
     fontSize: FontSizes.xxxl,
@@ -1271,6 +1590,8 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
     marginBottom: Spacing.lg,
     textAlign: 'center',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
   },
   comparisonCard: {
     backgroundColor: Colors.backgroundDark,
@@ -1278,6 +1599,8 @@ const styles = StyleSheet.create({
     padding: Spacing.lg,
     width: '100%',
     marginBottom: Spacing.lg,
+    borderWidth: 1,
+    borderColor: Colors.glassBorder,
   },
   comparisonRow: {
     flexDirection: 'row',
@@ -1300,18 +1623,23 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.sm,
     color: Colors.gray500,
   },
-  vsContainer: {
+  vsContainerSmall: {
     width: 40,
     alignItems: 'center',
   },
+  vsTextSmall: {
+    fontSize: FontSizes.sm,
+    fontWeight: '700',
+    color: Colors.gray400,
+  },
   explanationCard: {
-    backgroundColor: Colors.electricPurple + '15',
+    backgroundColor: Colors.neonPurple + '15',
     borderRadius: BorderRadius.xl,
     padding: Spacing.md,
     width: '100%',
     marginBottom: Spacing.lg,
     borderWidth: 1,
-    borderColor: Colors.electricPurple + '30',
+    borderColor: Colors.neonPurple + '30',
   },
   explanationHeader: {
     flexDirection: 'row',
@@ -1322,7 +1650,7 @@ const styles = StyleSheet.create({
   explanationTitle: {
     fontSize: FontSizes.sm,
     fontWeight: '600',
-    color: Colors.electricPurple,
+    color: Colors.neonPurple,
   },
   explanationText: {
     fontSize: FontSizes.sm,
@@ -1342,6 +1670,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     borderRadius: BorderRadius.lg,
     gap: Spacing.sm,
+    borderWidth: 1,
+    borderColor: Colors.glassBorder,
   },
   rematchText: {
     fontSize: FontSizes.md,
@@ -1349,14 +1679,19 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
   },
   newBattleButton: {
-    backgroundColor: Colors.accent,
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+  },
+  newBattleGradient: {
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.xl,
-    borderRadius: BorderRadius.lg,
   },
   newBattleText: {
     fontSize: FontSizes.md,
-    fontWeight: '600',
+    fontWeight: '700',
     color: Colors.background,
   },
 });

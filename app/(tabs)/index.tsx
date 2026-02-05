@@ -6,10 +6,13 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
+  Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
 import Animated, {
   FadeInDown,
   FadeInRight,
@@ -18,10 +21,13 @@ import Animated, {
   withSpring,
   withRepeat,
   withSequence,
+  withTiming,
+  Easing,
 } from 'react-native-reanimated';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
 import { useAppStore } from '@/store/useAppStore';
 import { getMasteryColor } from '@/utils/quizData';
+import CyberBackground from '@/components/CyberBackground';
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
@@ -39,7 +45,7 @@ const skillCategories: SkillCategory[] = [
     id: 'searching',
     name: 'Searching',
     icon: 'search',
-    color: Colors.accent,
+    color: Colors.neonCyan,
     algorithms: ['Linear Search', 'Binary Search'],
     isUnlocked: true,
   },
@@ -47,7 +53,7 @@ const skillCategories: SkillCategory[] = [
     id: 'sorting',
     name: 'Sorting',
     icon: 'bar-chart',
-    color: Colors.alertCoral,
+    color: Colors.neonPink,
     algorithms: ['Bubble', 'Selection', 'Insertion', 'Merge', 'Quick'],
     isUnlocked: true,
   },
@@ -55,7 +61,7 @@ const skillCategories: SkillCategory[] = [
     id: 'graphs',
     name: 'Graphs',
     icon: 'git-branch',
-    color: Colors.logicGold,
+    color: Colors.neonYellow,
     algorithms: ['BFS', 'DFS', 'Dijkstra', 'A*'],
     isUnlocked: true,
   },
@@ -63,7 +69,7 @@ const skillCategories: SkillCategory[] = [
     id: 'dynamic-programming',
     name: 'Dynamic\nProgramming',
     icon: 'layers',
-    color: Colors.info,
+    color: Colors.neonPurple,
     algorithms: ['Fibonacci', 'Knapsack', 'LCS'],
     isUnlocked: true,
   },
@@ -71,7 +77,7 @@ const skillCategories: SkillCategory[] = [
     id: 'greedy',
     name: 'Greedy',
     icon: 'trending-up',
-    color: Colors.success,
+    color: Colors.neonLime,
     algorithms: ['Activity Selection', 'Huffman'],
     isUnlocked: true,
   },
@@ -175,6 +181,7 @@ function SkillNode({
 function DailyChallengeCard() {
   const router = useRouter();
   const pulse = useSharedValue(1);
+  const glowOpacity = useSharedValue(0.3);
 
   React.useEffect(() => {
     pulse.value = withRepeat(
@@ -185,34 +192,64 @@ function DailyChallengeCard() {
       -1,
       true
     );
+    glowOpacity.value = withRepeat(
+      withTiming(0.6, { duration: 1500, easing: Easing.inOut(Easing.ease) }),
+      -1,
+      true
+    );
   }, []);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: pulse.value }],
   }));
 
+  const glowStyle = useAnimatedStyle(() => ({
+    shadowOpacity: glowOpacity.value,
+  }));
+
+  const handlePress = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+    router.push('/game/the-sorter');
+  };
+
   return (
     <Animated.View entering={FadeInRight.delay(200).springify()}>
       <AnimatedTouchable
-        style={[styles.dailyChallenge, animatedStyle]}
-        onPress={() => router.push('/game/the-sorter')}
+        style={[styles.dailyChallenge, animatedStyle, glowStyle]}
+        onPress={handlePress}
         activeOpacity={0.9}
       >
-        <View style={styles.dailyChallengeIcon}>
-          <Ionicons name="trophy" size={28} color={Colors.logicGold} />
-        </View>
-        <View style={styles.dailyChallengeContent}>
-          <Text style={styles.dailyChallengeTitle}>Daily Challenge</Text>
-          <Text style={styles.dailyChallengeSubtitle}>
-            The Sorter: Beat the Bubble Sort!
-          </Text>
-          <TouchableOpacity
-            style={styles.playNowButton}
-            onPress={() => router.push('/game/the-sorter')}
-          >
-            <Text style={styles.playNowText}>Play Now</Text>
-          </TouchableOpacity>
-        </View>
+        <LinearGradient
+          colors={[Colors.neonYellow + '20', Colors.neonOrange + '10']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.dailyChallengeGradient}
+        >
+          <View style={styles.dailyChallengeIcon}>
+            <Ionicons name="trophy" size={28} color={Colors.neonYellow} />
+          </View>
+          <View style={styles.dailyChallengeContent}>
+            <Text style={styles.dailyChallengeTitle}>Daily Challenge</Text>
+            <Text style={styles.dailyChallengeSubtitle}>
+              The Sorter: Beat the Bubble Sort!
+            </Text>
+            <TouchableOpacity
+              style={styles.playNowButton}
+              onPress={handlePress}
+            >
+              <LinearGradient
+                colors={[Colors.neonCyan, Colors.accentDark]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.playNowGradient}
+              >
+                <Text style={styles.playNowText}>Play Now</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+        </LinearGradient>
       </AnimatedTouchable>
     </Animated.View>
   );
@@ -222,28 +259,46 @@ export default function HomeScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [searchQuery, setSearchQuery] = React.useState('');
-  const { userProgress } = useAppStore();
+  const { userProgress, guestState } = useAppStore();
 
   const handleCategoryPress = (categoryId: string) => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
     router.push(`/learn?category=${categoryId}`);
   };
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
+      {/* Animated Cyber Background */}
+      <CyberBackground showGrid showParticles={false} showMatrix={false} intensity="low" />
+
       {/* Header */}
       <Animated.View entering={FadeInDown.delay(0)} style={styles.header}>
-        <Text style={styles.title}>Algoplay</Text>
+        <View style={styles.headerLeft}>
+          <Text style={styles.title}>Algoplay</Text>
+          {guestState.isGuest && (
+            <View style={styles.guestBadge}>
+              <Text style={styles.guestBadgeText}>Guest</Text>
+            </View>
+          )}
+        </View>
         <TouchableOpacity
           style={styles.profileButton}
-          onPress={() => router.push('/tutor')}
+          onPress={() => {
+            if (Platform.OS !== 'web') {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            }
+            router.push('/tutor');
+          }}
         >
-          <Ionicons name="chatbubbles" size={24} color={Colors.accent} />
+          <Ionicons name="chatbubbles" size={24} color={Colors.neonCyan} />
         </TouchableOpacity>
       </Animated.View>
 
       {/* Search Bar */}
       <Animated.View entering={FadeInDown.delay(100)} style={styles.searchContainer}>
-        <Ionicons name="search" size={18} color={Colors.gray500} />
+        <Ionicons name="search" size={18} color={Colors.neonCyan} />
         <TextInput
           style={styles.searchInput}
           placeholder="Search algorithms..."
@@ -403,29 +458,57 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.md,
+    zIndex: 10,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
   },
   title: {
     fontSize: FontSizes.title,
-    fontWeight: '700',
+    fontWeight: '800',
     color: Colors.textPrimary,
+    textShadowColor: Colors.neonCyan,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+    letterSpacing: 1,
+  },
+  guestBadge: {
+    backgroundColor: Colors.neonLime + '20',
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.sm,
+    borderWidth: 1,
+    borderColor: Colors.neonLime + '40',
+  },
+  guestBadgeText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: Colors.neonLime,
   },
   profileButton: {
-    width: 40,
-    height: 40,
-    borderRadius: BorderRadius.full,
-    backgroundColor: Colors.backgroundLight,
+    width: 44,
+    height: 44,
+    borderRadius: BorderRadius.lg,
+    backgroundColor: Colors.cardBackground,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.neonBorderCyan,
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.backgroundLight,
+    backgroundColor: Colors.cardBackground,
     marginHorizontal: Spacing.lg,
     marginBottom: Spacing.lg,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
     borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    borderColor: Colors.neonBorderCyan,
+    zIndex: 10,
   },
   searchInput: {
     flex: 1,
@@ -441,23 +524,30 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.xxxl,
   },
   dailyChallenge: {
-    flexDirection: 'row',
-    backgroundColor: Colors.cardBackground,
     borderRadius: BorderRadius.xl,
-    padding: Spacing.lg,
     marginBottom: Spacing.xl,
     borderWidth: 1,
-    borderColor: Colors.accent + '30',
-    ...Shadows.medium,
+    borderColor: Colors.neonYellow + '40',
+    overflow: 'hidden',
+    shadowColor: Colors.neonYellow,
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 12,
+    elevation: 6,
+  },
+  dailyChallengeGradient: {
+    flexDirection: 'row',
+    padding: Spacing.lg,
   },
   dailyChallengeIcon: {
-    width: 50,
-    height: 50,
+    width: 54,
+    height: 54,
     borderRadius: BorderRadius.lg,
-    backgroundColor: Colors.logicGold + '20',
+    backgroundColor: Colors.neonYellow + '20',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: Spacing.md,
+    borderWidth: 1,
+    borderColor: Colors.neonYellow + '30',
   },
   dailyChallengeContent: {
     flex: 1,
@@ -465,8 +555,10 @@ const styles = StyleSheet.create({
   dailyChallengeTitle: {
     fontSize: FontSizes.sm,
     fontWeight: '600',
-    color: Colors.accent,
+    color: Colors.neonYellow,
     marginBottom: 2,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
   },
   dailyChallengeSubtitle: {
     fontSize: FontSizes.md,
@@ -475,15 +567,22 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
   },
   playNowButton: {
-    backgroundColor: Colors.accent,
-    paddingVertical: Spacing.xs,
-    paddingHorizontal: Spacing.md,
     borderRadius: BorderRadius.md,
     alignSelf: 'flex-start',
+    overflow: 'hidden',
+    shadowColor: Colors.neonCyan,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  playNowGradient: {
+    paddingVertical: Spacing.xs,
+    paddingHorizontal: Spacing.md,
   },
   playNowText: {
     fontSize: FontSizes.sm,
-    fontWeight: '600',
+    fontWeight: '700',
     color: Colors.background,
   },
   skillTreeSection: {
@@ -491,9 +590,13 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: FontSizes.xl,
-    fontWeight: '600',
+    fontWeight: '700',
     color: Colors.textPrimary,
     marginBottom: Spacing.lg,
+    textShadowColor: Colors.neonCyan,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 8,
+    letterSpacing: 0.5,
   },
   skillTreeContainer: {
     alignItems: 'center',
@@ -519,8 +622,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: Colors.gray700,
-    ...Shadows.small,
+    borderColor: Colors.neonBorderCyan,
+    shadowColor: Colors.neonCyan,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
   skillNodeLocked: {
     opacity: 0.5,
@@ -591,12 +698,17 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: Colors.gray600,
+    backgroundColor: Colors.neonCyan,
+    shadowColor: Colors.neonCyan,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
+    elevation: 2,
   },
   connectorHorizontalLine: {
     flex: 1,
     height: 2,
-    backgroundColor: Colors.gray600,
+    backgroundColor: Colors.neonCyan + '50',
   },
   verticalConnectorRow: {
     flexDirection: 'row',
@@ -612,7 +724,7 @@ const styles = StyleSheet.create({
   connectorVerticalLine: {
     width: 2,
     height: '100%',
-    backgroundColor: Colors.gray600,
+    backgroundColor: Colors.neonCyan + '50',
   },
   centerConnector: {
     alignItems: 'center',
@@ -636,7 +748,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.cardBackground,
     borderRadius: BorderRadius.xl,
     padding: Spacing.lg,
-    ...Shadows.small,
+    borderWidth: 1,
+    borderColor: Colors.neonBorderCyan,
   },
   statItem: {
     flex: 1,
@@ -645,16 +758,21 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: FontSizes.xxl,
     fontWeight: '700',
-    color: Colors.textPrimary,
+    color: Colors.neonCyan,
+    textShadowColor: Colors.neonCyan,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 6,
   },
   statLabel: {
     fontSize: FontSizes.xs,
     color: Colors.gray400,
     marginTop: 2,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   statDivider: {
     width: 1,
-    backgroundColor: Colors.gray700,
+    backgroundColor: Colors.glassBorder,
     marginVertical: Spacing.xs,
   },
   // Mastery Achievements
@@ -663,7 +781,13 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.xl,
     padding: Spacing.md,
     marginTop: Spacing.lg,
-    ...Shadows.small,
+    borderWidth: 1,
+    borderColor: Colors.neonYellow + '30',
+    shadowColor: Colors.neonYellow,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
   },
   masteryHeader: {
     flexDirection: 'row',

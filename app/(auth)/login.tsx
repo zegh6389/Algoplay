@@ -14,16 +14,22 @@ import { Link, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import Animated, {
   FadeInDown,
   FadeInUp,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  withRepeat,
+  withTiming,
+  Easing,
 } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '@fastshot/auth';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
+import { useAppStore } from '@/store/useAppStore';
+import CyberBackground from '@/components/CyberBackground';
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
@@ -38,16 +44,24 @@ interface SocialButtonProps {
 
 function SocialButton({ icon, label, onPress, color, disabled, index }: SocialButtonProps) {
   const scale = useSharedValue(1);
+  const glowOpacity = useSharedValue(0);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
   }));
 
+  const handlePress = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    onPress();
+  };
+
   return (
     <Animated.View entering={FadeInDown.delay(300 + index * 100).springify()}>
       <AnimatedTouchable
         style={[styles.socialButton, animatedStyle, disabled && styles.socialButtonDisabled]}
-        onPress={onPress}
+        onPress={handlePress}
         onPressIn={() => (scale.value = withSpring(0.95))}
         onPressOut={() => (scale.value = withSpring(1))}
         disabled={disabled}
@@ -70,8 +84,26 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const { signInWithGoogle, signInWithApple, signInWithEmail, isLoading, error } = useAuth();
+  const { setGuestMode } = useAppStore();
+
+  // Animated glow for logo
+  const logoGlow = useSharedValue(0.3);
+  React.useEffect(() => {
+    logoGlow.value = withRepeat(
+      withTiming(0.8, { duration: 2000, easing: Easing.inOut(Easing.ease) }),
+      -1,
+      true
+    );
+  }, []);
+
+  const logoGlowStyle = useAnimatedStyle(() => ({
+    shadowOpacity: logoGlow.value,
+  }));
 
   const handleEmailLogin = async () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
     if (!email.trim() || !password.trim()) {
       Alert.alert('Error', 'Please enter email and password');
       return;
@@ -84,6 +116,9 @@ export default function LoginScreen() {
   };
 
   const handleGoogleLogin = async () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
     try {
       await signInWithGoogle();
     } catch (err) {
@@ -92,6 +127,9 @@ export default function LoginScreen() {
   };
 
   const handleAppleLogin = async () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
     try {
       await signInWithApple();
     } catch (err) {
@@ -99,17 +137,20 @@ export default function LoginScreen() {
     }
   };
 
+  const handleGuestLogin = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }
+    // Set guest mode in the store
+    setGuestMode(true, 'Guest Coder');
+    // Navigate to tabs
+    router.replace('/(tabs)');
+  };
+
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      {/* Background Gradient */}
-      <LinearGradient
-        colors={[Colors.background, Colors.backgroundDark]}
-        style={StyleSheet.absoluteFillObject}
-      />
-
-      {/* Decorative Circles */}
-      <View style={styles.decorativeCircle1} />
-      <View style={styles.decorativeCircle2} />
+      {/* Animated Cyber Background */}
+      <CyberBackground showGrid showParticles showMatrix intensity="low" />
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -122,17 +163,17 @@ export default function LoginScreen() {
         >
           {/* Header */}
           <Animated.View entering={FadeInDown.delay(100).springify()} style={styles.header}>
-            <View style={styles.logoContainer}>
+            <Animated.View style={[styles.logoContainer, logoGlowStyle]}>
               <LinearGradient
-                colors={[Colors.accent, Colors.electricPurple]}
+                colors={[Colors.neonCyan, Colors.neonPurple]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.logoGradient}
               >
-                <Ionicons name="code-slash" size={32} color={Colors.white} />
+                <Ionicons name="code-slash" size={36} color={Colors.background} />
               </LinearGradient>
-            </View>
-            <Text style={styles.title}>Welcome to Algoplay</Text>
+            </Animated.View>
+            <Text style={styles.title}>Algoplay</Text>
             <Text style={styles.subtitle}>Master algorithms through play</Text>
           </Animated.View>
 
@@ -167,9 +208,9 @@ export default function LoginScreen() {
 
           {/* Email Form */}
           <Animated.View entering={FadeInDown.delay(600).springify()} style={styles.formContainer}>
-            <BlurView intensity={20} tint="dark" style={styles.glassCard}>
+            <BlurView intensity={25} tint="dark" style={styles.glassCard}>
               <View style={styles.inputContainer}>
-                <Ionicons name="mail-outline" size={20} color={Colors.textSecondary} />
+                <Ionicons name="mail-outline" size={20} color={Colors.neonCyan} />
                 <TextInput
                   style={styles.input}
                   placeholder="Email address"
@@ -183,7 +224,7 @@ export default function LoginScreen() {
               </View>
 
               <View style={styles.inputContainer}>
-                <Ionicons name="lock-closed-outline" size={20} color={Colors.textSecondary} />
+                <Ionicons name="lock-closed-outline" size={20} color={Colors.neonCyan} />
                 <TextInput
                   style={styles.input}
                   placeholder="Password"
@@ -216,7 +257,7 @@ export default function LoginScreen() {
                 activeOpacity={0.8}
               >
                 <LinearGradient
-                  colors={[Colors.accent, Colors.accentDark]}
+                  colors={[Colors.neonCyan, Colors.accentDark]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                   style={styles.loginButtonGradient}
@@ -250,14 +291,21 @@ export default function LoginScreen() {
             </Link>
           </Animated.View>
 
-          {/* Skip for now - Guest mode */}
+          {/* Guest Mode Button - Enhanced */}
           <Animated.View entering={FadeInDown.delay(800).springify()}>
             <TouchableOpacity
-              style={styles.skipButton}
-              onPress={() => router.replace('/(tabs)')}
+              style={styles.guestButton}
+              onPress={handleGuestLogin}
+              activeOpacity={0.8}
             >
-              <Ionicons name="person-outline" size={16} color={Colors.accentSecondary} />
-              <Text style={styles.skipText}>Continue as guest</Text>
+              <LinearGradient
+                colors={['transparent', 'transparent']}
+                style={styles.guestButtonInner}
+              >
+                <Ionicons name="flash" size={18} color={Colors.neonLime} />
+                <Text style={styles.guestText}>Continue as Guest</Text>
+                <Ionicons name="chevron-forward" size={16} color={Colors.neonLime} />
+              </LinearGradient>
             </TouchableOpacity>
           </Animated.View>
         </ScrollView>
@@ -279,24 +327,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     paddingBottom: Spacing.xxxl,
   },
-  decorativeCircle1: {
-    position: 'absolute',
-    top: -100,
-    right: -100,
-    width: 300,
-    height: 300,
-    borderRadius: 150,
-    backgroundColor: Colors.accent + '10',
-  },
-  decorativeCircle2: {
-    position: 'absolute',
-    bottom: -50,
-    left: -100,
-    width: 250,
-    height: 250,
-    borderRadius: 125,
-    backgroundColor: Colors.electricPurple + '10',
-  },
   header: {
     alignItems: 'center',
     marginTop: Spacing.xxxl,
@@ -304,24 +334,33 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     marginBottom: Spacing.lg,
+    shadowColor: Colors.neonCyan,
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 20,
+    elevation: 10,
   },
   logoGradient: {
-    width: 70,
-    height: 70,
+    width: 80,
+    height: 80,
     borderRadius: BorderRadius.xl,
     justifyContent: 'center',
     alignItems: 'center',
-    ...Shadows.medium,
+    borderWidth: 2,
+    borderColor: Colors.neonCyan + '50',
   },
   title: {
-    fontSize: FontSizes.xxxl,
-    fontWeight: '700',
+    fontSize: 36,
+    fontWeight: '800',
     color: Colors.textPrimary,
     marginBottom: Spacing.xs,
+    textShadowColor: Colors.neonCyan,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+    letterSpacing: 1,
   },
   subtitle: {
     fontSize: FontSizes.md,
-    color: Colors.textSecondary,
+    color: Colors.gray400,
   },
   socialContainer: {
     gap: Spacing.md,
@@ -330,12 +369,11 @@ const styles = StyleSheet.create({
   socialButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.cardBackground,
     borderRadius: BorderRadius.xl,
     padding: Spacing.md,
     borderWidth: 1,
-    borderColor: Colors.glassBorder,
-    ...Shadows.small,
+    borderColor: Colors.neonBorderCyan,
   },
   socialButtonDisabled: {
     opacity: 0.6,
@@ -366,7 +404,7 @@ const styles = StyleSheet.create({
   },
   dividerText: {
     fontSize: FontSizes.sm,
-    color: Colors.textSecondary,
+    color: Colors.gray500,
     marginHorizontal: Spacing.md,
   },
   formContainer: {
@@ -377,7 +415,7 @@ const styles = StyleSheet.create({
     padding: Spacing.lg,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: Colors.glassBorder,
+    borderColor: Colors.neonBorderCyan,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -404,6 +442,8 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.md,
     marginBottom: Spacing.md,
     gap: Spacing.xs,
+    borderWidth: 1,
+    borderColor: Colors.error + '40',
   },
   errorText: {
     fontSize: FontSizes.sm,
@@ -414,6 +454,7 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.lg,
     overflow: 'hidden',
     marginTop: Spacing.sm,
+    ...Shadows.glow,
   },
   loginButtonDisabled: {
     opacity: 0.6,
@@ -436,7 +477,7 @@ const styles = StyleSheet.create({
   },
   forgotPasswordText: {
     fontSize: FontSizes.sm,
-    color: Colors.accent,
+    color: Colors.neonCyan,
   },
   signupContainer: {
     flexDirection: 'row',
@@ -451,18 +492,25 @@ const styles = StyleSheet.create({
   signupLink: {
     fontSize: FontSizes.md,
     fontWeight: '600',
-    color: Colors.accent,
+    color: Colors.neonCyan,
   },
-  skipButton: {
+  guestButton: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    borderColor: Colors.neonLime + '40',
+    overflow: 'hidden',
+    backgroundColor: Colors.neonLime + '10',
+  },
+  guestButtonInner: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: Spacing.md,
-    gap: Spacing.xs,
+    gap: Spacing.sm,
   },
-  skipText: {
+  guestText: {
     fontSize: FontSizes.md,
-    color: Colors.accentSecondary,
-    fontWeight: '500',
+    color: Colors.neonLime,
+    fontWeight: '600',
   },
 });
