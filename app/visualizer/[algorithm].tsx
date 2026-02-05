@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, {
   FadeInDown,
+  FadeIn,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -32,7 +33,9 @@ import {
   SearchingAlgorithmKey,
   generateRandomArrayForSearch,
 } from '@/utils/algorithms/searching';
+import { getAlgorithmCode, ProgrammingLanguage } from '@/utils/algorithms/codeImplementations';
 import UniversalInputSheet from '@/components/UniversalInputSheet';
+import { CodeViewer, AICodeTutor, SegmentedControl, ViewMode } from '@/components/CodeHub';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CANVAS_PADDING = Spacing.lg * 2;
@@ -348,6 +351,7 @@ export default function VisualizerScreen() {
     : null;
 
   const algorithm = sortingAlgorithm || searchingAlgorithm;
+  const algorithmCode = getAlgorithmCode(algorithmId);
 
   const [array, setArray] = useState<number[]>([]);
   const [target, setTarget] = useState<number>(0);
@@ -357,6 +361,13 @@ export default function VisualizerScreen() {
   const [showPython, setShowPython] = useState(false);
   const [operationsCount, setOperationsCount] = useState(0);
   const [showInputDashboard, setShowInputDashboard] = useState(false);
+
+  // Code Hub state
+  const [viewMode, setViewMode] = useState<ViewMode>('visualizer');
+  const [showAITutor, setShowAITutor] = useState(false);
+  const [aiTutorCode, setAITutorCode] = useState('');
+  const [aiTutorLanguage, setAITutorLanguage] = useState<ProgrammingLanguage>('python');
+  const [isAILoading, setIsAILoading] = useState(false);
 
   const playIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -485,6 +496,12 @@ export default function VisualizerScreen() {
     resetVisualization(newArray, newTarget);
   };
 
+  const handleAskAI = (code: string, language: ProgrammingLanguage) => {
+    setAITutorCode(code);
+    setAITutorLanguage(language);
+    setShowAITutor(true);
+  };
+
   const getBarState = (index: number): BarProps['state'] => {
     if (!currentStep) return 'default';
 
@@ -533,7 +550,7 @@ export default function VisualizerScreen() {
           <Ionicons name="arrow-back" size={24} color={Colors.white} />
         </TouchableOpacity>
         <Text style={styles.title} numberOfLines={1}>
-          {algorithm.info.name} Visualization
+          {algorithm.info.name}
         </Text>
         <TouchableOpacity
           style={styles.settingsButton}
@@ -543,87 +560,120 @@ export default function VisualizerScreen() {
         </TouchableOpacity>
       </Animated.View>
 
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Interactive Canvas */}
-        <View style={[styles.canvasContainer, isFound && styles.canvasContainerFound]}>
-          <View style={styles.canvas}>
-            {(currentStep?.array || array).map((value, index) => (
-              <Bar
-                key={index}
-                value={value}
-                maxValue={maxValue}
-                index={index}
-                state={getBarState(index)}
-                totalBars={array.length}
-              />
-            ))}
-          </View>
+      {/* Segmented Control */}
+      {algorithmCode && (
+        <SegmentedControl
+          selectedMode={viewMode}
+          onModeChange={setViewMode}
+        />
+      )}
 
-          {/* Search Range Indicator for searching algorithms */}
-          {algorithmType === 'searching' && isSearchStep(currentStep) && (
-            <View style={styles.searchRangeIndicator}>
-              <Text style={styles.searchRangeText}>
-                Search Range: [{currentStep.searchRange.left}, {currentStep.searchRange.right}]
-              </Text>
-              {currentStep.currentIndex >= 0 && (
-                <Text style={styles.currentIndexText}>
-                  Checking Index: {currentStep.currentIndex}
-                </Text>
+      {viewMode === 'visualizer' ? (
+        // Visualizer View
+        <>
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+          >
+            {/* Interactive Canvas */}
+            <Animated.View
+              entering={FadeIn}
+              style={[styles.canvasContainer, isFound && styles.canvasContainerFound]}
+            >
+              <View style={styles.canvas}>
+                {(currentStep?.array || array).map((value, index) => (
+                  <Bar
+                    key={index}
+                    value={value}
+                    maxValue={maxValue}
+                    index={index}
+                    state={getBarState(index)}
+                    totalBars={array.length}
+                  />
+                ))}
+              </View>
+
+              {/* Search Range Indicator for searching algorithms */}
+              {algorithmType === 'searching' && isSearchStep(currentStep) && (
+                <View style={styles.searchRangeIndicator}>
+                  <Text style={styles.searchRangeText}>
+                    Search Range: [{currentStep.searchRange.left}, {currentStep.searchRange.right}]
+                  </Text>
+                  {currentStep.currentIndex >= 0 && (
+                    <Text style={styles.currentIndexText}>
+                      Checking Index: {currentStep.currentIndex}
+                    </Text>
+                  )}
+                </View>
               )}
-            </View>
+            </Animated.View>
+
+            {/* Insight Panel */}
+            {currentStep && (
+              <InsightPanel
+                operation={currentStep.operation}
+                algorithmType={algorithmType}
+                found={isFound}
+              />
+            )}
+
+            {/* Complexity Tracker */}
+            {visualizationSettings.showComplexity && (
+              <ComplexityTracker
+                operationsCount={operationsCount}
+                timeComplexity={algorithm.info.timeComplexity.average}
+                spaceComplexity={algorithm.info.spaceComplexity}
+                arraySize={array.length}
+                algorithmType={algorithmType}
+                target={algorithmType === 'searching' ? target : undefined}
+              />
+            )}
+
+            {/* Code Panel */}
+            {visualizationSettings.showCode && (
+              <CodePanel
+                pseudocode={algorithm.info.pseudocode}
+                pythonCode={algorithm.info.pythonCode}
+                currentLine={currentStep?.line || 0}
+                showPython={showPython}
+                onToggle={() => setShowPython(!showPython)}
+              />
+            )}
+          </ScrollView>
+
+          {/* Playback Controls */}
+          <PlaybackControls
+            isPlaying={isPlaying}
+            onPlay={handlePlay}
+            onPause={handlePause}
+            onStepBackward={handleStepBackward}
+            onStepForward={handleStepForward}
+            onReset={() => resetVisualization()}
+            speed={visualizationSettings.speed}
+            onSpeedChange={setVisualizationSpeed}
+            canStepBackward={currentStepIndex > 0}
+            canStepForward={currentStepIndex < steps.length - 1}
+          />
+        </>
+      ) : (
+        // Code Hub View
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {algorithmCode && (
+            <Animated.View entering={FadeIn}>
+              <CodeViewer
+                algorithmCode={algorithmCode}
+                onAskAI={handleAskAI}
+                isAILoading={isAILoading}
+              />
+            </Animated.View>
           )}
-        </View>
-
-        {/* Insight Panel */}
-        {currentStep && (
-          <InsightPanel
-            operation={currentStep.operation}
-            algorithmType={algorithmType}
-            found={isFound}
-          />
-        )}
-
-        {/* Complexity Tracker */}
-        {visualizationSettings.showComplexity && (
-          <ComplexityTracker
-            operationsCount={operationsCount}
-            timeComplexity={algorithm.info.timeComplexity.average}
-            spaceComplexity={algorithm.info.spaceComplexity}
-            arraySize={array.length}
-            algorithmType={algorithmType}
-            target={algorithmType === 'searching' ? target : undefined}
-          />
-        )}
-
-        {/* Code Panel */}
-        {visualizationSettings.showCode && (
-          <CodePanel
-            pseudocode={algorithm.info.pseudocode}
-            pythonCode={algorithm.info.pythonCode}
-            currentLine={currentStep?.line || 0}
-            showPython={showPython}
-            onToggle={() => setShowPython(!showPython)}
-          />
-        )}
-      </ScrollView>
-
-      {/* Playback Controls */}
-      <PlaybackControls
-        isPlaying={isPlaying}
-        onPlay={handlePlay}
-        onPause={handlePause}
-        onStepBackward={handleStepBackward}
-        onStepForward={handleStepForward}
-        onReset={() => resetVisualization()}
-        speed={visualizationSettings.speed}
-        onSpeedChange={setVisualizationSpeed}
-        canStepBackward={currentStepIndex > 0}
-        canStepForward={currentStepIndex < steps.length - 1}
-      />
+        </ScrollView>
+      )}
 
       {/* Universal Input Sheet */}
       <UniversalInputSheet
@@ -636,6 +686,19 @@ export default function VisualizerScreen() {
         maxSize={15}
         minSize={5}
       />
+
+      {/* AI Code Tutor Modal */}
+      {algorithmCode && (
+        <AICodeTutor
+          visible={showAITutor}
+          onClose={() => setShowAITutor(false)}
+          algorithmName={algorithmCode.name}
+          code={aiTutorCode || algorithmCode.implementations.python}
+          language={aiTutorLanguage}
+          timeComplexity={algorithmCode.timeComplexity}
+          spaceComplexity={algorithmCode.spaceComplexity}
+        />
+      )}
     </View>
   );
 }
