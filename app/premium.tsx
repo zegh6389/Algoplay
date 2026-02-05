@@ -1,5 +1,5 @@
-// Premium Access & Subscription Screen
-import React, { useState } from 'react';
+// Premium Access & Subscription Screen with RevenueCat Integration
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,8 @@ import {
   ScrollView,
   TouchableOpacity,
   Platform,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -14,8 +16,15 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeInDown, FadeInUp, FadeIn } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
+import { PurchasesPackage } from 'react-native-purchases';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
 import CyberBackground from '@/components/CyberBackground';
+import { useSubscriptionStore } from '@/store/useSubscriptionStore';
+import {
+  purchasePackage,
+  isRevenueCatConfigured,
+  PREMIUM_FEATURES,
+} from '@/lib/revenuecat';
 
 interface Feature {
   icon: keyof typeof Ionicons.glyphMap;
@@ -91,6 +100,7 @@ interface PlanCardProps {
   isPopular?: boolean;
   onSelect: () => void;
   selected: boolean;
+  isLoading?: boolean;
 }
 
 function PlanCard({
@@ -103,12 +113,14 @@ function PlanCard({
   isPopular,
   onSelect,
   selected,
+  isLoading,
 }: PlanCardProps) {
   return (
     <TouchableOpacity
       style={[styles.planCard, selected && styles.planCardSelected]}
       onPress={onSelect}
       activeOpacity={0.8}
+      disabled={isLoading}
     >
       {isPopular && (
         <View style={styles.popularBadge}>
@@ -201,15 +213,158 @@ export default function PremiumScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('yearly');
+  const [isPurchasing, setIsPurchasing] = useState(false);
 
-  const handleSubscribe = () => {
+  const {
+    isPremium,
+    isLoading,
+    offerings,
+    mockOfferings,
+    initialize,
+    restorePurchases: doRestore,
+    setPremium,
+  } = useSubscriptionStore();
+
+  useEffect(() => {
+    initialize();
+  }, []);
+
+  // Get packages from offerings or use mock data
+  const monthlyPackage = offerings?.current?.availablePackages?.find(
+    (p) => p.packageType === 'MONTHLY'
+  );
+  const yearlyPackage = offerings?.current?.availablePackages?.find(
+    (p) => p.packageType === 'ANNUAL'
+  );
+
+  const monthlyPrice = monthlyPackage?.product.priceString || mockOfferings?.monthly.product.priceString || '$9.99';
+  const yearlyPrice = yearlyPackage?.product.priceString || mockOfferings?.yearly.product.priceString || '$79.99';
+
+  const handleSubscribe = async () => {
     if (Platform.OS !== 'web') {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     }
-    // In production, this would trigger the payment flow
-    // For now, just show an alert or navigate
-    alert('Premium subscription coming soon! 🚀');
+
+    if (!isRevenueCatConfigured()) {
+      // Demo mode - show info alert
+      Alert.alert(
+        'Demo Mode',
+        'RevenueCat is not configured. In production, this would start the subscription process.\n\nFor testing, premium access will be enabled.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Enable Demo Premium',
+            onPress: () => {
+              setPremium(true);
+              Alert.alert('Success!', 'Demo premium access enabled!', [
+                { text: 'OK', onPress: () => router.back() },
+              ]);
+            },
+          },
+        ]
+      );
+      return;
+    }
+
+    const packageToPurchase = selectedPlan === 'monthly' ? monthlyPackage : yearlyPackage;
+
+    if (!packageToPurchase) {
+      Alert.alert('Error', 'Unable to load subscription package. Please try again.');
+      return;
+    }
+
+    setIsPurchasing(true);
+
+    try {
+      const result = await purchasePackage(packageToPurchase as PurchasesPackage);
+
+      if (result.success && result.isPremium) {
+        setPremium(true);
+        Alert.alert(
+          'Welcome to Premium! 🎉',
+          'You now have access to all premium features.',
+          [{ text: 'Start Learning', onPress: () => router.back() }]
+        );
+      } else if (result.error && result.error !== 'Purchase cancelled') {
+        Alert.alert('Purchase Failed', result.error);
+      }
+    } catch (error: any) {
+      Alert.alert('Error', error.message || 'Something went wrong. Please try again.');
+    } finally {
+      setIsPurchasing(false);
+    }
   };
+
+  const handleRestore = async () => {
+    if (Platform.OS !== 'web') {
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+
+    const result = await doRestore();
+
+    Alert.alert(
+      result.success ? 'Restore Complete' : 'Restore',
+      result.message
+    );
+
+    if (result.success && isPremium) {
+      router.back();
+    }
+  };
+
+  // If already premium, show different UI
+  if (isPremium) {
+    return (
+      <View style={[styles.container, { paddingTop: insets.top }]}>
+        <CyberBackground />
+
+        <Animated.View entering={FadeInDown} style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
+            <Ionicons name="arrow-back" size={24} color={Colors.textPrimary} />
+          </TouchableOpacity>
+          <View style={styles.headerContent}>
+            <LinearGradient
+              colors={[Colors.neonCyan, Colors.neonPurple]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.crownIconBackground}
+            >
+              <Ionicons name="diamond" size={24} color={Colors.white} />
+            </LinearGradient>
+            <Text style={styles.title}>Premium Active</Text>
+          </View>
+          <View style={{ width: 40 }} />
+        </Animated.View>
+
+        <View style={styles.premiumActiveContainer}>
+          <Ionicons name="checkmark-circle" size={80} color={Colors.neonLime} />
+          <Text style={styles.premiumActiveTitle}>You&apos;re Premium!</Text>
+          <Text style={styles.premiumActiveSubtitle}>
+            Enjoy unlimited access to all features
+          </Text>
+
+          <View style={styles.featuresList}>
+            {PREMIUM_FEATURES.slice(0, 5).map((feature, index) => (
+              <View key={index} style={styles.activeFeatureRow}>
+                <Ionicons name="checkmark" size={20} color={Colors.neonCyan} />
+                <Text style={styles.activeFeatureText}>{feature}</Text>
+              </View>
+            ))}
+          </View>
+
+          <TouchableOpacity
+            style={styles.continueButton}
+            onPress={() => router.back()}
+          >
+            <Text style={styles.continueButtonText}>Continue Learning</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -253,47 +408,56 @@ export default function PremiumScreen() {
         {/* Plans */}
         <Animated.View entering={FadeInUp.delay(150)} style={styles.plansSection}>
           <Text style={styles.sectionTitle}>Choose Your Plan</Text>
-          <View style={styles.plansContainer}>
-            <PlanCard
-              title="Monthly"
-              subtitle="Flexible learning"
-              price="$9.99"
-              period="month"
-              features={[
-                'All premium features',
-                'Cancel anytime',
-                'Priority support',
-              ]}
-              selected={selectedPlan === 'monthly'}
-              onSelect={() => {
-                setSelectedPlan('monthly');
-                if (Platform.OS !== 'web') {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                }
-              }}
-            />
-            <PlanCard
-              title="Yearly"
-              subtitle="Best value"
-              price="$79.99"
-              period="year"
-              discount="SAVE 33%"
-              features={[
-                'All premium features',
-                '2 months free',
-                'Priority support',
-                'Exclusive content',
-              ]}
-              isPopular
-              selected={selectedPlan === 'yearly'}
-              onSelect={() => {
-                setSelectedPlan('yearly');
-                if (Platform.OS !== 'web') {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                }
-              }}
-            />
-          </View>
+          {isLoading ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color={Colors.neonCyan} />
+              <Text style={styles.loadingText}>Loading plans...</Text>
+            </View>
+          ) : (
+            <View style={styles.plansContainer}>
+              <PlanCard
+                title="Monthly"
+                subtitle="Flexible learning"
+                price={monthlyPrice}
+                period="month"
+                features={[
+                  'All premium features',
+                  'Cancel anytime',
+                  'Priority support',
+                ]}
+                selected={selectedPlan === 'monthly'}
+                onSelect={() => {
+                  setSelectedPlan('monthly');
+                  if (Platform.OS !== 'web') {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  }
+                }}
+                isLoading={isPurchasing}
+              />
+              <PlanCard
+                title="Yearly"
+                subtitle="Best value"
+                price={yearlyPrice}
+                period="year"
+                discount="SAVE 33%"
+                features={[
+                  'All premium features',
+                  '2 months free',
+                  'Priority support',
+                  'Exclusive content',
+                ]}
+                isPopular
+                selected={selectedPlan === 'yearly'}
+                onSelect={() => {
+                  setSelectedPlan('yearly');
+                  if (Platform.OS !== 'web') {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  }
+                }}
+                isLoading={isPurchasing}
+              />
+            </View>
+          )}
         </Animated.View>
 
         {/* Features List */}
@@ -314,7 +478,7 @@ export default function PremiumScreen() {
               <Ionicons name="chatbox-ellipses" size={24} color={Colors.neonCyan} />
             </View>
             <Text style={styles.testimonialText}>
-              "This app transformed my interview prep. Got offers from 3 FAANG companies!"
+              &quot;This app transformed my interview prep. Got offers from 3 FAANG companies!&quot;
             </Text>
             <Text style={styles.testimonialAuthor}>- Sarah K., Software Engineer at Google</Text>
           </View>
@@ -343,25 +507,37 @@ export default function PremiumScreen() {
         style={[styles.subscribeContainer, { paddingBottom: insets.bottom || Spacing.md }]}
       >
         <TouchableOpacity
-          style={styles.subscribeButton}
+          style={[styles.subscribeButton, isPurchasing && styles.subscribeButtonDisabled]}
           onPress={handleSubscribe}
           activeOpacity={0.8}
+          disabled={isPurchasing}
         >
           <LinearGradient
-            colors={[Colors.neonCyan, Colors.neonPurple]}
+            colors={isPurchasing ? [Colors.gray600, Colors.gray700] : [Colors.neonCyan, Colors.neonPurple]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={StyleSheet.absoluteFill}
           />
-          <Ionicons name="diamond" size={24} color={Colors.white} />
-          <Text style={styles.subscribeButtonText}>
-            Start 7-Day Free Trial
-          </Text>
-          <Ionicons name="arrow-forward" size={24} color={Colors.white} />
+          {isPurchasing ? (
+            <ActivityIndicator color={Colors.white} />
+          ) : (
+            <>
+              <Ionicons name="diamond" size={24} color={Colors.white} />
+              <Text style={styles.subscribeButtonText}>
+                Start 7-Day Free Trial
+              </Text>
+              <Ionicons name="arrow-forward" size={24} color={Colors.white} />
+            </>
+          )}
         </TouchableOpacity>
-        <Text style={styles.subscribeNote}>
-          No commitment. Cancel anytime.
-        </Text>
+        <View style={styles.subscribeFooter}>
+          <Text style={styles.subscribeNote}>
+            No commitment. Cancel anytime.
+          </Text>
+          <TouchableOpacity onPress={handleRestore} disabled={isPurchasing}>
+            <Text style={styles.restoreText}>Restore Purchases</Text>
+          </TouchableOpacity>
+        </View>
       </Animated.View>
     </View>
   );
@@ -436,6 +612,15 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: Colors.textPrimary,
     marginBottom: Spacing.sm,
+  },
+  loadingContainer: {
+    padding: Spacing.xxl,
+    alignItems: 'center',
+    gap: Spacing.md,
+  },
+  loadingText: {
+    fontSize: FontSizes.md,
+    color: Colors.gray400,
   },
   plansContainer: {
     gap: Spacing.md,
@@ -649,15 +834,76 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     ...Shadows.medium,
   },
+  subscribeButtonDisabled: {
+    opacity: 0.7,
+  },
   subscribeButtonText: {
     fontSize: FontSizes.lg,
     fontWeight: '700',
     color: Colors.white,
   },
+  subscribeFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: Spacing.sm,
+  },
   subscribeNote: {
     fontSize: FontSizes.xs,
     color: Colors.gray500,
+  },
+  restoreText: {
+    fontSize: FontSizes.xs,
+    color: Colors.neonCyan,
+    fontWeight: '600',
+  },
+  // Premium Active Styles
+  premiumActiveContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: Spacing.xxl,
+  },
+  premiumActiveTitle: {
+    fontSize: FontSizes.xxxl,
+    fontWeight: '800',
+    color: Colors.neonLime,
+    marginTop: Spacing.lg,
+    marginBottom: Spacing.sm,
+  },
+  premiumActiveSubtitle: {
+    fontSize: FontSizes.md,
+    color: Colors.gray400,
     textAlign: 'center',
-    marginTop: Spacing.sm,
+    marginBottom: Spacing.xxl,
+  },
+  featuresList: {
+    width: '100%',
+    gap: Spacing.md,
+    marginBottom: Spacing.xxl,
+  },
+  activeFeatureRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.md,
+    backgroundColor: Colors.cardBackground,
+    padding: Spacing.md,
+    borderRadius: BorderRadius.lg,
+  },
+  activeFeatureText: {
+    fontSize: FontSizes.md,
+    color: Colors.textPrimary,
+    flex: 1,
+  },
+  continueButton: {
+    backgroundColor: Colors.neonCyan,
+    paddingHorizontal: Spacing.xxl,
+    paddingVertical: Spacing.md,
+    borderRadius: BorderRadius.xl,
+  },
+  continueButtonText: {
+    fontSize: FontSizes.lg,
+    fontWeight: '700',
+    color: Colors.background,
   },
 });
