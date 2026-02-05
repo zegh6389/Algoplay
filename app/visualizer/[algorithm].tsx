@@ -17,6 +17,9 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  withSequence,
+  withTiming,
+  Easing,
 } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
@@ -38,24 +41,40 @@ import UniversalInputSheet from '@/components/UniversalInputSheet';
 import { CodeViewer, AICodeTutor, SegmentedControl, ViewMode } from '@/components/CodeHub';
 import KnowledgeCheckModal from '@/components/KnowledgeCheckModal';
 import XPGainAnimation from '@/components/XPGainAnimation';
-import { getQuizForAlgorithm, calculateQuizXP } from '@/utils/quizData';
+import CyberTerminal from '@/components/CyberTerminal';
+import SpeedController, { SpeedLevel, getSpeedDelay } from '@/components/SpeedController';
+import CyberNumpad from '@/components/CyberNumpad';
+import { getQuizForAlgorithm } from '@/utils/quizData';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CANVAS_PADDING = Spacing.lg * 2;
 const BAR_GAP = 4;
+const MIDNIGHT_BLACK = '#0a0e17';
 
 type AlgorithmType = 'sorting' | 'searching';
 type Step = SortStep | SearchStep;
 
-// Type guard for SearchStep - safely handles undefined/null
+// Type guard for SearchStep
 function isSearchStep(step: Step | undefined | null): step is SearchStep {
   return step != null && 'target' in step && 'searchRange' in step;
 }
 
-// Type guard for SortStep - safely handles undefined/null
+// Type guard for SortStep
 function isSortStep(step: Step | undefined | null): step is SortStep {
   return step != null && 'swapping' in step && !('target' in step);
 }
+
+// State colors
+const STATE_COLORS = {
+  default: Colors.accent,
+  comparing: '#e5c07b', // Yellow
+  swapping: '#56b6c2', // Cyan
+  sorted: '#98c379', // Green
+  pivot: Colors.neonPurple,
+  found: Colors.neonLime,
+  eliminated: Colors.gray600,
+  activeRange: Colors.accent,
+};
 
 interface BarProps {
   value: number;
@@ -64,41 +83,98 @@ interface BarProps {
   state: 'default' | 'comparing' | 'swapping' | 'sorted' | 'pivot' | 'found' | 'eliminated' | 'active-range';
   totalBars: number;
   showLabel?: boolean;
+  isPassComplete?: boolean;
 }
 
-function Bar({ value, maxValue, index, state, totalBars, showLabel = true }: BarProps) {
+function Bar({ value, maxValue, index, state, totalBars, showLabel = true, isPassComplete }: BarProps) {
   const barWidth = (SCREEN_WIDTH - CANVAS_PADDING - BAR_GAP * (totalBars - 1)) / totalBars;
   const maxHeight = 180;
   const height = (value / maxValue) * maxHeight;
 
-  const animatedStyle = useAnimatedStyle(() => {
-    let scale = 1;
-    if (state === 'comparing' || state === 'found') scale = 1.05;
-    if (state === 'swapping') scale = 1.1;
+  const scale = useSharedValue(1);
+  const glowOpacity = useSharedValue(0);
 
-    return {
-      transform: [{ scaleY: withSpring(scale, { damping: 10 }) }],
-    };
-  });
+  useEffect(() => {
+    if (state === 'comparing' || state === 'found') {
+      scale.value = withSpring(1.08, { damping: 8, stiffness: 200 });
+      glowOpacity.value = withTiming(0.6, { duration: 150 });
+    } else if (state === 'swapping') {
+      scale.value = withSequence(
+        withSpring(1.15, { damping: 6, stiffness: 250 }),
+        withSpring(1.08, { damping: 8, stiffness: 200 })
+      );
+      glowOpacity.value = withTiming(0.8, { duration: 100 });
+    } else if (state === 'sorted') {
+      scale.value = withSpring(1.02, { damping: 10, stiffness: 150 });
+      glowOpacity.value = withTiming(0.3, { duration: 300 });
+    } else {
+      scale.value = withSpring(1, { damping: 10 });
+      glowOpacity.value = withTiming(0, { duration: 200 });
+    }
+
+    if (isPassComplete) {
+      scale.value = withSequence(
+        withTiming(1.1, { duration: 100, easing: Easing.out(Easing.ease) }),
+        withTiming(1, { duration: 100, easing: Easing.in(Easing.ease) })
+      );
+    }
+  }, [state, isPassComplete]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scaleY: scale.value }],
+  }));
+
+  const glowStyle = useAnimatedStyle(() => ({
+    shadowOpacity: glowOpacity.value,
+  }));
 
   const getBarColor = () => {
     switch (state) {
       case 'comparing':
-        return Colors.logicGold;
+        return STATE_COLORS.comparing;
       case 'swapping':
-        return Colors.alertCoral;
+        return STATE_COLORS.swapping;
       case 'sorted':
-        return Colors.success;
+        return STATE_COLORS.sorted;
       case 'pivot':
-        return Colors.info;
+        return STATE_COLORS.pivot;
       case 'found':
-        return Colors.success;
+        return STATE_COLORS.found;
       case 'eliminated':
-        return Colors.gray600;
+        return STATE_COLORS.eliminated;
       case 'active-range':
-        return Colors.accent;
+        return STATE_COLORS.activeRange;
       default:
-        return Colors.accent;
+        return STATE_COLORS.default;
+    }
+  };
+
+  const getLabelColor = () => {
+    switch (state) {
+      case 'comparing':
+      case 'swapping':
+      case 'sorted':
+      case 'pivot':
+      case 'found':
+      case 'active-range':
+        return MIDNIGHT_BLACK;
+      case 'eliminated':
+        return Colors.gray400;
+      default:
+        return MIDNIGHT_BLACK;
+    }
+  };
+
+  const getGlowColor = () => {
+    switch (state) {
+      case 'comparing':
+        return STATE_COLORS.comparing;
+      case 'swapping':
+        return STATE_COLORS.swapping;
+      case 'sorted':
+        return STATE_COLORS.sorted;
+      default:
+        return Colors.neonCyan;
     }
   };
 
@@ -107,17 +183,22 @@ function Bar({ value, maxValue, index, state, totalBars, showLabel = true }: Bar
       style={[
         styles.bar,
         animatedStyle,
+        glowStyle,
         {
           width: Math.max(barWidth, 8),
           height,
           backgroundColor: getBarColor(),
           marginRight: index < totalBars - 1 ? BAR_GAP : 0,
-          opacity: state === 'eliminated' ? 0.4 : 1,
+          opacity: state === 'eliminated' ? 0.35 : 1,
+          shadowColor: getGlowColor(),
+          shadowOffset: { width: 0, height: 0 },
+          shadowRadius: 8,
+          elevation: state === 'swapping' || state === 'comparing' ? 8 : 0,
         },
       ]}
     >
       {barWidth > 20 && showLabel && (
-        <Text style={styles.barLabel}>{value}</Text>
+        <Text style={[styles.barLabel, { color: getLabelColor() }]}>{value}</Text>
       )}
     </Animated.View>
   );
@@ -179,157 +260,32 @@ function CodePanel({ pseudocode, pythonCode, currentLine, showPython, onToggle }
   );
 }
 
-interface ComplexityTrackerProps {
-  operationsCount: number;
-  timeComplexity: string;
-  spaceComplexity: string;
-  arraySize: number;
+interface LegendProps {
   algorithmType: AlgorithmType;
-  target?: number;
 }
 
-function ComplexityTracker({
-  operationsCount,
-  timeComplexity,
-  spaceComplexity,
-  arraySize,
-  algorithmType,
-  target,
-}: ComplexityTrackerProps) {
+function Legend({ algorithmType }: LegendProps) {
+  const items = algorithmType === 'sorting'
+    ? [
+        { color: STATE_COLORS.comparing, label: 'Comparing' },
+        { color: STATE_COLORS.swapping, label: 'Swapping' },
+        { color: STATE_COLORS.sorted, label: 'Sorted' },
+      ]
+    : [
+        { color: STATE_COLORS.activeRange, label: 'Active Range' },
+        { color: STATE_COLORS.comparing, label: 'Checking' },
+        { color: STATE_COLORS.found, label: 'Found' },
+        { color: STATE_COLORS.eliminated, label: 'Eliminated' },
+      ];
+
   return (
-    <View style={styles.complexityTracker}>
-      <Text style={styles.complexityTitle}>Complexity Live-Tracker</Text>
-      <View style={styles.complexityStats}>
-        <View style={styles.complexityStat}>
-          <Text style={styles.complexityLabel}>Time:</Text>
-          <Text style={styles.complexityValue}>{timeComplexity}</Text>
+    <View style={styles.legend}>
+      {items.map((item, index) => (
+        <View key={index} style={styles.legendItem}>
+          <View style={[styles.legendColor, { backgroundColor: item.color }]} />
+          <Text style={styles.legendText}>{item.label}</Text>
         </View>
-        <View style={styles.complexityStat}>
-          <Text style={styles.complexityLabel}>Space:</Text>
-          <Text style={styles.complexityValue}>{spaceComplexity}</Text>
-        </View>
-        <View style={styles.complexityStat}>
-          <Text style={styles.complexityLabel}>Operations:</Text>
-          <Text style={[styles.complexityValue, { color: Colors.logicGold }]}>
-            {operationsCount}
-          </Text>
-        </View>
-        {algorithmType === 'searching' && target !== undefined && (
-          <View style={styles.complexityStat}>
-            <Text style={styles.complexityLabel}>Target:</Text>
-            <Text style={[styles.complexityValue, { color: Colors.alertCoral }]}>
-              {target}
-            </Text>
-          </View>
-        )}
-      </View>
-    </View>
-  );
-}
-
-interface InsightPanelProps {
-  operation: string;
-  algorithmType: AlgorithmType;
-  found?: boolean;
-}
-
-function InsightPanel({ operation, algorithmType, found }: InsightPanelProps) {
-  return (
-    <View style={[styles.insightPanel, found && styles.insightPanelFound]}>
-      <View style={styles.insightHeader}>
-        <Ionicons
-          name={found ? "checkmark-circle" : "information-circle"}
-          size={20}
-          color={found ? Colors.success : Colors.accent}
-        />
-        <Text style={styles.insightTitle}>
-          {found ? "Target Found!" : "Live Commentary"}
-        </Text>
-      </View>
-      <Text style={[styles.insightText, found && styles.insightTextFound]}>
-        {operation}
-      </Text>
-    </View>
-  );
-}
-
-interface PlaybackControlsProps {
-  isPlaying: boolean;
-  onPlay: () => void;
-  onPause: () => void;
-  onStepBackward: () => void;
-  onStepForward: () => void;
-  onReset: () => void;
-  speed: number;
-  onSpeedChange: (speed: number) => void;
-  canStepBackward: boolean;
-  canStepForward: boolean;
-}
-
-function PlaybackControls({
-  isPlaying,
-  onPlay,
-  onPause,
-  onStepBackward,
-  onStepForward,
-  onReset,
-  speed,
-  onSpeedChange,
-  canStepBackward,
-  canStepForward,
-}: PlaybackControlsProps) {
-  return (
-    <View style={styles.playbackControls}>
-      <View style={styles.playbackButtons}>
-        <TouchableOpacity
-          style={[styles.playbackButton, styles.playbackButtonSmall]}
-          onPress={onReset}
-        >
-          <Ionicons name="refresh" size={20} color={Colors.textPrimary} />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.playbackButton, styles.playbackButtonSmall, !canStepBackward && styles.playbackButtonDisabled]}
-          onPress={onStepBackward}
-          disabled={!canStepBackward}
-        >
-          <Ionicons name="play-skip-back" size={20} color={canStepBackward ? Colors.textPrimary : Colors.gray600} />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.playbackButton, styles.playbackButtonMain]}
-          onPress={isPlaying ? onPause : onPlay}
-        >
-          <Ionicons name={isPlaying ? 'pause' : 'play'} size={28} color={Colors.background} />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.playbackButton, styles.playbackButtonSmall, !canStepForward && styles.playbackButtonDisabled]}
-          onPress={onStepForward}
-          disabled={!canStepForward}
-        >
-          <Ionicons name="play-skip-forward" size={20} color={canStepForward ? Colors.textPrimary : Colors.gray600} />
-        </TouchableOpacity>
-
-        <View style={styles.speedControl}>
-          <Text style={styles.speedLabel}>Speed</Text>
-          <View style={styles.speedButtons}>
-            <TouchableOpacity
-              style={styles.speedButton}
-              onPress={() => onSpeedChange(Math.max(0.5, speed - 0.5))}
-            >
-              <Ionicons name="remove" size={16} color={Colors.textPrimary} />
-            </TouchableOpacity>
-            <Text style={styles.speedValue}>{speed}x</Text>
-            <TouchableOpacity
-              style={styles.speedButton}
-              onPress={() => onSpeedChange(Math.min(3, speed + 0.5))}
-            >
-              <Ionicons name="add" size={16} color={Colors.textPrimary} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
+      ))}
     </View>
   );
 }
@@ -340,7 +296,7 @@ export default function VisualizerScreen() {
   const params = useLocalSearchParams<{ algorithm: string }>();
   const algorithmId = params.algorithm;
 
-  const { visualizationSettings, setVisualizationSpeed, completeAlgorithm, addXP, recordQuizScore, getLevelProgress, userProgress } = useAppStore();
+  const { visualizationSettings, setVisualizationSpeed, completeAlgorithm, addXP, recordQuizScore, userProgress } = useAppStore();
 
   // Determine algorithm type and get algorithm
   const algorithmType: AlgorithmType = algorithmId in searchingAlgorithms ? 'searching' : 'sorting';
@@ -362,15 +318,21 @@ export default function VisualizerScreen() {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showPython, setShowPython] = useState(false);
-  const [operationsCount, setOperationsCount] = useState(0);
   const [showInputDashboard, setShowInputDashboard] = useState(false);
+  const [showNumpad, setShowNumpad] = useState(false);
+
+  // Enhanced state
+  const [speedLevel, setSpeedLevel] = useState<SpeedLevel>('normal');
+  const [comparisons, setComparisons] = useState(0);
+  const [swaps, setSwaps] = useState(0);
+  const [memoryAccesses, setMemoryAccesses] = useState(0);
+  const [logs, setLogs] = useState<string[]>([]);
 
   // Code Hub state
   const [viewMode, setViewMode] = useState<ViewMode>('visualizer');
   const [showAITutor, setShowAITutor] = useState(false);
   const [aiTutorCode, setAITutorCode] = useState('');
   const [aiTutorLanguage, setAITutorLanguage] = useState<ProgrammingLanguage>('python');
-  const [isAILoading, setIsAILoading] = useState(false);
 
   // Quiz and XP state
   const [showQuizModal, setShowQuizModal] = useState(false);
@@ -432,7 +394,10 @@ export default function VisualizerScreen() {
     }
 
     setCurrentStepIndex(0);
-    setOperationsCount(0);
+    setComparisons(0);
+    setSwaps(0);
+    setMemoryAccesses(0);
+    setLogs([]);
     setIsPlaying(false);
     setHasCompletedVisualization(false);
     setEarnedXP(0);
@@ -443,18 +408,49 @@ export default function VisualizerScreen() {
     }
   }, [algorithm, algorithmType, sortingAlgorithm, searchingAlgorithm, visualizationSettings.arraySize]);
 
-  // Auto-play
+  // Update stats based on current step
+  const updateStats = useCallback((step: Step) => {
+    if (isSearchStep(step)) {
+      if (step.comparing && step.comparing.length > 0) {
+        setComparisons((c) => c + 1);
+        setMemoryAccesses((m) => m + step.comparing!.length);
+      }
+    } else if (isSortStep(step)) {
+      if (step.comparing && step.comparing.length > 0) {
+        setComparisons((c) => c + 1);
+      }
+      if (step.swapping && step.swapping.length > 0) {
+        setSwaps((s) => s + 1);
+      }
+      setMemoryAccesses((m) => m + 2); // Each comparison/swap accesses 2 elements
+    }
+
+    // Add log entry
+    setLogs((prevLogs) => [...prevLogs.slice(-10), step.operation]);
+  }, []);
+
+  // Auto-play with dynamic speed
   useEffect(() => {
+    if (speedLevel === 'manual') {
+      if (playIntervalRef.current) {
+        clearInterval(playIntervalRef.current);
+      }
+      setIsPlaying(false);
+      return;
+    }
+
     if (isPlaying && currentStepIndex < steps.length - 1) {
+      const delay = getSpeedDelay(speedLevel);
       playIntervalRef.current = setInterval(() => {
         setCurrentStepIndex((prev) => {
           const next = prev + 1;
-          setOperationsCount((count) => count + 1);
-
-          // Trigger haptic feedback on comparison/action
           const step = steps[next];
+
           if (step) {
-            if (isSearchStep(step) && step.comparing.length > 0) {
+            updateStats(step);
+
+            // Haptic feedback
+            if (isSearchStep(step) && step.comparing && step.comparing.length > 0) {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             } else if (isSortStep(step) && (step.swapping?.length > 0 || step.comparing?.length > 0)) {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -463,16 +459,13 @@ export default function VisualizerScreen() {
 
           if (next >= steps.length - 1) {
             setIsPlaying(false);
-            // Trigger quiz or award XP on completion
             if (!hasCompletedVisualization) {
               setHasCompletedVisualization(true);
               Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
-              // If quiz is available, show it; otherwise award XP directly
               if (algorithmQuiz) {
                 setTimeout(() => setShowQuizModal(true), 500);
               } else {
-                // No quiz available, award base XP
                 completeAlgorithm(algorithmId, 50);
                 addXP(50);
                 setEarnedXP(50);
@@ -482,7 +475,7 @@ export default function VisualizerScreen() {
           }
           return Math.min(next, steps.length - 1);
         });
-      }, 1000 / visualizationSettings.speed);
+      }, delay);
     } else if (!isPlaying && playIntervalRef.current) {
       clearInterval(playIntervalRef.current);
     }
@@ -492,9 +485,12 @@ export default function VisualizerScreen() {
         clearInterval(playIntervalRef.current);
       }
     };
-  }, [isPlaying, currentStepIndex, steps.length, visualizationSettings.speed]);
+  }, [isPlaying, currentStepIndex, steps.length, speedLevel]);
 
   const handlePlay = () => {
+    if (speedLevel === 'manual') {
+      setSpeedLevel('normal');
+    }
     if (currentStepIndex >= steps.length - 1) {
       resetVisualization();
     }
@@ -507,8 +503,12 @@ export default function VisualizerScreen() {
 
   const handleStepForward = () => {
     if (currentStepIndex < steps.length - 1) {
-      setCurrentStepIndex((prev) => prev + 1);
-      setOperationsCount((count) => count + 1);
+      const next = currentStepIndex + 1;
+      const step = steps[next];
+      if (step) {
+        updateStats(step);
+      }
+      setCurrentStepIndex(next);
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
   };
@@ -516,12 +516,25 @@ export default function VisualizerScreen() {
   const handleStepBackward = () => {
     if (currentStepIndex > 0) {
       setCurrentStepIndex((prev) => prev - 1);
-      setOperationsCount((count) => Math.max(0, count - 1));
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+  };
+
+  const handleSpeedChange = (speed: SpeedLevel) => {
+    setSpeedLevel(speed);
+    if (speed === 'manual') {
+      setIsPlaying(false);
     }
   };
 
   const handleInputApply = (newArray: number[], newTarget?: number) => {
     resetVisualization(newArray, newTarget);
+  };
+
+  const handleNumpadEntry = (value: number) => {
+    // Add number to array via numpad
+    const newArray = [...array, value];
+    resetVisualization(newArray, target);
   };
 
   const handleAskAI = (code: string, language: ProgrammingLanguage) => {
@@ -534,18 +547,13 @@ export default function VisualizerScreen() {
     const baseVisualizationXP = 50;
     const totalXP = baseVisualizationXP + xpEarned;
 
-    // Record quiz score for mastery tracking
     recordQuizScore(algorithmId, score, correctAnswers, totalQuestions);
 
-    // Check for level up before awarding XP
     const currentLevel = userProgress.level;
-
-    // Award XP
     completeAlgorithm(algorithmId, totalXP);
     addXP(totalXP);
     setEarnedXP(totalXP);
 
-    // Check if level up occurred
     const newTotalXP = userProgress.totalXP + totalXP;
     const calculatedNewLevel = Math.floor(newTotalXP / 500) + 1;
     if (calculatedNewLevel > currentLevel) {
@@ -553,7 +561,6 @@ export default function VisualizerScreen() {
       setNewLevel(calculatedNewLevel);
     }
 
-    // Close quiz modal and show XP animation
     setShowQuizModal(false);
     setTimeout(() => setShowXPAnimation(true), 300);
   };
@@ -612,12 +619,20 @@ export default function VisualizerScreen() {
         <Text style={styles.title} numberOfLines={1}>
           {algorithm.info.name}
         </Text>
-        <TouchableOpacity
-          style={styles.settingsButton}
-          onPress={() => setShowInputDashboard(true)}
-        >
-          <Ionicons name="settings" size={22} color={Colors.gray400} />
-        </TouchableOpacity>
+        <View style={styles.headerRight}>
+          <TouchableOpacity
+            style={styles.numpadButton}
+            onPress={() => setShowNumpad(true)}
+          >
+            <Ionicons name="keypad" size={20} color={Colors.neonLime} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.settingsButton}
+            onPress={() => setShowInputDashboard(true)}
+          >
+            <Ionicons name="settings" size={22} color={Colors.gray400} />
+          </TouchableOpacity>
+        </View>
       </Animated.View>
 
       {/* Segmented Control */}
@@ -629,13 +644,15 @@ export default function VisualizerScreen() {
       )}
 
       {viewMode === 'visualizer' ? (
-        // Visualizer View
         <>
           <ScrollView
             style={styles.scrollView}
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
           >
+            {/* Legend */}
+            <Legend algorithmType={algorithmType} />
+
             {/* Interactive Canvas */}
             <Animated.View
               entering={FadeIn}
@@ -654,7 +671,7 @@ export default function VisualizerScreen() {
                 ))}
               </View>
 
-              {/* Search Range Indicator for searching algorithms */}
+              {/* Search Range Indicator */}
               {algorithmType === 'searching' && isSearchStep(currentStep) && (
                 <View style={styles.searchRangeIndicator}>
                   <Text style={styles.searchRangeText}>
@@ -669,26 +686,18 @@ export default function VisualizerScreen() {
               )}
             </Animated.View>
 
-            {/* Insight Panel */}
-            {currentStep && (
-              <InsightPanel
-                operation={currentStep.operation}
-                algorithmType={algorithmType}
-                found={isFound}
-              />
-            )}
-
-            {/* Complexity Tracker */}
-            {visualizationSettings.showComplexity && (
-              <ComplexityTracker
-                operationsCount={operationsCount}
-                timeComplexity={algorithm.info.timeComplexity.average}
-                spaceComplexity={algorithm.info.spaceComplexity}
-                arraySize={array.length}
-                algorithmType={algorithmType}
-                target={algorithmType === 'searching' ? target : undefined}
-              />
-            )}
+            {/* Cyber Terminal */}
+            <CyberTerminal
+              currentExplanation={currentStep?.operation || 'Ready to start...'}
+              comparisons={comparisons}
+              swaps={swaps}
+              memoryAccesses={memoryAccesses}
+              currentStep={currentStepIndex + 1}
+              totalSteps={steps.length}
+              algorithmName={algorithm.info.name}
+              logs={logs}
+              maxLogs={5}
+            />
 
             {/* Code Panel */}
             {visualizationSettings.showCode && (
@@ -702,22 +711,21 @@ export default function VisualizerScreen() {
             )}
           </ScrollView>
 
-          {/* Playback Controls */}
-          <PlaybackControls
+          {/* Speed Controller */}
+          <SpeedController
             isPlaying={isPlaying}
+            currentSpeed={speedLevel}
+            onSpeedChange={handleSpeedChange}
             onPlay={handlePlay}
             onPause={handlePause}
-            onStepBackward={handleStepBackward}
             onStepForward={handleStepForward}
+            onStepBackward={handleStepBackward}
             onReset={() => resetVisualization()}
-            speed={visualizationSettings.speed}
-            onSpeedChange={setVisualizationSpeed}
             canStepBackward={currentStepIndex > 0}
             canStepForward={currentStepIndex < steps.length - 1}
           />
         </>
       ) : (
-        // Code Hub View
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
@@ -728,7 +736,7 @@ export default function VisualizerScreen() {
               <CodeViewer
                 algorithmCode={algorithmCode}
                 onAskAI={handleAskAI}
-                isAILoading={isAILoading}
+                isAILoading={false}
               />
             </Animated.View>
           )}
@@ -745,6 +753,16 @@ export default function VisualizerScreen() {
         currentTarget={target}
         maxSize={15}
         minSize={5}
+      />
+
+      {/* Cyber Numpad */}
+      <CyberNumpad
+        visible={showNumpad}
+        onClose={() => setShowNumpad(false)}
+        onNumberEnter={handleNumpadEntry}
+        currentArray={array}
+        maxArraySize={15}
+        title="Add Numbers"
       />
 
       {/* AI Code Tutor Modal */}
@@ -766,7 +784,6 @@ export default function VisualizerScreen() {
           visible={showQuizModal}
           onClose={() => {
             setShowQuizModal(false);
-            // Still award base XP if quiz is skipped
             if (!earnedXP) {
               completeAlgorithm(algorithmId, 50);
               addXP(50);
@@ -818,6 +835,21 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: Colors.textPrimary,
   },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+  },
+  numpadButton: {
+    width: 40,
+    height: 40,
+    borderRadius: BorderRadius.full,
+    backgroundColor: Colors.neonLime + '15',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.neonLime + '40',
+  },
   settingsButton: {
     width: 40,
     height: 40,
@@ -832,12 +864,34 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: Spacing.lg,
     paddingBottom: Spacing.xl,
+    gap: Spacing.lg,
+  },
+  legend: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    gap: Spacing.md,
+    paddingVertical: Spacing.sm,
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+  },
+  legendColor: {
+    width: 14,
+    height: 14,
+    borderRadius: 4,
+  },
+  legendText: {
+    fontSize: FontSizes.xs,
+    color: Colors.gray400,
+    fontWeight: '500',
   },
   canvasContainer: {
     backgroundColor: Colors.cardBackground,
     borderRadius: BorderRadius.xl,
     padding: Spacing.lg,
-    marginBottom: Spacing.lg,
     ...Shadows.small,
   },
   canvasContainerFound: {
@@ -858,9 +912,11 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
   barLabel: {
-    fontSize: 8,
-    fontWeight: '600',
-    color: Colors.textPrimary,
+    fontSize: 10,
+    fontWeight: '700',
+    textShadowColor: 'rgba(255, 255, 255, 0.3)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 1,
   },
   searchRangeIndicator: {
     marginTop: Spacing.md,
@@ -880,77 +936,10 @@ const styles = StyleSheet.create({
     color: Colors.logicGold,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
-  insightPanel: {
-    backgroundColor: Colors.cardBackground,
-    borderRadius: BorderRadius.xl,
-    padding: Spacing.lg,
-    marginBottom: Spacing.lg,
-    borderLeftWidth: 4,
-    borderLeftColor: Colors.accent,
-    ...Shadows.small,
-  },
-  insightPanelFound: {
-    borderLeftColor: Colors.success,
-    backgroundColor: Colors.success + '15',
-  },
-  insightHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: Spacing.sm,
-  },
-  insightTitle: {
-    fontSize: FontSizes.md,
-    fontWeight: '600',
-    color: Colors.accent,
-    marginLeft: Spacing.sm,
-  },
-  insightText: {
-    fontSize: FontSizes.md,
-    color: Colors.gray300,
-    lineHeight: 22,
-  },
-  insightTextFound: {
-    color: Colors.success,
-    fontWeight: '600',
-  },
-  complexityTracker: {
-    backgroundColor: Colors.cardBackground,
-    borderRadius: BorderRadius.xl,
-    padding: Spacing.lg,
-    marginBottom: Spacing.lg,
-    ...Shadows.small,
-  },
-  complexityTitle: {
-    fontSize: FontSizes.md,
-    fontWeight: '600',
-    color: Colors.accent,
-    marginBottom: Spacing.md,
-  },
-  complexityStats: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-  },
-  complexityStat: {
-    alignItems: 'center',
-    minWidth: 70,
-  },
-  complexityLabel: {
-    fontSize: FontSizes.xs,
-    color: Colors.gray500,
-    marginBottom: 2,
-  },
-  complexityValue: {
-    fontSize: FontSizes.lg,
-    fontWeight: '600',
-    color: Colors.textPrimary,
-    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
-  },
   codePanel: {
     backgroundColor: Colors.cardBackground,
     borderRadius: BorderRadius.xl,
     overflow: 'hidden',
-    marginBottom: Spacing.lg,
     ...Shadows.small,
   },
   codePanelHeader: {
@@ -1005,64 +994,6 @@ const styles = StyleSheet.create({
   codeTextHighlighted: {
     color: Colors.textPrimary,
     fontWeight: '500',
-  },
-  playbackControls: {
-    backgroundColor: Colors.cardBackground,
-    borderTopWidth: 1,
-    borderTopColor: Colors.gray700,
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.lg,
-  },
-  playbackButtons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.sm,
-  },
-  playbackButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: BorderRadius.full,
-  },
-  playbackButtonSmall: {
-    width: 44,
-    height: 44,
-    backgroundColor: Colors.gray700,
-  },
-  playbackButtonMain: {
-    width: 56,
-    height: 56,
-    backgroundColor: Colors.accent,
-    marginHorizontal: Spacing.sm,
-  },
-  playbackButtonDisabled: {
-    backgroundColor: Colors.gray800,
-  },
-  speedControl: {
-    marginLeft: Spacing.lg,
-    alignItems: 'center',
-  },
-  speedLabel: {
-    fontSize: FontSizes.xs,
-    color: Colors.gray500,
-    marginBottom: 4,
-  },
-  speedButtons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.gray700,
-    borderRadius: BorderRadius.md,
-    paddingHorizontal: Spacing.xs,
-  },
-  speedButton: {
-    padding: Spacing.xs,
-  },
-  speedValue: {
-    fontSize: FontSizes.sm,
-    fontWeight: '600',
-    color: Colors.textPrimary,
-    minWidth: 36,
-    textAlign: 'center',
   },
   errorContainer: {
     flex: 1,

@@ -82,7 +82,28 @@ export const cloneTree = (node: TreeNode | null): TreeNode | null => {
   return newNode;
 };
 
-// Calculate tree positions for visualization
+// Calculate tree depth
+const getTreeDepth = (node: TreeNode | null): number => {
+  if (!node) return 0;
+  return 1 + Math.max(getTreeDepth(node.left), getTreeDepth(node.right));
+};
+
+// Count nodes at each level for width calculation
+const getNodesPerLevel = (root: TreeNode | null): number[] => {
+  if (!root) return [];
+  const levels: number[] = [];
+  const queue: { node: TreeNode; level: number }[] = [{ node: root, level: 0 }];
+
+  while (queue.length > 0) {
+    const { node, level } = queue.shift()!;
+    levels[level] = (levels[level] || 0) + 1;
+    if (node.left) queue.push({ node: node.left, level: level + 1 });
+    if (node.right) queue.push({ node: node.right, level: level + 1 });
+  }
+  return levels;
+};
+
+// Calculate tree positions for visualization with dynamic spacing
 export const calculateTreePositions = (
   root: TreeNode | null,
   canvasWidth: number,
@@ -90,30 +111,71 @@ export const calculateTreePositions = (
 ): void => {
   if (!root) return;
 
-  const horizontalSpacing = canvasWidth / 2;
+  const treeDepth = getTreeDepth(root);
+  const nodeSize = 44; // NODE_SIZE constant
+  const minHorizontalGap = 16; // Minimum gap between nodes
+  const verticalGap = 75; // Gap between levels
+
+  // Calculate the minimum width needed for the deepest level
+  // Each leaf node needs at least nodeSize + minHorizontalGap
+  const maxNodesAtDeepest = Math.pow(2, treeDepth - 1);
+  const minWidthNeeded = maxNodesAtDeepest * (nodeSize + minHorizontalGap);
+
+  // Use the larger of canvas width or minimum needed
+  const effectiveWidth = Math.max(canvasWidth, minWidthNeeded);
+
+  // Base spread calculation - ensures nodes don't overlap at any depth
+  // The spread at depth d should be: effectiveWidth / 2^(d+1)
+  const baseSpread = effectiveWidth / 2;
 
   const positionNode = (
     node: TreeNode | null,
     x: number,
     y: number,
-    spread: number
+    spread: number,
+    depth: number
   ): void => {
     if (!node) return;
 
     node.targetX = x;
     node.targetY = y;
+    node.depth = depth;
 
-    const childSpread = spread / 2;
+    // Dynamic spread calculation based on subtree depth
+    // Nodes with deeper subtrees need more horizontal space
+    const leftDepth = getTreeDepth(node.left);
+    const rightDepth = getTreeDepth(node.right);
+
+    // Calculate child spread - ensure minimum spacing
+    const minChildSpread = (nodeSize + minHorizontalGap) * Math.pow(2, Math.max(leftDepth, rightDepth) - 1);
+    const childSpread = Math.max(spread / 2, minChildSpread);
 
     if (node.left) {
-      positionNode(node.left, x - childSpread, y + 70, childSpread);
+      positionNode(node.left, x - childSpread, y + verticalGap, childSpread, depth + 1);
     }
     if (node.right) {
-      positionNode(node.right, x + childSpread, y + 70, childSpread);
+      positionNode(node.right, x + childSpread, y + verticalGap, childSpread, depth + 1);
     }
   };
 
-  positionNode(root, canvasWidth / 2, startY, horizontalSpacing / 2);
+  positionNode(root, effectiveWidth / 2, startY, baseSpread / 2, 0);
+
+  // If tree is wider than canvas, normalize positions to fit
+  if (effectiveWidth > canvasWidth) {
+    const scaleFactor = canvasWidth / effectiveWidth;
+    const centerOffset = canvasWidth / 2;
+
+    const normalizeNode = (node: TreeNode | null): void => {
+      if (!node) return;
+      // Scale from center
+      const relativeX = node.targetX - effectiveWidth / 2;
+      node.targetX = centerOffset + relativeX * scaleFactor;
+      normalizeNode(node.left);
+      normalizeNode(node.right);
+    };
+
+    normalizeNode(root);
+  }
 };
 
 // Reset all highlights in a tree
