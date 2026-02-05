@@ -103,78 +103,224 @@ const getNodesPerLevel = (root: TreeNode | null): number[] => {
   return levels;
 };
 
-// Calculate tree positions for visualization with dynamic spacing
+// Constants for collision detection
+const NODE_SIZE = 44;
+const MIN_GAP = 12; // Minimum 12dp gap between nodes
+const NODE_WITH_GAP = NODE_SIZE + MIN_GAP;
+const VERTICAL_GAP = 85; // Increased vertical spacing between levels
+const SAFETY_BUFFER = 20; // Buffer around the entire visualization
+
+// Collision detection: Check if two nodes would overlap (including their labels)
+interface NodeBounds {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+const getNodeBounds = (node: TreeNode): NodeBounds => ({
+  x: node.targetX - NODE_SIZE / 2 - MIN_GAP / 2,
+  y: node.targetY - NODE_SIZE / 2 - MIN_GAP / 2,
+  width: NODE_SIZE + MIN_GAP,
+  height: NODE_SIZE + MIN_GAP + 10, // Extra height for label
+});
+
+const boundsOverlap = (a: NodeBounds, b: NodeBounds): boolean => {
+  return !(a.x + a.width < b.x ||
+           b.x + b.width < a.x ||
+           a.y + a.height < b.y ||
+           b.y + b.height < a.y);
+};
+
+// Collect all nodes by level for collision detection
+const collectNodesByLevel = (root: TreeNode | null): Map<number, TreeNode[]> => {
+  const levels = new Map<number, TreeNode[]>();
+
+  const traverse = (node: TreeNode | null, level: number) => {
+    if (!node) return;
+    if (!levels.has(level)) levels.set(level, []);
+    levels.get(level)!.push(node);
+    traverse(node.left, level + 1);
+    traverse(node.right, level + 1);
+  };
+
+  traverse(root, 0);
+  return levels;
+};
+
+// Calculate tree positions with collision detection using Reingold-Tilford-like algorithm
 export const calculateTreePositions = (
   root: TreeNode | null,
   canvasWidth: number,
-  startY: number = 40
+  startY: number = 50
 ): void => {
   if (!root) return;
 
   const treeDepth = getTreeDepth(root);
-  const nodeSize = 44; // NODE_SIZE constant
-  const minHorizontalGap = 16; // Minimum gap between nodes
-  const verticalGap = 75; // Gap between levels
 
-  // Calculate the minimum width needed for the deepest level
-  // Each leaf node needs at least nodeSize + minHorizontalGap
-  const maxNodesAtDeepest = Math.pow(2, treeDepth - 1);
-  const minWidthNeeded = maxNodesAtDeepest * (nodeSize + minHorizontalGap);
+  // Phase 1: Calculate contours and initial positions using a modified R-T algorithm
+  // First pass: Calculate the "width" needed for each subtree
+  const subtreeWidths = new Map<string, number>();
 
-  // Use the larger of canvas width or minimum needed
-  const effectiveWidth = Math.max(canvasWidth, minWidthNeeded);
+  const calculateSubtreeWidth = (node: TreeNode | null): number => {
+    if (!node) return 0;
 
-  // Base spread calculation - ensures nodes don't overlap at any depth
-  // The spread at depth d should be: effectiveWidth / 2^(d+1)
-  const baseSpread = effectiveWidth / 2;
+    const leftWidth = calculateSubtreeWidth(node.left);
+    const rightWidth = calculateSubtreeWidth(node.right);
 
-  const positionNode = (
+    // Minimum width is the node itself
+    const width = Math.max(NODE_WITH_GAP, leftWidth + rightWidth + MIN_GAP);
+    subtreeWidths.set(node.id, width);
+    return width;
+  };
+
+  const totalTreeWidth = calculateSubtreeWidth(root);
+  const effectiveWidth = Math.max(canvasWidth - SAFETY_BUFFER * 2, totalTreeWidth);
+
+  // Phase 2: Position nodes based on subtree widths
+  const positionSubtree = (
     node: TreeNode | null,
-    x: number,
+    leftBound: number,
+    rightBound: number,
     y: number,
-    spread: number,
     depth: number
   ): void => {
     if (!node) return;
 
-    node.targetX = x;
+    const width = rightBound - leftBound;
+    const centerX = leftBound + width / 2;
+
+    node.targetX = centerX;
     node.targetY = y;
     node.depth = depth;
 
-    // Dynamic spread calculation based on subtree depth
-    // Nodes with deeper subtrees need more horizontal space
-    const leftDepth = getTreeDepth(node.left);
-    const rightDepth = getTreeDepth(node.right);
+    const leftWidth = node.left ? (subtreeWidths.get(node.left.id) || NODE_WITH_GAP) : 0;
+    const rightWidth = node.right ? (subtreeWidths.get(node.right.id) || NODE_WITH_GAP) : 0;
 
-    // Calculate child spread - ensure minimum spacing
-    const minChildSpread = (nodeSize + minHorizontalGap) * Math.pow(2, Math.max(leftDepth, rightDepth) - 1);
-    const childSpread = Math.max(spread / 2, minChildSpread);
+    if (node.left && node.right) {
+      // Both children: divide space proportionally
+      const totalChildWidth = leftWidth + rightWidth;
+      const availableWidth = width - MIN_GAP;
 
-    if (node.left) {
-      positionNode(node.left, x - childSpread, y + verticalGap, childSpread, depth + 1);
-    }
-    if (node.right) {
-      positionNode(node.right, x + childSpread, y + verticalGap, childSpread, depth + 1);
+      const leftRatio = leftWidth / totalChildWidth;
+      const leftAlloc = availableWidth * leftRatio;
+
+      positionSubtree(node.left, leftBound, leftBound + leftAlloc, y + VERTICAL_GAP, depth + 1);
+      positionSubtree(node.right, leftBound + leftAlloc + MIN_GAP, rightBound, y + VERTICAL_GAP, depth + 1);
+    } else if (node.left) {
+      positionSubtree(node.left, leftBound, rightBound, y + VERTICAL_GAP, depth + 1);
+    } else if (node.right) {
+      positionSubtree(node.right, leftBound, rightBound, y + VERTICAL_GAP, depth + 1);
     }
   };
 
-  positionNode(root, effectiveWidth / 2, startY, baseSpread / 2, 0);
+  const startX = SAFETY_BUFFER;
+  positionSubtree(root, startX, startX + effectiveWidth, startY, 0);
 
-  // If tree is wider than canvas, normalize positions to fit
-  if (effectiveWidth > canvasWidth) {
-    const scaleFactor = canvasWidth / effectiveWidth;
-    const centerOffset = canvasWidth / 2;
+  // Phase 3: Collision detection and resolution
+  const nodesByLevel = collectNodesByLevel(root);
+  let hasCollisions = true;
+  let iterations = 0;
+  const maxIterations = 10;
 
-    const normalizeNode = (node: TreeNode | null): void => {
+  while (hasCollisions && iterations < maxIterations) {
+    hasCollisions = false;
+    iterations++;
+
+    // Check each level for collisions
+    for (const [level, nodes] of nodesByLevel) {
+      // Sort nodes by X position
+      nodes.sort((a, b) => a.targetX - b.targetX);
+
+      // Check adjacent nodes for overlap
+      for (let i = 0; i < nodes.length - 1; i++) {
+        const nodeA = nodes[i];
+        const nodeB = nodes[i + 1];
+
+        const boundsA = getNodeBounds(nodeA);
+        const boundsB = getNodeBounds(nodeB);
+
+        if (boundsOverlap(boundsA, boundsB)) {
+          hasCollisions = true;
+
+          // Calculate overlap amount
+          const overlap = (boundsA.x + boundsA.width) - boundsB.x + MIN_GAP;
+
+          // Push nodes apart
+          const pushAmount = overlap / 2 + MIN_GAP;
+
+          // Move nodeA left and nodeB right, propagating to children
+          const moveNodeSubtree = (node: TreeNode | null, deltaX: number) => {
+            if (!node) return;
+            node.targetX += deltaX;
+            moveNodeSubtree(node.left, deltaX);
+            moveNodeSubtree(node.right, deltaX);
+          };
+
+          moveNodeSubtree(nodeA, -pushAmount);
+          moveNodeSubtree(nodeB, pushAmount);
+        }
+      }
+    }
+  }
+
+  // Phase 4: Normalize to fit within canvas with safety buffer
+  let minX = Infinity, maxX = -Infinity;
+
+  const findBounds = (node: TreeNode | null) => {
+    if (!node) return;
+    minX = Math.min(minX, node.targetX - NODE_SIZE / 2);
+    maxX = Math.max(maxX, node.targetX + NODE_SIZE / 2);
+    findBounds(node.left);
+    findBounds(node.right);
+  };
+
+  findBounds(root);
+
+  const currentWidth = maxX - minX;
+  const availableWidth = canvasWidth - SAFETY_BUFFER * 2;
+
+  if (currentWidth > availableWidth) {
+    // Scale down to fit
+    const scaleFactor = availableWidth / currentWidth;
+    const centerX = canvasWidth / 2;
+    const currentCenterX = (minX + maxX) / 2;
+
+    const scaleAndCenter = (node: TreeNode | null) => {
       if (!node) return;
-      // Scale from center
-      const relativeX = node.targetX - effectiveWidth / 2;
-      node.targetX = centerOffset + relativeX * scaleFactor;
-      normalizeNode(node.left);
-      normalizeNode(node.right);
+      node.targetX = centerX + (node.targetX - currentCenterX) * scaleFactor;
+      scaleAndCenter(node.left);
+      scaleAndCenter(node.right);
     };
 
-    normalizeNode(root);
+    scaleAndCenter(root);
+  } else {
+    // Center the tree
+    const currentCenterX = (minX + maxX) / 2;
+    const targetCenterX = canvasWidth / 2;
+    const offsetX = targetCenterX - currentCenterX;
+
+    const centerTree = (node: TreeNode | null) => {
+      if (!node) return;
+      node.targetX += offsetX;
+      centerTree(node.left);
+      centerTree(node.right);
+    };
+
+    centerTree(root);
+  }
+
+  // Ensure minimum X position
+  findBounds(root);
+  if (minX < SAFETY_BUFFER) {
+    const offset = SAFETY_BUFFER - minX;
+    const adjustPositions = (node: TreeNode | null) => {
+      if (!node) return;
+      node.targetX += offset;
+      adjustPositions(node.left);
+      adjustPositions(node.right);
+    };
+    adjustPositions(root);
   }
 };
 

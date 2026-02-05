@@ -38,31 +38,46 @@ interface TreeNodeComponentProps {
   showShockwave: boolean;
 }
 
-// Calculate tree bounds for dynamic canvas sizing
-const calculateTreeBounds = (root: TreeNode | null): { minX: number; maxX: number; minY: number; maxY: number } => {
-  if (!root) return { minX: 0, maxX: CANVAS_WIDTH, minY: 0, maxY: MIN_CANVAS_HEIGHT };
+// Constants for viewport calculation
+const SAFETY_BUFFER = 32; // Extra buffer around visualization
+const LABEL_HEIGHT = 16; // Height reserved for node labels
+
+// Calculate tree bounds for dynamic canvas sizing with safety buffer
+const calculateTreeBounds = (root: TreeNode | null): { minX: number; maxX: number; minY: number; maxY: number; nodeCount: number } => {
+  if (!root) return { minX: 0, maxX: CANVAS_WIDTH, minY: 0, maxY: MIN_CANVAS_HEIGHT, nodeCount: 0 };
 
   let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  let nodeCount = 0;
 
   const traverse = (node: TreeNode | null) => {
     if (!node) return;
-    minX = Math.min(minX, node.targetX);
-    maxX = Math.max(maxX, node.targetX);
-    minY = Math.min(minY, node.targetY);
-    maxY = Math.max(maxY, node.targetY);
+    nodeCount++;
+
+    // Include node size in bounds calculation
+    const nodeLeft = node.targetX - NODE_SIZE / 2;
+    const nodeRight = node.targetX + NODE_SIZE / 2;
+    const nodeTop = node.targetY - NODE_SIZE / 2;
+    const nodeBottom = node.targetY + NODE_SIZE / 2 + LABEL_HEIGHT;
+
+    minX = Math.min(minX, nodeLeft);
+    maxX = Math.max(maxX, nodeRight);
+    minY = Math.min(minY, nodeTop);
+    maxY = Math.max(maxY, nodeBottom);
+
     traverse(node.left);
     traverse(node.right);
   };
 
   traverse(root);
 
-  // Add padding
-  const padding = NODE_SIZE + 20;
+  // Add safety buffer around entire visualization
+  // This ensures nothing gets cropped at edges
   return {
-    minX: Math.max(0, minX - padding),
-    maxX: maxX + padding,
-    minY: Math.max(0, minY - padding / 2),
-    maxY: maxY + padding,
+    minX: Math.max(0, minX - SAFETY_BUFFER),
+    maxX: maxX + SAFETY_BUFFER,
+    minY: Math.max(0, minY - SAFETY_BUFFER),
+    maxY: maxY + SAFETY_BUFFER + NODE_SIZE, // Extra space at bottom
+    nodeCount,
   };
 };
 
@@ -342,8 +357,27 @@ export default function TreeVisualizer({
   enableScrolling = true,
 }: TreeVisualizerProps) {
   const bounds = useMemo(() => calculateTreeBounds(root), [root]);
-  const canvasWidth = Math.max(CANVAS_WIDTH, bounds.maxX);
-  const canvasHeight = Math.max(MIN_CANVAS_HEIGHT, bounds.maxY);
+
+  // Calculate optimal canvas dimensions with safety margins
+  // Ensure all nodes are visible within the viewport
+  const contentWidth = bounds.maxX - bounds.minX;
+  const contentHeight = bounds.maxY - bounds.minY;
+
+  // Add extra buffer based on node count for larger trees
+  const dynamicBuffer = Math.min(bounds.nodeCount * 4, 80);
+
+  const canvasWidth = Math.max(
+    CANVAS_WIDTH,
+    contentWidth + dynamicBuffer,
+    bounds.maxX + SAFETY_BUFFER
+  );
+
+  const canvasHeight = Math.max(
+    MIN_CANVAS_HEIGHT,
+    contentHeight + dynamicBuffer,
+    bounds.maxY + SAFETY_BUFFER + NODE_SIZE
+  );
+
   const needsScroll = canvasWidth > CANVAS_WIDTH;
 
   const nodes = useMemo(() => {

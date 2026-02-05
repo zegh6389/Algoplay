@@ -1,5 +1,17 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MasteryLevel, getMasteryLevel } from '@/utils/quizData';
+import {
+  setSecureItem,
+  getSecureItem,
+  SECURE_KEYS,
+  SecureProgressData,
+  validateXPGain,
+  validateLevel,
+  AntiCheatData,
+  initAntiCheatData,
+} from '@/utils/secureStorage';
 
 // User Progress Types
 export interface SkillNode {
@@ -82,6 +94,27 @@ const initialGuestState: GuestState = {
   guestUsername: 'Guest',
 };
 
+// Security state for anti-cheat
+export interface SecurityState {
+  antiCheatData: AntiCheatData;
+  securityAlerts: SecurityAlert[];
+  isValidSession: boolean;
+}
+
+export interface SecurityAlert {
+  id: string;
+  type: 'warning' | 'critical' | 'info';
+  message: string;
+  timestamp: string;
+  acknowledged: boolean;
+}
+
+const initialSecurityState: SecurityState = {
+  antiCheatData: initAntiCheatData(),
+  securityAlerts: [],
+  isValidSession: true,
+};
+
 // Store Interface
 interface AppState {
   // User Progress
@@ -89,6 +122,7 @@ interface AppState {
   gameState: GameState;
   visualizationSettings: VisualizationSettings;
   guestState: GuestState;
+  securityState: SecurityState;
 
   // Actions
   completeAlgorithm: (algorithmId: string, xp: number) => void;
@@ -112,6 +146,13 @@ interface AppState {
   recordChallengeCompletion: (challengeId: string, algorithmUsed: string, nodesVisited: number, pathLength: number, passed: boolean) => void;
   getAlgorithmMastery: (algorithmId: string) => AlgorithmMastery;
   getLevelProgress: () => { currentXP: number; xpForNextLevel: number; progress: number };
+
+  // Security Actions
+  addSecurityAlert: (type: SecurityAlert['type'], message: string) => void;
+  acknowledgeAlert: (alertId: string) => void;
+  clearOldAlerts: () => void;
+  validateAndSaveProgress: () => Promise<void>;
+  loadSecureProgress: () => Promise<void>;
 }
 
 const initialSkillNodes: SkillNode[] = [
@@ -166,13 +207,16 @@ const initialVisualizationSettings: VisualizationSettings = {
   showCode: true,
 };
 
-export const useAppStore = create<AppState>((set, get) => ({
-  userProgress: initialUserProgress,
-  gameState: initialGameState,
-  visualizationSettings: initialVisualizationSettings,
-  guestState: initialGuestState,
+export const useAppStore = create<AppState>()(
+  persist(
+    (set, get) => ({
+      userProgress: initialUserProgress,
+      gameState: initialGameState,
+      visualizationSettings: initialVisualizationSettings,
+      guestState: initialGuestState,
+      securityState: initialSecurityState,
 
-  completeAlgorithm: (algorithmId: string, xp: number) => {
+      completeAlgorithm: (algorithmId: string, xp: number) => {
     set((state) => {
       const newSkillNodes = state.userProgress.skillNodes.map((node) => {
         if (node.id === algorithmId) {
@@ -255,14 +299,49 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   addXP: (amount: number) => {
     set((state) => {
-      const newTotalXP = state.userProgress.totalXP + amount;
+      const previousXP = state.userProgress.totalXP;
+      const newTotalXP = previousXP + amount;
       const newLevel = Math.floor(newTotalXP / 500) + 1;
+
+      // Validate XP gain against anti-cheat
+      const validation = validateXPGain(
+        newTotalXP,
+        previousXP,
+        amount,
+        state.securityState.antiCheatData
+      );
+
+      // Add security alerts for suspicious activity
+      const newAlerts = [...state.securityState.securityAlerts];
+      if (validation.isSuspicious) {
+        newAlerts.push({
+          id: `alert_${Date.now()}`,
+          type: validation.isValid ? 'warning' : 'critical',
+          message: validation.reason || 'Suspicious activity detected',
+          timestamp: new Date().toISOString(),
+          acknowledged: false,
+        });
+      }
+
+      // Update anti-cheat data
+      const updatedAntiCheatData: AntiCheatData = {
+        ...state.securityState.antiCheatData,
+        lastKnownXP: newTotalXP,
+        lastKnownLevel: newLevel,
+        maxXPPerSession: Math.max(state.securityState.antiCheatData.maxXPPerSession, amount),
+      };
 
       return {
         userProgress: {
           ...state.userProgress,
-          totalXP: newTotalXP,
-          level: newLevel,
+          totalXP: validation.isValid ? newTotalXP : previousXP,
+          level: validation.isValid ? newLevel : state.userProgress.level,
+        },
+        securityState: {
+          ...state.securityState,
+          antiCheatData: updatedAntiCheatData,
+          securityAlerts: newAlerts.slice(-10), // Keep last 10 alerts
+          isValidSession: validation.isValid,
         },
       };
     });
@@ -454,7 +533,141 @@ export const useAppStore = create<AppState>((set, get) => ({
 
     return { currentXP, xpForNextLevel, progress };
   },
-}));
+
+  // Security Actions
+  addSecurityAlert: (type: SecurityAlert['type'], message: string) => {
+    set((state) => ({
+      securityState: {
+        ...state.securityState,
+        securityAlerts: [
+          ...state.securityState.securityAlerts.slice(-9),
+          {
+            id: `alert_${Date.now()}`,
+            type,
+            message,
+            timestamp: new Date().toISOString(),
+            acknowledged: false,
+          },
+        ],
+      },
+    }));
+  },
+
+  acknowledgeAlert: (alertId: string) => {
+    set((state) => ({
+      securityState: {
+        ...state.securityState,
+        securityAlerts: state.securityState.securityAlerts.map((alert) =>
+          alert.id === alertId ? { ...alert, acknowledged: true } : alert
+        ),
+      },
+    }));
+  },
+
+  clearOldAlerts: () => {
+    set((state) => ({
+      securityState: {
+        ...state.securityState,
+        securityAlerts: state.securityState.securityAlerts.filter(
+          (alert) => !alert.acknowledged || Date.now() - new Date(alert.timestamp).getTime() < 86400000
+        ),
+      },
+    }));
+  },
+
+  validateAndSaveProgress: async () => {
+    const state = get();
+
+    // Create secure progress data
+    const secureData: SecureProgressData = {
+      level: state.userProgress.level,
+      totalXP: state.userProgress.totalXP,
+      currentStreak: state.userProgress.currentStreak,
+      completedAlgorithms: state.userProgress.completedAlgorithms,
+      highScores: state.gameState.highScores,
+      lastSyncTimestamp: Date.now(),
+    };
+
+    // Validate level consistency
+    if (!validateLevel(secureData.totalXP, secureData.level)) {
+      get().addSecurityAlert('critical', 'Level/XP inconsistency detected during save');
+      return;
+    }
+
+    // Save to secure storage
+    await setSecureItem(SECURE_KEYS.USER_PROGRESS, secureData);
+  },
+
+  loadSecureProgress: async () => {
+    const result = await getSecureItem<SecureProgressData>(SECURE_KEYS.USER_PROGRESS, {
+      level: 1,
+      totalXP: 0,
+      currentStreak: 0,
+      completedAlgorithms: [],
+      highScores: { sorterBest: 0, gridEscapeWins: 0 },
+      lastSyncTimestamp: 0,
+    });
+
+    if (result.isTampered) {
+      // Data tampering detected - alert user and reset
+      set((state) => ({
+        securityState: {
+          ...state.securityState,
+          securityAlerts: [
+            ...state.securityState.securityAlerts,
+            {
+              id: `tampering_${Date.now()}`,
+              type: 'critical',
+              message: 'Data tampering detected. Progress has been reset for security.',
+              timestamp: new Date().toISOString(),
+              acknowledged: false,
+            },
+          ],
+          isValidSession: false,
+        },
+      }));
+      return;
+    }
+
+    if (result.isValid && result.data.lastSyncTimestamp > 0) {
+      // Restore from secure storage
+      set((state) => ({
+        userProgress: {
+          ...state.userProgress,
+          level: result.data.level,
+          totalXP: result.data.totalXP,
+          currentStreak: result.data.currentStreak,
+          completedAlgorithms: result.data.completedAlgorithms,
+        },
+        gameState: {
+          ...state.gameState,
+          highScores: result.data.highScores,
+        },
+        securityState: {
+          ...state.securityState,
+          antiCheatData: {
+            ...state.securityState.antiCheatData,
+            lastKnownXP: result.data.totalXP,
+            lastKnownLevel: result.data.level,
+          },
+        },
+      }));
+    }
+  },
+    }),
+    {
+      name: 'algoverse-storage',
+      storage: createJSONStorage(() => AsyncStorage),
+      partialize: (state) => ({
+        userProgress: state.userProgress,
+        gameState: state.gameState,
+        visualizationSettings: state.visualizationSettings,
+        guestState: state.guestState,
+        // Don't persist security state - it should be fresh each session
+      }),
+    }
+  )
+);
 
 // Helper function to calculate combined mastery score
 function calculateCombinedMastery(quizScores: number[], challengesCompleted: number, totalChallenges: number): number {

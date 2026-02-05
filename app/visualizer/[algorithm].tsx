@@ -36,6 +36,8 @@ import {
   SearchingAlgorithmKey,
   generateRandomArrayForSearch,
 } from '@/utils/algorithms/searching';
+import { dpAlgorithms, DPAlgorithmKey } from '@/utils/algorithms/dynamicProgramming';
+import { Redirect } from 'expo-router';
 import { getAlgorithmCode, ProgrammingLanguage } from '@/utils/algorithms/codeImplementations';
 import UniversalInputSheet from '@/components/UniversalInputSheet';
 import { CodeViewer, AICodeTutor, SegmentedControl, ViewMode } from '@/components/CodeHub';
@@ -295,6 +297,9 @@ export default function VisualizerScreen() {
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ algorithm: string }>();
   const algorithmId = params.algorithm;
+
+  // Check if it's a DP algorithm - redirect will happen in render
+  const isDPAlgorithm = algorithmId in dpAlgorithms;
 
   const { visualizationSettings, setVisualizationSpeed, completeAlgorithm, addXP, recordQuizScore, userProgress } = useAppStore();
 
@@ -591,6 +596,11 @@ export default function VisualizerScreen() {
 
     return 'default';
   };
+
+  // Redirect to DP visualizer for DP algorithms (after all hooks)
+  if (isDPAlgorithm) {
+    return <Redirect href={`/visualizer/dp?algorithm=${algorithmId}`} />;
+  }
 
   if (!algorithm) {
     return (
