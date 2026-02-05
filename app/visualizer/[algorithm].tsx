@@ -7,8 +7,6 @@ import {
   ScrollView,
   Dimensions,
   Platform,
-  TextInput,
-  Modal,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -34,6 +32,7 @@ import {
   SearchingAlgorithmKey,
   generateRandomArrayForSearch,
 } from '@/utils/algorithms/searching';
+import UniversalInputSheet from '@/components/UniversalInputSheet';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CANVAS_PADDING = Spacing.lg * 2;
@@ -326,137 +325,6 @@ function PlaybackControls({
         </View>
       </View>
     </View>
-  );
-}
-
-interface InputDashboardProps {
-  visible: boolean;
-  onClose: () => void;
-  algorithmType: AlgorithmType;
-  currentArray: number[];
-  currentTarget: number;
-  onApply: (array: number[], target?: number) => void;
-}
-
-function InputDashboard({
-  visible,
-  onClose,
-  algorithmType,
-  currentArray,
-  currentTarget,
-  onApply
-}: InputDashboardProps) {
-  const [arrayInput, setArrayInput] = useState(currentArray.join(', '));
-  const [targetInput, setTargetInput] = useState(currentTarget.toString());
-  const [arraySize, setArraySize] = useState(10);
-
-  const handleGenerateRandom = () => {
-    if (algorithmType === 'searching') {
-      const { array, target } = generateRandomArrayForSearch(arraySize);
-      setArrayInput(array.join(', '));
-      setTargetInput(target.toString());
-    } else {
-      const array = generateRandomArray(arraySize);
-      setArrayInput(array.join(', '));
-    }
-  };
-
-  const handleApply = () => {
-    const array = arrayInput
-      .split(',')
-      .map(s => parseInt(s.trim(), 10))
-      .filter(n => !isNaN(n));
-
-    if (array.length === 0) {
-      return;
-    }
-
-    const target = parseInt(targetInput, 10) || currentTarget;
-    onApply(array, algorithmType === 'searching' ? target : undefined);
-    onClose();
-  };
-
-  return (
-    <Modal visible={visible} animationType="slide" transparent>
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>Input Dashboard</Text>
-            <TouchableOpacity onPress={onClose} style={styles.modalCloseButton}>
-              <Ionicons name="close" size={24} color={Colors.gray400} />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.inputSection}>
-            <Text style={styles.inputLabel}>Array (comma-separated)</Text>
-            <TextInput
-              style={styles.textInput}
-              value={arrayInput}
-              onChangeText={setArrayInput}
-              placeholder="e.g., 5, 2, 8, 1, 9"
-              placeholderTextColor={Colors.gray500}
-              keyboardType="numeric"
-              multiline
-            />
-          </View>
-
-          {algorithmType === 'searching' && (
-            <View style={styles.inputSection}>
-              <Text style={styles.inputLabel}>Target Value</Text>
-              <TextInput
-                style={styles.textInput}
-                value={targetInput}
-                onChangeText={setTargetInput}
-                placeholder="e.g., 8"
-                placeholderTextColor={Colors.gray500}
-                keyboardType="numeric"
-              />
-            </View>
-          )}
-
-          <View style={styles.inputSection}>
-            <Text style={styles.inputLabel}>Random Array Size: {arraySize}</Text>
-            <View style={styles.sizeButtons}>
-              {[5, 8, 10, 12, 15].map(size => (
-                <TouchableOpacity
-                  key={size}
-                  style={[
-                    styles.sizeButton,
-                    arraySize === size && styles.sizeButtonActive,
-                  ]}
-                  onPress={() => setArraySize(size)}
-                >
-                  <Text
-                    style={[
-                      styles.sizeButtonText,
-                      arraySize === size && styles.sizeButtonTextActive,
-                    ]}
-                  >
-                    {size}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-
-          <View style={styles.modalActions}>
-            <TouchableOpacity
-              style={[styles.modalButton, styles.modalButtonSecondary]}
-              onPress={handleGenerateRandom}
-            >
-              <Ionicons name="shuffle" size={18} color={Colors.actionTeal} />
-              <Text style={styles.modalButtonSecondaryText}>Generate Random</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.modalButton, styles.modalButtonPrimary]}
-              onPress={handleApply}
-            >
-              <Text style={styles.modalButtonPrimaryText}>Apply</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </Modal>
   );
 }
 
@@ -757,14 +625,16 @@ export default function VisualizerScreen() {
         canStepForward={currentStepIndex < steps.length - 1}
       />
 
-      {/* Input Dashboard Modal */}
-      <InputDashboard
+      {/* Universal Input Sheet */}
+      <UniversalInputSheet
         visible={showInputDashboard}
         onClose={() => setShowInputDashboard(false)}
+        onApply={handleInputApply}
         algorithmType={algorithmType}
         currentArray={array}
         currentTarget={target}
-        onApply={handleInputApply}
+        maxSize={15}
+        minSize={5}
       />
     </View>
   );
@@ -1069,108 +939,6 @@ const styles = StyleSheet.create({
     marginTop: Spacing.xl,
   },
   backToLearnText: {
-    fontSize: FontSizes.md,
-    fontWeight: '600',
-    color: Colors.midnightBlue,
-  },
-  // Modal styles
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    justifyContent: 'flex-end',
-  },
-  modalContent: {
-    backgroundColor: Colors.cardBackground,
-    borderTopLeftRadius: BorderRadius.xxl,
-    borderTopRightRadius: BorderRadius.xxl,
-    padding: Spacing.xl,
-    maxHeight: '80%',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: Spacing.xl,
-  },
-  modalTitle: {
-    fontSize: FontSizes.xl,
-    fontWeight: '600',
-    color: Colors.white,
-  },
-  modalCloseButton: {
-    padding: Spacing.sm,
-  },
-  inputSection: {
-    marginBottom: Spacing.lg,
-  },
-  inputLabel: {
-    fontSize: FontSizes.sm,
-    fontWeight: '500',
-    color: Colors.gray400,
-    marginBottom: Spacing.sm,
-  },
-  textInput: {
-    backgroundColor: Colors.midnightBlueDark,
-    borderRadius: BorderRadius.lg,
-    padding: Spacing.md,
-    fontSize: FontSizes.md,
-    color: Colors.white,
-    borderWidth: 1,
-    borderColor: Colors.gray700,
-    minHeight: 50,
-  },
-  sizeButtons: {
-    flexDirection: 'row',
-    gap: Spacing.sm,
-    marginTop: Spacing.sm,
-  },
-  sizeButton: {
-    paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.md,
-    borderRadius: BorderRadius.md,
-    backgroundColor: Colors.gray700,
-    minWidth: 44,
-    alignItems: 'center',
-  },
-  sizeButtonActive: {
-    backgroundColor: Colors.actionTeal,
-  },
-  sizeButtonText: {
-    fontSize: FontSizes.sm,
-    fontWeight: '500',
-    color: Colors.gray400,
-  },
-  sizeButtonTextActive: {
-    color: Colors.midnightBlue,
-  },
-  modalActions: {
-    flexDirection: 'row',
-    gap: Spacing.md,
-    marginTop: Spacing.lg,
-  },
-  modalButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: Spacing.md,
-    borderRadius: BorderRadius.lg,
-    gap: Spacing.sm,
-  },
-  modalButtonSecondary: {
-    backgroundColor: Colors.actionTeal + '20',
-    borderWidth: 1,
-    borderColor: Colors.actionTeal,
-  },
-  modalButtonSecondaryText: {
-    fontSize: FontSizes.md,
-    fontWeight: '600',
-    color: Colors.actionTeal,
-  },
-  modalButtonPrimary: {
-    backgroundColor: Colors.actionTeal,
-  },
-  modalButtonPrimaryText: {
     fontSize: FontSizes.md,
     fontWeight: '600',
     color: Colors.midnightBlue,

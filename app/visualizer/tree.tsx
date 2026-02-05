@@ -22,7 +22,7 @@ import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/t
 import TreeVisualizer from '@/components/TreeVisualizer';
 import ArrayVisualizer from '@/components/ArrayVisualizer';
 import InsightPanel from '@/components/InsightPanel';
-import InputDashboard from '@/components/InputDashboard';
+import UniversalInputSheet from '@/components/UniversalInputSheet';
 import {
   TreeNode,
   TreeStep,
@@ -283,7 +283,7 @@ export default function TreeVisualizerScreen() {
     }
   };
 
-  const handleInputSubmit = (data: number[]) => {
+  const handleInputSubmit = (data: number[], _target?: number) => {
     setInputValues(data);
     setShowInputDashboard(false);
   };
@@ -480,14 +480,15 @@ export default function TreeVisualizerScreen() {
         </View>
       </View>
 
-      {/* Input Dashboard */}
-      <InputDashboard
+      {/* Universal Input Sheet */}
+      <UniversalInputSheet
         visible={showInputDashboard}
         onClose={() => setShowInputDashboard(false)}
-        onSubmit={handleInputSubmit}
-        title="Tree Data"
+        onApply={handleInputSubmit}
+        algorithmType="tree"
+        currentArray={inputValues}
         maxSize={12}
-        allowTreeConstructor={true}
+        minSize={3}
       />
     </View>
   );
