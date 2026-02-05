@@ -29,6 +29,13 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen
+            name="visualizer/dp"
+            options={{
+              presentation: 'modal',
+              animation: 'slide_from_bottom',
+            }}
+          />
+          <Stack.Screen
             name="game/grid-escape"
             options={{
               presentation: 'modal',
