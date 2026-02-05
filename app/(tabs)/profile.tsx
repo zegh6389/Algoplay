@@ -12,10 +12,12 @@ import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
 import { useAppStore } from '@/store/useAppStore';
 import { MasteryBadge } from '@/components/XPGainAnimation';
 import { getMasteryColor } from '@/utils/quizData';
+import { useAuth } from '@fastshot/auth';
 
 interface SettingItemProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -48,21 +50,37 @@ function SettingItem({ icon, title, subtitle, onPress, rightElement, color = Col
 
 function ProfileHeader() {
   const { userProgress } = useAppStore();
+  const { user, isAuthenticated } = useAuth();
+  const router = useRouter();
 
   return (
     <Animated.View entering={FadeInDown.delay(100)} style={styles.profileHeader}>
       <View style={styles.avatarContainer}>
-        <View style={styles.avatar}>
-          <Ionicons name="person" size={40} color={Colors.actionTeal} />
-        </View>
+        <LinearGradient
+          colors={[Colors.actionTeal, Colors.electricPurple]}
+          style={styles.avatar}
+        >
+          <Ionicons name="person" size={40} color={Colors.white} />
+        </LinearGradient>
         <View style={styles.levelBadge}>
           <Text style={styles.levelBadgeText}>{userProgress.level}</Text>
         </View>
       </View>
-      <Text style={styles.username}>Algorithm Learner</Text>
+      <Text style={styles.username}>
+        {isAuthenticated ? user?.email?.split('@')[0] : 'Algorithm Learner'}
+      </Text>
       <Text style={styles.userStats}>
         Level {userProgress.level} • {userProgress.totalXP} XP
       </Text>
+      {!isAuthenticated && (
+        <TouchableOpacity
+          style={styles.signInPrompt}
+          onPress={() => router.push('/(auth)/login')}
+        >
+          <Ionicons name="cloud-upload" size={14} color={Colors.actionTeal} />
+          <Text style={styles.signInPromptText}>Sign in to sync progress</Text>
+        </TouchableOpacity>
+      )}
     </Animated.View>
   );
 }
@@ -320,8 +338,36 @@ export default function ProfileScreen() {
           </View>
         </Animated.View>
 
-        {/* Resources */}
+        {/* Quick Access */}
         <Animated.View entering={FadeInDown.delay(500)} style={styles.section}>
+          <Text style={styles.sectionTitle}>Quick Access</Text>
+          <View style={styles.settingsCard}>
+            <SettingItem
+              icon="analytics"
+              title="Mastery Dashboard"
+              subtitle="View your progress and achievements"
+              color={Colors.electricPurple}
+              onPress={() => router.push('/dashboard')}
+            />
+            <SettingItem
+              icon="book"
+              title="Cheat Sheet"
+              subtitle="Big-O reference and when to use"
+              color={Colors.logicGold}
+              onPress={() => router.push('/cheatsheet')}
+            />
+            <SettingItem
+              icon="trophy"
+              title="Leaderboard"
+              subtitle="See top algorithm learners"
+              color={Colors.alertCoral}
+              onPress={() => router.push('/leaderboard')}
+            />
+          </View>
+        </Animated.View>
+
+        {/* Resources */}
+        <Animated.View entering={FadeInDown.delay(550)} style={styles.section}>
           <Text style={styles.sectionTitle}>Resources</Text>
           <View style={styles.settingsCard}>
             <SettingItem
@@ -330,13 +376,6 @@ export default function ProfileScreen() {
               subtitle="Get help from Algorithm Tutor"
               color={Colors.actionTeal}
               onPress={() => router.push('/tutor')}
-            />
-            <SettingItem
-              icon="book"
-              title="Learning Resources"
-              subtitle="External guides and documentation"
-              color={Colors.info}
-              onPress={() => {}}
             />
             <SettingItem
               icon="help-circle"
@@ -615,5 +654,20 @@ const styles = StyleSheet.create({
     color: Colors.actionTeal,
     textAlign: 'center',
     marginTop: Spacing.md,
+  },
+  signInPrompt: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+    marginTop: Spacing.sm,
+    paddingVertical: Spacing.xs,
+    paddingHorizontal: Spacing.md,
+    backgroundColor: Colors.actionTeal + '15',
+    borderRadius: BorderRadius.full,
+  },
+  signInPromptText: {
+    fontSize: FontSizes.sm,
+    color: Colors.actionTeal,
+    fontWeight: '500',
   },
 });
