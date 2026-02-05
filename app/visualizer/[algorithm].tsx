@@ -37,7 +37,6 @@ import {
   generateRandomArrayForSearch,
 } from '@/utils/algorithms/searching';
 import { dpAlgorithms, DPAlgorithmKey } from '@/utils/algorithms/dynamicProgramming';
-import { Redirect } from 'expo-router';
 import { getAlgorithmCode, ProgrammingLanguage } from '@/utils/algorithms/codeImplementations';
 import UniversalInputSheet from '@/components/UniversalInputSheet';
 import { CodeViewer, AICodeTutor, SegmentedControl, ViewMode } from '@/components/CodeHub';
@@ -296,10 +295,10 @@ export default function VisualizerScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ algorithm: string }>();
-  const algorithmId = params.algorithm;
+  const algorithmId = params.algorithm || '';
 
-  // Check if it's a DP algorithm - redirect will happen in render
-  const isDPAlgorithm = algorithmId in dpAlgorithms;
+  // Check if it's a DP algorithm - redirect will happen via useEffect
+  const isDPAlgorithm = algorithmId && typeof dpAlgorithms === 'object' && algorithmId in dpAlgorithms;
 
   const { visualizationSettings, setVisualizationSpeed, completeAlgorithm, addXP, recordQuizScore, userProgress } = useAppStore();
 
@@ -353,12 +352,19 @@ export default function VisualizerScreen() {
   const currentStep = steps[currentStepIndex];
   const maxValue = Math.max(...(currentStep?.array || array), 1);
 
+  // Redirect DP algorithms to the DP visualizer
+  useEffect(() => {
+    if (isDPAlgorithm && algorithmId) {
+      router.replace(`/visualizer/dp?algorithm=${algorithmId}` as any);
+    }
+  }, [isDPAlgorithm, algorithmId, router]);
+
   // Initialize algorithm
   useEffect(() => {
-    if (algorithm) {
+    if (algorithm && !isDPAlgorithm) {
       resetVisualization();
     }
-  }, [algorithmId]);
+  }, [algorithmId, isDPAlgorithm]);
 
   const resetVisualization = useCallback((customArray?: number[], customTarget?: number) => {
     let newArray: number[];
@@ -597,10 +603,17 @@ export default function VisualizerScreen() {
     return 'default';
   };
 
-  // Redirect to DP visualizer for DP algorithms (after all hooks)
+  // Show loading state while redirecting to DP visualizer
   if (isDPAlgorithm) {
-    // Use proper redirect with params
-    return <Redirect href={`/visualizer/dp?algorithm=${algorithmId}` as any} />;
+    return (
+      <View style={[styles.container, { paddingTop: insets.top }]}>
+        <View style={styles.errorContainer}>
+          <Ionicons name="analytics" size={64} color={Colors.neonPurple} />
+          <Text style={[styles.errorText, { color: Colors.neonPurple }]}>Loading DP Visualizer...</Text>
+          <Text style={styles.errorSubtext}>Redirecting to the Dynamic Programming visualizer.</Text>
+        </View>
+      </View>
+    );
   }
 
   if (!algorithm) {
