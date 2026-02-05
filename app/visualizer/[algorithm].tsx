@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -298,7 +298,8 @@ export default function VisualizerScreen() {
   const algorithmId = params.algorithm || '';
 
   // Check if it's a DP algorithm - redirect will happen via useEffect
-  const isDPAlgorithm = algorithmId && typeof dpAlgorithms === 'object' && algorithmId in dpAlgorithms;
+  const isDPAlgorithm = algorithmId && algorithmId in dpAlgorithms;
+  const [isRedirecting, setIsRedirecting] = useState(isDPAlgorithm);
 
   const { visualizationSettings, setVisualizationSpeed, completeAlgorithm, addXP, recordQuizScore, userProgress } = useAppStore();
 
@@ -355,7 +356,14 @@ export default function VisualizerScreen() {
   // Redirect DP algorithms to the DP visualizer
   useEffect(() => {
     if (isDPAlgorithm && algorithmId) {
-      router.replace(`/visualizer/dp?algorithm=${algorithmId}` as any);
+      setIsRedirecting(true);
+      // Use a short delay to ensure the loading state shows before redirect
+      const timeout = setTimeout(() => {
+        router.replace(`/visualizer/dp?algorithm=${algorithmId}` as any);
+      }, 100);
+      return () => clearTimeout(timeout);
+    } else {
+      setIsRedirecting(false);
     }
   }, [isDPAlgorithm, algorithmId, router]);
 
@@ -604,7 +612,7 @@ export default function VisualizerScreen() {
   };
 
   // Show loading state while redirecting to DP visualizer
-  if (isDPAlgorithm) {
+  if (isDPAlgorithm || isRedirecting) {
     return (
       <View style={[styles.container, { paddingTop: insets.top }]}>
         <View style={styles.errorContainer}>
@@ -616,7 +624,7 @@ export default function VisualizerScreen() {
     );
   }
 
-  if (!algorithm) {
+  if (!algorithm && !isDPAlgorithm) {
     return (
       <View style={[styles.container, { paddingTop: insets.top }]}>
         <View style={styles.errorContainer}>
