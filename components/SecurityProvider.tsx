@@ -42,6 +42,8 @@ export default function SecurityProvider({ children }: SecurityProviderProps) {
   const { triggerAlert, dismissAlert, currentAlert, alerts, checkXPIntegrity } = useSecurityMonitor();
   const [showMonitor, setShowMonitor] = useState(false);
   const [sessionStartTime] = useState(Date.now());
+  const [sessionStartXP, setSessionStartXP] = useState(userProgress.totalXP);
+  const [isInitialized, setIsInitialized] = useState(false);
   const [previousProgress, setPreviousProgress] = useState({
     level: userProgress.level,
     totalXP: userProgress.totalXP,
@@ -49,13 +51,24 @@ export default function SecurityProvider({ children }: SecurityProviderProps) {
 
   // Load secure progress on mount
   useEffect(() => {
-    loadSecureProgress();
+    loadSecureProgress().then(() => {
+      // Sync state after load to avoid false positives on initial diff
+      const current = useAppStore.getState().userProgress;
+      setPreviousProgress({
+        level: current.level,
+        totalXP: current.totalXP,
+      });
+      setSessionStartXP(current.totalXP);
+      setIsInitialized(true);
+    });
   }, []);
 
   // Monitor progress changes
   useEffect(() => {
     const checkProgress = async () => {
-      // Skip if no change
+      // Skip if not initialized or no change
+      if (!isInitialized) return;
+
       if (
         userProgress.level === previousProgress.level &&
         userProgress.totalXP === previousProgress.totalXP
@@ -84,7 +97,8 @@ export default function SecurityProvider({ children }: SecurityProviderProps) {
           currentStreak: userProgress.currentStreak,
         },
         previousProgress,
-        sessionStartTime
+        sessionStartTime,
+        sessionStartXP
       );
 
       // Add any alerts to the store
