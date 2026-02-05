@@ -40,13 +40,21 @@ interface GameCard {
 
 const games: GameCard[] = [
   {
+    id: 'playground',
+    title: 'Algorithm Playground',
+    description: 'Ultimate gamified learning! Mastery tree, challenges, quests & AI coach.',
+    icon: 'game-controller',
+    gradientColors: [Colors.neonYellow, Colors.neonLime] as const,
+    route: '/playground',
+    badge: '🔥 NEW',
+  },
+  {
     id: 'battle-arena',
     title: 'Battle Arena',
     description: 'High-stakes algorithm battles! Watch two algorithms race head-to-head.',
     icon: 'flash',
     gradientColors: [Colors.neonCyan, Colors.neonPurple] as const,
     route: '/game/battle-arena',
-    badge: 'NEW',
   },
   {
     id: 'the-sorter',
