@@ -50,7 +50,8 @@ export const analyzeXPGain = (
   currentXP: number,
   previousXP: number,
   xpGained: number,
-  sessionStartTime: number
+  sessionStartTime: number,
+  sessionStartXP?: number
 ): SecurityAnalysisResult => {
   const sessionDurationHours = (Date.now() - sessionStartTime) / (1000 * 60 * 60);
 
@@ -77,28 +78,37 @@ export const analyzeXPGain = (
   }
 
   // Check session rate limit
-  if (sessionDurationHours > 0) {
-    const sessionXP = currentXP - previousXP;
-    const xpPerHour = sessionXP / sessionDurationHours;
+  // Only check if session has been running for at least 30 minutes to avoid false positives
+  // during short intensive gameplay sessions
+  if (sessionDurationHours > (30 / 60)) {
+    // Calculate total session XP
+    // If sessionStartXP is provided, use it. Otherwise use previousXP (fallback to interval)
+    const effectiveStartXP = sessionStartXP !== undefined ? sessionStartXP : previousXP;
+    const sessionXP = currentXP - effectiveStartXP;
 
-    if (xpPerHour > THRESHOLDS.MAX_XP_PER_HOUR * 2) {
-      return {
-        isSuspicious: true,
-        threatLevel: 'high',
-        reason: `ABNORMAL XP RATE: ${Math.round(xpPerHour)} XP/hr (expected max: ${THRESHOLDS.MAX_XP_PER_HOUR})`,
-        recommendation: 'Automated tool or exploit suspected',
-        shouldBlock: true,
-      };
-    }
+    // Only enforce rate limit if gained substantial XP (buffer for lucky starts)
+    if (sessionXP > 500) {
+      const xpPerHour = sessionXP / sessionDurationHours;
 
-    if (xpPerHour > THRESHOLDS.MAX_XP_PER_HOUR) {
-      return {
-        isSuspicious: true,
-        threatLevel: 'medium',
-        reason: `HIGH XP EARNING RATE: ${Math.round(xpPerHour)} XP/hr`,
-        recommendation: 'Monitor for continued suspicious activity',
-        shouldBlock: false,
-      };
+      if (xpPerHour > THRESHOLDS.MAX_XP_PER_HOUR * 2) {
+        return {
+          isSuspicious: true,
+          threatLevel: 'high',
+          reason: `ABNORMAL XP RATE: ${Math.round(xpPerHour)} XP/hr (expected max: ${THRESHOLDS.MAX_XP_PER_HOUR})`,
+          recommendation: 'Automated tool or exploit suspected',
+          shouldBlock: true,
+        };
+      }
+
+      if (xpPerHour > THRESHOLDS.MAX_XP_PER_HOUR) {
+        return {
+          isSuspicious: true,
+          threatLevel: 'medium',
+          reason: `HIGH XP EARNING RATE: ${Math.round(xpPerHour)} XP/hr`,
+          recommendation: 'Monitor for continued suspicious activity',
+          shouldBlock: false,
+        };
+      }
     }
   }
 
@@ -284,7 +294,8 @@ export const performSecurityCheck = async (
     level: number;
     totalXP: number;
   },
-  sessionStartTime: number
+  sessionStartTime: number,
+  sessionStartXP?: number
 ): Promise<{
   shouldProceed: boolean;
   alerts: SecurityAlert[];
@@ -297,7 +308,8 @@ export const performSecurityCheck = async (
     currentState.totalXP,
     previousState.totalXP,
     xpGained,
-    sessionStartTime
+    sessionStartTime,
+    sessionStartXP
   );
 
   if (xpResult.isSuspicious) {
