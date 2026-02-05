@@ -566,3 +566,262 @@ export function generateRandomObstacles(
 
   return obstacles;
 }
+
+// Maze Generation using Recursive Backtracking
+export function generateMaze(
+  rows: number,
+  cols: number,
+  start: { row: number; col: number },
+  end: { row: number; col: number },
+  density: 'light' | 'medium' | 'heavy' = 'medium'
+): { row: number; col: number }[] {
+  const obstacles: { row: number; col: number }[] = [];
+  const visited = new Set<string>();
+
+  // Create initial maze grid (all walls)
+  const maze: boolean[][] = [];
+  for (let r = 0; r < rows; r++) {
+    maze[r] = [];
+    for (let c = 0; c < cols; c++) {
+      maze[r][c] = true; // true = wall
+    }
+  }
+
+  // Carve passages using recursive backtracking
+  const stack: { row: number; col: number }[] = [];
+  const startCarve = { row: 1, col: 1 };
+  stack.push(startCarve);
+  maze[startCarve.row][startCarve.col] = false;
+  visited.add(`${startCarve.row},${startCarve.col}`);
+
+  const directions = [
+    { dr: -2, dc: 0 },
+    { dr: 2, dc: 0 },
+    { dr: 0, dc: -2 },
+    { dr: 0, dc: 2 },
+  ];
+
+  while (stack.length > 0) {
+    const current = stack[stack.length - 1];
+
+    // Get unvisited neighbors
+    const neighbors: { row: number; col: number; wallRow: number; wallCol: number }[] = [];
+    for (const dir of directions) {
+      const newRow = current.row + dir.dr;
+      const newCol = current.col + dir.dc;
+      const wallRow = current.row + dir.dr / 2;
+      const wallCol = current.col + dir.dc / 2;
+
+      if (newRow > 0 && newRow < rows - 1 && newCol > 0 && newCol < cols - 1) {
+        if (!visited.has(`${newRow},${newCol}`)) {
+          neighbors.push({ row: newRow, col: newCol, wallRow, wallCol });
+        }
+      }
+    }
+
+    if (neighbors.length > 0) {
+      // Choose random neighbor
+      const next = neighbors[Math.floor(Math.random() * neighbors.length)];
+      maze[next.wallRow][next.wallCol] = false;
+      maze[next.row][next.col] = false;
+      visited.add(`${next.row},${next.col}`);
+      stack.push({ row: next.row, col: next.col });
+    } else {
+      stack.pop();
+    }
+  }
+
+  // Clear start and end areas
+  const clearRadius = 1;
+  for (let dr = -clearRadius; dr <= clearRadius; dr++) {
+    for (let dc = -clearRadius; dc <= clearRadius; dc++) {
+      const sr = start.row + dr;
+      const sc = start.col + dc;
+      const er = end.row + dr;
+      const ec = end.col + dc;
+      if (sr >= 0 && sr < rows && sc >= 0 && sc < cols) maze[sr][sc] = false;
+      if (er >= 0 && er < rows && ec >= 0 && ec < cols) maze[er][ec] = false;
+    }
+  }
+
+  // Ensure path exists by clearing diagonal corridor if needed
+  maze[start.row][start.col] = false;
+  maze[end.row][end.col] = false;
+
+  // Add some random openings based on density
+  const openingChance = density === 'light' ? 0.5 : density === 'medium' ? 0.3 : 0.15;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (maze[r][c] && Math.random() < openingChance) {
+        maze[r][c] = false;
+      }
+    }
+  }
+
+  // Convert to obstacles array
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (maze[r][c] && !(r === start.row && c === start.col) && !(r === end.row && c === end.col)) {
+        obstacles.push({ row: r, col: c });
+      }
+    }
+  }
+
+  return obstacles;
+}
+
+// Pre-defined level configurations
+export interface LevelConfig {
+  id: number;
+  name: string;
+  description: string;
+  difficulty: 'easy' | 'medium' | 'hard';
+  recommendedAlgorithm: PathfindingAlgorithmKey;
+  obstacles: { row: number; col: number }[];
+  gridSize: number;
+  xpReward: number;
+}
+
+export const levels: LevelConfig[] = [
+  {
+    id: 1,
+    name: 'First Steps',
+    description: 'A simple maze to learn the basics. BFS works great here.',
+    difficulty: 'easy',
+    recommendedAlgorithm: 'bfs',
+    gridSize: 10,
+    xpReward: 20,
+    obstacles: [
+      { row: 2, col: 0 }, { row: 2, col: 1 }, { row: 2, col: 2 },
+      { row: 4, col: 7 }, { row: 4, col: 8 }, { row: 4, col: 9 },
+      { row: 6, col: 2 }, { row: 6, col: 3 }, { row: 6, col: 4 },
+      { row: 7, col: 4 },
+    ],
+  },
+  {
+    id: 2,
+    name: 'The Corridor',
+    description: 'A long winding path. Watch how different algorithms explore!',
+    difficulty: 'easy',
+    recommendedAlgorithm: 'astar',
+    gridSize: 10,
+    xpReward: 25,
+    obstacles: [
+      { row: 0, col: 2 }, { row: 1, col: 2 }, { row: 2, col: 2 }, { row: 3, col: 2 }, { row: 4, col: 2 },
+      { row: 5, col: 2 }, { row: 6, col: 2 }, { row: 8, col: 2 },
+      { row: 8, col: 3 }, { row: 8, col: 4 }, { row: 8, col: 5 }, { row: 8, col: 6 }, { row: 8, col: 7 },
+      { row: 1, col: 4 }, { row: 2, col: 4 }, { row: 3, col: 4 }, { row: 4, col: 4 }, { row: 5, col: 4 }, { row: 6, col: 4 },
+      { row: 1, col: 6 }, { row: 2, col: 6 }, { row: 3, col: 6 }, { row: 4, col: 6 }, { row: 5, col: 6 }, { row: 6, col: 6 },
+    ],
+  },
+  {
+    id: 3,
+    name: 'Weighted Choice',
+    description: 'Multiple paths available. A* uses heuristics to choose wisely.',
+    difficulty: 'medium',
+    recommendedAlgorithm: 'astar',
+    gridSize: 10,
+    xpReward: 35,
+    obstacles: [
+      { row: 3, col: 3 }, { row: 3, col: 4 }, { row: 3, col: 5 },
+      { row: 4, col: 3 }, { row: 5, col: 3 },
+      { row: 6, col: 5 }, { row: 6, col: 6 }, { row: 6, col: 7 },
+      { row: 7, col: 7 }, { row: 8, col: 7 },
+      { row: 1, col: 7 }, { row: 1, col: 8 },
+      { row: 2, col: 1 }, { row: 3, col: 1 },
+      { row: 5, col: 8 }, { row: 5, col: 9 },
+    ],
+  },
+  {
+    id: 4,
+    name: 'The Spiral',
+    description: 'A spiral maze. Watch how BFS explores layer by layer.',
+    difficulty: 'medium',
+    recommendedAlgorithm: 'bfs',
+    gridSize: 10,
+    xpReward: 40,
+    obstacles: [
+      // Outer wall with gap
+      { row: 1, col: 1 }, { row: 1, col: 2 }, { row: 1, col: 3 }, { row: 1, col: 4 }, { row: 1, col: 5 }, { row: 1, col: 6 }, { row: 1, col: 7 }, { row: 1, col: 8 },
+      { row: 2, col: 8 }, { row: 3, col: 8 }, { row: 4, col: 8 }, { row: 5, col: 8 }, { row: 6, col: 8 }, { row: 7, col: 8 },
+      { row: 7, col: 2 }, { row: 7, col: 3 }, { row: 7, col: 4 }, { row: 7, col: 5 }, { row: 7, col: 6 }, { row: 7, col: 7 },
+      { row: 3, col: 2 }, { row: 4, col: 2 }, { row: 5, col: 2 }, { row: 6, col: 2 },
+      // Inner wall
+      { row: 3, col: 4 }, { row: 3, col: 5 }, { row: 3, col: 6 },
+      { row: 4, col: 6 }, { row: 5, col: 6 },
+      { row: 5, col: 4 }, { row: 5, col: 5 },
+    ],
+  },
+  {
+    id: 5,
+    name: 'Dead Ends',
+    description: 'Many dead ends to trap inefficient algorithms. Dijkstra shines here.',
+    difficulty: 'medium',
+    recommendedAlgorithm: 'dijkstra',
+    gridSize: 10,
+    xpReward: 45,
+    obstacles: [
+      { row: 0, col: 3 }, { row: 1, col: 3 }, { row: 2, col: 3 },
+      { row: 2, col: 5 }, { row: 3, col: 5 }, { row: 4, col: 5 }, { row: 5, col: 5 },
+      { row: 5, col: 3 }, { row: 6, col: 3 }, { row: 7, col: 3 },
+      { row: 4, col: 7 }, { row: 5, col: 7 }, { row: 6, col: 7 }, { row: 7, col: 7 }, { row: 8, col: 7 },
+      { row: 2, col: 7 }, { row: 2, col: 8 }, { row: 2, col: 9 },
+      { row: 8, col: 1 }, { row: 8, col: 2 }, { row: 8, col: 3 },
+      { row: 4, col: 1 },
+      { row: 6, col: 9 },
+    ],
+  },
+  {
+    id: 6,
+    name: 'The Gauntlet',
+    description: 'A challenging maze with narrow passages. Only the best algorithms prevail.',
+    difficulty: 'hard',
+    recommendedAlgorithm: 'astar',
+    gridSize: 10,
+    xpReward: 60,
+    obstacles: [
+      // Dense obstacles
+      { row: 1, col: 1 }, { row: 1, col: 3 }, { row: 1, col: 5 }, { row: 1, col: 7 },
+      { row: 2, col: 2 }, { row: 2, col: 4 }, { row: 2, col: 6 }, { row: 2, col: 8 },
+      { row: 3, col: 1 }, { row: 3, col: 3 }, { row: 3, col: 5 }, { row: 3, col: 7 },
+      { row: 4, col: 0 }, { row: 4, col: 2 }, { row: 4, col: 4 }, { row: 4, col: 6 }, { row: 4, col: 8 },
+      { row: 5, col: 1 }, { row: 5, col: 3 }, { row: 5, col: 5 }, { row: 5, col: 7 }, { row: 5, col: 9 },
+      { row: 6, col: 2 }, { row: 6, col: 4 }, { row: 6, col: 6 }, { row: 6, col: 8 },
+      { row: 7, col: 1 }, { row: 7, col: 3 }, { row: 7, col: 5 }, { row: 7, col: 7 },
+      { row: 8, col: 2 }, { row: 8, col: 4 }, { row: 8, col: 6 },
+    ],
+  },
+  {
+    id: 7,
+    name: 'Open Field',
+    description: 'Few obstacles but spread out. Compare how A* vs BFS differ in open spaces.',
+    difficulty: 'easy',
+    recommendedAlgorithm: 'astar',
+    gridSize: 10,
+    xpReward: 25,
+    obstacles: [
+      { row: 4, col: 4 }, { row: 4, col: 5 }, { row: 5, col: 4 }, { row: 5, col: 5 },
+      { row: 2, col: 7 },
+      { row: 7, col: 2 },
+    ],
+  },
+  {
+    id: 8,
+    name: 'The Labyrinth',
+    description: 'A complex labyrinth. Test your understanding of all algorithms!',
+    difficulty: 'hard',
+    recommendedAlgorithm: 'astar',
+    gridSize: 10,
+    xpReward: 75,
+    obstacles: [
+      { row: 0, col: 2 }, { row: 1, col: 2 }, { row: 2, col: 2 }, { row: 2, col: 3 }, { row: 2, col: 4 },
+      { row: 4, col: 0 }, { row: 4, col: 1 }, { row: 4, col: 2 }, { row: 4, col: 4 }, { row: 4, col: 5 }, { row: 4, col: 6 },
+      { row: 2, col: 6 }, { row: 3, col: 6 }, { row: 5, col: 6 }, { row: 6, col: 6 },
+      { row: 6, col: 2 }, { row: 6, col: 3 }, { row: 6, col: 4 }, { row: 7, col: 4 }, { row: 8, col: 4 },
+      { row: 0, col: 8 }, { row: 1, col: 8 }, { row: 2, col: 8 }, { row: 3, col: 8 },
+      { row: 6, col: 8 }, { row: 7, col: 8 }, { row: 8, col: 6 }, { row: 8, col: 7 },
+      { row: 1, col: 4 }, { row: 1, col: 5 },
+      { row: 8, col: 1 }, { row: 8, col: 2 },
+    ],
+  },
+];
