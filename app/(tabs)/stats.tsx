@@ -9,8 +9,9 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
+import { Colors, Spacing, FontSizes, BorderRadius } from '@/constants/theme';
 import { useAppStore } from '@/store/useAppStore';
+import CyberBackground from '@/components/CyberBackground';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -70,11 +71,11 @@ function CategoryProgress() {
   const { completedAlgorithms, skillNodes } = useAppStore((state) => state.userProgress);
 
   const categories = [
-    { id: 'sorting', name: 'Sorting', color: Colors.alertCoral, total: 5 },
-    { id: 'searching', name: 'Searching', color: Colors.accent, total: 2 },
-    { id: 'graphs', name: 'Graphs', color: Colors.logicGold, total: 4 },
-    { id: 'dynamic-programming', name: 'Dynamic Programming', color: Colors.info, total: 2 },
-    { id: 'greedy', name: 'Greedy', color: Colors.success, total: 2 },
+    { id: 'sorting', name: 'Sorting', color: Colors.neonPink, total: 5 },
+    { id: 'searching', name: 'Searching', color: Colors.neonCyan, total: 2 },
+    { id: 'graphs', name: 'Graphs', color: Colors.neonYellow, total: 4 },
+    { id: 'dynamic-programming', name: 'Dynamic Programming', color: Colors.neonPurple, total: 2 },
+    { id: 'greedy', name: 'Greedy', color: Colors.neonLime, total: 2 },
   ];
 
   return (
@@ -243,6 +244,9 @@ export default function StatsScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
+      {/* Cyber Background */}
+      <CyberBackground showGrid showParticles={false} showMatrix={false} intensity="low" />
+
       {/* Header */}
       <Animated.View entering={FadeInDown.delay(0)} style={styles.header}>
         <Text style={styles.title}>Stats</Text>
@@ -311,11 +315,16 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.md,
+    zIndex: 10,
   },
   title: {
     fontSize: FontSizes.title,
     fontWeight: '700',
     color: Colors.textPrimary,
+    textShadowColor: Colors.neonCyan,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+    letterSpacing: 1,
   },
   subtitle: {
     fontSize: FontSizes.md,
@@ -340,7 +349,13 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.xl,
     padding: Spacing.md,
     margin: Spacing.xs,
-    ...Shadows.small,
+    borderWidth: 1,
+    borderColor: Colors.neonBorderCyan,
+    shadowColor: Colors.neonCyan,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 3,
   },
   statIconContainer: {
     width: 44,
@@ -370,17 +385,27 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: FontSizes.xl,
-    fontWeight: '600',
+    fontWeight: '700',
     color: Colors.textPrimary,
     marginBottom: Spacing.md,
     marginTop: Spacing.lg,
+    textShadowColor: Colors.neonCyan,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 6,
+    letterSpacing: 0.5,
   },
   xpCard: {
     backgroundColor: Colors.cardBackground,
     borderRadius: BorderRadius.xl,
     padding: Spacing.lg,
     marginTop: Spacing.lg,
-    ...Shadows.small,
+    borderWidth: 1,
+    borderColor: Colors.neonBorderCyan,
+    shadowColor: Colors.neonCyan,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 3,
   },
   xpHeader: {
     flexDirection: 'row',
@@ -389,10 +414,15 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
   xpLevelBadge: {
-    backgroundColor: Colors.accent,
+    backgroundColor: Colors.neonCyan,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.xs,
     borderRadius: BorderRadius.full,
+    shadowColor: Colors.neonCyan,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
+    elevation: 3,
   },
   xpLevelText: {
     fontSize: FontSizes.sm,
@@ -414,8 +444,12 @@ const styles = StyleSheet.create({
   },
   xpProgressFill: {
     height: '100%',
-    backgroundColor: Colors.accent,
+    backgroundColor: Colors.neonCyan,
     borderRadius: BorderRadius.full,
+    shadowColor: Colors.neonCyan,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.6,
+    shadowRadius: 4,
   },
   xpProgressText: {
     fontSize: FontSizes.sm,
@@ -429,7 +463,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.cardBackground,
     borderRadius: BorderRadius.xl,
     padding: Spacing.lg,
-    ...Shadows.small,
+    borderWidth: 1,
+    borderColor: Colors.neonBorderCyan,
   },
   progressBarContainer: {
     marginBottom: Spacing.md,
@@ -468,7 +503,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.cardBackground,
     borderRadius: BorderRadius.xl,
     padding: Spacing.lg,
-    ...Shadows.small,
+    borderWidth: 1,
+    borderColor: Colors.neonBorderCyan,
   },
   activityBarContainer: {
     flex: 1,
@@ -484,8 +520,12 @@ const styles = StyleSheet.create({
   },
   activityBar: {
     width: '100%',
-    backgroundColor: Colors.accent,
+    backgroundColor: Colors.neonCyan,
     borderRadius: BorderRadius.sm,
+    shadowColor: Colors.neonCyan,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.6,
+    shadowRadius: 4,
   },
   activityDayLabel: {
     fontSize: FontSizes.xs,
@@ -508,7 +548,8 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
     margin: Spacing.xs,
     alignItems: 'center',
-    ...Shadows.small,
+    borderWidth: 1,
+    borderColor: Colors.neonBorderCyan,
   },
   achievementCardLocked: {
     opacity: 0.5,

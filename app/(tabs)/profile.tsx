@@ -7,17 +7,20 @@ import {
   TouchableOpacity,
   Switch,
   Alert,
+  Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
+import { Colors, Spacing, FontSizes, BorderRadius } from '@/constants/theme';
 import { useAppStore } from '@/store/useAppStore';
 import { MasteryBadge } from '@/components/XPGainAnimation';
 import { getMasteryColor } from '@/utils/quizData';
 import { useAuth } from '@fastshot/auth';
+import CyberBackground from '@/components/CyberBackground';
 
 interface SettingItemProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -213,6 +216,9 @@ export default function ProfileScreen() {
   const [notifications, setNotifications] = React.useState(true);
 
   const handleResetProgress = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+    }
     Alert.alert(
       'Reset Progress',
       'Are you sure you want to reset all your progress? This action cannot be undone.',
@@ -221,14 +227,29 @@ export default function ProfileScreen() {
         {
           text: 'Reset',
           style: 'destructive',
-          onPress: resetProgress,
+          onPress: () => {
+            if (Platform.OS !== 'web') {
+              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            }
+            resetProgress();
+          },
         },
       ]
     );
   };
 
+  const handleNavigation = (route: string) => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    router.push(route as any);
+  };
+
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
+      {/* Cyber Background */}
+      <CyberBackground showGrid showParticles={false} showMatrix={false} intensity="low" />
+
       {/* Header */}
       <Animated.View entering={FadeInDown.delay(0)} style={styles.header}>
         <Text style={styles.title}>Profile</Text>
@@ -346,22 +367,22 @@ export default function ProfileScreen() {
               icon="analytics"
               title="Mastery Dashboard"
               subtitle="View your progress and achievements"
-              color={Colors.electricPurple}
-              onPress={() => router.push('/dashboard')}
+              color={Colors.neonPurple}
+              onPress={() => handleNavigation('/dashboard')}
             />
             <SettingItem
               icon="book"
               title="Cheat Sheet"
               subtitle="Big-O reference and when to use"
-              color={Colors.logicGold}
-              onPress={() => router.push('/cheatsheet')}
+              color={Colors.neonYellow}
+              onPress={() => handleNavigation('/cheatsheet')}
             />
             <SettingItem
               icon="trophy"
               title="Leaderboard"
               subtitle="See top algorithm learners"
-              color={Colors.alertCoral}
-              onPress={() => router.push('/leaderboard')}
+              color={Colors.neonPink}
+              onPress={() => handleNavigation('/leaderboard')}
             />
           </View>
         </Animated.View>
@@ -374,8 +395,8 @@ export default function ProfileScreen() {
               icon="chatbubbles"
               title="AI Tutor"
               subtitle="Get help from Algorithm Tutor"
-              color={Colors.accent}
-              onPress={() => router.push('/tutor')}
+              color={Colors.neonCyan}
+              onPress={() => handleNavigation('/tutor')}
             />
             <SettingItem
               icon="help-circle"
@@ -420,11 +441,16 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.md,
+    zIndex: 10,
   },
   title: {
     fontSize: FontSizes.title,
     fontWeight: '700',
     color: Colors.textPrimary,
+    textShadowColor: Colors.neonCyan,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+    letterSpacing: 1,
   },
   scrollView: {
     flex: 1,
@@ -445,11 +471,16 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: Colors.accent + '20',
+    backgroundColor: Colors.neonCyan + '20',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: Colors.accent,
+    borderColor: Colors.neonCyan,
+    shadowColor: Colors.neonCyan,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 5,
   },
   levelBadge: {
     position: 'absolute',
@@ -458,11 +489,16 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: Colors.logicGold,
+    backgroundColor: Colors.neonYellow,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
     borderColor: Colors.background,
+    shadowColor: Colors.neonYellow,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
+    elevation: 3,
   },
   levelBadgeText: {
     fontSize: FontSizes.sm,
@@ -485,7 +521,13 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.xl,
     padding: Spacing.lg,
     marginBottom: Spacing.lg,
-    ...Shadows.small,
+    borderWidth: 1,
+    borderColor: Colors.neonBorderCyan,
+    shadowColor: Colors.neonCyan,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 3,
   },
   quickStatItem: {
     flex: 1,
@@ -519,7 +561,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.cardBackground,
     borderRadius: BorderRadius.xl,
     overflow: 'hidden',
-    ...Shadows.small,
+    borderWidth: 1,
+    borderColor: Colors.neonBorderCyan,
   },
   settingItem: {
     flexDirection: 'row',
@@ -569,7 +612,10 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.accent,
+    color: Colors.neonCyan,
+    textShadowColor: Colors.neonCyan,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 6,
   },
   appVersion: {
     fontSize: FontSizes.sm,
@@ -589,7 +635,13 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.cardBackground,
     borderRadius: BorderRadius.xl,
     overflow: 'hidden',
-    ...Shadows.small,
+    borderWidth: 1,
+    borderColor: Colors.neonYellow + '30',
+    shadowColor: Colors.neonYellow,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
   },
   masterySummary: {
     flexDirection: 'row',
@@ -651,7 +703,7 @@ const styles = StyleSheet.create({
   },
   masteryMoreText: {
     fontSize: FontSizes.sm,
-    color: Colors.accent,
+    color: Colors.neonCyan,
     textAlign: 'center',
     marginTop: Spacing.md,
   },
@@ -662,12 +714,14 @@ const styles = StyleSheet.create({
     marginTop: Spacing.sm,
     paddingVertical: Spacing.xs,
     paddingHorizontal: Spacing.md,
-    backgroundColor: Colors.accent + '15',
+    backgroundColor: Colors.neonCyan + '15',
     borderRadius: BorderRadius.full,
+    borderWidth: 1,
+    borderColor: Colors.neonCyan + '30',
   },
   signInPromptText: {
     fontSize: FontSizes.sm,
-    color: Colors.accent,
+    color: Colors.neonCyan,
     fontWeight: '500',
   },
 });

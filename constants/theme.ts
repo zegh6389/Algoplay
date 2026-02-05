@@ -1,105 +1,121 @@
-// Algoplay Theme Constants - One Dark Pro Theme
+// Algoplay Theme Constants - Cyber-Coder Theme
+// High-energy neon aesthetic with deep space backgrounds
+
 export const Colors = {
-  // One Dark Pro - Primary Backgrounds
-  background: '#282c34', // Deep charcoal - main background
-  backgroundDark: '#21252b', // Darker variant
-  backgroundLight: '#3d4451', // Slightly lighter charcoal
+  // Cyber-Coder - Primary Backgrounds (Deep Space)
+  background: '#0a0e17', // Deep space black
+  backgroundDark: '#050810', // Near-black
+  backgroundLight: '#121a2d', // Midnight navy
 
-  // One Dark Pro - Surface/Cards
-  surface: '#3d4451', // Slightly lighter charcoal for cards
-  surfaceDark: '#2c313a', // Darker surface variant
-  surfaceLight: '#4b5263', // Lighter surface
+  // Cyber-Coder - Surface/Cards (Glass-morphism base)
+  surface: '#0f1629', // Dark navy surface
+  surfaceDark: '#080c18', // Darker surface variant
+  surfaceLight: '#1a2744', // Slightly lighter surface
 
-  // One Dark Pro - Typography
-  textPrimary: '#abb2bf', // Light gray - primary text
-  textSecondary: '#5c6370', // Muted gray - secondary text
-  textMuted: '#4b5263', // Even more muted
+  // Cyber-Coder - Typography
+  textPrimary: '#e4ecff', // Bright cool white
+  textSecondary: '#6b7a99', // Muted blue-gray
+  textMuted: '#3d4d6b', // Dim blue-gray
   white: '#FFFFFF',
 
-  // One Dark Pro - Accent Colors
-  accent: '#61afef', // Bright blue - primary accent
-  accentDark: '#528bbd', // Darker blue
-  accentLight: '#8bc5f4', // Lighter blue
+  // Cyber-Coder - Neon Accent Colors
+  accent: '#00f0ff', // Electric Cyan - primary accent
+  accentDark: '#00b8c9', // Darker cyan
+  accentLight: '#66f7ff', // Lighter cyan
 
-  accentSecondary: '#56b6c2', // Cyan - secondary accent
-  accentSecondaryDark: '#449da8', // Darker cyan
-  accentSecondaryLight: '#7ec9d2', // Lighter cyan
+  accentSecondary: '#00ff94', // Neon Lime - secondary accent
+  accentSecondaryDark: '#00cc77', // Darker lime
+  accentSecondaryLight: '#66ffba', // Lighter lime
 
-  // One Dark Pro - Semantic/Status Colors
-  success: '#98c379', // Green
-  successDark: '#7ba35e', // Darker green
-  successLight: '#b2d49a', // Lighter green
+  // Cyber-Coder - Semantic/Status Colors
+  success: '#00ff94', // Neon green/lime
+  successDark: '#00cc77',
+  successLight: '#66ffba',
 
-  warning: '#e5c07b', // Yellow/Gold
-  warningDark: '#c9a45c', // Darker gold
-  warningLight: '#f0d49b', // Lighter gold
+  warning: '#ffcc00', // Neon yellow
+  warningDark: '#cc9900',
+  warningLight: '#ffe066',
 
-  error: '#e06c75', // Red/Coral
-  errorDark: '#c4565e', // Darker red
-  errorLight: '#e99099', // Lighter red
+  error: '#ff3d71', // Neon pink/red
+  errorDark: '#d62d5c',
+  errorLight: '#ff7a9c',
 
-  info: '#61afef', // Same as accent (blue)
+  info: '#00f0ff', // Same as accent (cyan)
 
-  // One Dark Pro - Syntax Highlighting Colors (for code)
-  syntaxKeyword: '#ff79c6', // Pink - keywords
-  syntaxString: '#a6e3a1', // Green - strings
-  syntaxNumber: '#f9e2af', // Yellow - numbers
-  syntaxComment: '#6272a4', // Gray-blue - comments
-  syntaxFunction: '#50fa7b', // Bright green - functions
-  syntaxOperator: '#ff9671', // Orange - operators
-  syntaxVariable: '#bd93f9', // Purple - variables
-  syntaxType: '#8be9fd', // Cyan - types
+  // Cyber-Coder - Neon Highlight Colors
+  neonCyan: '#00f0ff',
+  neonPurple: '#bf00ff', // Neon Purple for P2
+  neonPink: '#ff00aa',
+  neonLime: '#00ff94',
+  neonYellow: '#ffcc00',
+  neonOrange: '#ff6b00',
+
+  // Syntax Highlighting Colors (Cyber-themed)
+  syntaxKeyword: '#ff00aa', // Neon pink - keywords
+  syntaxString: '#00ff94', // Neon lime - strings
+  syntaxNumber: '#ffcc00', // Neon yellow - numbers
+  syntaxComment: '#3d5a80', // Muted blue - comments
+  syntaxFunction: '#00f0ff', // Neon cyan - functions
+  syntaxOperator: '#ff6b00', // Neon orange - operators
+  syntaxVariable: '#bf00ff', // Neon purple - variables
+  syntaxType: '#66f7ff', // Light cyan - types
 
   // Legacy color mappings (for backward compatibility)
-  midnightBlue: '#282c34',
-  midnightBlueDark: '#21252b',
-  midnightBlueLight: '#3d4451',
+  midnightBlue: '#0a0e17',
+  midnightBlueDark: '#050810',
+  midnightBlueLight: '#121a2d',
 
-  actionTeal: '#61afef', // Now mapped to accent blue
-  actionTealDark: '#528bbd',
-  actionTealLight: '#8bc5f4',
+  actionTeal: '#00f0ff', // Now mapped to neon cyan
+  actionTealDark: '#00b8c9',
+  actionTealLight: '#66f7ff',
 
-  electricPurple: '#c678dd', // One Dark Pro purple
-  electricPurpleDark: '#a855b4',
-  electricPurpleLight: '#d49be8',
+  electricPurple: '#bf00ff', // Neon purple
+  electricPurpleDark: '#9900cc',
+  electricPurpleLight: '#d966ff',
 
-  alertCoral: '#e06c75', // Now mapped to error
-  alertCoralDark: '#c4565e',
-  alertCoralLight: '#e99099',
+  alertCoral: '#ff3d71', // Now mapped to neon pink/red
+  alertCoralDark: '#d62d5c',
+  alertCoralLight: '#ff7a9c',
 
-  logicGold: '#e5c07b', // Now mapped to warning
-  logicGoldDark: '#c9a45c',
-  logicGoldLight: '#f0d49b',
+  logicGold: '#ffcc00', // Now mapped to neon yellow
+  logicGoldDark: '#cc9900',
+  logicGoldLight: '#ffe066',
 
-  // Neutral Colors (One Dark Pro palette)
-  gray100: '#e5e9f0',
-  gray200: '#d8dee9',
-  gray300: '#abb2bf',
-  gray400: '#7f848e',
-  gray500: '#5c6370',
-  gray600: '#4b5263',
-  gray700: '#3d4451',
-  gray800: '#2c313a',
+  // Neutral Colors (Cyber palette)
+  gray100: '#e4ecff',
+  gray200: '#c0cceb',
+  gray300: '#8a9cc4',
+  gray400: '#6b7a99',
+  gray500: '#4d5c7a',
+  gray600: '#3d4d6b',
+  gray700: '#1a2744',
+  gray800: '#0f1629',
 
-  // Card backgrounds
-  cardBackground: '#3d4451',
-  cardBackgroundDark: '#2c313a',
+  // Card backgrounds (Glowing glass-morphism)
+  cardBackground: 'rgba(15, 22, 41, 0.85)',
+  cardBackgroundDark: 'rgba(8, 12, 24, 0.9)',
 
   // Glass-morphism backgrounds
-  glassBackground: 'rgba(61, 68, 81, 0.8)',
-  glassBorder: 'rgba(171, 178, 191, 0.15)',
+  glassBackground: 'rgba(15, 22, 41, 0.7)',
+  glassBorder: 'rgba(0, 240, 255, 0.15)',
+  glassGlow: 'rgba(0, 240, 255, 0.3)',
+
+  // Neon border colors for glass effect
+  neonBorderCyan: 'rgba(0, 240, 255, 0.4)',
+  neonBorderPurple: 'rgba(191, 0, 255, 0.4)',
+  neonBorderLime: 'rgba(0, 255, 148, 0.4)',
 
   // Algorithm-specific colors
-  comparing: '#e5c07b', // Warning color
-  swapping: '#e06c75', // Error color
-  sorted: '#98c379', // Success color
-  active: '#61afef', // Accent color
-  visited: '#61afef', // Info blue
-  frontier: '#c678dd', // Purple
-  obstacle: '#5c6370', // Gray
-  start: '#98c379', // Success green
-  end: '#e06c75', // Error red
-  path: '#e5c07b', // Warning gold
+  comparing: '#ffcc00', // Neon yellow
+  swapping: '#ff3d71', // Neon pink
+  sorted: '#00ff94', // Neon lime
+  active: '#00f0ff', // Neon cyan
+  visited: '#00b8c9', // Darker cyan
+  frontier: '#bf00ff', // Neon purple
+  obstacle: '#3d4d6b', // Muted gray
+  start: '#00ff94', // Neon lime
+  end: '#ff3d71', // Neon pink
+  path: '#ffcc00', // Neon yellow
 };
 
 export const Spacing = {
@@ -142,25 +158,46 @@ export const BorderRadius = {
 
 export const Shadows = {
   small: {
-    shadowColor: '#000',
+    shadowColor: '#00f0ff',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.15,
     shadowRadius: 4,
     elevation: 2,
   },
   medium: {
-    shadowColor: '#000',
+    shadowColor: '#00f0ff',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.2,
     shadowRadius: 8,
     elevation: 4,
   },
   large: {
-    shadowColor: '#000',
+    shadowColor: '#00f0ff',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.25,
     shadowRadius: 16,
     elevation: 8,
+  },
+  glow: {
+    shadowColor: '#00f0ff',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 12,
+    elevation: 6,
+  },
+  glowPurple: {
+    shadowColor: '#bf00ff',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 12,
+    elevation: 6,
+  },
+  glowLime: {
+    shadowColor: '#00ff94',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 12,
+    elevation: 6,
   },
 };
 
@@ -177,72 +214,86 @@ export const AlgorithmCategories = {
     id: 'searching',
     name: 'Searching',
     icon: 'search',
-    color: Colors.accent,
+    color: Colors.neonCyan,
     algorithms: ['linear-search', 'binary-search', 'jump-search'],
   },
   sorting: {
     id: 'sorting',
     name: 'Sorting',
     icon: 'bar-chart',
-    color: Colors.alertCoral,
+    color: Colors.neonPink,
     algorithms: ['bubble-sort', 'selection-sort', 'insertion-sort', 'merge-sort', 'quick-sort', 'heap-sort'],
   },
   graphs: {
     id: 'graphs',
     name: 'Graphs',
     icon: 'git-branch',
-    color: Colors.logicGold,
+    color: Colors.neonYellow,
     algorithms: ['bfs', 'dfs', 'dijkstra', 'a-star'],
   },
   dynamicProgramming: {
     id: 'dynamic-programming',
     name: 'Dynamic Programming',
     icon: 'layers',
-    color: Colors.info,
+    color: Colors.neonCyan,
     algorithms: ['fibonacci', 'knapsack', 'longest-common-subsequence'],
   },
   greedy: {
     id: 'greedy',
     name: 'Greedy',
     icon: 'trending-up',
-    color: Colors.success,
+    color: Colors.neonLime,
     algorithms: ['activity-selection', 'huffman-coding', 'fractional-knapsack'],
   },
 };
 
 // Complexity notations
 export const ComplexityNotations = {
-  'O(1)': { label: 'O(1)', name: 'Constant', color: Colors.success },
-  'O(log n)': { label: 'O(log n)', name: 'Logarithmic', color: Colors.accent },
-  'O(n)': { label: 'O(n)', name: 'Linear', color: Colors.logicGold },
-  'O(n log n)': { label: 'O(n log n)', name: 'Linearithmic', color: Colors.warning },
-  'O(n²)': { label: 'O(n²)', name: 'Quadratic', color: Colors.alertCoral },
+  'O(1)': { label: 'O(1)', name: 'Constant', color: Colors.neonLime },
+  'O(log n)': { label: 'O(log n)', name: 'Logarithmic', color: Colors.neonCyan },
+  'O(n)': { label: 'O(n)', name: 'Linear', color: Colors.neonYellow },
+  'O(n log n)': { label: 'O(n log n)', name: 'Linearithmic', color: Colors.neonOrange },
+  'O(n²)': { label: 'O(n²)', name: 'Quadratic', color: Colors.neonPink },
   'O(2^n)': { label: 'O(2^n)', name: 'Exponential', color: Colors.error },
 };
 
-// Glass-morphism style helper
+// Glass-morphism style helper (Cyber-themed)
 export const GlassStyles = {
   container: {
     backgroundColor: Colors.glassBackground,
     borderWidth: 1,
-    borderColor: Colors.glassBorder,
+    borderColor: Colors.neonBorderCyan,
+    borderRadius: BorderRadius.xl,
+    overflow: 'hidden' as const,
+  },
+  containerPurple: {
+    backgroundColor: Colors.glassBackground,
+    borderWidth: 1,
+    borderColor: Colors.neonBorderPurple,
+    borderRadius: BorderRadius.xl,
+    overflow: 'hidden' as const,
+  },
+  containerLime: {
+    backgroundColor: Colors.glassBackground,
+    borderWidth: 1,
+    borderColor: Colors.neonBorderLime,
     borderRadius: BorderRadius.xl,
     overflow: 'hidden' as const,
   },
   containerLight: {
-    backgroundColor: 'rgba(97, 175, 239, 0.08)',
+    backgroundColor: 'rgba(0, 240, 255, 0.08)',
     borderWidth: 1,
-    borderColor: 'rgba(97, 175, 239, 0.15)',
+    borderColor: 'rgba(0, 240, 255, 0.2)',
     borderRadius: BorderRadius.xl,
     overflow: 'hidden' as const,
   },
 };
 
-// Battle Arena Colors
+// Battle Arena Colors (Cyber-themed)
 export const BattleColors = {
-  player1: Colors.accent,
-  player2: Colors.electricPurple,
-  winner: Colors.logicGold,
+  player1: Colors.neonCyan, // Electric Cyan for P1
+  player2: Colors.neonPurple, // Neon Purple for P2
+  winner: Colors.neonYellow,
   neutral: Colors.gray500,
 };
 

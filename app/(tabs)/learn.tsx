@@ -5,13 +5,16 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown, FadeInRight } from 'react-native-reanimated';
-import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
+import { Colors, Spacing, FontSizes, BorderRadius } from '@/constants/theme';
 import { useAppStore } from '@/store/useAppStore';
+import CyberBackground from '@/components/CyberBackground';
 
 interface Algorithm {
   id: string;
@@ -186,12 +189,12 @@ const algorithms: Algorithm[] = [
 ];
 
 const categories = [
-  { id: 'all', name: 'All', icon: 'apps' as const },
-  { id: 'sorting', name: 'Sorting', icon: 'bar-chart' as const, color: Colors.alertCoral },
-  { id: 'trees', name: 'Trees', icon: 'git-branch' as const, color: Colors.accent },
-  { id: 'searching', name: 'Searching', icon: 'search' as const, color: Colors.accent },
-  { id: 'graphs', name: 'Graphs', icon: 'git-network' as const, color: Colors.logicGold },
-  { id: 'dynamic-programming', name: 'DP', icon: 'layers' as const, color: Colors.info },
+  { id: 'all', name: 'All', icon: 'apps' as const, color: Colors.neonCyan },
+  { id: 'sorting', name: 'Sorting', icon: 'bar-chart' as const, color: Colors.neonPink },
+  { id: 'trees', name: 'Trees', icon: 'git-branch' as const, color: Colors.neonLime },
+  { id: 'searching', name: 'Searching', icon: 'search' as const, color: Colors.neonCyan },
+  { id: 'graphs', name: 'Graphs', icon: 'git-network' as const, color: Colors.neonYellow },
+  { id: 'dynamic-programming', name: 'DP', icon: 'layers' as const, color: Colors.neonPurple },
 ];
 
 function getDifficultyColor(difficulty: string): string {
@@ -213,6 +216,9 @@ function AlgorithmCard({ algorithm, index }: { algorithm: Algorithm; index: numb
   const isCompleted = completedAlgorithms.includes(algorithm.id);
 
   const handlePress = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
     if (algorithm.category === 'graphs') {
       router.push('/game/grid-escape');
     } else if (algorithm.category === 'trees') {
@@ -293,8 +299,18 @@ export default function LearnScreen() {
     return allAlgorithms.filter((alg) => alg.category === selectedCategory);
   }, [selectedCategory]);
 
+  const handleCategoryPress = (catId: string) => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    setSelectedCategory(catId);
+  };
+
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
+      {/* Cyber Background */}
+      <CyberBackground showGrid showParticles={false} showMatrix={false} intensity="low" />
+
       {/* Header */}
       <Animated.View entering={FadeInDown.delay(0)} style={styles.header}>
         <View style={styles.headerTop}>
@@ -304,9 +320,14 @@ export default function LearnScreen() {
           </View>
           <TouchableOpacity
             style={styles.libraryButton}
-            onPress={() => router.push('/library')}
+            onPress={() => {
+              if (Platform.OS !== 'web') {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              }
+              router.push('/library');
+            }}
           >
-            <Ionicons name="library" size={20} color={Colors.logicGold} />
+            <Ionicons name="library" size={20} color={Colors.neonYellow} />
             <Text style={styles.libraryButtonText}>Library</Text>
           </TouchableOpacity>
         </View>
@@ -327,7 +348,7 @@ export default function LearnScreen() {
                 selectedCategory === cat.id && styles.categoryTabActive,
                 selectedCategory === cat.id && cat.color && { borderColor: cat.color },
               ]}
-              onPress={() => setSelectedCategory(cat.id)}
+              onPress={() => handleCategoryPress(cat.id)}
             >
               <Ionicons
                 name={cat.icon}
@@ -370,6 +391,7 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.md,
+    zIndex: 10,
   },
   headerTop: {
     flexDirection: 'row',
@@ -380,6 +402,10 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.title,
     fontWeight: '700',
     color: Colors.textPrimary,
+    textShadowColor: Colors.neonCyan,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+    letterSpacing: 1,
   },
   subtitle: {
     fontSize: FontSizes.md,
@@ -389,23 +415,29 @@ const styles = StyleSheet.create({
   libraryButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.logicGold + '20',
+    backgroundColor: Colors.neonYellow + '20',
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.md,
     borderRadius: BorderRadius.lg,
     borderWidth: 1,
-    borderColor: Colors.logicGold + '40',
+    borderColor: Colors.neonYellow + '40',
     gap: Spacing.xs,
+    shadowColor: Colors.neonYellow,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 3,
   },
   libraryButtonText: {
     fontSize: FontSizes.sm,
     fontWeight: '600',
-    color: Colors.logicGold,
+    color: Colors.neonYellow,
   },
   categoriesContainer: {
     paddingHorizontal: Spacing.lg,
     paddingBottom: Spacing.md,
     gap: Spacing.sm,
+    zIndex: 10,
   },
   categoryTab: {
     flexDirection: 'row',
@@ -416,11 +448,16 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.cardBackground,
     marginRight: Spacing.sm,
     borderWidth: 1,
-    borderColor: 'transparent',
+    borderColor: Colors.neonBorderCyan,
   },
   categoryTabActive: {
-    backgroundColor: Colors.accent + '20',
-    borderColor: Colors.accent,
+    backgroundColor: Colors.neonCyan + '15',
+    borderColor: Colors.neonCyan,
+    shadowColor: Colors.neonCyan,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+    elevation: 3,
   },
   categoryTabText: {
     fontSize: FontSizes.sm,
@@ -429,7 +466,7 @@ const styles = StyleSheet.create({
     marginLeft: Spacing.xs,
   },
   categoryTabTextActive: {
-    color: Colors.accent,
+    color: Colors.neonCyan,
   },
   scrollView: {
     flex: 1,
@@ -443,7 +480,13 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.xl,
     padding: Spacing.lg,
     marginBottom: Spacing.md,
-    ...Shadows.small,
+    borderWidth: 1,
+    borderColor: Colors.neonBorderCyan,
+    shadowColor: Colors.neonCyan,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 3,
   },
   lockedCard: {
     opacity: 0.5,
