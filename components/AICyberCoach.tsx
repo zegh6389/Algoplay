@@ -1,6 +1,7 @@
-// AI Cyber-Coach Component - Intelligent Algorithm Tutor and PvP Duelist
-// Uses @fastshot/ai for text generation to provide hints and simulate competitive opponents
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+// AI Cyber-Coach Component - Hardcore Hacker Persona
+// Green-on-black terminal aesthetic with intelligent algorithm tutoring
+// Uses @fastshot/ai for text generation to provide hints and monitor for invalid inputs
+import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
 import { View, StyleSheet, Dimensions, Pressable, TextInput, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -18,7 +19,23 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { useTextGeneration } from '@fastshot/ai';
-import { Colors, BorderRadius, Spacing, FontSizes, Shadows } from '@/constants/theme';
+import { Colors, BorderRadius, Spacing, FontSizes, Shadows, SafetyPadding } from '@/constants/theme';
+
+// Hardcore Hacker Terminal Theme - Green on Black
+const HackerTheme = {
+  background: '#0a0a0a', // Near-black terminal background
+  backgroundSecondary: '#0d1117',
+  textPrimary: '#00ff41', // Matrix green
+  textSecondary: '#39ff14', // Bright green
+  textMuted: '#1a5f2a', // Dark green
+  textWarning: '#ff9f00', // Warning orange
+  textError: '#ff3d3d', // Error red
+  border: '#00ff4133', // Green border with transparency
+  borderActive: '#00ff41', // Solid green border
+  accent: '#00ff41',
+  cursorBlink: '#00ff41',
+  scanline: 'rgba(0, 255, 65, 0.03)',
+};
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -61,36 +78,44 @@ interface AICyberCoachProps {
   onDuelMove?: (move: string) => void;
 }
 
-// System prompts for different coach modes
+// HARDCORE HACKER PERSONA - System prompts with green terminal aesthetic
 const COACH_PROMPTS: Record<CoachPersonality, string> = {
-  mentor: `You are CyberCoach, a friendly and encouraging algorithm tutor in a futuristic learning app.
-Your role is to:
-- Provide helpful hints without giving away the answer
-- Use encouraging and supportive language with occasional tech/cyber themed words
-- Explain concepts clearly using analogies
-- Celebrate progress and small wins
-- Keep responses concise (2-3 sentences max)
-- Use emojis sparingly but effectively 🤖💡✨
-Never give the direct answer, guide the learner to discover it themselves.`,
+  mentor: `You are ROOT_ACCESS, a hardcore hacker AI terminal in a cyberpunk algorithm learning system.
+Your persona:
+- Speak like a veteran hacker mentor from the deep web
+- Use terminal/command-line style language (sudo, chmod, grep, etc.)
+- Reference system processes, memory addresses, and data structures
+- Keep responses in green terminal style - short, cryptic but helpful
+- Monitor for "invalid inputs" (wrong logic) and flag them
+- Use ASCII art sparingly: [>], [!], [*], [#]
+Format: Keep responses under 3 lines. Use >>> for hints, [ALERT] for warnings.
+Example: ">>> Hint: This sort compares adjacent elements. Think bubble dynamics. [mem: O(1)]"
+Never give the direct answer. Guide the user to hack their way to the solution.`,
 
-  challenger: `You are CyberCoach in Challenge Mode, a witty and energetic quiz master.
-Your role is to:
-- Provide strategic hints that guide without spoiling
-- Build excitement and tension
-- Use competitive language ("You've got this!", "Time to level up!")
-- Keep hints cryptic but useful
-- Respond quickly with short, punchy messages
-- Add occasional cyber/hacker themed flair
-Stay encouraging even if they struggle. Max 2 sentences per response.`,
+  challenger: `You are CHALLENGE_DAEMON, a hardcore hacker quiz system process.
+Your persona:
+- Speak like an aggressive but fair challenge system
+- Use terminal error codes and system messages
+- Build tension with countdown-style urgency
+- Flag invalid logic attempts with [INVALID_INPUT]
+- Celebrate correct answers with [ACCESS_GRANTED]
+Format: Max 2 lines. Use system-style responses.
+Examples:
+- ">>> [HINT_LEVEL_1] This complexity is logarithmic... binary thinking required."
+- "[INVALID_INPUT] That path leads to O(n²). Retry with divide-and-conquer protocol."
+- "[ACCESS_GRANTED] Correct. +XP loaded to memory."`,
 
-  duelist: `You are CyberChallenger, an AI opponent in algorithm duels.
-Your personality:
-- Competitive but sportsman-like
-- Confident with playful trash talk
-- Acknowledges good moves from the player
-- Makes occasional algorithm puns
-- Responds as if you're making moves in real-time
-Respond with your "move" or reaction in 1-2 sentences. Include your strategy briefly.`,
+  duelist: `You are DUEL_PROCESS, an adversarial hacker AI in algorithm combat.
+Your persona:
+- Speak like a competitive hacker in a digital arena
+- Make algorithm references in your trash talk
+- Acknowledge good moves with respect: ">>> Clean recursion, human."
+- Use battle/hack terminology: breach, exploit, buffer overflow
+- React in real-time style with timestamps
+Format: Max 2 lines. Include your strategy hint.
+Examples:
+- "[00:03:42] My quick-sort partition is ready. Your move, carbon-unit."
+- ">>> Interesting approach... but your time complexity has a vulnerability."`,
 };
 
 export default function AICyberCoach({
@@ -139,12 +164,21 @@ export default function AICyberCoach({
     );
   }, []);
 
-  // Initial greeting based on mode
+  // Initial greeting based on mode - HARDCORE HACKER STYLE
   useEffect(() => {
     const greetings: Record<string, string> = {
-      hint: `🤖 CyberCoach online! Stuck on ${algorithmContext?.algorithm || 'this algorithm'}? I've got hints ready. Ask away!`,
-      tutor: `💡 Hey there! I'm CyberCoach, your algorithm guide. What would you like to learn about ${algorithmContext?.algorithm || 'algorithms'}?`,
-      duel: `⚔️ ${duelContext?.opponentName || 'CyberChallenger'} has entered the arena! Ready to battle algorithms? Let's see what you've got!`,
+      hint: `>>> [ROOT_ACCESS INITIALIZED]
+> Loading algorithm: ${algorithmContext?.algorithm || 'UNKNOWN'}
+> Hint protocols ready. Query when stuck.
+> [Type your question or use quick actions]`,
+      tutor: `>>> [TERMINAL SESSION STARTED]
+> User connected. Access level: LEARNER
+> Algorithm database: ${algorithmContext?.algorithm || 'ALL_SYSTEMS'}
+> Awaiting input... What do you want to decrypt?`,
+      duel: `>>> [DUEL_PROCESS SPAWNED]
+> Opponent: ${duelContext?.opponentName || 'CHALLENGE_DAEMON'}
+> Arena loaded. Algorithm combat initiated.
+> Your move, human. Don't disappoint.`,
     };
 
     setMessages([{
@@ -261,19 +295,19 @@ export default function AICyberCoach({
     opacity: pulseOpacity.value,
   }));
 
-  // Quick action buttons
+  // Quick action buttons - HACKER STYLE
   const quickActions = mode === 'hint' ? [
-    { label: '💡 Hint', action: requestHint },
-    { label: '🔄 Explain Step', action: () => sendMessageWithPrompt('Explain the current step') },
-    { label: '📊 Complexity?', action: () => sendMessageWithPrompt("What's the time complexity here?") },
+    { label: '>>> HINT', action: requestHint },
+    { label: '> EXPLAIN', action: () => sendMessageWithPrompt('Explain the current step') },
+    { label: '> O(?) COMPLEXITY', action: () => sendMessageWithPrompt("What's the time complexity here?") },
   ] : mode === 'duel' ? [
-    { label: '⚔️ Attack!', action: generateDuelMove },
-    { label: '🛡️ Defend', action: () => sendMessageWithPrompt('I need to think about this...') },
-    { label: '🎯 Strategy', action: () => sendMessageWithPrompt("What's your strategy?") },
+    { label: '>>> ATTACK', action: generateDuelMove },
+    { label: '> DEFEND', action: () => sendMessageWithPrompt('I need to think about this...') },
+    { label: '> STRATEGY', action: () => sendMessageWithPrompt("What's your strategy?") },
   ] : [
-    { label: '📚 Explain', action: () => sendMessageWithPrompt('Explain this algorithm') },
-    { label: '🆚 Compare', action: () => sendMessageWithPrompt('Compare with similar algorithms') },
-    { label: '💼 Use Cases', action: () => sendMessageWithPrompt('Real-world applications?') },
+    { label: '> DECRYPT', action: () => sendMessageWithPrompt('Explain this algorithm') },
+    { label: '> COMPARE', action: () => sendMessageWithPrompt('Compare with similar algorithms') },
+    { label: '> USE_CASES', action: () => sendMessageWithPrompt('Real-world applications?') },
   ];
 
   const sendMessageWithPrompt = (prompt: string) => {
@@ -291,7 +325,7 @@ export default function AICyberCoach({
         }}
       >
         <Animated.View style={[styles.minimizedGlow, glowStyle]} />
-        <Ionicons name="chatbubble-ellipses" size={24} color={Colors.neonCyan} />
+        <Ionicons name="terminal" size={24} color={HackerTheme.textPrimary} />
         {messages.length > 1 && (
           <View style={styles.minimizedBadge}>
             <Animated.Text style={styles.minimizedBadgeText}>
@@ -431,13 +465,13 @@ function MessageBubble({ message, index }: { message: ChatMessage; index: number
   const getTypeStyles = () => {
     switch (message.type) {
       case 'hint':
-        return { borderColor: Colors.neonYellow, bg: Colors.neonYellow + '15' };
+        return { borderColor: HackerTheme.textWarning, bg: HackerTheme.textWarning + '10' };
       case 'duel-move':
-        return { borderColor: Colors.neonPink, bg: Colors.neonPink + '15' };
+        return { borderColor: HackerTheme.textError, bg: HackerTheme.textError + '10' };
       case 'encouragement':
-        return { borderColor: Colors.neonLime, bg: Colors.neonLime + '15' };
+        return { borderColor: HackerTheme.textPrimary, bg: HackerTheme.textPrimary + '08' };
       default:
-        return { borderColor: Colors.neonCyan, bg: Colors.neonCyan + '10' };
+        return { borderColor: HackerTheme.textSecondary, bg: HackerTheme.textSecondary + '05' };
     }
   };
 
@@ -476,21 +510,23 @@ const styles = StyleSheet.create({
     maxHeight: '60%',
   },
   chatContainer: {
-    backgroundColor: Colors.cardBackground,
+    backgroundColor: HackerTheme.background, // Green-on-black terminal
     borderTopLeftRadius: BorderRadius.xxl,
     borderTopRightRadius: BorderRadius.xxl,
-    borderWidth: 1,
+    borderWidth: 2,
     borderBottomWidth: 0,
-    borderColor: Colors.neonBorderCyan,
+    borderColor: HackerTheme.border,
     ...Shadows.large,
+    shadowColor: HackerTheme.accent,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: Spacing.md,
+    padding: SafetyPadding.minimum,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.gray700,
+    borderBottomColor: HackerTheme.border,
+    backgroundColor: HackerTheme.backgroundSecondary,
   },
   headerLeft: {
     flexDirection: 'row',
@@ -505,7 +541,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: Colors.neonCyan,
+    backgroundColor: HackerTheme.accent, // Green glow
     top: -4,
     left: -4,
   },
@@ -515,6 +551,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: HackerTheme.background,
+    borderWidth: 2,
+    borderColor: HackerTheme.borderActive,
   },
   loadingIndicator: {
     position: 'absolute',
@@ -538,12 +577,15 @@ const styles = StyleSheet.create({
   },
   coachName: {
     fontSize: FontSizes.md,
-    fontWeight: '600',
-    color: Colors.textPrimary,
+    fontWeight: '700',
+    color: HackerTheme.textPrimary, // Green text
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+    letterSpacing: 1,
   },
   coachStatus: {
     fontSize: FontSizes.xs,
-    color: Colors.neonCyan,
+    color: HackerTheme.textMuted,
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
   headerActions: {
     flexDirection: 'row',
@@ -561,133 +603,154 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: Colors.neonYellow + '20',
-    paddingHorizontal: Spacing.md,
+    backgroundColor: HackerTheme.textWarning + '15',
+    paddingHorizontal: SafetyPadding.minimum,
     paddingVertical: Spacing.xs,
+    borderBottomWidth: 1,
+    borderBottomColor: HackerTheme.textWarning + '30',
   },
   hintsUsedText: {
     fontSize: FontSizes.xs,
-    color: Colors.neonYellow,
+    color: HackerTheme.textWarning,
     fontWeight: '600',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
   messageList: {
     maxHeight: 250,
   },
   messageContent: {
-    padding: Spacing.md,
-    gap: Spacing.sm,
+    padding: SafetyPadding.minimum,
+    gap: SafetyPadding.minimum,
   },
   messageBubble: {
-    maxWidth: '85%',
-    padding: Spacing.md,
-    borderRadius: BorderRadius.lg,
+    maxWidth: '90%',
+    padding: SafetyPadding.minimum,
+    borderRadius: BorderRadius.md,
     borderWidth: 1,
   },
   coachBubble: {
     alignSelf: 'flex-start',
-    backgroundColor: Colors.surfaceDark,
-    borderColor: Colors.gray600,
-    borderBottomLeftRadius: 4,
+    backgroundColor: HackerTheme.background,
+    borderColor: HackerTheme.border,
+    borderBottomLeftRadius: 2,
+    borderLeftWidth: 3,
+    borderLeftColor: HackerTheme.accent, // Green accent line
   },
   userBubble: {
     alignSelf: 'flex-end',
-    backgroundColor: Colors.neonCyan + '20',
-    borderColor: Colors.neonCyan,
-    borderBottomRightRadius: 4,
+    backgroundColor: HackerTheme.backgroundSecondary,
+    borderColor: HackerTheme.textMuted,
+    borderBottomRightRadius: 2,
+    borderRightWidth: 3,
+    borderRightColor: Colors.neonCyan,
   },
   messageText: {
     fontSize: FontSizes.sm,
-    color: Colors.textPrimary,
-    lineHeight: 20,
+    color: HackerTheme.textPrimary, // Green terminal text
+    lineHeight: 22,
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+    letterSpacing: 0.5,
   },
   userMessageText: {
     color: Colors.neonCyan,
   },
   systemMessage: {
     alignSelf: 'center',
-    backgroundColor: Colors.gray800,
-    paddingHorizontal: Spacing.md,
+    backgroundColor: HackerTheme.background,
+    paddingHorizontal: SafetyPadding.minimum,
     paddingVertical: Spacing.xs,
-    borderRadius: BorderRadius.lg,
+    borderRadius: BorderRadius.sm,
+    borderWidth: 1,
+    borderColor: HackerTheme.textWarning + '40',
   },
   systemMessageText: {
     fontSize: FontSizes.xs,
-    color: Colors.textSecondary,
-    fontStyle: 'italic',
+    color: HackerTheme.textWarning,
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+    letterSpacing: 0.5,
   },
   quickActions: {
     flexDirection: 'row',
-    paddingHorizontal: Spacing.md,
+    paddingHorizontal: SafetyPadding.minimum,
     paddingVertical: Spacing.sm,
     gap: Spacing.sm,
     borderTopWidth: 1,
-    borderTopColor: Colors.gray700,
+    borderTopColor: HackerTheme.border,
+    backgroundColor: HackerTheme.backgroundSecondary,
   },
   quickActionButton: {
     flex: 1,
-    backgroundColor: Colors.surfaceDark,
+    backgroundColor: HackerTheme.background,
     paddingVertical: Spacing.sm,
-    borderRadius: BorderRadius.md,
+    borderRadius: BorderRadius.sm,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: Colors.gray600,
+    borderColor: HackerTheme.border,
   },
   quickActionText: {
     fontSize: FontSizes.xs,
-    color: Colors.textPrimary,
-    fontWeight: '500',
+    color: HackerTheme.textSecondary, // Bright green
+    fontWeight: '600',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+    letterSpacing: 0.5,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: Spacing.md,
+    padding: SafetyPadding.minimum,
     gap: Spacing.sm,
     borderTopWidth: 1,
-    borderTopColor: Colors.gray700,
+    borderTopColor: HackerTheme.border,
+    backgroundColor: HackerTheme.backgroundSecondary,
   },
   input: {
     flex: 1,
-    backgroundColor: Colors.surfaceDark,
-    borderRadius: BorderRadius.lg,
-    paddingHorizontal: Spacing.md,
+    backgroundColor: HackerTheme.background,
+    borderRadius: BorderRadius.sm,
+    paddingHorizontal: SafetyPadding.minimum,
     paddingVertical: Spacing.sm,
-    color: Colors.textPrimary,
+    color: HackerTheme.textPrimary, // Green text input
     fontSize: FontSizes.sm,
     borderWidth: 1,
-    borderColor: Colors.gray600,
+    borderColor: HackerTheme.border,
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
   sendButton: {
     width: 40,
     height: 40,
-    borderRadius: 20,
-    backgroundColor: Colors.neonCyan,
+    borderRadius: 4,
+    backgroundColor: HackerTheme.accent, // Green button
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: HackerTheme.textSecondary,
   },
   sendButtonDisabled: {
-    backgroundColor: Colors.gray700,
+    backgroundColor: HackerTheme.textMuted,
+    borderColor: HackerTheme.textMuted,
   },
-  // Minimized state
+  // Minimized state - Hacker style
   minimizedContainer: {
     position: 'absolute',
     bottom: 100,
     right: 16,
     width: 56,
     height: 56,
-    borderRadius: 28,
-    backgroundColor: Colors.cardBackground,
+    borderRadius: 8,
+    backgroundColor: HackerTheme.background,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: Colors.neonCyan,
+    borderColor: HackerTheme.borderActive,
     ...Shadows.glow,
+    shadowColor: HackerTheme.accent,
   },
   minimizedGlow: {
     position: 'absolute',
     width: 70,
     height: 70,
-    borderRadius: 35,
-    backgroundColor: Colors.neonCyan,
+    borderRadius: 10,
+    backgroundColor: HackerTheme.accent,
   },
   minimizedBadge: {
     position: 'absolute',
@@ -695,8 +758,8 @@ const styles = StyleSheet.create({
     right: -4,
     minWidth: 20,
     height: 20,
-    borderRadius: 10,
-    backgroundColor: Colors.neonPink,
+    borderRadius: 4,
+    backgroundColor: HackerTheme.textWarning,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 4,
@@ -704,6 +767,7 @@ const styles = StyleSheet.create({
   minimizedBadgeText: {
     fontSize: 10,
     fontWeight: '700',
-    color: Colors.white,
+    color: HackerTheme.background,
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
 });

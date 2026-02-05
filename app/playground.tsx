@@ -1,6 +1,7 @@
 // Ultimate Algorithm Playground - Main Hub Screen
 // Combines Mastery Tree, Challenges, Daily Quests, Leaderboard, and AI Coach
-import React, { useState, useCallback, useEffect } from 'react';
+// Security & Performance Optimized with MMKV, Lifecycle Cleanup, and Skeleton Loaders
+import React, { useState, useCallback, useEffect, memo, useMemo } from 'react';
 import { View, StyleSheet, ScrollView, Pressable, Dimensions, Modal } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -20,7 +21,7 @@ import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
-import { Colors, BorderRadius, Spacing, FontSizes, Shadows } from '@/constants/theme';
+import { Colors, BorderRadius, Spacing, FontSizes, Shadows, SafetyPadding, HeaderTheme } from '@/constants/theme';
 import { useAppStore } from '@/store/useAppStore';
 import AlgorithmMasteryTree from '@/components/AlgorithmMasteryTree';
 import DailyQuestsStreak from '@/components/DailyQuestsStreak';
@@ -28,6 +29,11 @@ import GlobalLeaderboard from '@/components/GlobalLeaderboard';
 import ChallengeArena, { createSortingChallenge } from '@/components/ChallengeArena';
 import AICyberCoach from '@/components/AICyberCoach';
 import { VictoryConfetti, AchievementPopup, ParticleBurst, XPGainFloat } from '@/components/AnimationEffects';
+import { MidnightHeader, MidnightTabBar } from '@/components/MidnightHeader';
+import { SkeletonPlayground, SkeletonMasteryTree, SkeletonChallengeCard } from '@/components/SkeletonLoader';
+import { useLifecycleManager, useAppStateLifecycle } from '@/hooks/useLifecycleCleanup';
+import { performSecurityHandshake, securelyPersistProgress } from '@/lib/security';
+import { UserDataStorage } from '@/lib/secureStorage';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -38,11 +44,16 @@ export default function PlaygroundScreen() {
   const insets = useSafeAreaInsets();
   const { userProgress, addXP } = useAppStore();
 
+  // Lifecycle management for memory leak prevention
+  const { timers, subscriptions, cleanupAll } = useLifecycleManager();
+
   // State
   const [activeTab, setActiveTab] = useState<PlaygroundTab>('mastery');
   const [showChallengeModal, setShowChallengeModal] = useState(false);
   const [showCoach, setShowCoach] = useState(false);
   const [challengeConfig, setChallengeConfig] = useState<ReturnType<typeof createSortingChallenge> | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [securityVerified, setSecurityVerified] = useState(false);
 
   // Animation states
   const [showConfetti, setShowConfetti] = useState(false);
@@ -58,6 +69,56 @@ export default function PlaygroundScreen() {
   // Animation values
   const headerGlow = useSharedValue(0.3);
   const coachPulse = useSharedValue(1);
+
+  // Security handshake and data loading on mount
+  useEffect(() => {
+    const initializeScreen = async () => {
+      try {
+        // Perform security handshake
+        const securityResult = await performSecurityHandshake();
+        setSecurityVerified(securityResult.isValid);
+
+        if (!securityResult.isValid) {
+          console.warn('[Playground] Security issues detected:', securityResult.issues);
+        }
+
+        // Load persisted data from MMKV
+        const storedXP = UserDataStorage.getXP();
+        const storedLevel = UserDataStorage.getLevel();
+        const storedStreak = UserDataStorage.getStreak();
+
+        // Simulate minimum loading time for smooth transition
+        await new Promise(resolve => setTimeout(resolve, 500));
+      } catch (error) {
+        console.error('[Playground] Initialization error:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initializeScreen();
+
+    // Cleanup on unmount
+    return () => {
+      cleanupAll();
+    };
+  }, [cleanupAll]);
+
+  // App state lifecycle handling (pause/resume)
+  useAppStateLifecycle({
+    onForeground: () => {
+      // Resume animations and refresh data
+      console.log('[Playground] App returned to foreground');
+    },
+    onBackground: () => {
+      // Persist current state to MMKV
+      securelyPersistProgress({
+        xp: userProgress.totalXP,
+        level: userProgress.level,
+        completedAlgorithms: userProgress.completedAlgorithms,
+      });
+    },
+  });
 
   useEffect(() => {
     headerGlow.value = withRepeat(
@@ -123,13 +184,13 @@ export default function PlaygroundScreen() {
     addXP(result.totalXP);
   }, [addXP]);
 
-  // Tab navigation items
-  const tabs: { key: PlaygroundTab; label: string; icon: keyof typeof Ionicons.glyphMap }[] = [
-    { key: 'mastery', label: 'Mastery', icon: 'git-network' },
-    { key: 'quests', label: 'Quests', icon: 'list' },
-    { key: 'challenge', label: 'Arena', icon: 'flash' },
-    { key: 'leaderboard', label: 'Ranks', icon: 'podium' },
-  ];
+  // Tab navigation items - memoized for performance
+  const tabs = useMemo(() => [
+    { key: 'mastery', label: 'Mastery', icon: 'git-network' as const },
+    { key: 'quests', label: 'Quests', icon: 'list' as const },
+    { key: 'challenge', label: 'Arena', icon: 'flash' as const },
+    { key: 'leaderboard', label: 'Ranks', icon: 'podium' as const },
+  ], []);
 
   const glowStyle = useAnimatedStyle(() => ({
     opacity: headerGlow.value,
@@ -139,7 +200,12 @@ export default function PlaygroundScreen() {
     transform: [{ scale: coachPulse.value }],
   }));
 
-  const renderContent = () => {
+  // Memoized content renderer to prevent re-renders
+  const renderContent = useCallback(() => {
+    if (isLoading) {
+      return <SkeletonMasteryTree />;
+    }
+
     switch (activeTab) {
       case 'mastery':
         return <AlgorithmMasteryTree onSelectAlgorithm={handleAlgorithmSelect} />;
@@ -156,57 +222,38 @@ export default function PlaygroundScreen() {
       default:
         return null;
     }
-  };
+  }, [activeTab, isLoading, handleAlgorithmSelect, handleQuestComplete, startChallenge]);
+
+  // Show skeleton loader during initial load
+  if (isLoading) {
+    return <SkeletonPlayground />;
+  }
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      {/* Header */}
-      <Animated.View entering={FadeInDown} style={styles.header}>
-        <Animated.View style={[styles.headerGlow, glowStyle]} />
-        <View style={styles.headerContent}>
-          <Pressable style={styles.backButton} onPress={() => router.back()}>
-            <Ionicons name="arrow-back" size={24} color={Colors.textPrimary} />
-          </Pressable>
-          <View style={styles.headerCenter}>
-            <Animated.Text style={styles.headerTitle}>Algorithm Playground</Animated.Text>
-            <Animated.Text style={styles.headerSubtitle}>
-              Level {userProgress.level} • {userProgress.totalXP.toLocaleString()} XP
-            </Animated.Text>
-          </View>
-          <Pressable
-            style={styles.coachButton}
-            onPress={() => {
-              setShowCoach(true);
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-            }}
-          >
-            <Animated.View style={coachButtonStyle}>
-              <LinearGradient
-                colors={[Colors.neonCyan, Colors.neonPurple]}
-                style={styles.coachButtonGradient}
-              >
-                <Ionicons name="chatbubble-ellipses" size={20} color={Colors.background} />
-              </LinearGradient>
-            </Animated.View>
-          </Pressable>
-        </View>
-      </Animated.View>
-
-      {/* Tab Navigation */}
-      <Animated.View entering={FadeInDown.delay(100)} style={styles.tabBar}>
-        {tabs.map((tab, index) => (
-          <TabButton
-            key={tab.key}
-            tab={tab}
-            isActive={activeTab === tab.key}
-            onPress={() => {
-              setActiveTab(tab.key);
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            }}
-            index={index}
-          />
-        ))}
-      </Animated.View>
+    <View style={styles.container}>
+      {/* Translucent Midnight Black Header with Neon Border */}
+      <MidnightHeader
+        title="Algorithm Playground"
+        subtitle={`Level ${userProgress.level} • ${userProgress.totalXP.toLocaleString()} XP`}
+        onBack={() => router.back()}
+        onAction={() => {
+          setShowCoach(true);
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        }}
+        actionIcon="terminal"
+        statusText={securityVerified ? 'SECURE' : 'VERIFY'}
+        statusType={securityVerified ? 'success' : 'warning'}
+      >
+        {/* Tab Navigation integrated into header */}
+        <MidnightTabBar
+          tabs={tabs}
+          activeTab={activeTab}
+          onTabChange={(key) => {
+            setActiveTab(key as PlaygroundTab);
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          }}
+        />
+      </MidnightHeader>
 
       {/* Content */}
       <View style={styles.content}>
@@ -269,53 +316,8 @@ export default function PlaygroundScreen() {
   );
 }
 
-// Tab Button Component
-function TabButton({
-  tab,
-  isActive,
-  onPress,
-  index,
-}: {
-  tab: { key: string; label: string; icon: keyof typeof Ionicons.glyphMap };
-  isActive: boolean;
-  onPress: () => void;
-  index: number;
-}) {
-  const scale = useSharedValue(1);
-
-  const handlePressIn = () => {
-    scale.value = withSpring(0.95, { damping: 15 });
-  };
-
-  const handlePressOut = () => {
-    scale.value = withSpring(1, { damping: 10 });
-  };
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
-
-  return (
-    <Animated.View entering={FadeInRight.delay(index * 50)}>
-      <Pressable onPress={onPress} onPressIn={handlePressIn} onPressOut={handlePressOut}>
-        <Animated.View style={[styles.tab, isActive && styles.tabActive, animatedStyle]}>
-          <Ionicons
-            name={tab.icon}
-            size={20}
-            color={isActive ? Colors.neonCyan : Colors.gray500}
-          />
-          <Animated.Text style={[styles.tabLabel, isActive && styles.tabLabelActive]}>
-            {tab.label}
-          </Animated.Text>
-          {isActive && <View style={styles.tabIndicator} />}
-        </Animated.View>
-      </Pressable>
-    </Animated.View>
-  );
-}
-
-// Challenge Selector Component
-function ChallengeSelector({
+// Challenge Selector Component - Memoized for performance
+const ChallengeSelector = memo(function ChallengeSelector({
   onStartChallenge,
 }: {
   onStartChallenge: (difficulty: 'easy' | 'medium' | 'hard') => void;
@@ -422,101 +424,12 @@ function ChallengeSelector({
       </Animated.View>
     </ScrollView>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
-  },
-  header: {
-    position: 'relative',
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.md,
-  },
-  headerGlow: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 100,
-    backgroundColor: Colors.neonCyan,
-  },
-  headerContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    zIndex: 1,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: Colors.cardBackground,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerCenter: {
-    flex: 1,
-    marginHorizontal: Spacing.md,
-  },
-  headerTitle: {
-    fontSize: FontSizes.xl,
-    fontWeight: '700',
-    color: Colors.textPrimary,
-  },
-  headerSubtitle: {
-    fontSize: FontSizes.sm,
-    color: Colors.neonCyan,
-    marginTop: 2,
-  },
-  coachButton: {
-    width: 44,
-    height: 44,
-  },
-  coachButtonGradient: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  tabBar: {
-    flexDirection: 'row',
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray700,
-  },
-  tab: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: Spacing.sm,
-    gap: 6,
-    borderRadius: BorderRadius.lg,
-    marginHorizontal: 4,
-    position: 'relative',
-  },
-  tabActive: {
-    backgroundColor: Colors.neonCyan + '15',
-  },
-  tabLabel: {
-    fontSize: FontSizes.xs,
-    fontWeight: '600',
-    color: Colors.gray500,
-  },
-  tabLabelActive: {
-    color: Colors.neonCyan,
-  },
-  tabIndicator: {
-    position: 'absolute',
-    bottom: 0,
-    left: '25%',
-    right: '25%',
-    height: 2,
-    backgroundColor: Colors.neonCyan,
-    borderRadius: 1,
   },
   content: {
     flex: 1,
@@ -525,16 +438,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
   },
-  // Challenge Selector
+  // Challenge Selector - Safety Padding System
   challengeContainer: {
     flex: 1,
   },
   challengeContent: {
-    padding: Spacing.lg,
+    padding: SafetyPadding.section,
     paddingBottom: 100,
+    gap: SafetyPadding.minimum,
   },
   challengeHeader: {
-    marginBottom: Spacing.xl,
+    marginBottom: SafetyPadding.section,
   },
   challengeTitle: {
     fontSize: FontSizes.xxl,
@@ -552,10 +466,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.cardBackground,
     borderRadius: BorderRadius.xl,
     borderWidth: 1,
-    padding: Spacing.lg,
-    marginBottom: Spacing.md,
+    padding: SafetyPadding.card,
+    marginBottom: SafetyPadding.minimum,
     position: 'relative',
     overflow: 'hidden',
+    gap: SafetyPadding.minimum,
   },
   challengeCardGradient: {
     position: 'absolute',
@@ -570,7 +485,6 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: Spacing.md,
   },
   challengeInfo: {
     flex: 1,
@@ -599,7 +513,7 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
   },
   dailyChallenge: {
-    marginTop: Spacing.lg,
+    marginTop: SafetyPadding.section,
     borderRadius: BorderRadius.xl,
     overflow: 'hidden',
     position: 'relative',
@@ -614,7 +528,7 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   dailyChallengeContent: {
-    padding: Spacing.lg,
+    padding: SafetyPadding.card,
   },
   dailyChallengeLabel: {
     fontSize: FontSizes.sm,

@@ -128,6 +128,33 @@ export const Spacing = {
   xxxl: 32,
 };
 
+// Safety Padding System - Minimum 12dp spacing to eliminate UI congestion
+export const SafetyPadding = {
+  minimum: 12, // Minimum spacing between all UI elements
+  element: 14, // Standard element spacing
+  section: 20, // Section divider spacing
+  card: 16, // Internal card padding
+  button: 12, // Button internal padding
+  icon: 8, // Icon margins
+  tree: {
+    nodeVertical: 120, // Vertical spacing between tree nodes (increased)
+    nodeSibling: 80, // Horizontal spacing between sibling nodes (increased)
+    branchLength: 60, // Connection line length (increased)
+  },
+};
+
+// Header Theme - Translucent Midnight Black with Neon Border
+export const HeaderTheme = {
+  background: 'rgba(5, 5, 5, 0.95)', // Translucent Midnight Black #050505
+  backgroundSolid: '#050505',
+  neonBorderColor: '#00f0ff', // Cyan neon border
+  neonBorderWidth: 2,
+  textPrimary: '#FFFFFF', // High-visibility white
+  textSecondary: '#FF9F00', // Warning orange
+  textAccent: '#00f0ff', // Cyan accent
+  glowOpacity: 0.3,
+};
+
 export const FontSizes = {
   xs: 10,
   sm: 12,

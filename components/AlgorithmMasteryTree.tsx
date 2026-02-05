@@ -1,6 +1,6 @@
 // Algorithm Mastery Tree - RPG-Style Skill Tree Navigation Hub
 // Hierarchical progression with locked/unlocked states and glowing effects
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, memo } from 'react';
 import { View, StyleSheet, Dimensions, ScrollView, Pressable } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -17,7 +17,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import Svg, { Line, Defs, LinearGradient as SvgGradient, Stop } from 'react-native-svg';
-import { Colors, BorderRadius, Spacing, FontSizes, Shadows } from '@/constants/theme';
+import { Colors, BorderRadius, Spacing, FontSizes, Shadows, SafetyPadding } from '@/constants/theme';
 import { useAppStore } from '@/store/useAppStore';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -197,9 +197,10 @@ const SKILL_TREE: SkillTreeNode[] = [
   },
 ];
 
+// Increased spacing for better visual clarity (Safety Padding System)
 const NODE_SIZE = 70;
-const ROW_GAP = 100;
-const COL_GAP = (SCREEN_WIDTH - 40) / 3;
+const ROW_GAP = SafetyPadding.tree.nodeVertical; // 120 - increased vertical spacing
+const COL_GAP = Math.max(SafetyPadding.tree.nodeSibling, (SCREEN_WIDTH - 60) / 3); // increased horizontal spacing
 
 const difficultyColors = {
   beginner: Colors.neonLime,
@@ -256,13 +257,14 @@ export default function AlgorithmMasteryTree({ onSelectAlgorithm }: AlgorithmMas
   }, [nodeStates]);
 
   const getNodePosition = useCallback((node: SkillTreeNode) => {
-    const x = 20 + node.position.col * COL_GAP + COL_GAP / 2 - NODE_SIZE / 2;
-    const y = 40 + node.position.row * ROW_GAP;
+    // Increased padding and spacing for Safety Padding System
+    const x = SafetyPadding.minimum + node.position.col * COL_GAP + COL_GAP / 2 - NODE_SIZE / 2;
+    const y = SafetyPadding.section + node.position.row * ROW_GAP;
     return { x, y };
   }, []);
 
   const maxRow = Math.max(...SKILL_TREE.map((n) => n.position.row));
-  const treeHeight = (maxRow + 1) * ROW_GAP + 100;
+  const treeHeight = (maxRow + 1) * ROW_GAP + SafetyPadding.section * 3; // Extra bottom padding
 
   return (
     <ScrollView
@@ -292,29 +294,33 @@ export default function AlgorithmMasteryTree({ onSelectAlgorithm }: AlgorithmMas
         {connections.map((conn, idx) => {
           const fromPos = getNodePosition(conn.from);
           const toPos = getNodePosition(conn.to);
+          // Increased branch offset for longer connection lines
+          const branchOffset = SafetyPadding.tree.branchLength / 2;
           return (
             <React.Fragment key={idx}>
+              {/* Glow effect for active connections */}
               {conn.isActive && (
                 <Line
                   x1={fromPos.x + NODE_SIZE / 2}
-                  y1={fromPos.y + NODE_SIZE}
+                  y1={fromPos.y + NODE_SIZE + branchOffset}
                   x2={toPos.x + NODE_SIZE / 2}
-                  y2={toPos.y}
+                  y2={toPos.y - branchOffset}
                   stroke={Colors.neonCyan}
-                  strokeWidth={8}
-                  strokeOpacity={0.2}
+                  strokeWidth={10}
+                  strokeOpacity={0.15}
                   strokeLinecap="round"
                 />
               )}
+              {/* Main connection line */}
               <Line
                 x1={fromPos.x + NODE_SIZE / 2}
-                y1={fromPos.y + NODE_SIZE}
+                y1={fromPos.y + NODE_SIZE + branchOffset}
                 x2={toPos.x + NODE_SIZE / 2}
-                y2={toPos.y}
+                y2={toPos.y - branchOffset}
                 stroke={conn.isActive ? Colors.neonCyan : Colors.gray600}
                 strokeWidth={conn.isActive ? 3 : 2}
                 strokeLinecap="round"
-                strokeDasharray={conn.isActive ? undefined : '5,5'}
+                strokeDasharray={conn.isActive ? undefined : '8,8'}
               />
             </React.Fragment>
           );
@@ -368,7 +374,8 @@ interface SkillNodeProps {
   onPress: () => void;
 }
 
-function SkillNode({ node, state, position, index, onPress }: SkillNodeProps) {
+// Memoized SkillNode for 60FPS animation performance
+const SkillNode = memo(function SkillNode({ node, state, position, index, onPress }: SkillNodeProps) {
   const glowOpacity = useSharedValue(0);
   const scale = useSharedValue(1);
   const encryptedPulse = useSharedValue(0);
@@ -511,7 +518,7 @@ function SkillNode({ node, state, position, index, onPress }: SkillNodeProps) {
       </Pressable>
     </Animated.View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -520,7 +527,8 @@ const styles = StyleSheet.create({
   },
   content: {
     position: 'relative',
-    paddingHorizontal: 20,
+    paddingHorizontal: SafetyPadding.section,
+    paddingBottom: SafetyPadding.section * 2, // Extra padding for legend
   },
   gridBackground: {
     ...StyleSheet.absoluteFillObject,
@@ -556,12 +564,12 @@ const styles = StyleSheet.create({
     ...Shadows.medium,
   },
   nodeLabel: {
-    marginTop: 6,
+    marginTop: SafetyPadding.icon,
     fontSize: FontSizes.xs,
     fontWeight: '600',
     color: Colors.textPrimary,
     textAlign: 'center',
-    width: NODE_SIZE + 20,
+    width: NODE_SIZE + SafetyPadding.section,
   },
   nodeLabelLocked: {
     color: Colors.gray500,
@@ -610,14 +618,14 @@ const styles = StyleSheet.create({
   },
   legend: {
     position: 'absolute',
-    bottom: 20,
-    left: 20,
-    right: 20,
+    bottom: SafetyPadding.section,
+    left: SafetyPadding.section,
+    right: SafetyPadding.section,
     backgroundColor: Colors.cardBackground,
     borderRadius: BorderRadius.lg,
     borderWidth: 1,
     borderColor: Colors.gray700,
-    padding: Spacing.md,
+    padding: SafetyPadding.card,
   },
   legendTitle: {
     fontSize: FontSizes.sm,
@@ -628,7 +636,7 @@ const styles = StyleSheet.create({
   legendItems: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: Spacing.md,
+    gap: SafetyPadding.minimum,
   },
   legendItem: {
     flexDirection: 'row',
