@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { MasteryLevel, getMasteryLevel } from '@/utils/quizData';
 
 // User Progress Types
 export interface SkillNode {
@@ -10,6 +11,34 @@ export interface SkillNode {
   xpEarned: number;
 }
 
+// Quiz Score tracking
+export interface QuizScore {
+  algorithmId: string;
+  score: number; // Percentage
+  correctAnswers: number;
+  totalQuestions: number;
+  timestamp: string;
+}
+
+// Challenge completion tracking
+export interface ChallengeCompletion {
+  challengeId: string;
+  algorithmUsed: string;
+  nodesVisited: number;
+  pathLength: number;
+  passed: boolean;
+  timestamp: string;
+}
+
+// Mastery tracking per algorithm
+export interface AlgorithmMastery {
+  algorithmId: string;
+  quizScores: number[]; // Array of percentage scores
+  masteryLevel: MasteryLevel;
+  challengesCompleted: number;
+  totalChallenges: number;
+}
+
 export interface UserProgress {
   level: number;
   totalXP: number;
@@ -18,6 +47,10 @@ export interface UserProgress {
   completedAlgorithms: string[];
   unlockedCategories: string[];
   skillNodes: SkillNode[];
+  // New assessment fields
+  quizHistory: QuizScore[];
+  challengeHistory: ChallengeCompletion[];
+  algorithmMastery: Record<string, AlgorithmMastery>;
 }
 
 // Game State Types
@@ -57,6 +90,12 @@ interface AppState {
   updateHighScore: (game: 'sorterBest' | 'gridEscapeWins', score: number) => void;
   completeDailyChallenge: () => void;
   resetProgress: () => void;
+
+  // Quiz & Mastery Actions
+  recordQuizScore: (algorithmId: string, score: number, correctAnswers: number, totalQuestions: number) => void;
+  recordChallengeCompletion: (challengeId: string, algorithmUsed: string, nodesVisited: number, pathLength: number, passed: boolean) => void;
+  getAlgorithmMastery: (algorithmId: string) => AlgorithmMastery;
+  getLevelProgress: () => { currentXP: number; xpForNextLevel: number; progress: number };
 }
 
 const initialSkillNodes: SkillNode[] = [
@@ -89,6 +128,10 @@ const initialUserProgress: UserProgress = {
   completedAlgorithms: [],
   unlockedCategories: ['searching', 'sorting', 'graphs'],
   skillNodes: initialSkillNodes,
+  // New assessment fields
+  quizHistory: [],
+  challengeHistory: [],
+  algorithmMastery: {},
 };
 
 const initialGameState: GameState = {
@@ -274,4 +317,129 @@ export const useAppStore = create<AppState>((set, get) => ({
       visualizationSettings: initialVisualizationSettings,
     });
   },
+
+  // Quiz & Mastery Actions
+  recordQuizScore: (algorithmId: string, score: number, correctAnswers: number, totalQuestions: number) => {
+    set((state) => {
+      const newQuizScore: QuizScore = {
+        algorithmId,
+        score,
+        correctAnswers,
+        totalQuestions,
+        timestamp: new Date().toISOString(),
+      };
+
+      const currentMastery = state.userProgress.algorithmMastery[algorithmId] || {
+        algorithmId,
+        quizScores: [],
+        masteryLevel: 'none' as MasteryLevel,
+        challengesCompleted: 0,
+        totalChallenges: 0,
+      };
+
+      const updatedQuizScores = [...currentMastery.quizScores, score];
+      const newMasteryLevel = getMasteryLevel(updatedQuizScores);
+
+      return {
+        userProgress: {
+          ...state.userProgress,
+          quizHistory: [...state.userProgress.quizHistory, newQuizScore],
+          algorithmMastery: {
+            ...state.userProgress.algorithmMastery,
+            [algorithmId]: {
+              ...currentMastery,
+              quizScores: updatedQuizScores,
+              masteryLevel: newMasteryLevel,
+            },
+          },
+        },
+      };
+    });
+  },
+
+  recordChallengeCompletion: (challengeId: string, algorithmUsed: string, nodesVisited: number, pathLength: number, passed: boolean) => {
+    set((state) => {
+      const newChallenge: ChallengeCompletion = {
+        challengeId,
+        algorithmUsed,
+        nodesVisited,
+        pathLength,
+        passed,
+        timestamp: new Date().toISOString(),
+      };
+
+      // Update mastery for the algorithm used
+      const currentMastery = state.userProgress.algorithmMastery[algorithmUsed] || {
+        algorithmId: algorithmUsed,
+        quizScores: [],
+        masteryLevel: 'none' as MasteryLevel,
+        challengesCompleted: 0,
+        totalChallenges: 0,
+      };
+
+      const updatedMastery = {
+        ...currentMastery,
+        challengesCompleted: passed ? currentMastery.challengesCompleted + 1 : currentMastery.challengesCompleted,
+        totalChallenges: currentMastery.totalChallenges + 1,
+      };
+
+      // Recalculate mastery based on quiz scores AND challenge completion
+      const combinedScore = calculateCombinedMastery(updatedMastery.quizScores, updatedMastery.challengesCompleted, updatedMastery.totalChallenges);
+      updatedMastery.masteryLevel = getMasteryLevel([combinedScore]);
+
+      return {
+        userProgress: {
+          ...state.userProgress,
+          challengeHistory: [...state.userProgress.challengeHistory, newChallenge],
+          algorithmMastery: {
+            ...state.userProgress.algorithmMastery,
+            [algorithmUsed]: updatedMastery,
+          },
+        },
+      };
+    });
+  },
+
+  getAlgorithmMastery: (algorithmId: string) => {
+    const state = get();
+    return state.userProgress.algorithmMastery[algorithmId] || {
+      algorithmId,
+      quizScores: [],
+      masteryLevel: 'none' as MasteryLevel,
+      challengesCompleted: 0,
+      totalChallenges: 0,
+    };
+  },
+
+  getLevelProgress: () => {
+    const state = get();
+    const xpPerLevel = 500;
+    const currentLevelXP = (state.userProgress.level - 1) * xpPerLevel;
+    const currentXP = state.userProgress.totalXP - currentLevelXP;
+    const xpForNextLevel = xpPerLevel;
+    const progress = Math.min(currentXP / xpForNextLevel, 1);
+
+    return { currentXP, xpForNextLevel, progress };
+  },
 }));
+
+// Helper function to calculate combined mastery score
+function calculateCombinedMastery(quizScores: number[], challengesCompleted: number, totalChallenges: number): number {
+  let quizAvg = 0;
+  let challengeScore = 0;
+
+  if (quizScores.length > 0) {
+    quizAvg = quizScores.reduce((a, b) => a + b, 0) / quizScores.length;
+  }
+
+  if (totalChallenges > 0) {
+    challengeScore = (challengesCompleted / totalChallenges) * 100;
+  }
+
+  // Weight: 60% quiz, 40% challenges
+  if (quizScores.length === 0 && totalChallenges === 0) return 0;
+  if (quizScores.length === 0) return challengeScore;
+  if (totalChallenges === 0) return quizAvg;
+
+  return quizAvg * 0.6 + challengeScore * 0.4;
+}

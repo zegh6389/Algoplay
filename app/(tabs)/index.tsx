@@ -21,6 +21,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
 import { useAppStore } from '@/store/useAppStore';
+import { getMasteryColor } from '@/utils/quizData';
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
@@ -350,6 +351,42 @@ export default function HomeScreen() {
             <Text style={styles.statLabel}>Completed</Text>
           </View>
         </Animated.View>
+
+        {/* Mastery Achievements */}
+        {Object.keys(userProgress.algorithmMastery).length > 0 && (
+          <Animated.View entering={FadeInDown.delay(500)} style={styles.masteryAchievements}>
+            <View style={styles.masteryHeader}>
+              <Ionicons name="ribbon" size={18} color={Colors.logicGold} />
+              <Text style={styles.masteryTitle}>Mastery Achievements</Text>
+            </View>
+            <View style={styles.masteryBadges}>
+              <View style={styles.masteryBadgeItem}>
+                <View style={[styles.masteryBadgeIcon, { backgroundColor: getMasteryColor('gold') + '30' }]}>
+                  <Ionicons name="trophy" size={16} color={getMasteryColor('gold')} />
+                </View>
+                <Text style={[styles.masteryBadgeCount, { color: getMasteryColor('gold') }]}>
+                  {Object.values(userProgress.algorithmMastery).filter(m => m.masteryLevel === 'gold').length}
+                </Text>
+              </View>
+              <View style={styles.masteryBadgeItem}>
+                <View style={[styles.masteryBadgeIcon, { backgroundColor: getMasteryColor('silver') + '30' }]}>
+                  <Ionicons name="medal" size={16} color={getMasteryColor('silver')} />
+                </View>
+                <Text style={[styles.masteryBadgeCount, { color: getMasteryColor('silver') }]}>
+                  {Object.values(userProgress.algorithmMastery).filter(m => m.masteryLevel === 'silver').length}
+                </Text>
+              </View>
+              <View style={styles.masteryBadgeItem}>
+                <View style={[styles.masteryBadgeIcon, { backgroundColor: getMasteryColor('bronze') + '30' }]}>
+                  <Ionicons name="ribbon" size={16} color={getMasteryColor('bronze')} />
+                </View>
+                <Text style={[styles.masteryBadgeCount, { color: getMasteryColor('bronze') }]}>
+                  {Object.values(userProgress.algorithmMastery).filter(m => m.masteryLevel === 'bronze').length}
+                </Text>
+              </View>
+            </View>
+          </Animated.View>
+        )}
       </ScrollView>
     </View>
   );
@@ -619,5 +656,44 @@ const styles = StyleSheet.create({
     width: 1,
     backgroundColor: Colors.gray700,
     marginVertical: Spacing.xs,
+  },
+  // Mastery Achievements
+  masteryAchievements: {
+    backgroundColor: Colors.cardBackground,
+    borderRadius: BorderRadius.xl,
+    padding: Spacing.md,
+    marginTop: Spacing.lg,
+    ...Shadows.small,
+  },
+  masteryHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    marginBottom: Spacing.md,
+  },
+  masteryTitle: {
+    fontSize: FontSizes.sm,
+    fontWeight: '600',
+    color: Colors.logicGold,
+  },
+  masteryBadges: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  masteryBadgeItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+  },
+  masteryBadgeIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  masteryBadgeCount: {
+    fontSize: FontSizes.lg,
+    fontWeight: '700',
   },
 });
