@@ -293,13 +293,13 @@ export default function TreeVisualizerScreen() {
       {/* Header */}
       <Animated.View entering={FadeInDown} style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color={Colors.white} />
+          <Ionicons name="arrow-back" size={24} color={Colors.textPrimary} />
         </TouchableOpacity>
         <Text style={styles.title} numberOfLines={1}>
           Tree Visualizer
         </Text>
         <TouchableOpacity style={styles.inputButton} onPress={() => setShowInputDashboard(true)}>
-          <Ionicons name="keypad" size={20} color={Colors.actionTeal} />
+          <Ionicons name="keypad" size={20} color={Colors.accent} />
         </TouchableOpacity>
       </Animated.View>
 
@@ -417,7 +417,7 @@ export default function TreeVisualizerScreen() {
             style={[styles.playbackButton, styles.playbackButtonSmall]}
             onPress={resetVisualization}
           >
-            <Ionicons name="refresh" size={20} color={Colors.white} />
+            <Ionicons name="refresh" size={20} color={Colors.textPrimary} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -432,7 +432,7 @@ export default function TreeVisualizerScreen() {
             <Ionicons
               name="play-skip-back"
               size={20}
-              color={currentStepIndex > 0 ? Colors.white : Colors.gray600}
+              color={currentStepIndex > 0 ? Colors.textPrimary : Colors.gray600}
             />
           </TouchableOpacity>
 
@@ -440,7 +440,7 @@ export default function TreeVisualizerScreen() {
             style={[styles.playbackButton, styles.playbackButtonMain]}
             onPress={isPlaying ? handlePause : handlePlay}
           >
-            <Ionicons name={isPlaying ? 'pause' : 'play'} size={28} color={Colors.midnightBlue} />
+            <Ionicons name={isPlaying ? 'pause' : 'play'} size={28} color={Colors.background} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -455,7 +455,7 @@ export default function TreeVisualizerScreen() {
             <Ionicons
               name="play-skip-forward"
               size={20}
-              color={currentStepIndex < steps.length - 1 ? Colors.white : Colors.gray600}
+              color={currentStepIndex < steps.length - 1 ? Colors.textPrimary : Colors.gray600}
             />
           </TouchableOpacity>
 
@@ -466,14 +466,14 @@ export default function TreeVisualizerScreen() {
                 style={styles.speedButton}
                 onPress={() => setVisualizationSpeed(Math.max(0.5, visualizationSettings.speed - 0.5))}
               >
-                <Ionicons name="remove" size={16} color={Colors.white} />
+                <Ionicons name="remove" size={16} color={Colors.textPrimary} />
               </TouchableOpacity>
               <Text style={styles.speedValue}>{visualizationSettings.speed}x</Text>
               <TouchableOpacity
                 style={styles.speedButton}
                 onPress={() => setVisualizationSpeed(Math.min(3, visualizationSettings.speed + 0.5))}
               >
-                <Ionicons name="add" size={16} color={Colors.white} />
+                <Ionicons name="add" size={16} color={Colors.textPrimary} />
               </TouchableOpacity>
             </View>
           </View>
@@ -497,7 +497,7 @@ export default function TreeVisualizerScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.midnightBlue,
+    backgroundColor: Colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -518,17 +518,17 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: FontSizes.xl,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   inputButton: {
     width: 40,
     height: 40,
     borderRadius: BorderRadius.full,
-    backgroundColor: Colors.actionTeal + '20',
+    backgroundColor: Colors.accent + '20',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: Colors.actionTeal + '40',
+    borderColor: Colors.accent + '40',
   },
   scrollView: {
     flex: 1,
@@ -560,8 +560,8 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   algorithmButtonActive: {
-    backgroundColor: Colors.actionTeal + '20',
-    borderColor: Colors.actionTeal,
+    backgroundColor: Colors.accent + '20',
+    borderColor: Colors.accent,
   },
   algorithmButtonText: {
     fontSize: FontSizes.sm,
@@ -569,7 +569,7 @@ const styles = StyleSheet.create({
     color: Colors.gray400,
   },
   algorithmButtonTextActive: {
-    color: Colors.actionTeal,
+    color: Colors.accent,
   },
   visualizationContainer: {
     marginBottom: Spacing.lg,
@@ -610,7 +610,7 @@ const styles = StyleSheet.create({
   playbackButtonMain: {
     width: 56,
     height: 56,
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     marginHorizontal: Spacing.sm,
   },
   playbackButtonDisabled: {
@@ -638,7 +638,7 @@ const styles = StyleSheet.create({
   speedValue: {
     fontSize: FontSizes.sm,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     minWidth: 36,
     textAlign: 'center',
   },

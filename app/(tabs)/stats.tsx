@@ -71,7 +71,7 @@ function CategoryProgress() {
 
   const categories = [
     { id: 'sorting', name: 'Sorting', color: Colors.alertCoral, total: 5 },
-    { id: 'searching', name: 'Searching', color: Colors.actionTeal, total: 2 },
+    { id: 'searching', name: 'Searching', color: Colors.accent, total: 2 },
     { id: 'graphs', name: 'Graphs', color: Colors.logicGold, total: 4 },
     { id: 'dynamic-programming', name: 'Dynamic Programming', color: Colors.info, total: 2 },
     { id: 'greedy', name: 'Greedy', color: Colors.success, total: 2 },
@@ -186,7 +186,7 @@ function AchievementsList() {
       description: 'Earn 1000 XP',
       icon: 'star' as const,
       isUnlocked: totalXP >= 1000,
-      color: Colors.actionTeal,
+      color: Colors.accent,
     },
     {
       id: 'pathfinder',
@@ -282,7 +282,7 @@ export default function StatsScreen() {
             title="Games Played"
             value={gameState.highScores.gridEscapeWins + (gameState.highScores.sorterBest > 0 ? 1 : 0)}
             icon="game-controller"
-            color={Colors.actionTeal}
+            color={Colors.accent}
             index={3}
           />
         </View>
@@ -306,7 +306,7 @@ export default function StatsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.midnightBlue,
+    backgroundColor: Colors.background,
   },
   header: {
     paddingHorizontal: Spacing.lg,
@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: FontSizes.title,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   subtitle: {
     fontSize: FontSizes.md,
@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: FontSizes.xxl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   statSubtitle: {
     fontSize: FontSizes.xs,
@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: FontSizes.xl,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: Spacing.md,
     marginTop: Spacing.lg,
   },
@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
   xpLevelBadge: {
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.xs,
     borderRadius: BorderRadius.full,
@@ -397,7 +397,7 @@ const styles = StyleSheet.create({
   xpLevelText: {
     fontSize: FontSizes.sm,
     fontWeight: '700',
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
   xpTotal: {
     fontSize: FontSizes.sm,
@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
   },
   xpProgressFill: {
     height: '100%',
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     borderRadius: BorderRadius.full,
   },
   xpProgressText: {
@@ -484,7 +484,7 @@ const styles = StyleSheet.create({
   },
   activityBar: {
     width: '100%',
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     borderRadius: BorderRadius.sm,
   },
   activityDayLabel: {
@@ -524,7 +524,7 @@ const styles = StyleSheet.create({
   achievementTitle: {
     fontSize: FontSizes.sm,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     textAlign: 'center',
   },
   achievementTitleLocked: {

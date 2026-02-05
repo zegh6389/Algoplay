@@ -39,7 +39,7 @@ const skillCategories: SkillCategory[] = [
     id: 'searching',
     name: 'Searching',
     icon: 'search',
-    color: Colors.actionTeal,
+    color: Colors.accent,
     algorithms: ['Linear Search', 'Binary Search'],
     isUnlocked: true,
   },
@@ -237,7 +237,7 @@ export default function HomeScreen() {
           style={styles.profileButton}
           onPress={() => router.push('/tutor')}
         >
-          <Ionicons name="chatbubbles" size={24} color={Colors.actionTeal} />
+          <Ionicons name="chatbubbles" size={24} color={Colors.accent} />
         </TouchableOpacity>
       </Animated.View>
 
@@ -395,7 +395,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.midnightBlue,
+    backgroundColor: Colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -407,20 +407,20 @@ const styles = StyleSheet.create({
   title: {
     fontSize: FontSizes.title,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   profileButton: {
     width: 40,
     height: 40,
     borderRadius: BorderRadius.full,
-    backgroundColor: Colors.midnightBlueLight,
+    backgroundColor: Colors.backgroundLight,
     justifyContent: 'center',
     alignItems: 'center',
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.midnightBlueLight,
+    backgroundColor: Colors.backgroundLight,
     marginHorizontal: Spacing.lg,
     marginBottom: Spacing.lg,
     paddingHorizontal: Spacing.md,
@@ -431,7 +431,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: Spacing.sm,
     fontSize: FontSizes.md,
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   scrollView: {
     flex: 1,
@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
     padding: Spacing.lg,
     marginBottom: Spacing.xl,
     borderWidth: 1,
-    borderColor: Colors.actionTeal + '30',
+    borderColor: Colors.accent + '30',
     ...Shadows.medium,
   },
   dailyChallengeIcon: {
@@ -465,17 +465,17 @@ const styles = StyleSheet.create({
   dailyChallengeTitle: {
     fontSize: FontSizes.sm,
     fontWeight: '600',
-    color: Colors.actionTeal,
+    color: Colors.accent,
     marginBottom: 2,
   },
   dailyChallengeSubtitle: {
     fontSize: FontSizes.md,
     fontWeight: '500',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: Spacing.sm,
   },
   playNowButton: {
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     paddingVertical: Spacing.xs,
     paddingHorizontal: Spacing.md,
     borderRadius: BorderRadius.md,
@@ -484,7 +484,7 @@ const styles = StyleSheet.create({
   playNowText: {
     fontSize: FontSizes.sm,
     fontWeight: '600',
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
   skillTreeSection: {
     marginBottom: Spacing.xl,
@@ -492,7 +492,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: FontSizes.xl,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: Spacing.lg,
   },
   skillTreeContainer: {
@@ -645,7 +645,7 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: FontSizes.xxl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   statLabel: {
     fontSize: FontSizes.xs,

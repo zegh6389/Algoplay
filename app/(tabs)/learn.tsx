@@ -188,8 +188,8 @@ const algorithms: Algorithm[] = [
 const categories = [
   { id: 'all', name: 'All', icon: 'apps' as const },
   { id: 'sorting', name: 'Sorting', icon: 'bar-chart' as const, color: Colors.alertCoral },
-  { id: 'trees', name: 'Trees', icon: 'git-branch' as const, color: Colors.actionTeal },
-  { id: 'searching', name: 'Searching', icon: 'search' as const, color: Colors.actionTeal },
+  { id: 'trees', name: 'Trees', icon: 'git-branch' as const, color: Colors.accent },
+  { id: 'searching', name: 'Searching', icon: 'search' as const, color: Colors.accent },
   { id: 'graphs', name: 'Graphs', icon: 'git-network' as const, color: Colors.logicGold },
   { id: 'dynamic-programming', name: 'DP', icon: 'layers' as const, color: Colors.info },
 ];
@@ -332,7 +332,7 @@ export default function LearnScreen() {
               <Ionicons
                 name={cat.icon}
                 size={16}
-                color={selectedCategory === cat.id ? (cat.color || Colors.actionTeal) : Colors.gray500}
+                color={selectedCategory === cat.id ? (cat.color || Colors.accent) : Colors.gray500}
               />
               <Text
                 style={[
@@ -365,7 +365,7 @@ export default function LearnScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.midnightBlue,
+    backgroundColor: Colors.background,
   },
   header: {
     paddingHorizontal: Spacing.lg,
@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: FontSizes.title,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   subtitle: {
     fontSize: FontSizes.md,
@@ -419,8 +419,8 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   categoryTabActive: {
-    backgroundColor: Colors.actionTeal + '20',
-    borderColor: Colors.actionTeal,
+    backgroundColor: Colors.accent + '20',
+    borderColor: Colors.accent,
   },
   categoryTabText: {
     fontSize: FontSizes.sm,
@@ -429,7 +429,7 @@ const styles = StyleSheet.create({
     marginLeft: Spacing.xs,
   },
   categoryTabTextActive: {
-    color: Colors.actionTeal,
+    color: Colors.accent,
   },
   scrollView: {
     flex: 1,
@@ -462,7 +462,7 @@ const styles = StyleSheet.create({
   algorithmName: {
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     flex: 1,
   },
   completedBadge: {
@@ -506,7 +506,7 @@ const styles = StyleSheet.create({
   },
   lockOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: Colors.midnightBlue + '80',
+    backgroundColor: Colors.background + '80',
     borderRadius: BorderRadius.xl,
     justifyContent: 'center',
     alignItems: 'center',

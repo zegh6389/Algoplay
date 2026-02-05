@@ -109,8 +109,8 @@ function MasteryRadarChart({ categoryScores }: { categoryScores: number[] }) {
         {/* Data polygon with glow effect */}
         <Polygon
           points={polygonPoints}
-          fill={Colors.actionTeal + '30'}
-          stroke={Colors.actionTeal}
+          fill={Colors.accent + '30'}
+          stroke={Colors.accent}
           strokeWidth={2}
         />
 
@@ -121,8 +121,8 @@ function MasteryRadarChart({ categoryScores }: { categoryScores: number[] }) {
             cx={point.x}
             cy={point.y}
             r={6}
-            fill={Colors.actionTeal}
-            stroke={Colors.white}
+            fill={Colors.accent}
+            stroke={Colors.textPrimary}
             strokeWidth={2}
           />
         ))}
@@ -239,7 +239,7 @@ function StreakFlame({ streak }: { streak: number }) {
         colors={[Colors.logicGold, Colors.alertCoral]}
         style={styles.streakGradient}
       >
-        <Ionicons name="flame" size={32} color={Colors.white} />
+        <Ionicons name="flame" size={32} color={Colors.textPrimary} />
         <Text style={styles.streakValue}>{streak}</Text>
       </LinearGradient>
       <Text style={styles.streakLabel}>Day Streak</Text>
@@ -302,16 +302,16 @@ export default function DashboardScreen() {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <LinearGradient
-        colors={[Colors.midnightBlue, Colors.midnightBlueDark]}
+        colors={[Colors.background, Colors.backgroundDark]}
         style={StyleSheet.absoluteFillObject}
       />
 
       {/* Header */}
       <Animated.View entering={FadeInDown.delay(100)} style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color={Colors.white} />
+          <Ionicons name="chevron-back" size={24} color={Colors.textPrimary} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Mastery Dashboard</Text>
+        <Text style={[styles.headerTitle, { color: Colors.textPrimary }]}>Mastery Dashboard</Text>
         <TouchableOpacity
           style={styles.leaderboardButton}
           onPress={() => router.push('/leaderboard')}
@@ -331,10 +331,10 @@ export default function DashboardScreen() {
             <View style={styles.profileHeader}>
               <View style={styles.avatarContainer}>
                 <LinearGradient
-                  colors={[Colors.actionTeal, Colors.electricPurple]}
+                  colors={[Colors.accent, Colors.electricPurple]}
                   style={styles.avatarGradient}
                 >
-                  <Ionicons name="person" size={28} color={Colors.white} />
+                  <Ionicons name="person" size={28} color={Colors.textPrimary} />
                 </LinearGradient>
                 <View style={styles.levelBadge}>
                   <Text style={styles.levelBadgeText}>{userProgress.level}</Text>
@@ -357,7 +357,7 @@ export default function DashboardScreen() {
               </View>
               <View style={styles.xpProgressBar}>
                 <LinearGradient
-                  colors={[Colors.actionTeal, Colors.electricPurple]}
+                  colors={[Colors.accent, Colors.electricPurple]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                   style={[styles.xpProgressFill, { width: `${progress * 100}%` }]}
@@ -394,7 +394,7 @@ export default function DashboardScreen() {
             icon="game-controller"
             value={userProgress.quizHistory.length}
             label="Quizzes"
-            color={Colors.actionTeal}
+            color={Colors.accent}
             index={3}
           />
         </View>
@@ -402,7 +402,7 @@ export default function DashboardScreen() {
         {/* Mastery Radar Chart */}
         <Animated.View entering={FadeInDown.delay(400).springify()} style={styles.radarSection}>
           <View style={styles.sectionHeader}>
-            <Ionicons name="analytics" size={20} color={Colors.actionTeal} />
+            <Ionicons name="analytics" size={20} color={Colors.accent} />
             <Text style={styles.sectionTitle}>Mastery Radar</Text>
           </View>
           <BlurView intensity={15} tint="dark" style={styles.radarCard}>
@@ -436,14 +436,14 @@ export default function DashboardScreen() {
             onPress={() => router.push('/game/battle-arena')}
           >
             <LinearGradient
-              colors={[Colors.actionTeal, Colors.electricPurple]}
+              colors={[Colors.accent, Colors.electricPurple]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.actionGradient}
             >
-              <Ionicons name="flash" size={24} color={Colors.white} />
+              <Ionicons name="flash" size={24} color={Colors.textPrimary} />
               <Text style={styles.actionText}>Battle Arena</Text>
-              <Ionicons name="chevron-forward" size={20} color={Colors.white} />
+              <Ionicons name="chevron-forward" size={20} color={Colors.textPrimary} />
             </LinearGradient>
           </TouchableOpacity>
 
@@ -483,7 +483,7 @@ export default function DashboardScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.midnightBlue,
+    backgroundColor: Colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -503,7 +503,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: FontSizes.xl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   leaderboardButton: {
     width: 44,
@@ -556,12 +556,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: Colors.midnightBlue,
+    borderColor: Colors.background,
   },
   levelBadgeText: {
     fontSize: FontSizes.xs,
     fontWeight: '700',
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
   profileInfo: {
     flex: 1,
@@ -569,7 +569,7 @@ const styles = StyleSheet.create({
   username: {
     fontSize: FontSizes.lg,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   levelText: {
     fontSize: FontSizes.sm,
@@ -590,7 +590,7 @@ const styles = StyleSheet.create({
   streakValue: {
     fontSize: FontSizes.xl,
     fontWeight: '800',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   streakLabel: {
     fontSize: FontSizes.xs,
@@ -612,7 +612,7 @@ const styles = StyleSheet.create({
   xpProgressValue: {
     fontSize: FontSizes.sm,
     fontWeight: '600',
-    color: Colors.actionTeal,
+    color: Colors.accent,
   },
   xpProgressBar: {
     height: 8,
@@ -651,7 +651,7 @@ const styles = StyleSheet.create({
   glassWidgetValue: {
     fontSize: FontSizes.xxl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   glassWidgetLabel: {
     fontSize: FontSizes.xs,
@@ -671,7 +671,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   radarCard: {
     borderRadius: BorderRadius.xxl,
@@ -691,7 +691,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
   },
   // Badges Section
   badgesSection: {
@@ -725,7 +725,7 @@ const styles = StyleSheet.create({
   masteryBadgeName: {
     fontSize: FontSizes.sm,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   masteryBadgeStats: {
     flexDirection: 'row',
@@ -769,7 +769,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginLeft: Spacing.md,
   },
   actionSecondary: {
@@ -786,7 +786,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginLeft: Spacing.md,
   },
   // Sync Status
@@ -807,7 +807,7 @@ const styles = StyleSheet.create({
   syncLink: {
     fontSize: FontSizes.sm,
     fontWeight: '600',
-    color: Colors.actionTeal,
+    color: Colors.accent,
     marginLeft: Spacing.sm,
   },
 });

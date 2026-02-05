@@ -40,7 +40,7 @@ export default function ForgotPasswordScreen() {
     return (
       <View style={[styles.container, { paddingTop: insets.top }]}>
         <LinearGradient
-          colors={[Colors.midnightBlue, Colors.midnightBlueDark]}
+          colors={[Colors.background, Colors.backgroundDark]}
           style={StyleSheet.absoluteFillObject}
         />
         <View style={styles.successContainer}>
@@ -66,7 +66,7 @@ export default function ForgotPasswordScreen() {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <LinearGradient
-        colors={[Colors.midnightBlue, Colors.midnightBlueDark]}
+        colors={[Colors.background, Colors.backgroundDark]}
         style={StyleSheet.absoluteFillObject}
       />
 
@@ -85,7 +85,7 @@ export default function ForgotPasswordScreen() {
               style={styles.backButton}
               onPress={() => router.back()}
             >
-              <Ionicons name="arrow-back" size={24} color={Colors.white} />
+              <Ionicons name="arrow-back" size={24} color={Colors.textPrimary} />
             </TouchableOpacity>
           </Animated.View>
 
@@ -142,7 +142,7 @@ export default function ForgotPasswordScreen() {
                   ) : (
                     <>
                       <Text style={styles.resetButtonText}>Send Reset Link</Text>
-                      <Ionicons name="send" size={18} color={Colors.midnightBlue} />
+                      <Ionicons name="send" size={18} color={Colors.background} />
                     </>
                   )}
                 </LinearGradient>
@@ -168,7 +168,7 @@ export default function ForgotPasswordScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.midnightBlue,
+    backgroundColor: Colors.background,
   },
   keyboardView: {
     flex: 1,
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     borderRadius: 150,
-    backgroundColor: Colors.actionTeal + '08',
+    backgroundColor: Colors.accent + '08',
   },
   backButton: {
     width: 44,
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: FontSizes.xxxl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: Spacing.sm,
     textAlign: 'center',
   },
@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.midnightBlueDark,
+    backgroundColor: Colors.backgroundDark,
     borderRadius: BorderRadius.lg,
     paddingHorizontal: Spacing.md,
     marginBottom: Spacing.md,
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     marginLeft: Spacing.sm,
     fontSize: FontSizes.md,
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   errorContainer: {
     flexDirection: 'row',
@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
   resetButtonText: {
     fontSize: FontSizes.lg,
     fontWeight: '700',
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
   loginContainer: {
     flexDirection: 'row',
@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
   successTitle: {
     fontSize: FontSizes.xxl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: Spacing.sm,
   },
   successSubtitle: {
@@ -342,7 +342,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   successButton: {
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.xl,
     borderRadius: BorderRadius.lg,
@@ -350,6 +350,6 @@ const styles = StyleSheet.create({
   successButtonText: {
     fontSize: FontSizes.md,
     fontWeight: '600',
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
 });

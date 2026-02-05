@@ -55,13 +55,13 @@ export default function SignUpScreen() {
     return (
       <View style={[styles.container, { paddingTop: insets.top }]}>
         <LinearGradient
-          colors={[Colors.midnightBlue, Colors.midnightBlueDark]}
+          colors={[Colors.background, Colors.backgroundDark]}
           style={StyleSheet.absoluteFillObject}
         />
         <View style={styles.verificationContainer}>
           <Animated.View entering={FadeInDown.springify()} style={styles.verificationCard}>
             <View style={styles.verificationIcon}>
-              <Ionicons name="mail" size={48} color={Colors.actionTeal} />
+              <Ionicons name="mail" size={48} color={Colors.accent} />
             </View>
             <Text style={styles.verificationTitle}>Check Your Email</Text>
             <Text style={styles.verificationSubtitle}>
@@ -81,7 +81,7 @@ export default function SignUpScreen() {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <LinearGradient
-        colors={[Colors.midnightBlue, Colors.midnightBlueDark]}
+        colors={[Colors.background, Colors.backgroundDark]}
         style={StyleSheet.absoluteFillObject}
       />
 
@@ -104,7 +104,7 @@ export default function SignUpScreen() {
               style={styles.backButton}
               onPress={() => router.back()}
             >
-              <Ionicons name="arrow-back" size={24} color={Colors.white} />
+              <Ionicons name="arrow-back" size={24} color={Colors.textPrimary} />
             </TouchableOpacity>
           </Animated.View>
 
@@ -212,7 +212,7 @@ export default function SignUpScreen() {
                   ) : (
                     <>
                       <Text style={styles.signupButtonText}>Create Account</Text>
-                      <Ionicons name="arrow-forward" size={20} color={Colors.white} />
+                      <Ionicons name="arrow-forward" size={20} color={Colors.textPrimary} />
                     </>
                   )}
                 </LinearGradient>
@@ -242,7 +242,7 @@ export default function SignUpScreen() {
                 onPress={signInWithApple}
                 disabled={isLoading}
               >
-                <Ionicons name="logo-apple" size={22} color={Colors.white} />
+                <Ionicons name="logo-apple" size={22} color={Colors.textPrimary} />
               </TouchableOpacity>
             )}
           </Animated.View>
@@ -265,7 +265,7 @@ export default function SignUpScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.midnightBlue,
+    backgroundColor: Colors.background,
   },
   keyboardView: {
     flex: 1,
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     width: 250,
     height: 250,
     borderRadius: 125,
-    backgroundColor: Colors.actionTeal + '10',
+    backgroundColor: Colors.accent + '10',
   },
   backButton: {
     width: 44,
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: FontSizes.xxxl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: Spacing.xs,
   },
   subtitle: {
@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.midnightBlueDark,
+    backgroundColor: Colors.backgroundDark,
     borderRadius: BorderRadius.lg,
     paddingHorizontal: Spacing.md,
     marginBottom: Spacing.md,
@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     marginLeft: Spacing.sm,
     fontSize: FontSizes.md,
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   passwordRequirements: {
     marginBottom: Spacing.md,
@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
   signupButtonText: {
     fontSize: FontSizes.lg,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   dividerContainer: {
     flexDirection: 'row',
@@ -459,7 +459,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: Colors.actionTeal + '20',
+    backgroundColor: Colors.accent + '20',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: Spacing.lg,
@@ -467,7 +467,7 @@ const styles = StyleSheet.create({
   verificationTitle: {
     fontSize: FontSizes.xxl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: Spacing.sm,
   },
   verificationSubtitle: {
@@ -478,7 +478,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   verificationButton: {
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.xl,
     borderRadius: BorderRadius.lg,
@@ -486,6 +486,6 @@ const styles = StyleSheet.create({
   verificationButtonText: {
     fontSize: FontSizes.md,
     fontWeight: '600',
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
 });

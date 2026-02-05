@@ -57,7 +57,7 @@ function CollapsibleSection({
     <View style={styles.section}>
       <TouchableOpacity style={styles.sectionHeader} onPress={handleToggle}>
         <View style={styles.sectionTitleRow}>
-          <Ionicons name={icon} size={18} color={Colors.actionTeal} />
+          <Ionicons name={icon} size={18} color={Colors.accent} />
           <Text style={styles.sectionTitle}>{title}</Text>
         </View>
         <Animated.View style={iconStyle}>
@@ -123,12 +123,12 @@ Simplified explanation:`;
     >
       {isLoading ? (
         <>
-          <ActivityIndicator size="small" color={Colors.midnightBlue} />
+          <ActivityIndicator size="small" color={Colors.background} />
           <Text style={styles.simplifyButtonText}>Simplifying...</Text>
         </>
       ) : (
         <>
-          <Ionicons name="sparkles" size={18} color={Colors.midnightBlue} />
+          <Ionicons name="sparkles" size={18} color={Colors.background} />
           <Text style={styles.simplifyButtonText}>Simplify with AI</Text>
         </>
       )}
@@ -197,7 +197,7 @@ function ComplexityChart({ lesson }: { lesson: Lesson }) {
 
 function BulletList({ items, icon = 'checkmark-circle' }: { items: string[]; icon?: keyof typeof Ionicons.glyphMap }) {
   const getIconColor = (index: number) => {
-    const colors = [Colors.actionTeal, Colors.logicGold, Colors.info, Colors.success, Colors.alertCoral];
+    const colors = [Colors.accent, Colors.logicGold, Colors.info, Colors.success, Colors.alertCoral];
     return colors[index % colors.length];
   };
 
@@ -257,7 +257,7 @@ export default function LessonDetailScreen() {
       {/* Header */}
       <Animated.View entering={FadeInDown} style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color={Colors.white} />
+          <Ionicons name="arrow-back" size={24} color={Colors.textPrimary} />
         </TouchableOpacity>
         <View style={styles.headerContent}>
           <Text style={styles.title} numberOfLines={1}>{lesson.title}</Text>
@@ -352,7 +352,7 @@ export default function LessonDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.midnightBlue,
+    backgroundColor: Colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -380,7 +380,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: FontSizes.xl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
     flex: 1,
   },
   categoryTag: {
@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
   complexityChartTitle: {
     fontSize: FontSizes.md,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: Spacing.md,
   },
   complexityGrid: {
@@ -448,7 +448,7 @@ const styles = StyleSheet.create({
   complexityBadgeText: {
     fontSize: FontSizes.sm,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
   // Sections
@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: FontSizes.md,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   sectionContent: {
     paddingHorizontal: Spacing.lg,
@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.lg,
     borderRadius: BorderRadius.lg,
@@ -502,7 +502,7 @@ const styles = StyleSheet.create({
   simplifyButtonText: {
     fontSize: FontSizes.sm,
     fontWeight: '600',
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
   // Simplified Card
   simplifiedCard: {
@@ -622,6 +622,6 @@ const styles = StyleSheet.create({
   backButtonLargeText: {
     fontSize: FontSizes.md,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
 });

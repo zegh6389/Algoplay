@@ -106,8 +106,8 @@ function Cell({ cell, onPress, isPlacingObstacles, isRunning }: CellProps) {
     if (cell.isEnd) return Colors.alertCoral;
     if (cell.isPath) return Colors.logicGold;
     if (cell.isObstacle) return Colors.gray600;
-    if (cell.isFrontier) return Colors.actionTeal;
-    if (cell.isVisited) return Colors.actionTeal + '40';
+    if (cell.isFrontier) return Colors.accent;
+    if (cell.isVisited) return Colors.accent + '40';
     return Colors.gray700;
   };
 
@@ -194,7 +194,7 @@ function StatsCard({ nodesVisited, operations, pathLength, isComplete, pathFound
     <Animated.View entering={FadeInDown.delay(50)} style={styles.statsContainer}>
       <View style={styles.statItem}>
         <Text style={styles.statLabel}>Nodes Visited</Text>
-        <Text style={[styles.statValue, { color: Colors.actionTeal }]}>{nodesVisited}</Text>
+        <Text style={[styles.statValue, { color: Colors.accent }]}>{nodesVisited}</Text>
       </View>
       <View style={styles.statDivider} />
       <View style={styles.statItem}>
@@ -206,7 +206,7 @@ function StatsCard({ nodesVisited, operations, pathLength, isComplete, pathFound
         <Text style={styles.statLabel}>Path Length</Text>
         <Text style={[
           styles.statValue,
-          { color: isComplete ? (pathFound ? Colors.success : Colors.alertCoral) : Colors.white }
+          { color: isComplete ? (pathFound ? Colors.success : Colors.alertCoral) : Colors.textPrimary }
         ]}>
           {pathLength > 0 ? pathLength : (isComplete ? 'N/A' : '-')}
         </Text>
@@ -333,8 +333,8 @@ function ChallengeCard({ challenge, onSelect, completedChallenges, challengeStar
         activeOpacity={0.8}
       >
         <View style={styles.challengeHeader}>
-          <View style={[styles.challengeAlgoBadge, { backgroundColor: Colors.actionTeal + '20' }]}>
-            <Text style={[styles.challengeAlgoText, { color: Colors.actionTeal }]}>
+          <View style={[styles.challengeAlgoBadge, { backgroundColor: Colors.accent + '20' }]}>
+            <Text style={[styles.challengeAlgoText, { color: Colors.accent }]}>
               {algorithmName}
             </Text>
           </View>
@@ -431,7 +431,7 @@ function ChallengeResultModal({
             />
           </View>
 
-          <Text style={[styles.resultTitle, { color: passed ? Colors.actionTeal : Colors.alertCoral }]}>
+          <Text style={[styles.resultTitle, { color: passed ? Colors.accent : Colors.alertCoral }]}>
             {passed ? 'Challenge Complete!' : 'Challenge Failed'}
           </Text>
 
@@ -605,7 +605,7 @@ ${pathFound ?
         <View style={[styles.modalContent, { paddingBottom: insets.bottom + Spacing.lg }]}>
           <View style={styles.modalHeader}>
             <TouchableOpacity onPress={onClose} style={styles.modalCloseButton}>
-              <Ionicons name="arrow-back" size={24} color={Colors.white} />
+              <Ionicons name="arrow-back" size={24} color={Colors.textPrimary} />
             </TouchableOpacity>
             <Text style={styles.modalTitle}>AI Tutor</Text>
             <View style={styles.newellBadge}>
@@ -616,14 +616,14 @@ ${pathFound ?
           <ScrollView style={styles.modalScroll} showsVerticalScrollIndicator={false}>
             {isLoading ? (
               <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color={Colors.actionTeal} />
+                <ActivityIndicator size="large" color={Colors.accent} />
                 <Text style={styles.loadingText}>Analyzing your pathfinding run...</Text>
               </View>
             ) : (
               <View style={styles.explanationContainer}>
                 <View style={styles.aiMessageBubble}>
                   <View style={styles.aiAvatarContainer}>
-                    <Ionicons name="sparkles" size={16} color={Colors.actionTeal} />
+                    <Ionicons name="sparkles" size={16} color={Colors.accent} />
                   </View>
                   <Text style={styles.explanationText}>{explanation}</Text>
                 </View>
@@ -645,7 +645,7 @@ ${pathFound ?
               onPress={handleAskQuestion}
               disabled={!userQuestion.trim() || isLoading}
             >
-              <Ionicons name="send" size={20} color={userQuestion.trim() ? Colors.midnightBlue : Colors.gray500} />
+              <Ionicons name="send" size={20} color={userQuestion.trim() ? Colors.background : Colors.gray500} />
             </TouchableOpacity>
           </View>
         </View>
@@ -903,7 +903,7 @@ export default function GridEscapeScreen() {
             router.back();
           }}
         >
-          <Ionicons name="arrow-back" size={24} color={Colors.white} />
+          <Ionicons name="arrow-back" size={24} color={Colors.textPrimary} />
         </TouchableOpacity>
         <Text style={styles.title}>
           {currentChallenge ? currentChallenge.name :
@@ -912,7 +912,7 @@ export default function GridEscapeScreen() {
         </Text>
         {isComplete && (
           <TouchableOpacity style={styles.aiButton} onPress={openAIExplainer}>
-            <Ionicons name="sparkles" size={20} color={Colors.actionTeal} />
+            <Ionicons name="sparkles" size={20} color={Colors.accent} />
           </TouchableOpacity>
         )}
       </Animated.View>
@@ -926,7 +926,7 @@ export default function GridEscapeScreen() {
           <Ionicons
             name="construct"
             size={18}
-            color={gameMode === 'sandbox' ? Colors.midnightBlue : Colors.gray400}
+            color={gameMode === 'sandbox' ? Colors.background : Colors.gray400}
           />
           <Text style={[
             styles.modeTabText,
@@ -940,7 +940,7 @@ export default function GridEscapeScreen() {
           <Ionicons
             name="trophy"
             size={18}
-            color={gameMode === 'levels' ? Colors.midnightBlue : Colors.gray400}
+            color={gameMode === 'levels' ? Colors.background : Colors.gray400}
           />
           <Text style={[
             styles.modeTabText,
@@ -954,7 +954,7 @@ export default function GridEscapeScreen() {
           <Ionicons
             name="ribbon"
             size={18}
-            color={gameMode === 'challenges' ? Colors.midnightBlue : Colors.gray400}
+            color={gameMode === 'challenges' ? Colors.background : Colors.gray400}
           />
           <Text style={[
             styles.modeTabText,
@@ -1115,8 +1115,8 @@ export default function GridEscapeScreen() {
                 onPress={runAlgorithm}
                 disabled={isRunning}
               >
-                <Ionicons name={isRunning ? 'hourglass' : 'play'} size={20} color={Colors.midnightBlue} />
-                <Text style={[styles.actionButtonText, { color: Colors.midnightBlue }]}>
+                <Ionicons name={isRunning ? 'hourglass' : 'play'} size={20} color={Colors.background} />
+                <Text style={[styles.actionButtonText, { color: Colors.background }]}>
                   {isRunning ? 'Running...' : 'Run'}
                 </Text>
               </TouchableOpacity>
@@ -1144,7 +1144,7 @@ export default function GridEscapeScreen() {
                   </Text>
                 </View>
                 <TouchableOpacity style={styles.aiExplainButton} onPress={openAIExplainer}>
-                  <Ionicons name="sparkles" size={16} color={Colors.white} />
+                  <Ionicons name="sparkles" size={16} color={Colors.textPrimary} />
                   <Text style={styles.aiExplainText}>Explain</Text>
                 </TouchableOpacity>
               </Animated.View>
@@ -1185,7 +1185,7 @@ export default function GridEscapeScreen() {
                   initializeGrid();
                 }}
               >
-                <Ionicons name="arrow-back" size={18} color={Colors.actionTeal} />
+                <Ionicons name="arrow-back" size={18} color={Colors.accent} />
                 <Text style={styles.backToLevelsText}>Back to Levels</Text>
               </TouchableOpacity>
             )}
@@ -1199,7 +1199,7 @@ export default function GridEscapeScreen() {
                   initializeGrid();
                 }}
               >
-                <Ionicons name="arrow-back" size={18} color={Colors.actionTeal} />
+                <Ionicons name="arrow-back" size={18} color={Colors.accent} />
                 <Text style={styles.backToLevelsText}>Back to Challenges</Text>
               </TouchableOpacity>
             )}
@@ -1217,7 +1217,7 @@ export default function GridEscapeScreen() {
                         constraint.type === 'max_path_length' ? 'resize-outline' : 'speedometer-outline'
                       }
                       size={16}
-                      color={Colors.actionTeal}
+                      color={Colors.accent}
                     />
                     <Text style={styles.constraintRowText}>
                       {constraint.type === 'max_nodes' ? `Visit ≤ ${constraint.value} nodes` :
@@ -1274,7 +1274,7 @@ export default function GridEscapeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.midnightBlue,
+    backgroundColor: Colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -1295,13 +1295,13 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   aiButton: {
     width: 40,
     height: 40,
     borderRadius: BorderRadius.full,
-    backgroundColor: Colors.actionTeal + '20',
+    backgroundColor: Colors.accent + '20',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -1323,7 +1323,7 @@ const styles = StyleSheet.create({
     gap: Spacing.xs,
   },
   modeTabActive: {
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
   },
   modeTabText: {
     fontSize: FontSizes.sm,
@@ -1331,7 +1331,7 @@ const styles = StyleSheet.create({
     color: Colors.gray400,
   },
   modeTabTextActive: {
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
   scrollView: {
     flex: 1,
@@ -1343,7 +1343,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: FontSizes.xxl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: Spacing.xs,
   },
   sectionSubtitle: {
@@ -1378,7 +1378,7 @@ const styles = StyleSheet.create({
   levelName: {
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: Spacing.xs,
   },
   levelDescription: {
@@ -1398,14 +1398,14 @@ const styles = StyleSheet.create({
     color: Colors.logicGold,
   },
   levelAlgoBadge: {
-    backgroundColor: Colors.actionTeal + '20',
+    backgroundColor: Colors.accent + '20',
     paddingHorizontal: Spacing.sm,
     paddingVertical: 4,
     borderRadius: BorderRadius.sm,
   },
   levelAlgoText: {
     fontSize: FontSizes.xs,
-    color: Colors.actionTeal,
+    color: Colors.accent,
     fontWeight: '500',
   },
   gridContainer: {
@@ -1429,7 +1429,7 @@ const styles = StyleSheet.create({
   },
   cellGlow: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     borderRadius: BorderRadius.sm,
   },
   cellIcon: {
@@ -1437,7 +1437,7 @@ const styles = StyleSheet.create({
   },
   cellCost: {
     fontSize: 7,
-    color: Colors.white,
+    color: Colors.textPrimary,
     fontWeight: '600',
   },
   frontierPanel: {
@@ -1446,7 +1446,7 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
     marginBottom: Spacing.lg,
     borderWidth: 1,
-    borderColor: Colors.actionTeal + '30',
+    borderColor: Colors.accent + '30',
     ...Shadows.small,
   },
   frontierHeader: {
@@ -1459,13 +1459,13 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
   },
   frontierTitle: {
     flex: 1,
     fontSize: FontSizes.sm,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   frontierCount: {
     fontSize: FontSizes.xs,
@@ -1483,13 +1483,13 @@ const styles = StyleSheet.create({
     minWidth: 60,
   },
   frontierItemFirst: {
-    backgroundColor: Colors.actionTeal + '30',
+    backgroundColor: Colors.accent + '30',
     borderWidth: 1,
-    borderColor: Colors.actionTeal,
+    borderColor: Colors.accent,
   },
   frontierCoord: {
     fontSize: FontSizes.xs,
-    color: Colors.white,
+    color: Colors.textPrimary,
     fontWeight: '600',
   },
   frontierCost: {
@@ -1530,7 +1530,7 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: FontSizes.xxl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   statDivider: {
     width: 1,
@@ -1559,7 +1559,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   algorithmButtonActive: {
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
   },
   algorithmButtonDisabled: {
     opacity: 0.5,
@@ -1570,7 +1570,7 @@ const styles = StyleSheet.create({
     color: Colors.gray400,
   },
   algorithmButtonTextActive: {
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
   actionButtons: {
     flexDirection: 'row',
@@ -1596,7 +1596,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.logicGold + '20',
   },
   runButton: {
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     flex: 1.5,
   },
   runButtonDisabled: {
@@ -1630,7 +1630,7 @@ const styles = StyleSheet.create({
   completionTitle: {
     fontSize: FontSizes.lg,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: 2,
   },
   completionSubtitle: {
@@ -1640,7 +1640,7 @@ const styles = StyleSheet.create({
   aiExplainButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
     borderRadius: BorderRadius.lg,
@@ -1649,7 +1649,7 @@ const styles = StyleSheet.create({
   aiExplainText: {
     fontSize: FontSizes.sm,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   infoCard: {
     backgroundColor: Colors.cardBackground,
@@ -1660,7 +1660,7 @@ const styles = StyleSheet.create({
   infoTitle: {
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: Spacing.xs,
   },
   infoDescription: {
@@ -1684,7 +1684,7 @@ const styles = StyleSheet.create({
   infoStatValue: {
     fontSize: FontSizes.sm,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
   backToLevelsButton: {
@@ -1698,7 +1698,7 @@ const styles = StyleSheet.create({
   backToLevelsText: {
     fontSize: FontSizes.sm,
     fontWeight: '600',
-    color: Colors.actionTeal,
+    color: Colors.accent,
   },
   // Modal Styles
   modalOverlay: {
@@ -1707,7 +1707,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: Colors.midnightBlue,
+    backgroundColor: Colors.background,
     borderTopLeftRadius: BorderRadius.xxl,
     borderTopRightRadius: BorderRadius.xxl,
     maxHeight: '80%',
@@ -1732,10 +1732,10 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   newellBadge: {
-    backgroundColor: Colors.actionTeal + '20',
+    backgroundColor: Colors.accent + '20',
     paddingHorizontal: Spacing.sm,
     paddingVertical: 4,
     borderRadius: BorderRadius.sm,
@@ -1743,7 +1743,7 @@ const styles = StyleSheet.create({
   newellBadgeText: {
     fontSize: FontSizes.xs,
     fontWeight: '600',
-    color: Colors.actionTeal,
+    color: Colors.accent,
   },
   modalScroll: {
     padding: Spacing.lg,
@@ -1766,13 +1766,13 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.xl,
     padding: Spacing.lg,
     borderWidth: 1,
-    borderColor: Colors.actionTeal + '30',
+    borderColor: Colors.accent + '30',
   },
   aiAvatarContainer: {
     width: 28,
     height: 28,
     borderRadius: BorderRadius.full,
-    backgroundColor: Colors.actionTeal + '20',
+    backgroundColor: Colors.accent + '20',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: Spacing.sm,
@@ -1798,13 +1798,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
     fontSize: FontSizes.sm,
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   sendButton: {
     width: 40,
     height: 40,
     borderRadius: BorderRadius.full,
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -1822,7 +1822,7 @@ const styles = StyleSheet.create({
     ...Shadows.small,
   },
   challengeCardCompleted: {
-    borderColor: Colors.actionTeal + '50',
+    borderColor: Colors.accent + '50',
   },
   challengeHeader: {
     flexDirection: 'row',
@@ -1842,7 +1842,7 @@ const styles = StyleSheet.create({
   challengeName: {
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: Spacing.xs,
   },
   challengeDescription: {
@@ -1914,17 +1914,17 @@ const styles = StyleSheet.create({
   challengeSectionTitle: {
     fontSize: FontSizes.md,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   challengeProgress: {
-    backgroundColor: Colors.actionTeal + '20',
+    backgroundColor: Colors.accent + '20',
     paddingHorizontal: Spacing.sm,
     paddingVertical: 2,
     borderRadius: BorderRadius.sm,
   },
   challengeProgressText: {
     fontSize: FontSizes.xs,
-    color: Colors.actionTeal,
+    color: Colors.accent,
     fontWeight: '600',
   },
   constraintsCard: {
@@ -1933,13 +1933,13 @@ const styles = StyleSheet.create({
     padding: Spacing.lg,
     marginTop: Spacing.lg,
     borderWidth: 1,
-    borderColor: Colors.actionTeal + '30',
+    borderColor: Colors.accent + '30',
     ...Shadows.small,
   },
   constraintsCardTitle: {
     fontSize: FontSizes.md,
     fontWeight: '600',
-    color: Colors.actionTeal,
+    color: Colors.accent,
     marginBottom: Spacing.md,
   },
   constraintRow: {
@@ -1954,7 +1954,7 @@ const styles = StyleSheet.create({
   },
   // Result Modal Styles
   resultModalContent: {
-    backgroundColor: Colors.midnightBlue,
+    backgroundColor: Colors.background,
     borderTopLeftRadius: BorderRadius.xxl,
     borderTopRightRadius: BorderRadius.xxl,
     padding: Spacing.xl,
@@ -2004,7 +2004,7 @@ const styles = StyleSheet.create({
   resultStatValue: {
     fontSize: FontSizes.xxl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   resultStatTarget: {
     fontSize: FontSizes.xs,
@@ -2069,7 +2069,7 @@ const styles = StyleSheet.create({
   },
   resultCloseButton: {
     width: '100%',
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     paddingVertical: Spacing.md,
     borderRadius: BorderRadius.lg,
     alignItems: 'center',
@@ -2077,6 +2077,6 @@ const styles = StyleSheet.create({
   resultCloseText: {
     fontSize: FontSizes.md,
     fontWeight: '600',
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
 });

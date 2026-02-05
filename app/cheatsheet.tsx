@@ -63,7 +63,7 @@ function AlgorithmTableRow({
 
   const categoryColors: Record<string, string> = {
     Sorting: Colors.alertCoral,
-    Searching: Colors.actionTeal,
+    Searching: Colors.accent,
     Graphs: Colors.logicGold,
   };
 
@@ -201,7 +201,7 @@ function CategorySection({
 function ComplexityLegend() {
   const complexities = [
     { notation: 'O(1)', name: 'Constant', color: Colors.success },
-    { notation: 'O(log n)', name: 'Logarithmic', color: Colors.actionTeal },
+    { notation: 'O(log n)', name: 'Logarithmic', color: Colors.accent },
     { notation: 'O(n)', name: 'Linear', color: Colors.logicGold },
     { notation: 'O(n log n)', name: 'Linearithmic', color: Colors.warning },
     { notation: 'O(n²)', name: 'Quadratic', color: Colors.alertCoral },
@@ -233,7 +233,7 @@ function QuickTips() {
       icon: 'flash' as const,
       title: 'For Speed',
       tip: 'Quick Sort or Merge Sort for large datasets. Insertion Sort for small/nearly sorted.',
-      color: Colors.actionTeal,
+      color: Colors.accent,
     },
     {
       icon: 'hardware-chip' as const,
@@ -327,14 +327,14 @@ export default function CheatSheetScreen() {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <LinearGradient
-        colors={[Colors.midnightBlue, Colors.midnightBlueDark]}
+        colors={[Colors.background, Colors.backgroundDark]}
         style={StyleSheet.absoluteFillObject}
       />
 
       {/* Header */}
       <Animated.View entering={FadeInDown} style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color={Colors.white} />
+          <Ionicons name="chevron-back" size={24} color={Colors.textPrimary} />
         </TouchableOpacity>
         <View style={styles.headerCenter}>
           <Ionicons name="book" size={22} color={Colors.logicGold} />
@@ -375,7 +375,7 @@ export default function CheatSheetScreen() {
         {categories.map((category) => {
           const categoryColors: Record<string, string> = {
             Sorting: Colors.alertCoral,
-            Searching: Colors.actionTeal,
+            Searching: Colors.accent,
             Graphs: Colors.logicGold,
           };
           const color = categoryColors[category] || Colors.info;
@@ -412,7 +412,7 @@ export default function CheatSheetScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.midnightBlue,
+    backgroundColor: Colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -437,7 +437,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: FontSizes.xl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   // Search
   searchContainer: {
@@ -456,7 +456,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: Spacing.sm,
     fontSize: FontSizes.md,
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   scrollView: {
     flex: 1,
@@ -501,7 +501,7 @@ const styles = StyleSheet.create({
   legendNotation: {
     fontSize: FontSizes.xs,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   legendName: {
     fontSize: FontSizes.xs,
@@ -514,7 +514,7 @@ const styles = StyleSheet.create({
   tipsSectionTitle: {
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: Spacing.md,
   },
   tipsGrid: {
@@ -538,7 +538,7 @@ const styles = StyleSheet.create({
   tipTitle: {
     fontSize: FontSizes.md,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: 4,
   },
   tipText: {
@@ -571,7 +571,7 @@ const styles = StyleSheet.create({
   categoryTitle: {
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     flex: 1,
   },
   categoryCount: {
@@ -607,7 +607,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: FontSizes.md,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   complexityGrid: {
     flexDirection: 'row',

@@ -32,7 +32,7 @@ interface AlgorithmOption {
 const algorithmOptions: AlgorithmOption[] = [
   { id: 'bubble-sort', name: 'Bubble Sort', color: Colors.alertCoral },
   { id: 'selection-sort', name: 'Selection Sort', color: Colors.logicGold },
-  { id: 'insertion-sort', name: 'Insertion Sort', color: Colors.actionTeal },
+  { id: 'insertion-sort', name: 'Insertion Sort', color: Colors.accent },
   { id: 'quick-sort', name: 'Quick Sort', color: Colors.info },
   { id: 'merge-sort', name: 'Merge Sort', color: Colors.success },
 ];
@@ -257,7 +257,7 @@ export default function RaceModeScreen() {
       {/* Header */}
       <Animated.View entering={FadeInDown} style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color={Colors.white} />
+          <Ionicons name="arrow-back" size={24} color={Colors.textPrimary} />
         </TouchableOpacity>
         <Text style={styles.title}>Race Mode</Text>
         <TouchableOpacity style={styles.resetButton} onPress={initializeRace} disabled={isRacing}>
@@ -338,7 +338,7 @@ export default function RaceModeScreen() {
         {/* Start/Reset Button */}
         {!isRacing && !raceComplete && (
           <TouchableOpacity style={styles.startButton} onPress={startRace}>
-            <Ionicons name="flag" size={24} color={Colors.midnightBlue} />
+            <Ionicons name="flag" size={24} color={Colors.background} />
             <Text style={styles.startButtonText}>Start Race</Text>
           </TouchableOpacity>
         )}
@@ -369,7 +369,7 @@ export default function RaceModeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.midnightBlue,
+    backgroundColor: Colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: FontSizes.xxl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   resetButton: {
     width: 40,
@@ -517,7 +517,7 @@ const styles = StyleSheet.create({
   vsText: {
     fontSize: FontSizes.lg,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   comparisonCard: {
     backgroundColor: Colors.cardBackground,
@@ -562,7 +562,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     paddingVertical: Spacing.md,
     borderRadius: BorderRadius.xl,
     marginTop: Spacing.xl,
@@ -572,7 +572,7 @@ const styles = StyleSheet.create({
   startButtonText: {
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
   winnerCard: {
     backgroundColor: Colors.cardBackground,
@@ -587,7 +587,7 @@ const styles = StyleSheet.create({
   winnerTitle: {
     fontSize: FontSizes.xxl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginTop: Spacing.md,
     marginBottom: Spacing.xs,
   },
@@ -606,10 +606,10 @@ const styles = StyleSheet.create({
   xpBadgeText: {
     fontSize: FontSizes.md,
     fontWeight: '700',
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
   raceAgainButton: {
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.xxl,
     borderRadius: BorderRadius.full,
@@ -617,6 +617,6 @@ const styles = StyleSheet.create({
   raceAgainText: {
     fontSize: FontSizes.md,
     fontWeight: '600',
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
 });
