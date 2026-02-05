@@ -40,12 +40,20 @@ import {
   levels,
   LevelConfig,
 } from '@/utils/algorithms/pathfinding';
+import {
+  PathfindingChallenge,
+  getAllChallenges,
+  checkChallengeConstraints,
+  calculateChallengeStars,
+} from '@/utils/pathfindingChallenges';
+import { MasteryBadge } from '@/components/XPGainAnimation';
+import XPGainAnimation from '@/components/XPGainAnimation';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const GRID_SIZE = 10;
 const CELL_SIZE = (SCREEN_WIDTH - Spacing.lg * 2 - Spacing.sm * 2) / GRID_SIZE;
 
-type GameMode = 'sandbox' | 'levels';
+type GameMode = 'sandbox' | 'levels' | 'challenges';
 
 interface CellProps {
   cell: GridCell;
@@ -296,6 +304,205 @@ function LevelCard({ level, onSelect, isCompleted }: LevelCardProps) {
   );
 }
 
+// Challenge Card Component
+interface ChallengeCardProps {
+  challenge: PathfindingChallenge;
+  onSelect: () => void;
+  completedChallenges: string[];
+  challengeStars: Record<string, number>;
+}
+
+function ChallengeCard({ challenge, onSelect, completedChallenges, challengeStars }: ChallengeCardProps) {
+  const difficultyColor = challenge.difficulty === 'easy' ? Colors.success :
+                         challenge.difficulty === 'medium' ? Colors.logicGold : Colors.alertCoral;
+  const isCompleted = completedChallenges.includes(challenge.id);
+  const stars = challengeStars[challenge.id] || 0;
+
+  const algorithmName = challenge.algorithmFocus === 'astar' ? 'A*' :
+                        challenge.algorithmFocus === 'bfs' ? 'BFS' :
+                        challenge.algorithmFocus === 'dijkstra' ? 'Dijkstra' : 'DFS';
+
+  return (
+    <Animated.View entering={FadeInDown.delay(100).springify()}>
+      <TouchableOpacity
+        style={[styles.challengeCard, isCompleted && styles.challengeCardCompleted]}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          onSelect();
+        }}
+        activeOpacity={0.8}
+      >
+        <View style={styles.challengeHeader}>
+          <View style={[styles.challengeAlgoBadge, { backgroundColor: Colors.actionTeal + '20' }]}>
+            <Text style={[styles.challengeAlgoText, { color: Colors.actionTeal }]}>
+              {algorithmName}
+            </Text>
+          </View>
+          <View style={[styles.levelBadge, { backgroundColor: difficultyColor + '30' }]}>
+            <Text style={[styles.levelBadgeText, { color: difficultyColor }]}>
+              {challenge.difficulty.toUpperCase()}
+            </Text>
+          </View>
+        </View>
+
+        <Text style={styles.challengeName}>{challenge.name}</Text>
+        <Text style={styles.challengeDescription} numberOfLines={2}>{challenge.description}</Text>
+
+        {/* Constraints Preview */}
+        <View style={styles.constraintsPreview}>
+          {challenge.constraints.slice(0, 2).map((constraint, idx) => (
+            <View key={idx} style={styles.constraintTag}>
+              <Ionicons
+                name={
+                  constraint.type === 'max_nodes' ? 'git-network-outline' :
+                  constraint.type === 'required_algorithm' ? 'code-slash' :
+                  constraint.type === 'max_path_length' ? 'resize-outline' : 'speedometer-outline'
+                }
+                size={12}
+                color={Colors.gray400}
+              />
+              <Text style={styles.constraintTagText}>
+                {constraint.type === 'max_nodes' ? `≤${constraint.value} nodes` :
+                 constraint.type === 'required_algorithm' ? `Use ${String(constraint.value).toUpperCase()}` :
+                 constraint.type === 'max_path_length' ? `Path ≤${constraint.value}` : `${constraint.value}% eff.`}
+              </Text>
+            </View>
+          ))}
+        </View>
+
+        <View style={styles.challengeFooter}>
+          <View style={styles.starsContainer}>
+            {[1, 2, 3].map((s) => (
+              <Ionicons
+                key={s}
+                name={s <= stars ? 'star' : 'star-outline'}
+                size={16}
+                color={s <= stars ? Colors.logicGold : Colors.gray600}
+              />
+            ))}
+          </View>
+          <Text style={styles.challengeXP}>+{challenge.xpReward} XP</Text>
+        </View>
+      </TouchableOpacity>
+    </Animated.View>
+  );
+}
+
+// Challenge Result Modal
+interface ChallengeResultModalProps {
+  visible: boolean;
+  onClose: () => void;
+  challenge: PathfindingChallenge | null;
+  passed: boolean;
+  stars: number;
+  nodesVisited: number;
+  pathLength: number;
+  algorithmUsed: PathfindingAlgorithmKey;
+  failures: string[];
+  xpEarned: number;
+}
+
+function ChallengeResultModal({
+  visible,
+  onClose,
+  challenge,
+  passed,
+  stars,
+  nodesVisited,
+  pathLength,
+  algorithmUsed,
+  failures,
+  xpEarned,
+}: ChallengeResultModalProps) {
+  const insets = useSafeAreaInsets();
+
+  if (!challenge) return null;
+
+  return (
+    <Modal visible={visible} animationType="slide" transparent>
+      <View style={styles.modalOverlay}>
+        <View style={[styles.resultModalContent, { paddingBottom: insets.bottom + Spacing.lg }]}>
+          {/* Result Icon */}
+          <View style={[styles.resultIconContainer, passed ? styles.resultIconSuccess : styles.resultIconFail]}>
+            <Ionicons
+              name={passed ? 'trophy' : 'close-circle'}
+              size={48}
+              color={passed ? Colors.logicGold : Colors.alertCoral}
+            />
+          </View>
+
+          <Text style={[styles.resultTitle, { color: passed ? Colors.actionTeal : Colors.alertCoral }]}>
+            {passed ? 'Challenge Complete!' : 'Challenge Failed'}
+          </Text>
+
+          {/* Stars */}
+          {passed && (
+            <View style={styles.resultStars}>
+              {[1, 2, 3].map((s) => (
+                <Animated.View key={s} entering={FadeInUp.delay(s * 200).springify()}>
+                  <Ionicons
+                    name={s <= stars ? 'star' : 'star-outline'}
+                    size={32}
+                    color={s <= stars ? Colors.logicGold : Colors.gray600}
+                  />
+                </Animated.View>
+              ))}
+            </View>
+          )}
+
+          {/* Stats */}
+          <View style={styles.resultStats}>
+            <View style={styles.resultStatItem}>
+              <Text style={styles.resultStatLabel}>Nodes Visited</Text>
+              <Text style={styles.resultStatValue}>{nodesVisited}</Text>
+              <Text style={styles.resultStatTarget}>Target: ≤{challenge.optimalNodes}</Text>
+            </View>
+            <View style={styles.resultStatDivider} />
+            <View style={styles.resultStatItem}>
+              <Text style={styles.resultStatLabel}>Path Length</Text>
+              <Text style={styles.resultStatValue}>{pathLength}</Text>
+              <Text style={styles.resultStatTarget}>Optimal: {challenge.optimalPath}</Text>
+            </View>
+          </View>
+
+          {/* Failures (if any) */}
+          {!passed && failures.length > 0 && (
+            <View style={styles.failuresContainer}>
+              <Text style={styles.failuresTitle}>Constraints Not Met:</Text>
+              {failures.map((failure, idx) => (
+                <View key={idx} style={styles.failureItem}>
+                  <Ionicons name="close" size={14} color={Colors.alertCoral} />
+                  <Text style={styles.failureText}>{failure}</Text>
+                </View>
+              ))}
+            </View>
+          )}
+
+          {/* XP Earned */}
+          {passed && (
+            <View style={styles.xpEarnedContainer}>
+              <Ionicons name="star" size={20} color={Colors.logicGold} />
+              <Text style={styles.xpEarnedText}>+{xpEarned} XP</Text>
+            </View>
+          )}
+
+          {/* Hints (if failed) */}
+          {!passed && challenge.hints.length > 0 && (
+            <View style={styles.hintsContainer}>
+              <Text style={styles.hintsTitle}>Hint:</Text>
+              <Text style={styles.hintText}>{challenge.hints[0]}</Text>
+            </View>
+          )}
+
+          <TouchableOpacity style={styles.resultCloseButton} onPress={onClose}>
+            <Text style={styles.resultCloseText}>{passed ? 'Continue' : 'Try Again'}</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
 interface AIExplainerModalProps {
   visible: boolean;
   onClose: () => void;
@@ -450,7 +657,7 @@ ${pathFound ?
 export default function GridEscapeScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { updateHighScore, addXP, completeAlgorithm, userProgress } = useAppStore();
+  const { updateHighScore, addXP, completeAlgorithm, userProgress, recordChallengeCompletion, getAlgorithmMastery } = useAppStore();
 
   const [gameMode, setGameMode] = useState<GameMode>('sandbox');
   const [grid, setGrid] = useState<GridCell[][]>([]);
@@ -463,7 +670,22 @@ export default function GridEscapeScreen() {
   const [showAIExplainer, setShowAIExplainer] = useState(false);
   const [obstacles, setObstacles] = useState<{ row: number; col: number }[]>([]);
 
+  // Challenge state
+  const [currentChallenge, setCurrentChallenge] = useState<PathfindingChallenge | null>(null);
+  const [showChallengeResult, setShowChallengeResult] = useState(false);
+  const [challengeResult, setChallengeResult] = useState<{
+    passed: boolean;
+    stars: number;
+    failures: string[];
+    xpEarned: number;
+  } | null>(null);
+  const [completedChallenges, setCompletedChallenges] = useState<string[]>([]);
+  const [challengeStars, setChallengeStars] = useState<Record<string, number>>({});
+  const [showXPAnimation, setShowXPAnimation] = useState(false);
+  const [xpAnimationAmount, setXpAnimationAmount] = useState(0);
+
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const allChallenges = getAllChallenges();
 
   const start = { row: 0, col: 0 };
   const end = { row: GRID_SIZE - 1, col: GRID_SIZE - 1 };
@@ -532,10 +754,42 @@ export default function GridEscapeScreen() {
           // Award points if path found
           if (allSteps[index].path.length > 0) {
             updateHighScore('gridEscapeWins', 1);
-            const xpReward = currentLevel ? currentLevel.xpReward : 30;
-            addXP(xpReward);
-            completeAlgorithm(selectedAlgorithm, xpReward);
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
+            // Handle challenge completion
+            if (currentChallenge) {
+              const nodesVisited = allSteps[index].nodesVisited;
+              const pathLength = allSteps[index].pathLength;
+              const { passed, failures } = checkChallengeConstraints(
+                currentChallenge,
+                selectedAlgorithm,
+                nodesVisited,
+                pathLength
+              );
+              const stars = passed ? calculateChallengeStars(currentChallenge, nodesVisited, pathLength) : 0;
+              const xpEarned = passed ? currentChallenge.xpReward * stars : 0;
+
+              setChallengeResult({ passed, stars, failures, xpEarned });
+              setShowChallengeResult(true);
+
+              if (passed) {
+                addXP(xpEarned);
+                recordChallengeCompletion(currentChallenge.id, selectedAlgorithm, nodesVisited, pathLength, true);
+                setCompletedChallenges(prev => prev.includes(currentChallenge.id) ? prev : [...prev, currentChallenge.id]);
+                setChallengeStars(prev => ({
+                  ...prev,
+                  [currentChallenge.id]: Math.max(prev[currentChallenge.id] || 0, stars)
+                }));
+              } else {
+                recordChallengeCompletion(currentChallenge.id, selectedAlgorithm, nodesVisited, pathLength, false);
+              }
+
+              Haptics.notificationAsync(passed ? Haptics.NotificationFeedbackType.Success : Haptics.NotificationFeedbackType.Error);
+            } else {
+              const xpReward = currentLevel ? currentLevel.xpReward : 30;
+              addXP(xpReward);
+              completeAlgorithm(selectedAlgorithm, xpReward);
+              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            }
           } else {
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
           }
@@ -602,8 +856,32 @@ export default function GridEscapeScreen() {
     setGameMode(mode);
     if (mode === 'sandbox') {
       setCurrentLevel(null);
+      setCurrentChallenge(null);
       initializeGrid();
+    } else if (mode === 'challenges') {
+      setCurrentLevel(null);
+      setCurrentChallenge(null);
     }
+  };
+
+  const selectChallenge = (challenge: PathfindingChallenge) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+    setCurrentChallenge(challenge);
+    setCurrentLevel(null);
+    setSelectedAlgorithm(challenge.algorithmFocus);
+    initializeGrid(challenge.obstacles);
+  };
+
+  const handleChallengeResultClose = () => {
+    setShowChallengeResult(false);
+    if (challengeResult?.passed && challengeResult.xpEarned > 0) {
+      setXpAnimationAmount(challengeResult.xpEarned);
+      setShowXPAnimation(true);
+    }
+    resetGrid();
   };
 
   const openAIExplainer = () => {
@@ -628,7 +906,9 @@ export default function GridEscapeScreen() {
           <Ionicons name="arrow-back" size={24} color={Colors.white} />
         </TouchableOpacity>
         <Text style={styles.title}>
-          {currentLevel ? `Level ${currentLevel.id}: ${currentLevel.name}` : `Grid Escape: ${algorithmInfo.name}`}
+          {currentChallenge ? currentChallenge.name :
+           currentLevel ? `Level ${currentLevel.id}: ${currentLevel.name}` :
+           `Grid Escape: ${algorithmInfo.name}`}
         </Text>
         {isComplete && (
           <TouchableOpacity style={styles.aiButton} onPress={openAIExplainer}>
@@ -667,6 +947,20 @@ export default function GridEscapeScreen() {
             gameMode === 'levels' && styles.modeTabTextActive
           ]}>Levels</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.modeTab, gameMode === 'challenges' && styles.modeTabActive]}
+          onPress={() => switchMode('challenges')}
+        >
+          <Ionicons
+            name="ribbon"
+            size={18}
+            color={gameMode === 'challenges' ? Colors.midnightBlue : Colors.gray400}
+          />
+          <Text style={[
+            styles.modeTabText,
+            gameMode === 'challenges' && styles.modeTabTextActive
+          ]}>Challenges</Text>
+        </TouchableOpacity>
       </View>
 
       <ScrollView
@@ -674,7 +968,58 @@ export default function GridEscapeScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {gameMode === 'levels' && !currentLevel ? (
+        {gameMode === 'challenges' && !currentChallenge ? (
+          // Challenges Selection
+          <Animated.View entering={FadeIn}>
+            <Text style={styles.sectionTitle}>Mastery Challenges</Text>
+            <Text style={styles.sectionSubtitle}>
+              Complete challenges with constraints to earn mastery badges
+            </Text>
+
+            {/* Mastery Progress Overview */}
+            <View style={styles.masteryOverview}>
+              {(['bfs', 'astar', 'dijkstra'] as PathfindingAlgorithmKey[]).map((algo) => {
+                const mastery = getAlgorithmMastery(algo);
+                return (
+                  <View key={algo} style={styles.masteryItem}>
+                    <MasteryBadge level={mastery.masteryLevel} size="small" showLabel={false} />
+                    <Text style={styles.masteryAlgoName}>
+                      {algo === 'astar' ? 'A*' : algo.toUpperCase()}
+                    </Text>
+                  </View>
+                );
+              })}
+            </View>
+
+            {/* Challenges by Algorithm */}
+            {(['bfs', 'astar', 'dijkstra'] as PathfindingAlgorithmKey[]).map((algo) => {
+              const algoChallenges = allChallenges.filter(c => c.algorithmFocus === algo);
+              const algoName = algo === 'astar' ? 'A*' : algo === 'bfs' ? 'BFS' : 'Dijkstra';
+
+              return (
+                <View key={algo} style={styles.challengeSection}>
+                  <View style={styles.challengeSectionHeader}>
+                    <Text style={styles.challengeSectionTitle}>{algoName} Challenges</Text>
+                    <View style={styles.challengeProgress}>
+                      <Text style={styles.challengeProgressText}>
+                        {algoChallenges.filter(c => completedChallenges.includes(c.id)).length}/{algoChallenges.length}
+                      </Text>
+                    </View>
+                  </View>
+                  {algoChallenges.map((challenge) => (
+                    <ChallengeCard
+                      key={challenge.id}
+                      challenge={challenge}
+                      onSelect={() => selectChallenge(challenge)}
+                      completedChallenges={completedChallenges}
+                      challengeStars={challengeStars}
+                    />
+                  ))}
+                </View>
+              );
+            })}
+          </Animated.View>
+        ) : gameMode === 'levels' && !currentLevel ? (
           // Levels Selection
           <Animated.View entering={FadeIn}>
             <Text style={styles.sectionTitle}>Choose a Challenge</Text>
@@ -830,7 +1175,7 @@ export default function GridEscapeScreen() {
               </View>
             </Animated.View>
 
-            {/* Back to Levels Button */}
+            {/* Back to Levels/Challenges Button */}
             {gameMode === 'levels' && currentLevel && (
               <TouchableOpacity
                 style={styles.backToLevelsButton}
@@ -843,6 +1188,45 @@ export default function GridEscapeScreen() {
                 <Ionicons name="arrow-back" size={18} color={Colors.actionTeal} />
                 <Text style={styles.backToLevelsText}>Back to Levels</Text>
               </TouchableOpacity>
+            )}
+
+            {gameMode === 'challenges' && currentChallenge && (
+              <TouchableOpacity
+                style={styles.backToLevelsButton}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setCurrentChallenge(null);
+                  initializeGrid();
+                }}
+              >
+                <Ionicons name="arrow-back" size={18} color={Colors.actionTeal} />
+                <Text style={styles.backToLevelsText}>Back to Challenges</Text>
+              </TouchableOpacity>
+            )}
+
+            {/* Challenge Constraints Info */}
+            {currentChallenge && (
+              <Animated.View entering={FadeInDown.delay(250)} style={styles.constraintsCard}>
+                <Text style={styles.constraintsCardTitle}>Challenge Constraints</Text>
+                {currentChallenge.constraints.map((constraint, idx) => (
+                  <View key={idx} style={styles.constraintRow}>
+                    <Ionicons
+                      name={
+                        constraint.type === 'max_nodes' ? 'git-network-outline' :
+                        constraint.type === 'required_algorithm' ? 'code-slash' :
+                        constraint.type === 'max_path_length' ? 'resize-outline' : 'speedometer-outline'
+                      }
+                      size={16}
+                      color={Colors.actionTeal}
+                    />
+                    <Text style={styles.constraintRowText}>
+                      {constraint.type === 'max_nodes' ? `Visit ≤ ${constraint.value} nodes` :
+                       constraint.type === 'required_algorithm' ? `Use ${String(constraint.value).toUpperCase()} algorithm` :
+                       constraint.type === 'max_path_length' ? `Path length ≤ ${constraint.value}` : `Achieve ${constraint.value}% efficiency`}
+                    </Text>
+                  </View>
+                ))}
+              </Animated.View>
             )}
           </>
         )}
@@ -860,6 +1244,28 @@ export default function GridEscapeScreen() {
         }}
         obstacles={obstacles}
         pathFound={!!pathFound}
+      />
+
+      {/* Challenge Result Modal */}
+      <ChallengeResultModal
+        visible={showChallengeResult}
+        onClose={handleChallengeResultClose}
+        challenge={currentChallenge}
+        passed={challengeResult?.passed || false}
+        stars={challengeResult?.stars || 0}
+        nodesVisited={currentStep?.nodesVisited || 0}
+        pathLength={currentStep?.pathLength || 0}
+        algorithmUsed={selectedAlgorithm}
+        failures={challengeResult?.failures || []}
+        xpEarned={challengeResult?.xpEarned || 0}
+      />
+
+      {/* XP Gain Animation */}
+      <XPGainAnimation
+        visible={showXPAnimation}
+        xpAmount={xpAnimationAmount}
+        onComplete={() => setShowXPAnimation(false)}
+        message="Challenge Complete!"
       />
     </View>
   );
@@ -1404,5 +1810,273 @@ const styles = StyleSheet.create({
   },
   sendButtonDisabled: {
     backgroundColor: Colors.gray700,
+  },
+  // Challenge Styles
+  challengeCard: {
+    backgroundColor: Colors.cardBackground,
+    borderRadius: BorderRadius.xl,
+    padding: Spacing.lg,
+    marginBottom: Spacing.md,
+    borderWidth: 1,
+    borderColor: Colors.gray700,
+    ...Shadows.small,
+  },
+  challengeCardCompleted: {
+    borderColor: Colors.actionTeal + '50',
+  },
+  challengeHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: Spacing.sm,
+  },
+  challengeAlgoBadge: {
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.sm,
+  },
+  challengeAlgoText: {
+    fontSize: FontSizes.xs,
+    fontWeight: '700',
+  },
+  challengeName: {
+    fontSize: FontSizes.lg,
+    fontWeight: '600',
+    color: Colors.white,
+    marginBottom: Spacing.xs,
+  },
+  challengeDescription: {
+    fontSize: FontSizes.sm,
+    color: Colors.gray400,
+    lineHeight: 18,
+    marginBottom: Spacing.md,
+  },
+  constraintsPreview: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.xs,
+    marginBottom: Spacing.md,
+  },
+  constraintTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: Colors.gray700,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 4,
+    borderRadius: BorderRadius.sm,
+  },
+  constraintTagText: {
+    fontSize: FontSizes.xs,
+    color: Colors.gray400,
+  },
+  challengeFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  starsContainer: {
+    flexDirection: 'row',
+    gap: 2,
+  },
+  challengeXP: {
+    fontSize: FontSizes.sm,
+    fontWeight: '600',
+    color: Colors.logicGold,
+  },
+  masteryOverview: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    backgroundColor: Colors.cardBackground,
+    borderRadius: BorderRadius.xl,
+    padding: Spacing.lg,
+    marginBottom: Spacing.lg,
+    ...Shadows.small,
+  },
+  masteryItem: {
+    alignItems: 'center',
+    gap: Spacing.xs,
+  },
+  masteryAlgoName: {
+    fontSize: FontSizes.xs,
+    color: Colors.gray400,
+    fontWeight: '600',
+  },
+  challengeSection: {
+    marginBottom: Spacing.lg,
+  },
+  challengeSectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: Spacing.md,
+  },
+  challengeSectionTitle: {
+    fontSize: FontSizes.md,
+    fontWeight: '600',
+    color: Colors.white,
+  },
+  challengeProgress: {
+    backgroundColor: Colors.actionTeal + '20',
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.sm,
+  },
+  challengeProgressText: {
+    fontSize: FontSizes.xs,
+    color: Colors.actionTeal,
+    fontWeight: '600',
+  },
+  constraintsCard: {
+    backgroundColor: Colors.cardBackground,
+    borderRadius: BorderRadius.xl,
+    padding: Spacing.lg,
+    marginTop: Spacing.lg,
+    borderWidth: 1,
+    borderColor: Colors.actionTeal + '30',
+    ...Shadows.small,
+  },
+  constraintsCardTitle: {
+    fontSize: FontSizes.md,
+    fontWeight: '600',
+    color: Colors.actionTeal,
+    marginBottom: Spacing.md,
+  },
+  constraintRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    marginBottom: Spacing.sm,
+  },
+  constraintRowText: {
+    fontSize: FontSizes.sm,
+    color: Colors.gray300,
+  },
+  // Result Modal Styles
+  resultModalContent: {
+    backgroundColor: Colors.midnightBlue,
+    borderTopLeftRadius: BorderRadius.xxl,
+    borderTopRightRadius: BorderRadius.xxl,
+    padding: Spacing.xl,
+    alignItems: 'center',
+  },
+  resultIconContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: Spacing.lg,
+  },
+  resultIconSuccess: {
+    backgroundColor: Colors.logicGold + '20',
+  },
+  resultIconFail: {
+    backgroundColor: Colors.alertCoral + '20',
+  },
+  resultTitle: {
+    fontSize: FontSizes.xxl,
+    fontWeight: '700',
+    marginBottom: Spacing.md,
+  },
+  resultStars: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
+    marginBottom: Spacing.lg,
+  },
+  resultStats: {
+    flexDirection: 'row',
+    width: '100%',
+    backgroundColor: Colors.cardBackground,
+    borderRadius: BorderRadius.xl,
+    padding: Spacing.lg,
+    marginBottom: Spacing.lg,
+  },
+  resultStatItem: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  resultStatLabel: {
+    fontSize: FontSizes.xs,
+    color: Colors.gray500,
+    marginBottom: 4,
+  },
+  resultStatValue: {
+    fontSize: FontSizes.xxl,
+    fontWeight: '700',
+    color: Colors.white,
+  },
+  resultStatTarget: {
+    fontSize: FontSizes.xs,
+    color: Colors.gray500,
+    marginTop: 2,
+  },
+  resultStatDivider: {
+    width: 1,
+    backgroundColor: Colors.gray700,
+  },
+  failuresContainer: {
+    width: '100%',
+    backgroundColor: Colors.alertCoral + '10',
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.md,
+    marginBottom: Spacing.lg,
+  },
+  failuresTitle: {
+    fontSize: FontSizes.sm,
+    fontWeight: '600',
+    color: Colors.alertCoral,
+    marginBottom: Spacing.sm,
+  },
+  failureItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+    marginBottom: 4,
+  },
+  failureText: {
+    fontSize: FontSizes.sm,
+    color: Colors.gray400,
+  },
+  xpEarnedContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    marginBottom: Spacing.lg,
+  },
+  xpEarnedText: {
+    fontSize: FontSizes.xl,
+    fontWeight: '700',
+    color: Colors.logicGold,
+  },
+  hintsContainer: {
+    width: '100%',
+    backgroundColor: Colors.logicGold + '10',
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.md,
+    marginBottom: Spacing.lg,
+  },
+  hintsTitle: {
+    fontSize: FontSizes.sm,
+    fontWeight: '600',
+    color: Colors.logicGold,
+    marginBottom: Spacing.xs,
+  },
+  hintText: {
+    fontSize: FontSizes.sm,
+    color: Colors.gray300,
+    lineHeight: 20,
+  },
+  resultCloseButton: {
+    width: '100%',
+    backgroundColor: Colors.actionTeal,
+    paddingVertical: Spacing.md,
+    borderRadius: BorderRadius.lg,
+    alignItems: 'center',
+  },
+  resultCloseText: {
+    fontSize: FontSizes.md,
+    fontWeight: '600',
+    color: Colors.midnightBlue,
   },
 });

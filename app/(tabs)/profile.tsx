@@ -14,6 +14,8 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
 import { useAppStore } from '@/store/useAppStore';
+import { MasteryBadge } from '@/components/XPGainAnimation';
+import { getMasteryColor } from '@/utils/quizData';
 
 interface SettingItemProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -88,6 +90,96 @@ function QuickStats() {
   );
 }
 
+// Helper to get algorithm name from id
+const algorithmNames: Record<string, string> = {
+  'bubble-sort': 'Bubble Sort',
+  'selection-sort': 'Selection Sort',
+  'insertion-sort': 'Insertion Sort',
+  'merge-sort': 'Merge Sort',
+  'quick-sort': 'Quick Sort',
+  'linear-search': 'Linear Search',
+  'binary-search': 'Binary Search',
+  'bfs': 'BFS',
+  'dfs': 'DFS',
+  'dijkstra': "Dijkstra's",
+  'astar': 'A* Search',
+  'fibonacci': 'Fibonacci',
+  'knapsack': 'Knapsack',
+};
+
+function MasteryOverview() {
+  const { userProgress } = useAppStore();
+  const masteryEntries = Object.entries(userProgress.algorithmMastery);
+
+  if (masteryEntries.length === 0) {
+    return null;
+  }
+
+  // Group masteries by level
+  const goldCount = masteryEntries.filter(([_, m]) => m.masteryLevel === 'gold').length;
+  const silverCount = masteryEntries.filter(([_, m]) => m.masteryLevel === 'silver').length;
+  const bronzeCount = masteryEntries.filter(([_, m]) => m.masteryLevel === 'bronze').length;
+
+  return (
+    <Animated.View entering={FadeInDown.delay(250)} style={styles.masterySection}>
+      <Text style={styles.sectionTitle}>Algorithm Mastery</Text>
+      <View style={styles.masteryCard}>
+        {/* Mastery Summary */}
+        <View style={styles.masterySummary}>
+          <View style={styles.masterySummaryItem}>
+            <View style={[styles.masteryDot, { backgroundColor: getMasteryColor('gold') }]}>
+              <Ionicons name="trophy" size={12} color={Colors.midnightBlue} />
+            </View>
+            <Text style={[styles.masterySummaryCount, { color: getMasteryColor('gold') }]}>{goldCount}</Text>
+            <Text style={styles.masterySummaryLabel}>Gold</Text>
+          </View>
+          <View style={styles.masterySummaryItem}>
+            <View style={[styles.masteryDot, { backgroundColor: getMasteryColor('silver') }]}>
+              <Ionicons name="medal" size={12} color={Colors.midnightBlue} />
+            </View>
+            <Text style={[styles.masterySummaryCount, { color: getMasteryColor('silver') }]}>{silverCount}</Text>
+            <Text style={styles.masterySummaryLabel}>Silver</Text>
+          </View>
+          <View style={styles.masterySummaryItem}>
+            <View style={[styles.masteryDot, { backgroundColor: getMasteryColor('bronze') }]}>
+              <Ionicons name="ribbon" size={12} color={Colors.midnightBlue} />
+            </View>
+            <Text style={[styles.masterySummaryCount, { color: getMasteryColor('bronze') }]}>{bronzeCount}</Text>
+            <Text style={styles.masterySummaryLabel}>Bronze</Text>
+          </View>
+        </View>
+
+        {/* Individual Algorithm Masteries */}
+        <View style={styles.masteryList}>
+          {masteryEntries.slice(0, 5).map(([algorithmId, mastery]) => (
+            <View key={algorithmId} style={styles.masteryListItem}>
+              <MasteryBadge level={mastery.masteryLevel} size="small" showLabel={false} />
+              <View style={styles.masteryListContent}>
+                <Text style={styles.masteryListName}>{algorithmNames[algorithmId] || algorithmId}</Text>
+                <Text style={styles.masteryListScore}>
+                  Avg: {mastery.quizScores.length > 0
+                    ? Math.round(mastery.quizScores.reduce((a, b) => a + b, 0) / mastery.quizScores.length)
+                    : 0}%
+                </Text>
+              </View>
+              <View style={styles.masteryListStats}>
+                <Text style={styles.masteryListStatsText}>
+                  {mastery.quizScores.length} quiz{mastery.quizScores.length !== 1 ? 'es' : ''}
+                </Text>
+              </View>
+            </View>
+          ))}
+          {masteryEntries.length > 5 && (
+            <Text style={styles.masteryMoreText}>
+              +{masteryEntries.length - 5} more algorithms
+            </Text>
+          )}
+        </View>
+      </View>
+    </Animated.View>
+  );
+}
+
 export default function ProfileScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -134,6 +226,9 @@ export default function ProfileScreen() {
 
         {/* Quick Stats */}
         <QuickStats />
+
+        {/* Mastery Overview */}
+        <MasteryOverview />
 
         {/* Visualization Settings */}
         <Animated.View entering={FadeInDown.delay(300)} style={styles.section}>
@@ -446,5 +541,79 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.xs,
     color: Colors.gray600,
     marginTop: Spacing.sm,
+  },
+  // Mastery Section Styles
+  masterySection: {
+    marginBottom: Spacing.lg,
+  },
+  masteryCard: {
+    backgroundColor: Colors.cardBackground,
+    borderRadius: BorderRadius.xl,
+    overflow: 'hidden',
+    ...Shadows.small,
+  },
+  masterySummary: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: Spacing.lg,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.gray700,
+  },
+  masterySummaryItem: {
+    alignItems: 'center',
+  },
+  masteryDot: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: Spacing.xs,
+  },
+  masterySummaryCount: {
+    fontSize: FontSizes.lg,
+    fontWeight: '700',
+  },
+  masterySummaryLabel: {
+    fontSize: FontSizes.xs,
+    color: Colors.gray400,
+    marginTop: 2,
+  },
+  masteryList: {
+    padding: Spacing.md,
+  },
+  masteryListItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: Spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.gray700,
+  },
+  masteryListContent: {
+    flex: 1,
+    marginLeft: Spacing.md,
+  },
+  masteryListName: {
+    fontSize: FontSizes.sm,
+    fontWeight: '600',
+    color: Colors.white,
+  },
+  masteryListScore: {
+    fontSize: FontSizes.xs,
+    color: Colors.gray500,
+    marginTop: 2,
+  },
+  masteryListStats: {
+    alignItems: 'flex-end',
+  },
+  masteryListStatsText: {
+    fontSize: FontSizes.xs,
+    color: Colors.gray500,
+  },
+  masteryMoreText: {
+    fontSize: FontSizes.sm,
+    color: Colors.actionTeal,
+    textAlign: 'center',
+    marginTop: Spacing.md,
   },
 });

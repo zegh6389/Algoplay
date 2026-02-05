@@ -36,6 +36,9 @@ import {
 import { getAlgorithmCode, ProgrammingLanguage } from '@/utils/algorithms/codeImplementations';
 import UniversalInputSheet from '@/components/UniversalInputSheet';
 import { CodeViewer, AICodeTutor, SegmentedControl, ViewMode } from '@/components/CodeHub';
+import KnowledgeCheckModal from '@/components/KnowledgeCheckModal';
+import XPGainAnimation from '@/components/XPGainAnimation';
+import { getQuizForAlgorithm, calculateQuizXP } from '@/utils/quizData';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CANVAS_PADDING = Spacing.lg * 2;
@@ -337,7 +340,7 @@ export default function VisualizerScreen() {
   const params = useLocalSearchParams<{ algorithm: string }>();
   const algorithmId = params.algorithm;
 
-  const { visualizationSettings, setVisualizationSpeed, completeAlgorithm, addXP } = useAppStore();
+  const { visualizationSettings, setVisualizationSpeed, completeAlgorithm, addXP, recordQuizScore, getLevelProgress, userProgress } = useAppStore();
 
   // Determine algorithm type and get algorithm
   const algorithmType: AlgorithmType = algorithmId in searchingAlgorithms ? 'searching' : 'sorting';
@@ -368,6 +371,15 @@ export default function VisualizerScreen() {
   const [aiTutorCode, setAITutorCode] = useState('');
   const [aiTutorLanguage, setAITutorLanguage] = useState<ProgrammingLanguage>('python');
   const [isAILoading, setIsAILoading] = useState(false);
+
+  // Quiz and XP state
+  const [showQuizModal, setShowQuizModal] = useState(false);
+  const [showXPAnimation, setShowXPAnimation] = useState(false);
+  const [earnedXP, setEarnedXP] = useState(0);
+  const [hasCompletedVisualization, setHasCompletedVisualization] = useState(false);
+  const [showLevelUp, setShowLevelUp] = useState(false);
+  const [newLevel, setNewLevel] = useState(1);
+  const algorithmQuiz = getQuizForAlgorithm(algorithmId);
 
   const playIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -422,6 +434,9 @@ export default function VisualizerScreen() {
     setCurrentStepIndex(0);
     setOperationsCount(0);
     setIsPlaying(false);
+    setHasCompletedVisualization(false);
+    setEarnedXP(0);
+    setShowLevelUp(false);
 
     if (playIntervalRef.current) {
       clearInterval(playIntervalRef.current);
@@ -448,9 +463,22 @@ export default function VisualizerScreen() {
 
           if (next >= steps.length - 1) {
             setIsPlaying(false);
-            // Award XP on completion
-            completeAlgorithm(algorithmId, 50);
-            addXP(50);
+            // Trigger quiz or award XP on completion
+            if (!hasCompletedVisualization) {
+              setHasCompletedVisualization(true);
+              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
+              // If quiz is available, show it; otherwise award XP directly
+              if (algorithmQuiz) {
+                setTimeout(() => setShowQuizModal(true), 500);
+              } else {
+                // No quiz available, award base XP
+                completeAlgorithm(algorithmId, 50);
+                addXP(50);
+                setEarnedXP(50);
+                setTimeout(() => setShowXPAnimation(true), 300);
+              }
+            }
           }
           return Math.min(next, steps.length - 1);
         });
@@ -500,6 +528,38 @@ export default function VisualizerScreen() {
     setAITutorCode(code);
     setAITutorLanguage(language);
     setShowAITutor(true);
+  };
+
+  const handleQuizComplete = (score: number, xpEarned: number, correctAnswers: number, totalQuestions: number) => {
+    const baseVisualizationXP = 50;
+    const totalXP = baseVisualizationXP + xpEarned;
+
+    // Record quiz score for mastery tracking
+    recordQuizScore(algorithmId, score, correctAnswers, totalQuestions);
+
+    // Check for level up before awarding XP
+    const currentLevel = userProgress.level;
+
+    // Award XP
+    completeAlgorithm(algorithmId, totalXP);
+    addXP(totalXP);
+    setEarnedXP(totalXP);
+
+    // Check if level up occurred
+    const newTotalXP = userProgress.totalXP + totalXP;
+    const calculatedNewLevel = Math.floor(newTotalXP / 500) + 1;
+    if (calculatedNewLevel > currentLevel) {
+      setShowLevelUp(true);
+      setNewLevel(calculatedNewLevel);
+    }
+
+    // Close quiz modal and show XP animation
+    setShowQuizModal(false);
+    setTimeout(() => setShowXPAnimation(true), 300);
+  };
+
+  const handleXPAnimationComplete = () => {
+    setShowXPAnimation(false);
   };
 
   const getBarState = (index: number): BarProps['state'] => {
@@ -699,6 +759,35 @@ export default function VisualizerScreen() {
           spaceComplexity={algorithmCode.spaceComplexity}
         />
       )}
+
+      {/* Knowledge Check Quiz Modal */}
+      {algorithmQuiz && (
+        <KnowledgeCheckModal
+          visible={showQuizModal}
+          onClose={() => {
+            setShowQuizModal(false);
+            // Still award base XP if quiz is skipped
+            if (!earnedXP) {
+              completeAlgorithm(algorithmId, 50);
+              addXP(50);
+              setEarnedXP(50);
+              setTimeout(() => setShowXPAnimation(true), 300);
+            }
+          }}
+          quiz={algorithmQuiz}
+          onComplete={handleQuizComplete}
+        />
+      )}
+
+      {/* XP Gain Animation */}
+      <XPGainAnimation
+        visible={showXPAnimation}
+        xpAmount={earnedXP}
+        onComplete={handleXPAnimationComplete}
+        message={algorithmQuiz ? 'Quiz Completed!' : 'Visualization Complete!'}
+        showLevelUp={showLevelUp}
+        newLevel={newLevel}
+      />
     </View>
   );
 }
