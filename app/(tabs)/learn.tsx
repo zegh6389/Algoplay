@@ -223,6 +223,9 @@ function AlgorithmCard({ algorithm, index }: { algorithm: Algorithm; index: numb
       router.push('/game/grid-escape');
     } else if (algorithm.category === 'trees') {
       router.push('/visualizer/tree');
+    } else if (algorithm.category === 'dynamic-programming') {
+      // Navigate directly to DP visualizer with algorithm parameter
+      router.push(`/visualizer/dp?algorithm=${algorithm.id}` as any);
     } else if (algorithm.category === 'sorting') {
       router.push(`/visualizer/${algorithm.id}`);
     } else {
