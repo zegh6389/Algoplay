@@ -36,6 +36,15 @@ interface GameCard {
 
 const games: GameCard[] = [
   {
+    id: 'battle-arena',
+    title: 'Battle Arena',
+    description: 'High-stakes algorithm battles! Watch two algorithms race head-to-head.',
+    icon: 'flash',
+    gradientColors: [Colors.actionTeal, Colors.electricPurple] as const,
+    route: '/game/battle-arena',
+    badge: 'NEW',
+  },
+  {
     id: 'the-sorter',
     title: 'The Sorter',
     description: 'Race against algorithms! Manually sort elements faster than the computer.',
@@ -59,7 +68,6 @@ const games: GameCard[] = [
     icon: 'flag',
     gradientColors: [Colors.logicGold, Colors.logicGoldDark] as const,
     route: '/game/race-mode',
-    badge: 'New',
   },
 ];
 

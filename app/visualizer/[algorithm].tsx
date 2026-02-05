@@ -591,7 +591,7 @@ export default function VisualizerScreen() {
         <View style={styles.errorContainer}>
           <Ionicons name="alert-circle" size={64} color={Colors.alertCoral} />
           <Text style={styles.errorText}>Algorithm not found</Text>
-          <Text style={styles.errorSubtext}>The algorithm "{algorithmId}" is not available.</Text>
+          <Text style={styles.errorSubtext}>The algorithm &quot;{algorithmId}&quot; is not available.</Text>
           <TouchableOpacity style={styles.backToLearnButton} onPress={() => router.back()}>
             <Text style={styles.backToLearnText}>Go Back</Text>
           </TouchableOpacity>

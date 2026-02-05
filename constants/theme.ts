@@ -1,7 +1,7 @@
 // Algoplay Theme Constants
 export const Colors = {
   // Primary Colors
-  midnightBlue: '#0F172A',
+  midnightBlue: '#0D1B2A',
   midnightBlueDark: '#0A1120',
   midnightBlueLight: '#1E293B',
 
@@ -9,6 +9,10 @@ export const Colors = {
   actionTeal: '#2DD4BF',
   actionTealDark: '#14B8A6',
   actionTealLight: '#5EEAD4',
+
+  electricPurple: '#A855F7',
+  electricPurpleDark: '#9333EA',
+  electricPurpleLight: '#C084FC',
 
   alertCoral: '#FB7185',
   alertCoralDark: '#F43F5E',
@@ -38,6 +42,10 @@ export const Colors = {
   // Card backgrounds
   cardBackground: '#1E293B',
   cardBackgroundDark: '#0F172A',
+
+  // Glass-morphism backgrounds
+  glassBackground: 'rgba(30, 41, 59, 0.7)',
+  glassBorder: 'rgba(255, 255, 255, 0.1)',
 
   // Algorithm-specific colors
   comparing: '#FBBF24',
@@ -168,4 +176,144 @@ export const ComplexityNotations = {
   'O(n log n)': { label: 'O(n log n)', name: 'Linearithmic', color: Colors.warning },
   'O(n²)': { label: 'O(n²)', name: 'Quadratic', color: Colors.alertCoral },
   'O(2^n)': { label: 'O(2^n)', name: 'Exponential', color: Colors.error },
+};
+
+// Glass-morphism style helper
+export const GlassStyles = {
+  container: {
+    backgroundColor: Colors.glassBackground,
+    borderWidth: 1,
+    borderColor: Colors.glassBorder,
+    borderRadius: BorderRadius.xl,
+    overflow: 'hidden' as const,
+  },
+  containerLight: {
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+    borderRadius: BorderRadius.xl,
+    overflow: 'hidden' as const,
+  },
+};
+
+// Battle Arena Colors
+export const BattleColors = {
+  player1: Colors.actionTeal,
+  player2: Colors.electricPurple,
+  winner: Colors.logicGold,
+  neutral: Colors.gray500,
+};
+
+// Algorithm Big-O Complexity Data
+export interface AlgorithmComplexity {
+  name: string;
+  category: string;
+  timeComplexity: {
+    best: string;
+    average: string;
+    worst: string;
+  };
+  spaceComplexity: string;
+  stable?: boolean;
+  inPlace?: boolean;
+  whenToUse: string;
+}
+
+export const AlgorithmComplexities: Record<string, AlgorithmComplexity> = {
+  'bubble-sort': {
+    name: 'Bubble Sort',
+    category: 'Sorting',
+    timeComplexity: { best: 'O(n)', average: 'O(n²)', worst: 'O(n²)' },
+    spaceComplexity: 'O(1)',
+    stable: true,
+    inPlace: true,
+    whenToUse: 'Small datasets or nearly sorted arrays. Great for learning but avoid in production.',
+  },
+  'selection-sort': {
+    name: 'Selection Sort',
+    category: 'Sorting',
+    timeComplexity: { best: 'O(n²)', average: 'O(n²)', worst: 'O(n²)' },
+    spaceComplexity: 'O(1)',
+    stable: false,
+    inPlace: true,
+    whenToUse: 'When memory writes are expensive (e.g., flash memory). Minimal swaps guaranteed.',
+  },
+  'insertion-sort': {
+    name: 'Insertion Sort',
+    category: 'Sorting',
+    timeComplexity: { best: 'O(n)', average: 'O(n²)', worst: 'O(n²)' },
+    spaceComplexity: 'O(1)',
+    stable: true,
+    inPlace: true,
+    whenToUse: 'Small arrays or nearly sorted data. Often used as base case in hybrid algorithms.',
+  },
+  'merge-sort': {
+    name: 'Merge Sort',
+    category: 'Sorting',
+    timeComplexity: { best: 'O(n log n)', average: 'O(n log n)', worst: 'O(n log n)' },
+    spaceComplexity: 'O(n)',
+    stable: true,
+    inPlace: false,
+    whenToUse: 'When stability matters or guaranteed O(n log n) is needed. Ideal for linked lists.',
+  },
+  'quick-sort': {
+    name: 'Quick Sort',
+    category: 'Sorting',
+    timeComplexity: { best: 'O(n log n)', average: 'O(n log n)', worst: 'O(n²)' },
+    spaceComplexity: 'O(log n)',
+    stable: false,
+    inPlace: true,
+    whenToUse: 'General-purpose sorting. Fastest in practice for most cases. Use randomized pivot.',
+  },
+  'heap-sort': {
+    name: 'Heap Sort',
+    category: 'Sorting',
+    timeComplexity: { best: 'O(n log n)', average: 'O(n log n)', worst: 'O(n log n)' },
+    spaceComplexity: 'O(1)',
+    stable: false,
+    inPlace: true,
+    whenToUse: 'When O(n log n) worst-case is required with O(1) space. Systems with memory constraints.',
+  },
+  'linear-search': {
+    name: 'Linear Search',
+    category: 'Searching',
+    timeComplexity: { best: 'O(1)', average: 'O(n)', worst: 'O(n)' },
+    spaceComplexity: 'O(1)',
+    whenToUse: 'Unsorted arrays, small datasets, or linked lists. Simple and works everywhere.',
+  },
+  'binary-search': {
+    name: 'Binary Search',
+    category: 'Searching',
+    timeComplexity: { best: 'O(1)', average: 'O(log n)', worst: 'O(log n)' },
+    spaceComplexity: 'O(1)',
+    whenToUse: 'Sorted arrays only. Extremely efficient for large datasets with random access.',
+  },
+  'bfs': {
+    name: 'Breadth-First Search',
+    category: 'Graphs',
+    timeComplexity: { best: 'O(V + E)', average: 'O(V + E)', worst: 'O(V + E)' },
+    spaceComplexity: 'O(V)',
+    whenToUse: 'Shortest path in unweighted graphs. Level-order traversal. Finding all nodes at distance k.',
+  },
+  'dfs': {
+    name: 'Depth-First Search',
+    category: 'Graphs',
+    timeComplexity: { best: 'O(V + E)', average: 'O(V + E)', worst: 'O(V + E)' },
+    spaceComplexity: 'O(V)',
+    whenToUse: 'Cycle detection, topological sort, path finding, maze solving. Lower memory than BFS.',
+  },
+  'dijkstra': {
+    name: "Dijkstra's Algorithm",
+    category: 'Graphs',
+    timeComplexity: { best: 'O((V + E) log V)', average: 'O((V + E) log V)', worst: 'O((V + E) log V)' },
+    spaceComplexity: 'O(V)',
+    whenToUse: 'Shortest path in weighted graphs with non-negative edges. GPS navigation, network routing.',
+  },
+  'astar': {
+    name: 'A* Search',
+    category: 'Graphs',
+    timeComplexity: { best: 'O(E)', average: 'O(E)', worst: 'O(E)' },
+    spaceComplexity: 'O(V)',
+    whenToUse: 'Pathfinding with a known goal. Game AI, robotics. Faster than Dijkstra with good heuristic.',
+  },
 };
