@@ -1574,6 +1574,167 @@ vector<pair<int,int>> aStar(vector<vector<int>>& grid,
   }
 };
 
+// ========================
+// DYNAMIC PROGRAMMING
+// ========================
+
+export const fibonacciCode: AlgorithmCode = {
+  id: 'fibonacci',
+  name: 'Fibonacci (DP)',
+  category: 'sorting', // Using 'sorting' as a generic category for compatibility
+  timeComplexity: { best: 'O(n)', average: 'O(n)', worst: 'O(n)' },
+  spaceComplexity: 'O(n)',
+  description: 'Computes Fibonacci numbers using dynamic programming with memoization. Transforms O(2^n) recursive solution to O(n) iterative.',
+  implementations: {
+    python: `def fibonacci(n):
+    """
+    Fibonacci using Dynamic Programming
+    Time: O(n) | Space: O(n)
+    Bottom-up tabulation approach
+    """
+    if n <= 1:
+        return n
+
+    # Memoization table
+    dp = [0] * (n + 1)
+    dp[0], dp[1] = 0, 1
+
+    for i in range(2, n + 1):
+        # F(i) = F(i-1) + F(i-2)
+        dp[i] = dp[i-1] + dp[i-2]
+
+    return dp[n]
+
+# Space-optimized version
+def fibonacci_optimized(n):
+    """
+    Fibonacci with O(1) space
+    Only stores last two values
+    """
+    if n <= 1:
+        return n
+
+    prev2, prev1 = 0, 1
+
+    for i in range(2, n + 1):
+        curr = prev1 + prev2
+        prev2, prev1 = prev1, curr
+
+    return prev1
+
+# Example usage
+n = 10
+result = fibonacci(n)
+print(f"F({n}) = {result}")
+print(f"Sequence: {[fibonacci(i) for i in range(n+1)]}")`,
+
+    java: `public class Fibonacci {
+    /**
+     * Fibonacci using Dynamic Programming
+     * Time: O(n) | Space: O(n)
+     * Bottom-up tabulation approach
+     */
+    public static long fibonacci(int n) {
+        if (n <= 1) return n;
+
+        // Memoization table
+        long[] dp = new long[n + 1];
+        dp[0] = 0;
+        dp[1] = 1;
+
+        for (int i = 2; i <= n; i++) {
+            // F(i) = F(i-1) + F(i-2)
+            dp[i] = dp[i-1] + dp[i-2];
+        }
+
+        return dp[n];
+    }
+
+    /**
+     * Space-optimized version O(1) space
+     */
+    public static long fibonacciOptimized(int n) {
+        if (n <= 1) return n;
+
+        long prev2 = 0, prev1 = 1;
+
+        for (int i = 2; i <= n; i++) {
+            long curr = prev1 + prev2;
+            prev2 = prev1;
+            prev1 = curr;
+        }
+
+        return prev1;
+    }
+
+    public static void main(String[] args) {
+        int n = 10;
+        System.out.println("F(" + n + ") = " + fibonacci(n));
+
+        System.out.print("Sequence: ");
+        for (int i = 0; i <= n; i++) {
+            System.out.print(fibonacci(i) + " ");
+        }
+    }
+}`,
+
+    cpp: `#include <iostream>
+#include <vector>
+using namespace std;
+
+/**
+ * Fibonacci using Dynamic Programming
+ * Time: O(n) | Space: O(n)
+ * Bottom-up tabulation approach
+ */
+long long fibonacci(int n) {
+    if (n <= 1) return n;
+
+    // Memoization table
+    vector<long long> dp(n + 1);
+    dp[0] = 0;
+    dp[1] = 1;
+
+    for (int i = 2; i <= n; i++) {
+        // F(i) = F(i-1) + F(i-2)
+        dp[i] = dp[i-1] + dp[i-2];
+    }
+
+    return dp[n];
+}
+
+/**
+ * Space-optimized version O(1) space
+ */
+long long fibonacciOptimized(int n) {
+    if (n <= 1) return n;
+
+    long long prev2 = 0, prev1 = 1;
+
+    for (int i = 2; i <= n; i++) {
+        long long curr = prev1 + prev2;
+        prev2 = prev1;
+        prev1 = curr;
+    }
+
+    return prev1;
+}
+
+int main() {
+    int n = 10;
+    cout << "F(" << n << ") = " << fibonacci(n) << endl;
+
+    cout << "Sequence: ";
+    for (int i = 0; i <= n; i++) {
+        cout << fibonacci(i) << " ";
+    }
+    cout << endl;
+
+    return 0;
+}`
+  }
+};
+
 // Export all algorithm codes
 export const algorithmCodes: Record<string, AlgorithmCode> = {
   // Sorting
@@ -1589,6 +1750,8 @@ export const algorithmCodes: Record<string, AlgorithmCode> = {
   'bfs': bfsCode,
   'dijkstra': dijkstraCode,
   'astar': astarCode,
+  // Dynamic Programming
+  'fibonacci': fibonacciCode,
 };
 
 export const getAlgorithmCode = (algorithmId: string): AlgorithmCode | undefined => {
