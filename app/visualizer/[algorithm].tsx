@@ -639,6 +639,8 @@ export default function VisualizerScreen() {
     );
   }
 
+  // At this point algorithm is guaranteed to be non-null
+  const validAlgorithm = algorithm!;
   const isFound = isSearchStep(currentStep) && currentStep?.found;
 
   return (
@@ -649,7 +651,7 @@ export default function VisualizerScreen() {
           <Ionicons name="arrow-back" size={24} color={Colors.textPrimary} />
         </TouchableOpacity>
         <Text style={styles.title} numberOfLines={1}>
-          {algorithm.info.name}
+          {validAlgorithm.info.name}
         </Text>
         <View style={styles.headerRight}>
           <TouchableOpacity
@@ -726,7 +728,7 @@ export default function VisualizerScreen() {
               memoryAccesses={memoryAccesses}
               currentStep={currentStepIndex + 1}
               totalSteps={steps.length}
-              algorithmName={algorithm.info.name}
+              algorithmName={validAlgorithm.info.name}
               logs={logs}
               maxLogs={5}
             />
@@ -734,8 +736,8 @@ export default function VisualizerScreen() {
             {/* Code Panel */}
             {visualizationSettings.showCode && (
               <CodePanel
-                pseudocode={algorithm.info.pseudocode}
-                pythonCode={algorithm.info.pythonCode}
+                pseudocode={validAlgorithm.info.pseudocode}
+                pythonCode={validAlgorithm.info.pythonCode}
                 currentLine={currentStep?.line || 0}
                 showPython={showPython}
                 onToggle={() => setShowPython(!showPython)}

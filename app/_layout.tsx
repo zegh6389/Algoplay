@@ -4,6 +4,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { AuthProvider } from '@fastshot/auth';
 import { Colors } from '@/constants/theme';
 import { supabase } from '@/lib/supabase';
+import SecurityProvider from '@/components/SecurityProvider';
 
 export default function RootLayout() {
   return (
@@ -12,121 +13,123 @@ export default function RootLayout() {
       <AuthProvider
         supabaseClient={supabase}
       >
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: Colors.background },
-            animation: 'slide_from_right',
-          }}
-        >
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="visualizer/[algorithm]"
-            options={{
-              presentation: 'modal',
-              animation: 'slide_from_bottom',
-            }}
-          />
-          <Stack.Screen
-            name="visualizer/dp"
-            options={{
-              presentation: 'modal',
-              animation: 'slide_from_bottom',
-            }}
-          />
-          <Stack.Screen
-            name="game/grid-escape"
-            options={{
-              presentation: 'modal',
-              animation: 'slide_from_bottom',
-            }}
-          />
-          <Stack.Screen
-            name="game/the-sorter"
-            options={{
-              presentation: 'modal',
-              animation: 'slide_from_bottom',
-            }}
-          />
-          <Stack.Screen
-            name="game/race-mode"
-            options={{
-              presentation: 'modal',
-              animation: 'slide_from_bottom',
-            }}
-          />
-          <Stack.Screen
-            name="game/battle-arena"
-            options={{
-              presentation: 'modal',
-              animation: 'slide_from_bottom',
-            }}
-          />
-          <Stack.Screen
-            name="tutor"
-            options={{
-              presentation: 'modal',
+        <SecurityProvider>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: { backgroundColor: Colors.background },
               animation: 'slide_from_right',
             }}
-          />
-          <Stack.Screen
-            name="visualizer/tree"
-            options={{
-              presentation: 'modal',
-              animation: 'slide_from_bottom',
-            }}
-          />
-          <Stack.Screen
-            name="library/index"
-            options={{
-              animation: 'slide_from_right',
-            }}
-          />
-          <Stack.Screen
-            name="library/[lessonId]"
-            options={{
-              animation: 'slide_from_right',
-            }}
-          />
-          <Stack.Screen
-            name="dashboard"
-            options={{
-              animation: 'slide_from_right',
-            }}
-          />
-          <Stack.Screen
-            name="cheatsheet"
-            options={{
-              animation: 'slide_from_right',
-            }}
-          />
-          <Stack.Screen
-            name="leaderboard"
-            options={{
-              animation: 'slide_from_right',
-            }}
-          />
-          <Stack.Screen
-            name="elite-arena"
-            options={{
-              animation: 'slide_from_right',
-            }}
-          />
-          <Stack.Screen
-            name="premium"
-            options={{
-              presentation: 'modal',
-              animation: 'slide_from_bottom',
-            }}
-          />
-          <Stack.Screen
-            name="playground"
-            options={{
-              animation: 'slide_from_right',
-            }}
-          />
-        </Stack>
+          >
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="visualizer/[algorithm]"
+              options={{
+                presentation: 'modal',
+                animation: 'slide_from_bottom',
+              }}
+            />
+            <Stack.Screen
+              name="visualizer/dp"
+              options={{
+                presentation: 'modal',
+                animation: 'slide_from_bottom',
+              }}
+            />
+            <Stack.Screen
+              name="game/grid-escape"
+              options={{
+                presentation: 'modal',
+                animation: 'slide_from_bottom',
+              }}
+            />
+            <Stack.Screen
+              name="game/the-sorter"
+              options={{
+                presentation: 'modal',
+                animation: 'slide_from_bottom',
+              }}
+            />
+            <Stack.Screen
+              name="game/race-mode"
+              options={{
+                presentation: 'modal',
+                animation: 'slide_from_bottom',
+              }}
+            />
+            <Stack.Screen
+              name="game/battle-arena"
+              options={{
+                presentation: 'modal',
+                animation: 'slide_from_bottom',
+              }}
+            />
+            <Stack.Screen
+              name="tutor"
+              options={{
+                presentation: 'modal',
+                animation: 'slide_from_right',
+              }}
+            />
+            <Stack.Screen
+              name="visualizer/tree"
+              options={{
+                presentation: 'modal',
+                animation: 'slide_from_bottom',
+              }}
+            />
+            <Stack.Screen
+              name="library/index"
+              options={{
+                animation: 'slide_from_right',
+              }}
+            />
+            <Stack.Screen
+              name="library/[lessonId]"
+              options={{
+                animation: 'slide_from_right',
+              }}
+            />
+            <Stack.Screen
+              name="dashboard"
+              options={{
+                animation: 'slide_from_right',
+              }}
+            />
+            <Stack.Screen
+              name="cheatsheet"
+              options={{
+                animation: 'slide_from_right',
+              }}
+            />
+            <Stack.Screen
+              name="leaderboard"
+              options={{
+                animation: 'slide_from_right',
+              }}
+            />
+            <Stack.Screen
+              name="elite-arena"
+              options={{
+                animation: 'slide_from_right',
+              }}
+            />
+            <Stack.Screen
+              name="premium"
+              options={{
+                presentation: 'modal',
+                animation: 'slide_from_bottom',
+              }}
+            />
+            <Stack.Screen
+              name="playground"
+              options={{
+                animation: 'slide_from_right',
+              }}
+            />
+          </Stack>
+        </SecurityProvider>
       </AuthProvider>
     </GestureHandlerRootView>
   );
