@@ -58,7 +58,7 @@ function MessageBubble({ message, index }: { message: Message; index: number }) 
       {!isUser && (
         <View style={styles.assistantAvatar}>
           <View style={styles.avatarIcon}>
-            <Ionicons name="bulb" size={16} color={Colors.actionTeal} />
+            <Ionicons name="bulb" size={16} color={Colors.accent} />
           </View>
         </View>
       )}
@@ -97,7 +97,7 @@ function WelcomeMessage() {
   return (
     <Animated.View entering={FadeInDown.delay(200)} style={styles.welcomeContainer}>
       <View style={styles.welcomeIcon}>
-        <Ionicons name="school" size={48} color={Colors.actionTeal} />
+        <Ionicons name="school" size={48} color={Colors.accent} />
       </View>
       <Text style={styles.welcomeTitle}>AI Tutor</Text>
       <Text style={styles.welcomeSubtitle}>
@@ -181,7 +181,7 @@ export default function TutorScreen() {
       {/* Header */}
       <Animated.View entering={FadeInDown} style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color={Colors.white} />
+          <Ionicons name="arrow-back" size={24} color={Colors.textPrimary} />
         </TouchableOpacity>
         <Text style={styles.title}>AI Tutor</Text>
         <View style={styles.newellBadge}>
@@ -211,11 +211,11 @@ export default function TutorScreen() {
               <Animated.View entering={FadeInRight} style={styles.loadingContainer}>
                 <View style={styles.assistantAvatar}>
                   <View style={styles.avatarIcon}>
-                    <Ionicons name="bulb" size={16} color={Colors.actionTeal} />
+                    <Ionicons name="bulb" size={16} color={Colors.accent} />
                   </View>
                 </View>
                 <View style={styles.typingIndicator}>
-                  <ActivityIndicator size="small" color={Colors.actionTeal} />
+                  <ActivityIndicator size="small" color={Colors.accent} />
                   <Text style={styles.typingText}>Thinking...</Text>
                 </View>
               </Animated.View>
@@ -256,7 +256,7 @@ export default function TutorScreen() {
             <Ionicons
               name="send"
               size={20}
-              color={inputText.trim() && !isLoading ? Colors.midnightBlue : Colors.gray500}
+              color={inputText.trim() && !isLoading ? Colors.background : Colors.gray500}
             />
           </TouchableOpacity>
         </View>
@@ -268,7 +268,7 @@ export default function TutorScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.midnightBlue,
+    backgroundColor: Colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -291,20 +291,20 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: FontSizes.xxl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   newellBadge: {
-    backgroundColor: Colors.actionTeal + '20',
+    backgroundColor: Colors.accent + '20',
     paddingHorizontal: Spacing.sm,
     paddingVertical: Spacing.xs,
     borderRadius: BorderRadius.md,
     borderWidth: 1,
-    borderColor: Colors.actionTeal + '40',
+    borderColor: Colors.accent + '40',
   },
   newellText: {
     fontSize: FontSizes.xs,
     fontWeight: '600',
-    color: Colors.actionTeal,
+    color: Colors.accent,
   },
   messagesContainer: {
     flex: 1,
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: Colors.actionTeal + '20',
+    backgroundColor: Colors.accent + '20',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: Spacing.lg,
@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
   welcomeTitle: {
     fontSize: FontSizes.xxl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: Spacing.sm,
   },
   welcomeSubtitle: {
@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: Colors.actionTeal + '20',
+    backgroundColor: Colors.accent + '20',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
   },
   userContent: {
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     marginLeft: 'auto',
     borderBottomRightRadius: BorderRadius.sm,
   },
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   userMessageText: {
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
   loadingContainer: {
     flexDirection: 'row',
@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
     paddingTop: Spacing.sm,
     borderTopWidth: 1,
     borderTopColor: Colors.gray800,
-    backgroundColor: Colors.midnightBlue,
+    backgroundColor: Colors.background,
   },
   inputWrapper: {
     flexDirection: 'row',
@@ -461,7 +461,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: FontSizes.md,
-    color: Colors.white,
+    color: Colors.textPrimary,
     maxHeight: 100,
     paddingVertical: Spacing.sm,
   },
@@ -469,7 +469,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: BorderRadius.full,
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     justifyContent: 'center',
     alignItems: 'center',
   },

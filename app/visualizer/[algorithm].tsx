@@ -96,9 +96,9 @@ function Bar({ value, maxValue, index, state, totalBars, showLabel = true }: Bar
       case 'eliminated':
         return Colors.gray600;
       case 'active-range':
-        return Colors.actionTeal;
+        return Colors.accent;
       default:
-        return Colors.actionTeal;
+        return Colors.accent;
     }
   };
 
@@ -240,7 +240,7 @@ function InsightPanel({ operation, algorithmType, found }: InsightPanelProps) {
         <Ionicons
           name={found ? "checkmark-circle" : "information-circle"}
           size={20}
-          color={found ? Colors.success : Colors.actionTeal}
+          color={found ? Colors.success : Colors.accent}
         />
         <Text style={styles.insightTitle}>
           {found ? "Target Found!" : "Live Commentary"}
@@ -285,7 +285,7 @@ function PlaybackControls({
           style={[styles.playbackButton, styles.playbackButtonSmall]}
           onPress={onReset}
         >
-          <Ionicons name="refresh" size={20} color={Colors.white} />
+          <Ionicons name="refresh" size={20} color={Colors.textPrimary} />
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -293,14 +293,14 @@ function PlaybackControls({
           onPress={onStepBackward}
           disabled={!canStepBackward}
         >
-          <Ionicons name="play-skip-back" size={20} color={canStepBackward ? Colors.white : Colors.gray600} />
+          <Ionicons name="play-skip-back" size={20} color={canStepBackward ? Colors.textPrimary : Colors.gray600} />
         </TouchableOpacity>
 
         <TouchableOpacity
           style={[styles.playbackButton, styles.playbackButtonMain]}
           onPress={isPlaying ? onPause : onPlay}
         >
-          <Ionicons name={isPlaying ? 'pause' : 'play'} size={28} color={Colors.midnightBlue} />
+          <Ionicons name={isPlaying ? 'pause' : 'play'} size={28} color={Colors.background} />
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -308,7 +308,7 @@ function PlaybackControls({
           onPress={onStepForward}
           disabled={!canStepForward}
         >
-          <Ionicons name="play-skip-forward" size={20} color={canStepForward ? Colors.white : Colors.gray600} />
+          <Ionicons name="play-skip-forward" size={20} color={canStepForward ? Colors.textPrimary : Colors.gray600} />
         </TouchableOpacity>
 
         <View style={styles.speedControl}>
@@ -318,14 +318,14 @@ function PlaybackControls({
               style={styles.speedButton}
               onPress={() => onSpeedChange(Math.max(0.5, speed - 0.5))}
             >
-              <Ionicons name="remove" size={16} color={Colors.white} />
+              <Ionicons name="remove" size={16} color={Colors.textPrimary} />
             </TouchableOpacity>
             <Text style={styles.speedValue}>{speed}x</Text>
             <TouchableOpacity
               style={styles.speedButton}
               onPress={() => onSpeedChange(Math.min(3, speed + 0.5))}
             >
-              <Ionicons name="add" size={16} color={Colors.white} />
+              <Ionicons name="add" size={16} color={Colors.textPrimary} />
             </TouchableOpacity>
           </View>
         </View>
@@ -607,7 +607,7 @@ export default function VisualizerScreen() {
       {/* Header */}
       <Animated.View entering={FadeInDown} style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color={Colors.white} />
+          <Ionicons name="arrow-back" size={24} color={Colors.textPrimary} />
         </TouchableOpacity>
         <Text style={styles.title} numberOfLines={1}>
           {algorithm.info.name}
@@ -795,7 +795,7 @@ export default function VisualizerScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.midnightBlue,
+    backgroundColor: Colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -816,7 +816,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: FontSizes.xl,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   settingsButton: {
     width: 40,
@@ -860,7 +860,7 @@ const styles = StyleSheet.create({
   barLabel: {
     fontSize: 8,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   searchRangeIndicator: {
     marginTop: Spacing.md,
@@ -872,7 +872,7 @@ const styles = StyleSheet.create({
   },
   searchRangeText: {
     fontSize: FontSizes.sm,
-    color: Colors.actionTeal,
+    color: Colors.accent,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
   currentIndexText: {
@@ -886,7 +886,7 @@ const styles = StyleSheet.create({
     padding: Spacing.lg,
     marginBottom: Spacing.lg,
     borderLeftWidth: 4,
-    borderLeftColor: Colors.actionTeal,
+    borderLeftColor: Colors.accent,
     ...Shadows.small,
   },
   insightPanelFound: {
@@ -901,7 +901,7 @@ const styles = StyleSheet.create({
   insightTitle: {
     fontSize: FontSizes.md,
     fontWeight: '600',
-    color: Colors.actionTeal,
+    color: Colors.accent,
     marginLeft: Spacing.sm,
   },
   insightText: {
@@ -923,7 +923,7 @@ const styles = StyleSheet.create({
   complexityTitle: {
     fontSize: FontSizes.md,
     fontWeight: '600',
-    color: Colors.actionTeal,
+    color: Colors.accent,
     marginBottom: Spacing.md,
   },
   complexityStats: {
@@ -943,7 +943,7 @@ const styles = StyleSheet.create({
   complexityValue: {
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
   codePanel: {
@@ -967,7 +967,7 @@ const styles = StyleSheet.create({
   codeTabActive: {
     backgroundColor: Colors.cardBackground,
     borderBottomWidth: 2,
-    borderBottomColor: Colors.actionTeal,
+    borderBottomColor: Colors.accent,
   },
   codeTabText: {
     fontSize: FontSizes.sm,
@@ -975,7 +975,7 @@ const styles = StyleSheet.create({
     color: Colors.gray500,
   },
   codeTabTextActive: {
-    color: Colors.actionTeal,
+    color: Colors.accent,
   },
   codeContent: {
     maxHeight: 200,
@@ -988,7 +988,7 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.sm,
   },
   codeLineHighlighted: {
-    backgroundColor: Colors.actionTeal + '30',
+    backgroundColor: Colors.accent + '30',
   },
   codeLineNumber: {
     width: 24,
@@ -1003,7 +1003,7 @@ const styles = StyleSheet.create({
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
   codeTextHighlighted: {
-    color: Colors.white,
+    color: Colors.textPrimary,
     fontWeight: '500',
   },
   playbackControls: {
@@ -1032,7 +1032,7 @@ const styles = StyleSheet.create({
   playbackButtonMain: {
     width: 56,
     height: 56,
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     marginHorizontal: Spacing.sm,
   },
   playbackButtonDisabled: {
@@ -1060,7 +1060,7 @@ const styles = StyleSheet.create({
   speedValue: {
     fontSize: FontSizes.sm,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     minWidth: 36,
     textAlign: 'center',
   },
@@ -1084,7 +1084,7 @@ const styles = StyleSheet.create({
     marginTop: Spacing.sm,
   },
   backToLearnButton: {
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.xxl,
     borderRadius: BorderRadius.lg,
@@ -1093,6 +1093,6 @@ const styles = StyleSheet.create({
   backToLearnText: {
     fontSize: FontSizes.md,
     fontWeight: '600',
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
 });

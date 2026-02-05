@@ -277,7 +277,7 @@ function CountdownOverlay({ count, onComplete }: { count: number; onComplete: ()
     <View style={styles.countdownOverlay}>
       <Animated.View style={[styles.countdownContainer, animatedStyle]}>
         <LinearGradient
-          colors={[Colors.actionTeal + '20', Colors.electricPurple + '20']}
+          colors={[Colors.accent + '20', Colors.electricPurple + '20']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.countdownGradient}
@@ -321,7 +321,7 @@ function WinnerPodium({
             colors={[Colors.logicGold, Colors.logicGoldDark]}
             style={styles.trophyGradient}
           >
-            <Ionicons name="trophy" size={48} color={Colors.midnightBlue} />
+            <Ionicons name="trophy" size={48} color={Colors.background} />
           </LinearGradient>
         </Animated.View>
 
@@ -361,7 +361,7 @@ function WinnerPodium({
         {/* Actions */}
         <Animated.View entering={FadeInDown.delay(1000).springify()} style={styles.podiumActions}>
           <TouchableOpacity style={styles.rematchButton} onPress={onRematch}>
-            <Ionicons name="refresh" size={20} color={Colors.white} />
+            <Ionicons name="refresh" size={20} color={Colors.textPrimary} />
             <Text style={styles.rematchText}>Rematch</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.newBattleButton} onPress={onNewBattle}>
@@ -793,14 +793,14 @@ export default function BattleArenaScreen() {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <LinearGradient
-        colors={[Colors.midnightBlue, Colors.midnightBlueDark]}
+        colors={[Colors.background, Colors.backgroundDark]}
         style={StyleSheet.absoluteFillObject}
       />
 
       {/* Header */}
       <Animated.View entering={FadeInDown.delay(100)} style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="close" size={24} color={Colors.white} />
+          <Ionicons name="close" size={24} color={Colors.textPrimary} />
         </TouchableOpacity>
         <View style={styles.headerCenter}>
           <Text style={styles.headerTitle}>Algorithm Battle</Text>
@@ -878,14 +878,14 @@ export default function BattleArenaScreen() {
               <LinearGradient
                 colors={
                   battleState.algorithm1 && battleState.algorithm2
-                    ? [Colors.actionTeal, Colors.electricPurple]
+                    ? [Colors.accent, Colors.electricPurple]
                     : [Colors.gray600, Colors.gray700]
                 }
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.startButtonGradient}
               >
-                <Ionicons name="flash" size={24} color={Colors.white} />
+                <Ionicons name="flash" size={24} color={Colors.textPrimary} />
                 <Text style={styles.startButtonText}>Start Battle</Text>
               </LinearGradient>
             </TouchableOpacity>
@@ -954,7 +954,7 @@ export default function BattleArenaScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.midnightBlue,
+    backgroundColor: Colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -977,7 +977,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: FontSizes.xl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   headerSubtitle: {
     fontSize: FontSizes.sm,
@@ -1009,12 +1009,12 @@ const styles = StyleSheet.create({
   playerBadgeText: {
     fontSize: FontSizes.xs,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   sectionTitle: {
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   algorithmsGrid: {
     flexDirection: 'row',
@@ -1046,7 +1046,7 @@ const styles = StyleSheet.create({
   algorithmName: {
     fontSize: FontSizes.sm,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     flex: 1,
   },
   checkIcon: {
@@ -1099,7 +1099,7 @@ const styles = StyleSheet.create({
   startButtonText: {
     fontSize: FontSizes.xl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   // Battle Phase
   battleContainer: {
@@ -1179,7 +1179,7 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: FontSizes.sm,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   statLabel: {
     fontSize: FontSizes.xs,
@@ -1235,7 +1235,7 @@ const styles = StyleSheet.create({
   countdownText: {
     fontSize: 64,
     fontWeight: '800',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   // Winner Podium
   podiumContainer: {
@@ -1268,12 +1268,12 @@ const styles = StyleSheet.create({
   winnerTitle: {
     fontSize: FontSizes.xxxl,
     fontWeight: '800',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: Spacing.lg,
     textAlign: 'center',
   },
   comparisonCard: {
-    backgroundColor: Colors.midnightBlueDark,
+    backgroundColor: Colors.backgroundDark,
     borderRadius: BorderRadius.xl,
     padding: Spacing.lg,
     width: '100%',
@@ -1294,7 +1294,7 @@ const styles = StyleSheet.create({
   comparisonValue: {
     fontSize: FontSizes.xl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   comparisonSubvalue: {
     fontSize: FontSizes.sm,
@@ -1346,10 +1346,10 @@ const styles = StyleSheet.create({
   rematchText: {
     fontSize: FontSizes.md,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   newBattleButton: {
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.xl,
     borderRadius: BorderRadius.lg,
@@ -1357,6 +1357,6 @@ const styles = StyleSheet.create({
   newBattleText: {
     fontSize: FontSizes.md,
     fontWeight: '600',
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
 });

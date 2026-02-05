@@ -38,7 +38,7 @@ function CategoryTab({
       <Ionicons
         name={category.icon as keyof typeof Ionicons.glyphMap}
         size={16}
-        color={isSelected ? (category.color || Colors.actionTeal) : Colors.gray500}
+        color={isSelected ? (category.color || Colors.accent) : Colors.gray500}
       />
       <Text
         style={[
@@ -130,7 +130,7 @@ function FeaturedLesson() {
             </Text>
             <View style={styles.featuredButton}>
               <Text style={styles.featuredButtonText}>Read More</Text>
-              <Ionicons name="arrow-forward" size={16} color={Colors.midnightBlue} />
+              <Ionicons name="arrow-forward" size={16} color={Colors.background} />
             </View>
           </View>
         </LinearGradient>
@@ -204,7 +204,7 @@ export default function LibraryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.midnightBlue,
+    backgroundColor: Colors.background,
   },
   header: {
     paddingHorizontal: Spacing.lg,
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: FontSizes.title,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   subtitle: {
     fontSize: FontSizes.md,
@@ -237,8 +237,8 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   categoryTabActive: {
-    backgroundColor: Colors.actionTeal + '20',
-    borderColor: Colors.actionTeal,
+    backgroundColor: Colors.accent + '20',
+    borderColor: Colors.accent,
   },
   categoryTabText: {
     fontSize: FontSizes.sm,
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     marginLeft: Spacing.xs,
   },
   categoryTabTextActive: {
-    color: Colors.actionTeal,
+    color: Colors.accent,
   },
   scrollView: {
     flex: 1,
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: Spacing.md,
     marginTop: Spacing.lg,
   },
@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
   featuredButtonText: {
     fontSize: FontSizes.sm,
     fontWeight: '600',
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
   lessonCard: {
     backgroundColor: Colors.cardBackground,
@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
   lessonTitle: {
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: 2,
   },
   lessonDescription: {

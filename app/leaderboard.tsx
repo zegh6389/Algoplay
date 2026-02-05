@@ -99,7 +99,7 @@ function TopThreePodium({ entries }: { entries: LeaderboardEntry[] }) {
           <Ionicons
             name={rank === 1 ? 'trophy' : 'medal'}
             size={24}
-            color={Colors.white}
+            color={Colors.textPrimary}
           />
         </LinearGradient>
       </Animated.View>
@@ -274,14 +274,14 @@ export default function LeaderboardScreen() {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <LinearGradient
-        colors={[Colors.midnightBlue, Colors.midnightBlueDark]}
+        colors={[Colors.background, Colors.backgroundDark]}
         style={StyleSheet.absoluteFillObject}
       />
 
       {/* Header */}
       <Animated.View entering={FadeInDown} style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color={Colors.white} />
+          <Ionicons name="chevron-back" size={24} color={Colors.textPrimary} />
         </TouchableOpacity>
         <View style={styles.headerCenter}>
           <Ionicons name="trophy" size={24} color={Colors.logicGold} />
@@ -297,7 +297,7 @@ export default function LeaderboardScreen() {
 
       {loading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={Colors.actionTeal} />
+          <ActivityIndicator size="large" color={Colors.accent} />
           <Text style={styles.loadingText}>Loading leaderboard...</Text>
         </View>
       ) : (
@@ -309,7 +309,7 @@ export default function LeaderboardScreen() {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={handleRefresh}
-              tintColor={Colors.actionTeal}
+              tintColor={Colors.accent}
             />
           }
         >
@@ -351,7 +351,7 @@ export default function LeaderboardScreen() {
           {!isAuthenticated && (
             <Animated.View entering={FadeInUp.delay(600)} style={styles.signInPrompt}>
               <BlurView intensity={15} tint="dark" style={styles.signInBlur}>
-                <Ionicons name="person-add" size={32} color={Colors.actionTeal} />
+                <Ionicons name="person-add" size={32} color={Colors.accent} />
                 <Text style={styles.signInTitle}>Join the Competition!</Text>
                 <Text style={styles.signInSubtitle}>
                   Sign in to see your rank and compete with others
@@ -374,7 +374,7 @@ export default function LeaderboardScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.midnightBlue,
+    backgroundColor: Colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -399,7 +399,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: FontSizes.xl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   refreshButton: {
     width: 44,
@@ -425,7 +425,7 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.md,
   },
   filterTabActive: {
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
   },
   filterTabText: {
     fontSize: FontSizes.sm,
@@ -433,7 +433,7 @@ const styles = StyleSheet.create({
     color: Colors.gray400,
   },
   filterTabTextActive: {
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
   // Loading
   loadingContainer: {
@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
   podiumAvatarText: {
     fontSize: FontSizes.xl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   podiumRankBadge: {
     position: 'absolute',
@@ -491,17 +491,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: Colors.midnightBlue,
+    borderColor: Colors.background,
   },
   podiumRankText: {
     fontSize: FontSizes.xs,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   podiumUsername: {
     fontSize: FontSizes.sm,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: 2,
     maxWidth: 80,
   },
@@ -525,7 +525,7 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.xl,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: Colors.actionTeal + '30',
+    borderColor: Colors.accent + '30',
   },
   yourRankContent: {
     flexDirection: 'row',
@@ -542,7 +542,7 @@ const styles = StyleSheet.create({
   yourRankValue: {
     fontSize: FontSizes.xxxl,
     fontWeight: '800',
-    color: Colors.actionTeal,
+    color: Colors.accent,
   },
   yourRankRight: {
     alignItems: 'flex-end',
@@ -550,7 +550,7 @@ const styles = StyleSheet.create({
   yourRankXP: {
     fontSize: FontSizes.lg,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   yourRankLevel: {
     fontSize: FontSizes.sm,
@@ -571,8 +571,8 @@ const styles = StyleSheet.create({
     borderColor: Colors.gray700,
   },
   currentUserRow: {
-    borderColor: Colors.actionTeal + '50',
-    backgroundColor: Colors.actionTeal + '10',
+    borderColor: Colors.accent + '50',
+    backgroundColor: Colors.accent + '10',
   },
   rankContainer: {
     width: 32,
@@ -584,7 +584,7 @@ const styles = StyleSheet.create({
     color: Colors.gray400,
   },
   currentUserText: {
-    color: Colors.actionTeal,
+    color: Colors.accent,
   },
   rowAvatar: {
     width: 40,
@@ -596,12 +596,12 @@ const styles = StyleSheet.create({
     marginHorizontal: Spacing.sm,
   },
   currentUserAvatar: {
-    backgroundColor: Colors.actionTeal + '30',
+    backgroundColor: Colors.accent + '30',
   },
   rowAvatarText: {
     fontSize: FontSizes.md,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   rowInfo: {
     flex: 1,
@@ -609,7 +609,7 @@ const styles = StyleSheet.create({
   rowUsername: {
     fontSize: FontSizes.md,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   rowLevel: {
     fontSize: FontSizes.xs,
@@ -622,10 +622,10 @@ const styles = StyleSheet.create({
   rowXP: {
     fontSize: FontSizes.lg,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   currentUserXP: {
-    color: Colors.actionTeal,
+    color: Colors.accent,
   },
   rowXPLabel: {
     fontSize: FontSizes.xs,
@@ -646,7 +646,7 @@ const styles = StyleSheet.create({
   signInTitle: {
     fontSize: FontSizes.xl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginTop: Spacing.md,
     marginBottom: Spacing.xs,
   },
@@ -657,7 +657,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.lg,
   },
   signInButton: {
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.xxl,
     borderRadius: BorderRadius.lg,
@@ -665,6 +665,6 @@ const styles = StyleSheet.create({
   signInButtonText: {
     fontSize: FontSizes.md,
     fontWeight: '600',
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
 });

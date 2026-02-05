@@ -57,10 +57,10 @@ function ProfileHeader() {
     <Animated.View entering={FadeInDown.delay(100)} style={styles.profileHeader}>
       <View style={styles.avatarContainer}>
         <LinearGradient
-          colors={[Colors.actionTeal, Colors.electricPurple]}
+          colors={[Colors.accent, Colors.electricPurple]}
           style={styles.avatar}
         >
-          <Ionicons name="person" size={40} color={Colors.white} />
+          <Ionicons name="person" size={40} color={Colors.textPrimary} />
         </LinearGradient>
         <View style={styles.levelBadge}>
           <Text style={styles.levelBadgeText}>{userProgress.level}</Text>
@@ -77,8 +77,8 @@ function ProfileHeader() {
           style={styles.signInPrompt}
           onPress={() => router.push('/(auth)/login')}
         >
-          <Ionicons name="cloud-upload" size={14} color={Colors.actionTeal} />
-          <Text style={styles.signInPromptText}>Sign in to sync progress</Text>
+          <Ionicons name="cloud-upload" size={14} color={Colors.accent} />
+          <Text style={[styles.signInPromptText]}>Sign in to sync progress</Text>
         </TouchableOpacity>
       )}
     </Animated.View>
@@ -146,21 +146,21 @@ function MasteryOverview() {
         <View style={styles.masterySummary}>
           <View style={styles.masterySummaryItem}>
             <View style={[styles.masteryDot, { backgroundColor: getMasteryColor('gold') }]}>
-              <Ionicons name="trophy" size={12} color={Colors.midnightBlue} />
+              <Ionicons name="trophy" size={12} color={Colors.background} />
             </View>
             <Text style={[styles.masterySummaryCount, { color: getMasteryColor('gold') }]}>{goldCount}</Text>
             <Text style={styles.masterySummaryLabel}>Gold</Text>
           </View>
           <View style={styles.masterySummaryItem}>
             <View style={[styles.masteryDot, { backgroundColor: getMasteryColor('silver') }]}>
-              <Ionicons name="medal" size={12} color={Colors.midnightBlue} />
+              <Ionicons name="medal" size={12} color={Colors.background} />
             </View>
             <Text style={[styles.masterySummaryCount, { color: getMasteryColor('silver') }]}>{silverCount}</Text>
             <Text style={styles.masterySummaryLabel}>Silver</Text>
           </View>
           <View style={styles.masterySummaryItem}>
             <View style={[styles.masteryDot, { backgroundColor: getMasteryColor('bronze') }]}>
-              <Ionicons name="ribbon" size={12} color={Colors.midnightBlue} />
+              <Ionicons name="ribbon" size={12} color={Colors.background} />
             </View>
             <Text style={[styles.masterySummaryCount, { color: getMasteryColor('bronze') }]}>{bronzeCount}</Text>
             <Text style={styles.masterySummaryLabel}>Bronze</Text>
@@ -256,20 +256,20 @@ export default function ProfileScreen() {
               icon="speedometer"
               title="Animation Speed"
               subtitle={`${visualizationSettings.speed}x`}
-              color={Colors.actionTeal}
+              color={Colors.accent}
               rightElement={
                 <View style={styles.speedControls}>
                   <TouchableOpacity
                     style={styles.speedButton}
                     onPress={() => setVisualizationSpeed(visualizationSettings.speed - 0.5)}
                   >
-                    <Ionicons name="remove" size={18} color={Colors.white} />
+                    <Ionicons name="remove" size={18} color={Colors.textPrimary} />
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.speedButton}
                     onPress={() => setVisualizationSpeed(visualizationSettings.speed + 0.5)}
                   >
-                    <Ionicons name="add" size={18} color={Colors.white} />
+                    <Ionicons name="add" size={18} color={Colors.textPrimary} />
                   </TouchableOpacity>
                 </View>
               }
@@ -282,8 +282,8 @@ export default function ProfileScreen() {
                 <Switch
                   value={visualizationSettings.showComplexity}
                   onValueChange={toggleShowComplexity}
-                  trackColor={{ false: Colors.gray700, true: Colors.actionTeal }}
-                  thumbColor={Colors.white}
+                  trackColor={{ false: Colors.gray700, true: Colors.accent }}
+                  thumbColor={Colors.textPrimary}
                 />
               }
             />
@@ -295,8 +295,8 @@ export default function ProfileScreen() {
                 <Switch
                   value={visualizationSettings.showCode}
                   onValueChange={toggleShowCode}
-                  trackColor={{ false: Colors.gray700, true: Colors.actionTeal }}
-                  thumbColor={Colors.white}
+                  trackColor={{ false: Colors.gray700, true: Colors.accent }}
+                  thumbColor={Colors.textPrimary}
                 />
               }
             />
@@ -316,8 +316,8 @@ export default function ProfileScreen() {
                 <Switch
                   value={haptics}
                   onValueChange={setHaptics}
-                  trackColor={{ false: Colors.gray700, true: Colors.actionTeal }}
-                  thumbColor={Colors.white}
+                  trackColor={{ false: Colors.gray700, true: Colors.accent }}
+                  thumbColor={Colors.textPrimary}
                 />
               }
             />
@@ -330,8 +330,8 @@ export default function ProfileScreen() {
                 <Switch
                   value={notifications}
                   onValueChange={setNotifications}
-                  trackColor={{ false: Colors.gray700, true: Colors.actionTeal }}
-                  thumbColor={Colors.white}
+                  trackColor={{ false: Colors.gray700, true: Colors.accent }}
+                  thumbColor={Colors.textPrimary}
                 />
               }
             />
@@ -374,7 +374,7 @@ export default function ProfileScreen() {
               icon="chatbubbles"
               title="AI Tutor"
               subtitle="Get help from Algorithm Tutor"
-              color={Colors.actionTeal}
+              color={Colors.accent}
               onPress={() => router.push('/tutor')}
             />
             <SettingItem
@@ -415,7 +415,7 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.midnightBlue,
+    backgroundColor: Colors.background,
   },
   header: {
     paddingHorizontal: Spacing.lg,
@@ -424,7 +424,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: FontSizes.title,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   scrollView: {
     flex: 1,
@@ -445,11 +445,11 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: Colors.actionTeal + '20',
+    backgroundColor: Colors.accent + '20',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: Colors.actionTeal,
+    borderColor: Colors.accent,
   },
   levelBadge: {
     position: 'absolute',
@@ -462,17 +462,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: Colors.midnightBlue,
+    borderColor: Colors.background,
   },
   levelBadgeText: {
     fontSize: FontSizes.sm,
     fontWeight: '700',
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
   username: {
     fontSize: FontSizes.xxl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: 4,
   },
   userStats: {
@@ -494,7 +494,7 @@ const styles = StyleSheet.create({
   quickStatValue: {
     fontSize: FontSizes.xxl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   quickStatLabel: {
     fontSize: FontSizes.xs,
@@ -542,7 +542,7 @@ const styles = StyleSheet.create({
   settingTitle: {
     fontSize: FontSizes.md,
     fontWeight: '500',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   settingSubtitle: {
     fontSize: FontSizes.sm,
@@ -569,7 +569,7 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.actionTeal,
+    color: Colors.accent,
   },
   appVersion: {
     fontSize: FontSizes.sm,
@@ -635,7 +635,7 @@ const styles = StyleSheet.create({
   masteryListName: {
     fontSize: FontSizes.sm,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   masteryListScore: {
     fontSize: FontSizes.xs,
@@ -651,7 +651,7 @@ const styles = StyleSheet.create({
   },
   masteryMoreText: {
     fontSize: FontSizes.sm,
-    color: Colors.actionTeal,
+    color: Colors.accent,
     textAlign: 'center',
     marginTop: Spacing.md,
   },
@@ -662,12 +662,12 @@ const styles = StyleSheet.create({
     marginTop: Spacing.sm,
     paddingVertical: Spacing.xs,
     paddingHorizontal: Spacing.md,
-    backgroundColor: Colors.actionTeal + '15',
+    backgroundColor: Colors.accent + '15',
     borderRadius: BorderRadius.full,
   },
   signInPromptText: {
     fontSize: FontSizes.sm,
-    color: Colors.actionTeal,
+    color: Colors.accent,
     fontWeight: '500',
   },
 });

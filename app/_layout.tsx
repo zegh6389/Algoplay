@@ -7,19 +7,15 @@ import { supabase } from '@/lib/supabase';
 
 export default function RootLayout() {
   return (
-    <GestureHandlerRootView style={{ flex: 1, backgroundColor: Colors.midnightBlue }}>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: Colors.background }}>
       <StatusBar style="light" />
       <AuthProvider
         supabaseClient={supabase}
-        routes={{
-          login: '/(auth)/login',
-          afterLogin: '/(tabs)',
-        }}
       >
         <Stack
           screenOptions={{
             headerShown: false,
-            contentStyle: { backgroundColor: Colors.midnightBlue },
+            contentStyle: { backgroundColor: Colors.background },
             animation: 'slide_from_right',
           }}
         >

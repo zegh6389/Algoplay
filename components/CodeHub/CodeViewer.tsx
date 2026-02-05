@@ -29,22 +29,27 @@ import {
   languageIcons,
 } from '@/utils/algorithms/codeImplementations';
 
-// Dracula Theme Colors
-const DraculaTheme = {
-  background: '#282A36',
-  currentLine: '#44475A',
-  selection: '#44475A',
-  foreground: '#F8F8F2',
-  comment: '#6272A4',
-  cyan: '#8BE9FD',
-  green: '#50FA7B',
-  orange: '#FFB86C',
-  pink: '#FF79C6',
-  purple: '#BD93F9',
-  red: '#FF5555',
-  yellow: '#F1FA8C',
-  lineNumber: '#6272A4',
-  border: '#44475A',
+// One Dark Pro Theme Colors for Syntax Highlighting
+const OneDarkProTheme = {
+  background: '#282c34', // Main background
+  surface: '#3d4451', // Slightly lighter for UI elements
+  currentLine: '#2c313a', // Current line highlight
+  selection: '#3d4451', // Selection
+  foreground: '#abb2bf', // Main text color
+
+  // Syntax colors (as specified in requirements)
+  keyword: '#ff79c6', // Pink - keywords
+  string: '#a6e3a1', // Green - strings
+  number: '#f9e2af', // Yellow - numbers
+  comment: '#6272a4', // Gray-blue - comments
+  function: '#50fa7b', // Bright green - functions
+  operator: '#ff9671', // Orange - operators
+  variable: '#bd93f9', // Purple - variables
+  type: '#8be9fd', // Cyan - types
+
+  // UI colors
+  lineNumber: '#5c6370', // Muted gray for line numbers
+  border: '#3d4451', // Border color
 };
 
 interface CodeViewerProps {
@@ -75,7 +80,7 @@ function LanguageTab({ language, isSelected, onSelect }: LanguageTabProps) {
     backgroundColor: interpolateColor(
       backgroundProgress.value,
       [0, 1],
-      ['transparent', Colors.actionTeal]
+      ['transparent', Colors.accent]
     ),
   }));
 
@@ -137,7 +142,7 @@ function CopyButton({ onCopy, copied }: CopyButtonProps) {
         <Ionicons
           name={copied ? 'checkmark' : 'copy-outline'}
           size={16}
-          color={copied ? Colors.success : Colors.white}
+          color={copied ? Colors.success : Colors.textPrimary}
         />
         <Text style={[styles.copyText, copied && styles.copyTextSuccess]}>
           {copied ? 'Copied!' : 'Copy'}
@@ -154,99 +159,146 @@ interface CodeLineProps {
 }
 
 function CodeLine({ lineNumber, content, isHighlighted }: CodeLineProps) {
-  // Simple syntax highlighting based on patterns
+  // Enhanced syntax highlighting based on patterns
   const highlightCode = (code: string) => {
     const parts: { text: string; color: string }[] = [];
-    let remaining = code;
 
-    // Keywords
+    // Keywords for different languages
     const keywords = [
       'def', 'return', 'if', 'else', 'elif', 'for', 'while', 'in', 'range',
       'and', 'or', 'not', 'True', 'False', 'None', 'class', 'import', 'from',
       'public', 'private', 'static', 'void', 'int', 'boolean', 'new', 'this',
       'extends', 'implements', 'interface', 'abstract', 'final', 'package',
       'using', 'namespace', 'include', 'auto', 'const', 'template', 'typename',
-      'break', 'continue', 'try', 'catch', 'throw', 'throws', 'sizeof',
+      'break', 'continue', 'try', 'catch', 'throw', 'throws', 'sizeof', 'let',
+      'var', 'function', 'async', 'await', 'export', 'default', 'switch', 'case',
+    ];
+
+    // Types
+    const types = [
+      'int', 'float', 'double', 'char', 'string', 'bool', 'boolean', 'void',
+      'long', 'short', 'byte', 'String', 'Integer', 'Double', 'Boolean',
+      'List', 'Array', 'Map', 'Set', 'Dict', 'Tuple', 'Vector',
+    ];
+
+    // Built-in functions
+    const functions = [
+      'print', 'len', 'range', 'str', 'int', 'float', 'list', 'dict', 'set',
+      'min', 'max', 'sum', 'abs', 'sorted', 'enumerate', 'zip', 'map', 'filter',
+      'System', 'Math', 'Arrays', 'Collections', 'printf', 'scanf', 'cout', 'cin',
     ];
 
     // Check if line is a comment
-    const trimmed = remaining.trim();
+    const trimmed = code.trim();
     if (trimmed.startsWith('#') || trimmed.startsWith('//') || trimmed.startsWith('/*') || trimmed.startsWith('*')) {
-      return [{ text: remaining, color: DraculaTheme.comment }];
+      return [{ text: code, color: OneDarkProTheme.comment }];
     }
 
-    // Check for string literals
-    if (trimmed.includes('"') || trimmed.includes("'")) {
-      let result = [];
-      let i = 0;
-      let inString = false;
-      let stringChar = '';
-      let currentText = '';
+    // Parse the code character by character for better highlighting
+    let result: { text: string; color: string }[] = [];
+    let i = 0;
+    let currentToken = '';
+    let currentColor = OneDarkProTheme.foreground;
 
-      while (i < remaining.length) {
-        const char = remaining[i];
+    const flushToken = () => {
+      if (currentToken) {
+        result.push({ text: currentToken, color: currentColor });
+        currentToken = '';
+        currentColor = OneDarkProTheme.foreground;
+      }
+    };
 
-        if (!inString && (char === '"' || char === "'")) {
-          if (currentText) {
-            result.push({ text: currentText, color: DraculaTheme.foreground });
-          }
-          currentText = char;
-          inString = true;
-          stringChar = char;
-        } else if (inString && char === stringChar && remaining[i-1] !== '\\') {
-          currentText += char;
-          result.push({ text: currentText, color: DraculaTheme.yellow });
-          currentText = '';
-          inString = false;
-        } else {
-          currentText += char;
-        }
+    while (i < code.length) {
+      const char = code[i];
+      const restOfLine = code.slice(i);
+
+      // Check for strings
+      if (char === '"' || char === "'") {
+        flushToken();
+        const stringChar = char;
+        currentToken = char;
         i++;
-      }
-
-      if (currentText) {
-        result.push({ text: currentText, color: inString ? DraculaTheme.yellow : DraculaTheme.foreground });
-      }
-
-      // Highlight keywords in non-string parts
-      return result.map(part => {
-        if (part.color === DraculaTheme.foreground) {
-          for (const keyword of keywords) {
-            const regex = new RegExp(`\\b${keyword}\\b`, 'g');
-            if (regex.test(part.text)) {
-              return { ...part, text: part.text, color: DraculaTheme.pink };
-            }
+        while (i < code.length && code[i] !== stringChar) {
+          if (code[i] === '\\' && i + 1 < code.length) {
+            currentToken += code[i] + code[i + 1];
+            i += 2;
+          } else {
+            currentToken += code[i];
+            i++;
           }
         }
-        return part;
-      });
-    }
-
-    // Simple keyword highlighting
-    for (const keyword of keywords) {
-      const regex = new RegExp(`\\b${keyword}\\b`);
-      if (regex.test(remaining)) {
-        parts.push({ text: remaining, color: DraculaTheme.foreground });
-        return parts.map(p => {
-          let text = p.text;
-          for (const kw of keywords) {
-            const kwRegex = new RegExp(`\\b${kw}\\b`, 'g');
-            if (kwRegex.test(text)) {
-              // Return with keyword color
-              return { ...p };
-            }
-          }
-          return p;
-        });
+        if (i < code.length) {
+          currentToken += code[i];
+          i++;
+        }
+        result.push({ text: currentToken, color: OneDarkProTheme.string });
+        currentToken = '';
+        continue;
       }
+
+      // Check for numbers
+      if (/\d/.test(char) && (currentToken === '' || /\s/.test(currentToken[currentToken.length - 1]))) {
+        flushToken();
+        currentToken = char;
+        i++;
+        while (i < code.length && /[\d.]/.test(code[i])) {
+          currentToken += code[i];
+          i++;
+        }
+        result.push({ text: currentToken, color: OneDarkProTheme.number });
+        currentToken = '';
+        continue;
+      }
+
+      // Check for operators
+      if (/[+\-*/%=<>!&|^~?:]/.test(char)) {
+        flushToken();
+        currentToken = char;
+        // Check for multi-character operators
+        if (i + 1 < code.length && /[=<>&|]/.test(code[i + 1])) {
+          currentToken += code[i + 1];
+          i++;
+        }
+        result.push({ text: currentToken, color: OneDarkProTheme.operator });
+        currentToken = '';
+        i++;
+        continue;
+      }
+
+      // Check for word boundaries
+      if (/[a-zA-Z_]/.test(char)) {
+        flushToken();
+        currentToken = char;
+        i++;
+        while (i < code.length && /[a-zA-Z0-9_]/.test(code[i])) {
+          currentToken += code[i];
+          i++;
+        }
+
+        // Determine color based on word type
+        if (keywords.includes(currentToken)) {
+          result.push({ text: currentToken, color: OneDarkProTheme.keyword });
+        } else if (types.includes(currentToken)) {
+          result.push({ text: currentToken, color: OneDarkProTheme.type });
+        } else if (functions.includes(currentToken)) {
+          result.push({ text: currentToken, color: OneDarkProTheme.function });
+        } else if (code[i] === '(') {
+          // Function call
+          result.push({ text: currentToken, color: OneDarkProTheme.function });
+        } else {
+          result.push({ text: currentToken, color: OneDarkProTheme.foreground });
+        }
+        currentToken = '';
+        continue;
+      }
+
+      // Default: add to current token
+      currentToken += char;
+      i++;
     }
 
-    // Numbers
-    if (/\d/.test(remaining)) {
-      return [{ text: remaining, color: DraculaTheme.purple }];
-    }
-
-    return [{ text: remaining, color: DraculaTheme.foreground }];
+    flushToken();
+    return result.length > 0 ? result : [{ text: code, color: OneDarkProTheme.foreground }];
   };
 
   const codeParts = highlightCode(content);
@@ -307,7 +359,7 @@ export default function CodeViewer({ algorithmCode, onAskAI, isAILoading }: Code
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <Ionicons name="code-slash" size={20} color={Colors.actionTeal} />
+          <Ionicons name="code-slash" size={20} color={Colors.accent} />
           <Text style={styles.headerTitle}>Code Hub</Text>
         </View>
         <View style={styles.headerActions}>
@@ -319,10 +371,10 @@ export default function CodeViewer({ algorithmCode, onAskAI, isAILoading }: Code
             activeOpacity={0.8}
           >
             {isAILoading ? (
-              <ActivityIndicator size="small" color={Colors.actionTeal} />
+              <ActivityIndicator size="small" color={Colors.accent} />
             ) : (
               <>
-                <Ionicons name="sparkles" size={16} color={Colors.actionTeal} />
+                <Ionicons name="sparkles" size={16} color={Colors.accent} />
                 <Text style={styles.aiButtonText}>Explain</Text>
               </>
             )}
@@ -345,14 +397,14 @@ export default function CodeViewer({ algorithmCode, onAskAI, isAILoading }: Code
       {/* Algorithm Info Bar */}
       <View style={styles.infoBar}>
         <View style={styles.infoItem}>
-          <Ionicons name="time-outline" size={14} color={Colors.logicGold} />
+          <Ionicons name="time-outline" size={14} color={Colors.warning} />
           <Text style={styles.infoText}>
             Time: {algorithmCode.timeComplexity.average}
           </Text>
         </View>
         <View style={styles.infoDivider} />
         <View style={styles.infoItem}>
-          <Ionicons name="cube-outline" size={14} color={Colors.actionTeal} />
+          <Ionicons name="cube-outline" size={14} color={Colors.accent} />
           <Text style={styles.infoText}>
             Space: {algorithmCode.spaceComplexity}
           </Text>
@@ -363,9 +415,9 @@ export default function CodeViewer({ algorithmCode, onAskAI, isAILoading }: Code
       <View style={styles.codeContainer}>
         {/* Window Controls (decorative) */}
         <View style={styles.windowControls}>
-          <View style={[styles.windowDot, { backgroundColor: '#FF5F56' }]} />
-          <View style={[styles.windowDot, { backgroundColor: '#FFBD2E' }]} />
-          <View style={[styles.windowDot, { backgroundColor: '#27C93F' }]} />
+          <View style={[styles.windowDot, { backgroundColor: Colors.error }]} />
+          <View style={[styles.windowDot, { backgroundColor: Colors.warning }]} />
+          <View style={[styles.windowDot, { backgroundColor: Colors.success }]} />
           <Text style={styles.windowTitle}>
             {algorithmCode.name.toLowerCase().replace(/\s+/g, '_')}.{selectedLanguage === 'python' ? 'py' : selectedLanguage === 'java' ? 'java' : 'cpp'}
           </Text>
@@ -407,7 +459,7 @@ export default function CodeViewer({ algorithmCode, onAskAI, isAILoading }: Code
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.cardBackground,
+    backgroundColor: Colors.surface,
     borderRadius: BorderRadius.xl,
     overflow: 'hidden',
     ...Shadows.medium,
@@ -418,9 +470,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.md,
-    backgroundColor: Colors.midnightBlueDark,
+    backgroundColor: Colors.backgroundDark,
     borderBottomWidth: 1,
-    borderBottomColor: DraculaTheme.border,
+    borderBottomColor: OneDarkProTheme.border,
   },
   headerLeft: {
     flexDirection: 'row',
@@ -430,7 +482,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   headerActions: {
     flexDirection: 'row',
@@ -454,7 +506,7 @@ const styles = StyleSheet.create({
   copyText: {
     fontSize: FontSizes.sm,
     fontWeight: '500',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   copyTextSuccess: {
     color: Colors.success,
@@ -462,12 +514,12 @@ const styles = StyleSheet.create({
   aiButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.actionTeal + '20',
+    backgroundColor: Colors.accent + '20',
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
     borderRadius: BorderRadius.md,
     borderWidth: 1,
-    borderColor: Colors.actionTeal + '40',
+    borderColor: Colors.accent + '40',
     gap: Spacing.xs,
   },
   aiButtonLoading: {
@@ -476,11 +528,11 @@ const styles = StyleSheet.create({
   aiButtonText: {
     fontSize: FontSizes.sm,
     fontWeight: '600',
-    color: Colors.actionTeal,
+    color: Colors.accent,
   },
   languageTabs: {
     flexDirection: 'row',
-    backgroundColor: DraculaTheme.background,
+    backgroundColor: OneDarkProTheme.background,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
     gap: Spacing.sm,
@@ -499,16 +551,16 @@ const styles = StyleSheet.create({
   languageText: {
     fontSize: FontSizes.sm,
     fontWeight: '500',
-    color: Colors.gray400,
+    color: Colors.textSecondary,
   },
   languageTextSelected: {
-    color: Colors.midnightBlue,
+    color: Colors.background,
     fontWeight: '600',
   },
   infoBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: DraculaTheme.currentLine,
+    backgroundColor: OneDarkProTheme.currentLine,
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.sm,
   },
@@ -519,7 +571,7 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: FontSizes.xs,
-    color: Colors.gray300,
+    color: Colors.textPrimary,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
   infoDivider: {
@@ -529,7 +581,7 @@ const styles = StyleSheet.create({
     marginHorizontal: Spacing.md,
   },
   codeContainer: {
-    backgroundColor: DraculaTheme.background,
+    backgroundColor: OneDarkProTheme.background,
   },
   windowControls: {
     flexDirection: 'row',
@@ -537,7 +589,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
     borderBottomWidth: 1,
-    borderBottomColor: DraculaTheme.border,
+    borderBottomColor: OneDarkProTheme.border,
     gap: Spacing.xs,
   },
   windowDot: {
@@ -547,7 +599,7 @@ const styles = StyleSheet.create({
   },
   windowTitle: {
     fontSize: FontSizes.xs,
-    color: DraculaTheme.comment,
+    color: OneDarkProTheme.comment,
     marginLeft: Spacing.md,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
@@ -567,12 +619,12 @@ const styles = StyleSheet.create({
     minWidth: '100%',
   },
   codeLineHighlighted: {
-    backgroundColor: DraculaTheme.selection,
+    backgroundColor: OneDarkProTheme.selection,
   },
   lineNumber: {
     width: 40,
     fontSize: FontSizes.sm,
-    color: DraculaTheme.lineNumber,
+    color: OneDarkProTheme.lineNumber,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
     textAlign: 'right',
     marginRight: Spacing.md,
@@ -582,18 +634,18 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: FontSizes.sm,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
-    color: DraculaTheme.foreground,
+    color: OneDarkProTheme.foreground,
   },
   description: {
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.md,
-    backgroundColor: Colors.cardBackground,
+    backgroundColor: Colors.surface,
     borderTopWidth: 1,
-    borderTopColor: DraculaTheme.border,
+    borderTopColor: OneDarkProTheme.border,
   },
   descriptionText: {
     fontSize: FontSizes.sm,
-    color: Colors.gray400,
+    color: Colors.textSecondary,
     lineHeight: 20,
   },
 });

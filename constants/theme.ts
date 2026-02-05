@@ -1,63 +1,105 @@
-// Algoplay Theme Constants
+// Algoplay Theme Constants - One Dark Pro Theme
 export const Colors = {
-  // Primary Colors
-  midnightBlue: '#0D1B2A',
-  midnightBlueDark: '#0A1120',
-  midnightBlueLight: '#1E293B',
+  // One Dark Pro - Primary Backgrounds
+  background: '#282c34', // Deep charcoal - main background
+  backgroundDark: '#21252b', // Darker variant
+  backgroundLight: '#3d4451', // Slightly lighter charcoal
 
-  // Accent Colors
-  actionTeal: '#2DD4BF',
-  actionTealDark: '#14B8A6',
-  actionTealLight: '#5EEAD4',
+  // One Dark Pro - Surface/Cards
+  surface: '#3d4451', // Slightly lighter charcoal for cards
+  surfaceDark: '#2c313a', // Darker surface variant
+  surfaceLight: '#4b5263', // Lighter surface
 
-  electricPurple: '#A855F7',
-  electricPurpleDark: '#9333EA',
-  electricPurpleLight: '#C084FC',
-
-  alertCoral: '#FB7185',
-  alertCoralDark: '#F43F5E',
-  alertCoralLight: '#FDA4AF',
-
-  logicGold: '#FBBF24',
-  logicGoldDark: '#F59E0B',
-  logicGoldLight: '#FCD34D',
-
-  // Neutral Colors
+  // One Dark Pro - Typography
+  textPrimary: '#abb2bf', // Light gray - primary text
+  textSecondary: '#5c6370', // Muted gray - secondary text
+  textMuted: '#4b5263', // Even more muted
   white: '#FFFFFF',
-  gray100: '#F1F5F9',
-  gray200: '#E2E8F0',
-  gray300: '#CBD5E1',
-  gray400: '#94A3B8',
-  gray500: '#64748B',
-  gray600: '#475569',
-  gray700: '#334155',
-  gray800: '#1E293B',
 
-  // Semantic Colors
-  success: '#22C55E',
-  error: '#EF4444',
-  warning: '#F59E0B',
-  info: '#3B82F6',
+  // One Dark Pro - Accent Colors
+  accent: '#61afef', // Bright blue - primary accent
+  accentDark: '#528bbd', // Darker blue
+  accentLight: '#8bc5f4', // Lighter blue
+
+  accentSecondary: '#56b6c2', // Cyan - secondary accent
+  accentSecondaryDark: '#449da8', // Darker cyan
+  accentSecondaryLight: '#7ec9d2', // Lighter cyan
+
+  // One Dark Pro - Semantic/Status Colors
+  success: '#98c379', // Green
+  successDark: '#7ba35e', // Darker green
+  successLight: '#b2d49a', // Lighter green
+
+  warning: '#e5c07b', // Yellow/Gold
+  warningDark: '#c9a45c', // Darker gold
+  warningLight: '#f0d49b', // Lighter gold
+
+  error: '#e06c75', // Red/Coral
+  errorDark: '#c4565e', // Darker red
+  errorLight: '#e99099', // Lighter red
+
+  info: '#61afef', // Same as accent (blue)
+
+  // One Dark Pro - Syntax Highlighting Colors (for code)
+  syntaxKeyword: '#ff79c6', // Pink - keywords
+  syntaxString: '#a6e3a1', // Green - strings
+  syntaxNumber: '#f9e2af', // Yellow - numbers
+  syntaxComment: '#6272a4', // Gray-blue - comments
+  syntaxFunction: '#50fa7b', // Bright green - functions
+  syntaxOperator: '#ff9671', // Orange - operators
+  syntaxVariable: '#bd93f9', // Purple - variables
+  syntaxType: '#8be9fd', // Cyan - types
+
+  // Legacy color mappings (for backward compatibility)
+  midnightBlue: '#282c34',
+  midnightBlueDark: '#21252b',
+  midnightBlueLight: '#3d4451',
+
+  actionTeal: '#61afef', // Now mapped to accent blue
+  actionTealDark: '#528bbd',
+  actionTealLight: '#8bc5f4',
+
+  electricPurple: '#c678dd', // One Dark Pro purple
+  electricPurpleDark: '#a855b4',
+  electricPurpleLight: '#d49be8',
+
+  alertCoral: '#e06c75', // Now mapped to error
+  alertCoralDark: '#c4565e',
+  alertCoralLight: '#e99099',
+
+  logicGold: '#e5c07b', // Now mapped to warning
+  logicGoldDark: '#c9a45c',
+  logicGoldLight: '#f0d49b',
+
+  // Neutral Colors (One Dark Pro palette)
+  gray100: '#e5e9f0',
+  gray200: '#d8dee9',
+  gray300: '#abb2bf',
+  gray400: '#7f848e',
+  gray500: '#5c6370',
+  gray600: '#4b5263',
+  gray700: '#3d4451',
+  gray800: '#2c313a',
 
   // Card backgrounds
-  cardBackground: '#1E293B',
-  cardBackgroundDark: '#0F172A',
+  cardBackground: '#3d4451',
+  cardBackgroundDark: '#2c313a',
 
   // Glass-morphism backgrounds
-  glassBackground: 'rgba(30, 41, 59, 0.7)',
-  glassBorder: 'rgba(255, 255, 255, 0.1)',
+  glassBackground: 'rgba(61, 68, 81, 0.8)',
+  glassBorder: 'rgba(171, 178, 191, 0.15)',
 
   // Algorithm-specific colors
-  comparing: '#FBBF24',
-  swapping: '#FB7185',
-  sorted: '#22C55E',
-  active: '#2DD4BF',
-  visited: '#3B82F6',
-  frontier: '#A855F7',
-  obstacle: '#64748B',
-  start: '#22C55E',
-  end: '#EF4444',
-  path: '#FBBF24',
+  comparing: '#e5c07b', // Warning color
+  swapping: '#e06c75', // Error color
+  sorted: '#98c379', // Success color
+  active: '#61afef', // Accent color
+  visited: '#61afef', // Info blue
+  frontier: '#c678dd', // Purple
+  obstacle: '#5c6370', // Gray
+  start: '#98c379', // Success green
+  end: '#e06c75', // Error red
+  path: '#e5c07b', // Warning gold
 };
 
 export const Spacing = {
@@ -102,21 +144,21 @@ export const Shadows = {
   small: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 2,
   },
   medium: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.25,
     shadowRadius: 8,
     elevation: 4,
   },
   large: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.3,
     shadowRadius: 16,
     elevation: 8,
   },
@@ -135,7 +177,7 @@ export const AlgorithmCategories = {
     id: 'searching',
     name: 'Searching',
     icon: 'search',
-    color: Colors.actionTeal,
+    color: Colors.accent,
     algorithms: ['linear-search', 'binary-search', 'jump-search'],
   },
   sorting: {
@@ -171,7 +213,7 @@ export const AlgorithmCategories = {
 // Complexity notations
 export const ComplexityNotations = {
   'O(1)': { label: 'O(1)', name: 'Constant', color: Colors.success },
-  'O(log n)': { label: 'O(log n)', name: 'Logarithmic', color: Colors.actionTeal },
+  'O(log n)': { label: 'O(log n)', name: 'Logarithmic', color: Colors.accent },
   'O(n)': { label: 'O(n)', name: 'Linear', color: Colors.logicGold },
   'O(n log n)': { label: 'O(n log n)', name: 'Linearithmic', color: Colors.warning },
   'O(n²)': { label: 'O(n²)', name: 'Quadratic', color: Colors.alertCoral },
@@ -188,9 +230,9 @@ export const GlassStyles = {
     overflow: 'hidden' as const,
   },
   containerLight: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: 'rgba(97, 175, 239, 0.08)',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
+    borderColor: 'rgba(97, 175, 239, 0.15)',
     borderRadius: BorderRadius.xl,
     overflow: 'hidden' as const,
   },
@@ -198,7 +240,7 @@ export const GlassStyles = {
 
 // Battle Arena Colors
 export const BattleColors = {
-  player1: Colors.actionTeal,
+  player1: Colors.accent,
   player2: Colors.electricPurple,
   winner: Colors.logicGold,
   neutral: Colors.gray500,

@@ -40,7 +40,7 @@ const games: GameCard[] = [
     title: 'Battle Arena',
     description: 'High-stakes algorithm battles! Watch two algorithms race head-to-head.',
     icon: 'flash',
-    gradientColors: [Colors.actionTeal, Colors.electricPurple] as const,
+    gradientColors: [Colors.accent, Colors.electricPurple] as const,
     route: '/game/battle-arena',
     badge: 'NEW',
   },
@@ -58,7 +58,7 @@ const games: GameCard[] = [
     title: 'Grid Escape',
     description: 'Place obstacles and watch pathfinding algorithms find the exit.',
     icon: 'grid',
-    gradientColors: [Colors.actionTeal, Colors.actionTealDark] as const,
+    gradientColors: [Colors.accent, Colors.accentDark] as const,
     route: '/game/grid-escape',
   },
   {
@@ -146,8 +146,8 @@ function HighScoresSection() {
         </View>
 
         <View style={styles.highScoreCard}>
-          <View style={[styles.highScoreIcon, { backgroundColor: Colors.actionTeal + '20' }]}>
-            <Ionicons name="ribbon" size={20} color={Colors.actionTeal} />
+          <View style={[styles.highScoreIcon, { backgroundColor: Colors.accent + '20' }]}>
+            <Ionicons name="ribbon" size={20} color={Colors.accent} />
           </View>
           <View style={styles.highScoreContent}>
             <Text style={styles.highScoreLabel}>Grid Escape Wins</Text>
@@ -255,7 +255,7 @@ export default function PlayScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.midnightBlue,
+    backgroundColor: Colors.background,
   },
   header: {
     paddingHorizontal: Spacing.lg,
@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: FontSizes.title,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   subtitle: {
     fontSize: FontSizes.md,
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: FontSizes.xl,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: Spacing.md,
     marginTop: Spacing.lg,
   },
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
   playButtonText: {
     fontSize: FontSizes.md,
     fontWeight: '600',
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
   dailyChallengeSection: {
     marginBottom: Spacing.md,
@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
   dailyChallengeTitle: {
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: 2,
   },
   dailyChallengeSubtitle: {
@@ -404,7 +404,7 @@ const styles = StyleSheet.create({
   xpBadgeText: {
     fontSize: FontSizes.xs,
     fontWeight: '700',
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
   highScoresSection: {
     marginTop: Spacing.lg,
@@ -442,6 +442,6 @@ const styles = StyleSheet.create({
   highScoreValue: {
     fontSize: FontSizes.xl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
 });

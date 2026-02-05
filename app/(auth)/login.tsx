@@ -57,7 +57,7 @@ function SocialButton({ icon, label, onPress, color, disabled, index }: SocialBu
           <Ionicons name={icon} size={22} color={color} />
         </View>
         <Text style={styles.socialButtonText}>{label}</Text>
-        <Ionicons name="chevron-forward" size={18} color={Colors.gray500} />
+        <Ionicons name="chevron-forward" size={18} color={Colors.textSecondary} />
       </AnimatedTouchable>
     </Animated.View>
   );
@@ -103,7 +103,7 @@ export default function LoginScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {/* Background Gradient */}
       <LinearGradient
-        colors={[Colors.midnightBlue, Colors.midnightBlueDark]}
+        colors={[Colors.background, Colors.backgroundDark]}
         style={StyleSheet.absoluteFillObject}
       />
 
@@ -124,7 +124,7 @@ export default function LoginScreen() {
           <Animated.View entering={FadeInDown.delay(100).springify()} style={styles.header}>
             <View style={styles.logoContainer}>
               <LinearGradient
-                colors={[Colors.actionTeal, Colors.electricPurple]}
+                colors={[Colors.accent, Colors.electricPurple]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.logoGradient}
@@ -169,11 +169,11 @@ export default function LoginScreen() {
           <Animated.View entering={FadeInDown.delay(600).springify()} style={styles.formContainer}>
             <BlurView intensity={20} tint="dark" style={styles.glassCard}>
               <View style={styles.inputContainer}>
-                <Ionicons name="mail-outline" size={20} color={Colors.gray400} />
+                <Ionicons name="mail-outline" size={20} color={Colors.textSecondary} />
                 <TextInput
                   style={styles.input}
                   placeholder="Email address"
-                  placeholderTextColor={Colors.gray500}
+                  placeholderTextColor={Colors.textSecondary}
                   value={email}
                   onChangeText={setEmail}
                   autoCapitalize="none"
@@ -183,11 +183,11 @@ export default function LoginScreen() {
               </View>
 
               <View style={styles.inputContainer}>
-                <Ionicons name="lock-closed-outline" size={20} color={Colors.gray400} />
+                <Ionicons name="lock-closed-outline" size={20} color={Colors.textSecondary} />
                 <TextInput
                   style={styles.input}
                   placeholder="Password"
-                  placeholderTextColor={Colors.gray500}
+                  placeholderTextColor={Colors.textSecondary}
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry={!showPassword}
@@ -197,7 +197,7 @@ export default function LoginScreen() {
                   <Ionicons
                     name={showPassword ? 'eye-off-outline' : 'eye-outline'}
                     size={20}
-                    color={Colors.gray400}
+                    color={Colors.textSecondary}
                   />
                 </TouchableOpacity>
               </View>
@@ -216,7 +216,7 @@ export default function LoginScreen() {
                 activeOpacity={0.8}
               >
                 <LinearGradient
-                  colors={[Colors.actionTeal, Colors.actionTealDark]}
+                  colors={[Colors.accent, Colors.accentDark]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                   style={styles.loginButtonGradient}
@@ -226,7 +226,7 @@ export default function LoginScreen() {
                   ) : (
                     <>
                       <Text style={styles.loginButtonText}>Sign In</Text>
-                      <Ionicons name="arrow-forward" size={20} color={Colors.midnightBlue} />
+                      <Ionicons name="arrow-forward" size={20} color={Colors.background} />
                     </>
                   )}
                 </LinearGradient>
@@ -250,12 +250,13 @@ export default function LoginScreen() {
             </Link>
           </Animated.View>
 
-          {/* Skip for now */}
+          {/* Skip for now - Guest mode */}
           <Animated.View entering={FadeInDown.delay(800).springify()}>
             <TouchableOpacity
               style={styles.skipButton}
               onPress={() => router.replace('/(tabs)')}
             >
+              <Ionicons name="person-outline" size={16} color={Colors.accentSecondary} />
               <Text style={styles.skipText}>Continue as guest</Text>
             </TouchableOpacity>
           </Animated.View>
@@ -268,7 +269,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.midnightBlue,
+    backgroundColor: Colors.background,
   },
   keyboardView: {
     flex: 1,
@@ -285,7 +286,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     borderRadius: 150,
-    backgroundColor: Colors.actionTeal + '10',
+    backgroundColor: Colors.accent + '10',
   },
   decorativeCircle2: {
     position: 'absolute',
@@ -315,12 +316,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: FontSizes.xxxl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginBottom: Spacing.xs,
   },
   subtitle: {
     fontSize: FontSizes.md,
-    color: Colors.gray400,
+    color: Colors.textSecondary,
   },
   socialContainer: {
     gap: Spacing.md,
@@ -329,7 +330,7 @@ const styles = StyleSheet.create({
   socialButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.cardBackground,
+    backgroundColor: Colors.surface,
     borderRadius: BorderRadius.xl,
     padding: Spacing.md,
     borderWidth: 1,
@@ -351,7 +352,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: FontSizes.md,
     fontWeight: '600',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   dividerContainer: {
     flexDirection: 'row',
@@ -365,7 +366,7 @@ const styles = StyleSheet.create({
   },
   dividerText: {
     fontSize: FontSizes.sm,
-    color: Colors.gray500,
+    color: Colors.textSecondary,
     marginHorizontal: Spacing.md,
   },
   formContainer: {
@@ -381,7 +382,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.midnightBlueDark,
+    backgroundColor: Colors.backgroundDark,
     borderRadius: BorderRadius.lg,
     paddingHorizontal: Spacing.md,
     marginBottom: Spacing.md,
@@ -393,7 +394,7 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     marginLeft: Spacing.sm,
     fontSize: FontSizes.md,
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   errorContainer: {
     flexDirection: 'row',
@@ -427,7 +428,7 @@ const styles = StyleSheet.create({
   loginButtonText: {
     fontSize: FontSizes.lg,
     fontWeight: '700',
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
   forgotPassword: {
     alignItems: 'center',
@@ -435,7 +436,7 @@ const styles = StyleSheet.create({
   },
   forgotPasswordText: {
     fontSize: FontSizes.sm,
-    color: Colors.actionTeal,
+    color: Colors.accent,
   },
   signupContainer: {
     flexDirection: 'row',
@@ -445,20 +446,23 @@ const styles = StyleSheet.create({
   },
   signupText: {
     fontSize: FontSizes.md,
-    color: Colors.gray400,
+    color: Colors.textSecondary,
   },
   signupLink: {
     fontSize: FontSizes.md,
     fontWeight: '600',
-    color: Colors.actionTeal,
+    color: Colors.accent,
   },
   skipButton: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: Spacing.md,
+    gap: Spacing.xs,
   },
   skipText: {
-    fontSize: FontSizes.sm,
-    color: Colors.gray500,
-    textDecorationLine: 'underline',
+    fontSize: FontSizes.md,
+    color: Colors.accentSecondary,
+    fontWeight: '500',
   },
 });

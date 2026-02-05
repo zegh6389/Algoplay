@@ -124,7 +124,7 @@ function ComputerElement({ value, state, totalElements }: ComputerElementProps) 
       case 'sorted':
         return Colors.success;
       default:
-        return Colors.actionTeal;
+        return Colors.accent;
     }
   };
 
@@ -279,7 +279,7 @@ export default function TheSorterScreen() {
       {/* Header */}
       <Animated.View entering={FadeInDown} style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color={Colors.white} />
+          <Ionicons name="arrow-back" size={24} color={Colors.textPrimary} />
         </TouchableOpacity>
         <Text style={styles.title}>The Sorter</Text>
         <TouchableOpacity style={styles.resetButton} onPress={initializeGame}>
@@ -291,7 +291,7 @@ export default function TheSorterScreen() {
       <View style={styles.statusContainer}>
         <View style={styles.statusItem}>
           <Text style={styles.statusLabel}>Your Time</Text>
-          <Text style={[styles.statusValue, { color: Colors.actionTeal }]}>
+          <Text style={[styles.statusValue, { color: Colors.accent }]}>
             {formatTime(playerTime)}
           </Text>
         </View>
@@ -355,7 +355,7 @@ export default function TheSorterScreen() {
               Sort the numbers faster than the algorithm
             </Text>
             <TouchableOpacity style={styles.startButton} onPress={startGame}>
-              <Ionicons name="play" size={24} color={Colors.midnightBlue} />
+              <Ionicons name="play" size={24} color={Colors.background} />
               <Text style={styles.startButtonText}>Start</Text>
             </TouchableOpacity>
           </Animated.View>
@@ -401,7 +401,7 @@ export default function TheSorterScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.midnightBlue,
+    backgroundColor: Colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -422,7 +422,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: FontSizes.xxl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   resetButton: {
     width: 40,
@@ -477,7 +477,7 @@ const styles = StyleSheet.create({
   element: {
     width: ELEMENT_WIDTH - 8,
     height: ELEMENT_HEIGHT,
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     borderRadius: BorderRadius.lg,
     justifyContent: 'center',
     alignItems: 'center',
@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
   elementValue: {
     fontSize: FontSizes.xl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   hint: {
     fontSize: FontSizes.sm,
@@ -520,7 +520,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: Colors.midnightBlue + 'F0',
+    backgroundColor: Colors.background + 'F0',
     justifyContent: 'center',
     alignItems: 'center',
     padding: Spacing.xl,
@@ -541,7 +541,7 @@ const styles = StyleSheet.create({
   overlayTitle: {
     fontSize: FontSizes.xxl,
     fontWeight: '700',
-    color: Colors.white,
+    color: Colors.textPrimary,
     marginTop: Spacing.lg,
     marginBottom: Spacing.sm,
   },
@@ -554,7 +554,7 @@ const styles = StyleSheet.create({
   startButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.xxl,
     borderRadius: BorderRadius.full,
@@ -563,7 +563,7 @@ const styles = StyleSheet.create({
   startButtonText: {
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
   xpEarned: {
     backgroundColor: Colors.logicGold,
@@ -575,10 +575,10 @@ const styles = StyleSheet.create({
   xpEarnedText: {
     fontSize: FontSizes.lg,
     fontWeight: '700',
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
   playAgainButton: {
-    backgroundColor: Colors.actionTeal,
+    backgroundColor: Colors.accent,
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.xxl,
     borderRadius: BorderRadius.full,
@@ -586,6 +586,6 @@ const styles = StyleSheet.create({
   playAgainText: {
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.midnightBlue,
+    color: Colors.background,
   },
 });
