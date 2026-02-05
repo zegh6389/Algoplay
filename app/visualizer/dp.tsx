@@ -115,11 +115,17 @@ export default function DPVisualizerScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ algorithm: string }>();
-  const algorithmId = params.algorithm || 'fibonacci';
+  // Ensure we have a valid algorithm ID
+  const rawAlgorithmId = params.algorithm || 'fibonacci';
+  const algorithmId = typeof rawAlgorithmId === 'string' ? rawAlgorithmId : rawAlgorithmId[0];
 
   const { completeAlgorithm, addXP } = useAppStore();
 
-  const algorithm = dpAlgorithms[algorithmId as DPAlgorithmKey];
+  // Check if algorithm exists, with fallback to fibonacci
+  let algorithm = dpAlgorithms[algorithmId as DPAlgorithmKey];
+  if (!algorithm && algorithmId !== 'fibonacci') {
+    algorithm = dpAlgorithms['fibonacci'];
+  }
   const algorithmCode = getAlgorithmCode(algorithmId);
 
   const [inputN, setInputN] = useState(10);

@@ -324,6 +324,27 @@ export default function ProfileScreen() {
           </View>
         </Animated.View>
 
+        {/* Premium & Community */}
+        <Animated.View entering={FadeInDown.delay(350)} style={styles.section}>
+          <Text style={styles.sectionTitle}>Community & Premium</Text>
+          <View style={styles.settingsCard}>
+            <SettingItem
+              icon="trophy"
+              title="Elite Arena"
+              subtitle="Global leaderboards & rankings"
+              color={Colors.neonYellow}
+              onPress={() => handleNavigation('/elite-arena')}
+            />
+            <SettingItem
+              icon="diamond"
+              title="Go Premium"
+              subtitle="Unlock all features & algorithms"
+              color={Colors.neonPurple}
+              onPress={() => handleNavigation('/premium')}
+            />
+          </View>
+        </Animated.View>
+
         {/* App Settings */}
         <Animated.View entering={FadeInDown.delay(400)} style={styles.section}>
           <Text style={styles.sectionTitle}>App Settings</Text>

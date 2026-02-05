@@ -599,7 +599,8 @@ export default function VisualizerScreen() {
 
   // Redirect to DP visualizer for DP algorithms (after all hooks)
   if (isDPAlgorithm) {
-    return <Redirect href={`/visualizer/dp?algorithm=${algorithmId}`} />;
+    // Use proper redirect with params
+    return <Redirect href={`/visualizer/dp?algorithm=${algorithmId}` as any} />;
   }
 
   if (!algorithm) {
