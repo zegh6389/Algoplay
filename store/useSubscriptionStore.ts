@@ -11,6 +11,7 @@ import {
   logoutUser,
   isRevenueCatConfigured,
   getMockOfferings,
+  presentPaywall,
   PREMIUM_FEATURES,
   type MockPackage,
 } from '@/lib/revenuecat';
@@ -22,7 +23,7 @@ interface SubscriptionState {
   isLoading: boolean;
   isInitialized: boolean;
   offerings: PurchasesOfferings | null;
-  mockOfferings: { monthly: MockPackage; yearly: MockPackage } | null;
+  mockOfferings: { lifetime: MockPackage } | null;
   error: string | null;
 
   // Actions
@@ -30,10 +31,13 @@ interface SubscriptionState {
   checkPremiumStatus: () => Promise<boolean>;
   refreshOfferings: () => Promise<void>;
   restorePurchases: () => Promise<{ success: boolean; message: string }>;
+  showPaywall: () => Promise<boolean>;
   setUserIdentity: (userId: string) => Promise<void>;
   clearUserIdentity: () => Promise<void>;
-  setPremium: (isPremium: boolean) => void;
   clearError: () => void;
+
+  // Internal — only called by PremiumGate after server verification
+  _syncPremium: (isPremium: boolean) => void;
 
   // Feature checks
   canAccessFeature: (feature: string) => boolean;
@@ -167,12 +171,28 @@ export const useSubscriptionStore = create<SubscriptionState>()(
         await get().checkPremiumStatus();
       },
 
+      showPaywall: async () => {
+        if (!isRevenueCatConfigured()) {
+          return false;
+        }
+        try {
+          const purchased = await presentPaywall();
+          if (purchased) {
+            set({ isPremium: true });
+          }
+          return purchased;
+        } catch (error) {
+          console.error('Failed to present paywall:', error);
+          return false;
+        }
+      },
+
       clearUserIdentity: async () => {
         await logoutUser();
         set({ isPremium: false });
       },
 
-      setPremium: (isPremium: boolean) => {
+      _syncPremium: (isPremium: boolean) => {
         set({ isPremium });
       },
 
@@ -195,9 +215,8 @@ export const useSubscriptionStore = create<SubscriptionState>()(
     {
       name: 'algoverse-subscription',
       storage: createJSONStorage(() => AsyncStorage),
-      partialize: (state) => ({
-        isPremium: state.isPremium,
-      }),
+      // Never persist isPremium — always verify from RevenueCat server
+      partialize: () => ({}),
     }
   )
 );

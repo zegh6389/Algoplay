@@ -1,19 +1,23 @@
+import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { AuthProvider } from '@fastshot/auth';
+import { AuthProvider } from '@/components/AuthProvider';
+import AuthGate from '@/components/AuthGate';
 import { Colors } from '@/constants/theme';
-import { supabase } from '@/lib/supabase';
-import SecurityProvider from '@/components/SecurityProvider';
+import { initRevenueCat } from '@/lib/revenuecat';
 
 export default function RootLayout() {
+  useEffect(() => {
+    // Initialize RevenueCat SDK at app startup
+    initRevenueCat();
+  }, []);
+
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: Colors.background }}>
       <StatusBar style="light" />
-      <AuthProvider
-        supabaseClient={supabase}
-      >
-        <SecurityProvider>
+      <AuthProvider>
+        <AuthGate>
           <Stack
             screenOptions={{
               headerShown: false,
@@ -129,7 +133,7 @@ export default function RootLayout() {
               }}
             />
           </Stack>
-        </SecurityProvider>
+        </AuthGate>
       </AuthProvider>
     </GestureHandlerRootView>
   );

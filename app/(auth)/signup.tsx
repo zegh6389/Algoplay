@@ -16,8 +16,9 @@ import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useAuth } from '@fastshot/auth';
+import { useAuth } from '@/components/AuthProvider';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
+import GoogleIcon from '@/components/GoogleIcon';
 
 export default function SignUpScreen() {
   const router = useRouter();
@@ -191,7 +192,7 @@ export default function SignUpScreen() {
               {error && (
                 <Animated.View entering={FadeInUp} style={styles.errorContainer}>
                   <Ionicons name="alert-circle" size={16} color={Colors.error} />
-                  <Text style={styles.errorText}>{error.message}</Text>
+                  <Text style={styles.errorText}>{error}</Text>
                 </Animated.View>
               )}
 
@@ -227,24 +228,15 @@ export default function SignUpScreen() {
             <View style={styles.dividerLine} />
           </Animated.View>
 
-          {/* Social Buttons */}
+          {/* Google Sign Up */}
           <Animated.View entering={FadeInDown.delay(500).springify()} style={styles.socialContainer}>
             <TouchableOpacity
-              style={styles.socialButton}
+              style={[styles.socialButton, isLoading && { opacity: 0.6 }]}
               onPress={signInWithGoogle}
               disabled={isLoading}
             >
-              <Ionicons name="logo-google" size={22} color="#EA4335" />
+              <GoogleIcon size={22} />
             </TouchableOpacity>
-            {Platform.OS === 'ios' && (
-              <TouchableOpacity
-                style={styles.socialButton}
-                onPress={signInWithApple}
-                disabled={isLoading}
-              >
-                <Ionicons name="logo-apple" size={22} color={Colors.textPrimary} />
-              </TouchableOpacity>
-            )}
           </Animated.View>
 
           {/* Sign In Link */}

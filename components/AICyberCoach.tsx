@@ -1,6 +1,5 @@
 // AI Cyber-Coach Component - Hardcore Hacker Persona
 // Green-on-black terminal aesthetic with intelligent algorithm tutoring
-// Uses @fastshot/ai for text generation to provide hints and monitor for invalid inputs
 import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
 import { View, StyleSheet, Dimensions, Pressable, TextInput, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
 import Animated, {
@@ -18,7 +17,7 @@ import Animated, {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
-import { useTextGeneration } from '@fastshot/ai';
+import { useTextGeneration } from '@/hooks/useTextGeneration';
 import { Colors, BorderRadius, Spacing, FontSizes, Shadows, SafetyPadding } from '@/constants/theme';
 
 // Hardcore Hacker Terminal Theme - Green on Black

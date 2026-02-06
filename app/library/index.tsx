@@ -13,6 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeInDown, FadeInRight } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
+import PremiumGate from '@/components/PremiumGate';
 import { algorithmLessons, lessonCategories, Lesson } from '@/constants/lessons';
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
@@ -140,6 +141,14 @@ function FeaturedLesson() {
 }
 
 export default function LibraryScreen() {
+  return (
+    <PremiumGate featureName="Lesson Library">
+      <LibraryScreenInner />
+    </PremiumGate>
+  );
+}
+
+function LibraryScreenInner() {
   const insets = useSafeAreaInsets();
   const [selectedCategory, setSelectedCategory] = useState('all');
 

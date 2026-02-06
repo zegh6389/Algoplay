@@ -17,6 +17,7 @@ import Animated, { FadeInDown, FadeInUp, withSpring, useAnimatedStyle, useShared
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
+import PremiumGate from '@/components/PremiumGate';
 import { useAppStore } from '@/store/useAppStore';
 import { useSubscriptionStore } from '@/store/useSubscriptionStore';
 import CyberBackground from '@/components/CyberBackground';
@@ -203,6 +204,14 @@ function LeaderboardRow({ entry, index }: { entry: LeaderboardEntry; index: numb
 }
 
 export default function EliteArenaScreen() {
+  return (
+    <PremiumGate featureName="Elite Arena">
+      <EliteArenaScreenInner />
+    </PremiumGate>
+  );
+}
+
+function EliteArenaScreenInner() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { userProgress } = useAppStore();

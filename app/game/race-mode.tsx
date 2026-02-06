@@ -13,6 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
+import PremiumGate from '@/components/PremiumGate';
 import { useAppStore } from '@/store/useAppStore';
 import {
   sortingAlgorithms,
@@ -135,6 +136,14 @@ function AlgorithmSelector({ selectedAlgorithm, onSelect, disabled, otherSelecte
 }
 
 export default function RaceModeScreen() {
+  return (
+    <PremiumGate featureName="Race Mode">
+      <RaceModeScreenInner />
+    </PremiumGate>
+  );
+}
+
+function RaceModeScreenInner() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { addXP } = useAppStore();
