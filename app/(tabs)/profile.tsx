@@ -19,7 +19,7 @@ import { Colors, Spacing, FontSizes, BorderRadius } from '@/constants/theme';
 import { useAppStore } from '@/store/useAppStore';
 import { MasteryBadge } from '@/components/XPGainAnimation';
 import { getMasteryColor } from '@/utils/quizData';
-import { useAuth } from '@fastshot/auth';
+import { useAuth } from '@/components/AuthProvider';
 import CyberBackground from '@/components/CyberBackground';
 
 interface SettingItemProps {

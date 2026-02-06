@@ -15,8 +15,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeInDown, FadeInRight } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
-import { useTextGeneration } from '@fastshot/ai';
+import { useTextGeneration } from '@/hooks/useTextGeneration';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
+import PremiumGate from '@/components/PremiumGate';
 
 interface Message {
   id: string;
@@ -108,6 +109,14 @@ function WelcomeMessage() {
 }
 
 export default function TutorScreen() {
+  return (
+    <PremiumGate featureName="AI Code Tutor">
+      <TutorScreenInner />
+    </PremiumGate>
+  );
+}
+
+function TutorScreenInner() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const scrollViewRef = useRef<ScrollView>(null);

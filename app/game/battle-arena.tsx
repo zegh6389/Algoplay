@@ -31,6 +31,7 @@ import Animated, {
   interpolate,
 } from 'react-native-reanimated';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows, BattleColors } from '@/constants/theme';
+import PremiumGate from '@/components/PremiumGate';
 import { useAppStore } from '@/store/useAppStore';
 import CyberBackground from '@/components/CyberBackground';
 
@@ -543,6 +544,14 @@ function WinnerPodium({
 }
 
 export default function BattleArenaScreen() {
+  return (
+    <PremiumGate featureName="Battle Arena">
+      <BattleArenaScreenInner />
+    </PremiumGate>
+  );
+}
+
+function BattleArenaScreenInner() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { addXP } = useAppStore();

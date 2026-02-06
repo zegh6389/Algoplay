@@ -15,7 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeIn, FadeInUp, SlideInRight } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
-import { useTextGeneration } from '@fastshot/ai';
+import { useTextGeneration } from '@/hooks/useTextGeneration';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
 import { ProgrammingLanguage, languageNames } from '@/utils/algorithms/codeImplementations';
 

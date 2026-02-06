@@ -1,4 +1,4 @@
-// RevenueCat Integration for AlgoVerse Premium Subscriptions
+// RevenueCat Integration for Algoplay Premium (Lifetime Purchase)
 import { Platform } from 'react-native';
 import Purchases, {
   PurchasesOfferings,
@@ -6,22 +6,20 @@ import Purchases, {
   CustomerInfo,
   LOG_LEVEL,
 } from 'react-native-purchases';
+import RevenueCatUI, { PAYWALL_RESULT } from 'react-native-purchases-ui';
+
+// RevenueCat API keys (same key for both platforms in test mode)
+const REVENUECAT_IOS_API_KEY = 'test_CZqTmmrsHDGZiayzVeXtqLKGmij';
+const REVENUECAT_ANDROID_API_KEY = 'test_CZqTmmrsHDGZiayzVeXtqLKGmij';
 
 // Product identifiers
 export const PRODUCT_IDS = {
-  MONTHLY: 'algoverse_premium_monthly',
-  YEARLY: 'algoverse_premium_yearly',
+  LIFETIME: 'lifetime',
 };
 
 // Entitlement identifiers
 export const ENTITLEMENTS = {
-  PREMIUM: 'premium',
-};
-
-// Package lookup keys
-export const PACKAGE_KEYS = {
-  MONTHLY: '$rc_monthly',
-  YEARLY: '$rc_annual',
+  PREMIUM: 'Algoplay Pro',
 };
 
 // Premium features unlocked by subscription
@@ -46,16 +44,17 @@ let isConfigured = false;
 export const initRevenueCat = async (): Promise<boolean> => {
   if (isConfigured) return true;
 
-  const apiKey = process.env.EXPO_PUBLIC_REVENUECAT_API_KEY;
-
-  if (!apiKey) {
-    console.warn('RevenueCat: API key not configured. Running in mock mode.');
-    return false;
-  }
-
   try {
-    if (__DEV__) {
-      Purchases.setLogLevel(LOG_LEVEL.DEBUG);
+    Purchases.setLogLevel(__DEV__ ? LOG_LEVEL.VERBOSE : LOG_LEVEL.ERROR);
+
+    let apiKey: string;
+    if (Platform.OS === 'ios') {
+      apiKey = REVENUECAT_IOS_API_KEY;
+    } else if (Platform.OS === 'android') {
+      apiKey = REVENUECAT_ANDROID_API_KEY;
+    } else {
+      console.warn('RevenueCat: Unsupported platform. Running in mock mode.');
+      return false;
     }
 
     await Purchases.configure({ apiKey });
@@ -132,16 +131,41 @@ export const getCustomerInfo = async (): Promise<CustomerInfo | null> => {
 };
 
 /**
- * Check if user has premium access
+ * Check if user has premium access via 'Algoplay Pro' entitlement
  */
 export const checkPremiumAccess = async (): Promise<boolean> => {
   if (!isConfigured) return false;
 
   try {
     const customerInfo = await Purchases.getCustomerInfo();
-    return Boolean(customerInfo.entitlements.active[ENTITLEMENTS.PREMIUM]);
+    return typeof customerInfo.entitlements.active[ENTITLEMENTS.PREMIUM] !== 'undefined';
   } catch (error) {
     console.error('RevenueCat: Failed to check premium access', error);
+    return false;
+  }
+};
+
+/**
+ * Present the RevenueCat native paywall UI
+ * Make sure to configure a Paywall in the RevenueCat Dashboard first.
+ * Returns true if a purchase or restore was made.
+ */
+export const presentPaywall = async (): Promise<boolean> => {
+  try {
+    const paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywall();
+
+    switch (paywallResult) {
+      case PAYWALL_RESULT.PURCHASED:
+      case PAYWALL_RESULT.RESTORED:
+        return true;
+      case PAYWALL_RESULT.NOT_PRESENTED:
+      case PAYWALL_RESULT.ERROR:
+      case PAYWALL_RESULT.CANCELLED:
+      default:
+        return false;
+    }
+  } catch (error) {
+    console.error('RevenueCat: Failed to present paywall', error);
     return false;
   }
 };
@@ -228,27 +252,10 @@ export const formatPrice = (pkg: PurchasesPackage): string => {
   return pkg.product.priceString;
 };
 
-/**
- * Get subscription period text
- */
-export const getSubscriptionPeriod = (pkg: PurchasesPackage): string => {
-  const identifier = pkg.packageType;
-  switch (identifier) {
-    case 'MONTHLY':
-      return 'month';
-    case 'ANNUAL':
-      return 'year';
-    case 'WEEKLY':
-      return 'week';
-    default:
-      return 'period';
-  }
-};
-
 // Mock data for development/demo mode when RevenueCat is not configured
 export interface MockPackage {
   identifier: string;
-  packageType: 'MONTHLY' | 'ANNUAL';
+  packageType: 'LIFETIME';
   product: {
     identifier: string;
     title: string;
@@ -258,28 +265,17 @@ export interface MockPackage {
   };
 }
 
-export const getMockOfferings = (): { monthly: MockPackage; yearly: MockPackage } => {
+export const getMockOfferings = (): { lifetime: MockPackage } => {
   return {
-    monthly: {
-      identifier: PACKAGE_KEYS.MONTHLY,
-      packageType: 'MONTHLY',
+    lifetime: {
+      identifier: '$rc_lifetime',
+      packageType: 'LIFETIME',
       product: {
-        identifier: PRODUCT_IDS.MONTHLY,
-        title: 'AlgoVerse Premium Monthly',
-        description: 'Full access to all premium features',
-        priceString: '$9.99',
-        price: 9.99,
-      },
-    },
-    yearly: {
-      identifier: PACKAGE_KEYS.YEARLY,
-      packageType: 'ANNUAL',
-      product: {
-        identifier: PRODUCT_IDS.YEARLY,
-        title: 'AlgoVerse Premium Yearly',
-        description: '2 months free - best value!',
-        priceString: '$79.99',
-        price: 79.99,
+        identifier: PRODUCT_IDS.LIFETIME,
+        title: 'Algoplay Pro — Lifetime',
+        description: 'One-time purchase. Unlimited access forever.',
+        priceString: '$99.99',
+        price: 99.99,
       },
     },
   };

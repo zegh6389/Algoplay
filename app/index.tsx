@@ -1,16 +1,16 @@
 import { useEffect } from 'react';
 import { Redirect } from 'expo-router';
-import { useAuth } from '@fastshot/auth';
+import { useAuth } from '@/components/AuthProvider';
 import { useAppStore } from '@/store/useAppStore';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { Colors } from '@/constants/theme';
 
 export default function Index() {
-  const { session, isLoading } = useAuth();
+  const { session, isReady } = useAuth();
   const { guestState } = useAppStore();
 
   // Show loading spinner while checking auth state
-  if (isLoading) {
+  if (!isReady) {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color={Colors.neonCyan} />

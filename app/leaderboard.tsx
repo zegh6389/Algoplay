@@ -24,8 +24,9 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
+import PremiumGate from '@/components/PremiumGate';
 import { useAppStore } from '@/store/useAppStore';
-import { useAuth } from '@fastshot/auth';
+import { useAuth } from '@/components/AuthProvider';
 import { supabase, LeaderboardEntry } from '@/lib/supabase';
 
 // Mock leaderboard data for demo (replace with real Supabase data)
@@ -211,6 +212,14 @@ function FilterTabs({
 }
 
 export default function LeaderboardScreen() {
+  return (
+    <PremiumGate featureName="Leaderboard">
+      <LeaderboardScreenInner />
+    </PremiumGate>
+  );
+}
+
+function LeaderboardScreenInner() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { userProgress } = useAppStore();

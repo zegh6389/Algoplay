@@ -252,12 +252,17 @@ export const validateXPGain = (
   }
 
   // Check session rate limit
+  // Only check if session has been running for at least 30 minutes to avoid false positives
   const sessionDuration = (Date.now() - antiCheatData.sessionStartTime) / (1000 * 60 * 60); // Hours
-  const sessionXP = currentXP - antiCheatData.lastKnownXP;
-  const xpPerHour = sessionDuration > 0 ? sessionXP / sessionDuration : sessionXP;
+  const sessionDurationMinutes = sessionDuration * 60;
+  
+  if (sessionDurationMinutes > 30) {
+    const sessionXP = currentXP - antiCheatData.lastKnownXP;
+    const xpPerHour = sessionDuration > 0 ? sessionXP / sessionDuration : sessionXP;
 
-  if (xpPerHour > MAX_XP_PER_HOUR) {
-    return { isValid: true, isSuspicious: true, reason: 'High XP earning rate' };
+    if (xpPerHour > MAX_XP_PER_HOUR) {
+      return { isValid: true, isSuspicious: true, reason: 'High XP earning rate' };
+    }
   }
 
   return { isValid: true, isSuspicious: false };

@@ -26,10 +26,11 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useAuth } from '@fastshot/auth';
+import { useAuth } from '@/components/AuthProvider';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
 import { useAppStore } from '@/store/useAppStore';
 import CyberBackground from '@/components/CyberBackground';
+import GoogleIcon from '@/components/GoogleIcon';
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
@@ -177,30 +178,24 @@ export default function LoginScreen() {
             <Text style={styles.subtitle}>Master algorithms through play</Text>
           </Animated.View>
 
-          {/* Social Login */}
-          <View style={styles.socialContainer}>
-            <SocialButton
-              icon="logo-google"
-              label="Continue with Google"
+          {/* Google Sign In */}
+          <Animated.View entering={FadeInDown.delay(300).springify()}>
+            <TouchableOpacity
+              style={[styles.googleButton, isLoading && styles.socialButtonDisabled]}
               onPress={handleGoogleLogin}
-              color="#EA4335"
               disabled={isLoading}
-              index={0}
-            />
-            {Platform.OS === 'ios' && (
-              <SocialButton
-                icon="logo-apple"
-                label="Continue with Apple"
-                onPress={handleAppleLogin}
-                color={Colors.white}
-                disabled={isLoading}
-                index={1}
-              />
-            )}
-          </View>
+              activeOpacity={0.8}
+            >
+              <View style={styles.googleIconContainer}>
+                <GoogleIcon size={22} />
+              </View>
+              <Text style={styles.googleButtonText}>Continue with Google</Text>
+              <Ionicons name="chevron-forward" size={18} color={Colors.textSecondary} />
+            </TouchableOpacity>
+          </Animated.View>
 
           {/* Divider */}
-          <Animated.View entering={FadeInDown.delay(500).springify()} style={styles.dividerContainer}>
+          <Animated.View entering={FadeInDown.delay(400).springify()} style={styles.dividerContainer}>
             <View style={styles.dividerLine} />
             <Text style={styles.dividerText}>or continue with email</Text>
             <View style={styles.dividerLine} />
@@ -246,7 +241,7 @@ export default function LoginScreen() {
               {error && (
                 <Animated.View entering={FadeInUp} style={styles.errorContainer}>
                   <Ionicons name="alert-circle" size={16} color={Colors.error} />
-                  <Text style={styles.errorText}>{error.message}</Text>
+                  <Text style={styles.errorText}>{error}</Text>
                 </Animated.View>
               )}
 
@@ -493,6 +488,31 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.md,
     fontWeight: '600',
     color: Colors.neonCyan,
+  },
+  googleButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.cardBackground,
+    borderRadius: BorderRadius.xl,
+    padding: Spacing.md,
+    borderWidth: 1,
+    borderColor: Colors.neonBorderCyan,
+    marginBottom: Spacing.lg,
+  },
+  googleIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: BorderRadius.lg,
+    backgroundColor: '#ffffff15',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: Spacing.md,
+  },
+  googleButtonText: {
+    flex: 1,
+    fontSize: FontSizes.md,
+    fontWeight: '600',
+    color: Colors.textPrimary,
   },
   guestButton: {
     borderRadius: BorderRadius.lg,

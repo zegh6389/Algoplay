@@ -15,7 +15,7 @@ import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useAuth } from '@fastshot/auth';
+import { useAuth } from '@/components/AuthProvider';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
 
 export default function ForgotPasswordScreen() {
@@ -121,7 +121,7 @@ export default function ForgotPasswordScreen() {
               {error && (
                 <Animated.View entering={FadeInUp} style={styles.errorContainer}>
                   <Ionicons name="alert-circle" size={16} color={Colors.error} />
-                  <Text style={styles.errorText}>{error.message}</Text>
+                  <Text style={styles.errorText}>{error}</Text>
                 </Animated.View>
               )}
 

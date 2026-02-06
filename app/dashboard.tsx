@@ -24,9 +24,10 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows, GlassStyles } from '@/constants/theme';
+import PremiumGate from '@/components/PremiumGate';
 import { useAppStore } from '@/store/useAppStore';
 import { getMasteryColor, getMasteryIcon } from '@/utils/quizData';
-import { useAuth } from '@fastshot/auth';
+import { useAuth } from '@/components/AuthProvider';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -265,6 +266,14 @@ const algorithmNames: Record<string, string> = {
 };
 
 export default function DashboardScreen() {
+  return (
+    <PremiumGate featureName="Advanced Analytics">
+      <DashboardScreenInner />
+    </PremiumGate>
+  );
+}
+
+function DashboardScreenInner() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { userProgress, getLevelProgress } = useAppStore();

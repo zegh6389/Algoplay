@@ -5,11 +5,13 @@ import React, { createContext, useContext, useEffect, useState, useCallback } fr
 import { useAppStore } from '@/store/useAppStore';
 import HackerSecurityMonitor, { SecurityAlert, useSecurityMonitor } from './HackerSecurityMonitor';
 import {
-  analyzeXPGain,
-  analyzeLevelChange,
   logSecurityEvent,
   performSecurityCheck,
 } from '@/lib/securityMonitor';
+
+// Disable the "hardcore hacker" security monitor by default. It can be enabled for
+// debugging via `EXPO_PUBLIC_ENABLE_SECURITY_MONITOR=true`.
+const ENABLE_SECURITY_MONITOR = process.env.EXPO_PUBLIC_ENABLE_SECURITY_MONITOR === 'true';
 
 interface SecurityContextType {
   triggerSecurityAlert: (
@@ -76,47 +78,53 @@ export default function SecurityProvider({ children }: SecurityProviderProps) {
         return;
       }
 
-      // Log the event
-      logSecurityEvent({
-        type: 'progress_update',
-        timestamp: Date.now(),
-        data: {
-          level: userProgress.level,
-          totalXP: userProgress.totalXP,
-          completedAlgorithms: userProgress.completedAlgorithms.length,
-        },
-        previousState: previousProgress,
-      });
+      if (ENABLE_SECURITY_MONITOR) {
+        // Log the event
+        logSecurityEvent({
+          type: 'progress_update',
+          timestamp: Date.now(),
+          data: {
+            level: userProgress.level,
+            totalXP: userProgress.totalXP,
+            completedAlgorithms: userProgress.completedAlgorithms.length,
+          },
+          previousState: previousProgress,
+        });
 
-      // Perform security check
-      const result = await performSecurityCheck(
-        {
-          level: userProgress.level,
-          totalXP: userProgress.totalXP,
-          completedAlgorithms: userProgress.completedAlgorithms,
-          currentStreak: userProgress.currentStreak,
-        },
-        previousProgress,
-        sessionStartTime,
-        sessionStartXP
-      );
-
-      // Add any alerts to the store
-      result.alerts.forEach((alert) => {
-        addSecurityAlert(alert.type, alert.message);
-      });
-
-      // Show the terminal if there are alerts
-      if (result.alerts.length > 0 && result.alerts.some((a) => a.type === 'critical' || a.type === 'warning')) {
-        const mostSevereAlert = result.alerts.find((a) => a.type === 'critical') || result.alerts[0];
-
-        triggerAlert(
-          mostSevereAlert.type === 'critical' ? 'critical' : 'high',
-          'data_tampering',
-          mostSevereAlert.message,
-          'The system has detected activity that deviates from expected patterns.'
+        // Perform security check
+        const result = await performSecurityCheck(
+          {
+            level: userProgress.level,
+            totalXP: userProgress.totalXP,
+            completedAlgorithms: userProgress.completedAlgorithms,
+            currentStreak: userProgress.currentStreak,
+          },
+          previousProgress,
+          sessionStartTime,
+          sessionStartXP
         );
-        setShowMonitor(true);
+
+        // Add any alerts to the store
+        result.alerts.forEach((alert) => {
+          addSecurityAlert(alert.type, alert.message);
+        });
+
+        // Show the terminal if there are alerts
+        if (
+          result.alerts.length > 0 &&
+          result.alerts.some((a) => a.type === 'critical' || a.type === 'warning')
+        ) {
+          const mostSevereAlert =
+            result.alerts.find((a) => a.type === 'critical') || result.alerts[0];
+
+          triggerAlert(
+            mostSevereAlert.type === 'critical' ? 'critical' : 'high',
+            'data_tampering',
+            mostSevereAlert.message,
+            'The system has detected activity that deviates from expected patterns.'
+          );
+          setShowMonitor(true);
+        }
       }
 
       // Save progress securely
@@ -134,9 +142,13 @@ export default function SecurityProvider({ children }: SecurityProviderProps) {
 
   // Check for existing security alerts in store
   useEffect(() => {
+    if (!ENABLE_SECURITY_MONITOR) return;
+
     const unacknowledgedAlerts = securityState.securityAlerts.filter((a) => !a.acknowledged);
-    if (unacknowledgedAlerts.length > 0 && !showMonitor && !currentAlert) {
-      const alert = unacknowledgedAlerts[0];
+    const severeAlerts = unacknowledgedAlerts.filter((a) => a.type === 'critical' || a.type === 'warning');
+
+    if (severeAlerts.length > 0 && !showMonitor && !currentAlert) {
+      const alert = severeAlerts[0];
       triggerAlert(
         alert.type === 'critical' ? 'critical' : alert.type === 'warning' ? 'high' : 'medium',
         'data_tampering',
@@ -166,12 +178,14 @@ export default function SecurityProvider({ children }: SecurityProviderProps) {
   return (
     <SecurityContext.Provider value={contextValue}>
       {children}
-      <HackerSecurityMonitor
-        visible={showMonitor && currentAlert !== null}
-        alert={currentAlert}
-        onDismiss={handleDismiss}
-        onInvestigate={handleInvestigate}
-      />
+      {ENABLE_SECURITY_MONITOR && (
+        <HackerSecurityMonitor
+          visible={showMonitor && currentAlert !== null}
+          alert={currentAlert}
+          onDismiss={handleDismiss}
+          onInvestigate={handleInvestigate}
+        />
+      )}
     </SecurityContext.Provider>
   );
 }

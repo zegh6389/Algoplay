@@ -10,6 +10,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Spacing, FontSizes, BorderRadius } from '@/constants/theme';
+import PremiumGate from '@/components/PremiumGate';
 import { useAppStore } from '@/store/useAppStore';
 import CyberBackground from '@/components/CyberBackground';
 
@@ -239,6 +240,14 @@ function AchievementsList() {
 }
 
 export default function StatsScreen() {
+  return (
+    <PremiumGate featureName="Statistics">
+      <StatsScreenInner />
+    </PremiumGate>
+  );
+}
+
+function StatsScreenInner() {
   const insets = useSafeAreaInsets();
   const { userProgress, gameState } = useAppStore();
 

@@ -28,7 +28,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
-import { useAppStore } from '@/store/useAppStore';
+import PremiumGate from '@/components/PremiumGate';
 import {
   createGrid,
   pathfindingGenerators,
@@ -655,6 +655,14 @@ ${pathFound ?
 }
 
 export default function GridEscapeScreen() {
+  return (
+    <PremiumGate featureName="Grid Escape">
+      <GridEscapeScreenInner />
+    </PremiumGate>
+  );
+}
+
+function GridEscapeScreenInner() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { updateHighScore, addXP, completeAlgorithm, userProgress, recordChallengeCompletion, getAlgorithmMastery } = useAppStore();

@@ -1,4 +1,4 @@
-// Premium Access & Subscription Screen with RevenueCat Integration
+// Premium Access & Lifetime Purchase Screen with RevenueCat Integration
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -23,6 +23,7 @@ import { useSubscriptionStore } from '@/store/useSubscriptionStore';
 import {
   purchasePackage,
   isRevenueCatConfigured,
+  presentPaywall,
   PREMIUM_FEATURES,
 } from '@/lib/revenuecat';
 
@@ -94,12 +95,9 @@ interface PlanCardProps {
   title: string;
   subtitle: string;
   price: string;
-  period: string;
-  discount?: string;
+  label: string;
   features: string[];
-  isPopular?: boolean;
   onSelect: () => void;
-  selected: boolean;
   isLoading?: boolean;
 }
 
@@ -107,57 +105,45 @@ function PlanCard({
   title,
   subtitle,
   price,
-  period,
-  discount,
+  label,
   features,
-  isPopular,
   onSelect,
-  selected,
   isLoading,
 }: PlanCardProps) {
   return (
     <TouchableOpacity
-      style={[styles.planCard, selected && styles.planCardSelected]}
+      style={[styles.planCard, styles.planCardSelected]}
       onPress={onSelect}
       activeOpacity={0.8}
       disabled={isLoading}
     >
-      {isPopular && (
-        <View style={styles.popularBadge}>
-          <LinearGradient
-            colors={[Colors.neonPink, Colors.neonPurple]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={StyleSheet.absoluteFill}
-          />
-          <Text style={styles.popularText}>MOST POPULAR</Text>
-        </View>
-      )}
-
-      {selected && (
+      <View style={styles.popularBadge}>
         <LinearGradient
-          colors={[Colors.neonCyan + '10', Colors.neonPurple + '10']}
+          colors={[Colors.neonPink, Colors.neonPurple]}
           start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
+          end={{ x: 1, y: 0 }}
           style={StyleSheet.absoluteFill}
         />
-      )}
+        <Text style={styles.popularText}>{label}</Text>
+      </View>
+
+      <LinearGradient
+        colors={[Colors.neonCyan + '10', Colors.neonPurple + '10']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
 
       <View style={styles.planHeader}>
         <View>
           <Text style={styles.planTitle}>{title}</Text>
           <Text style={styles.planSubtitle}>{subtitle}</Text>
         </View>
-        {discount && (
-          <View style={styles.discountBadge}>
-            <Text style={styles.discountText}>{discount}</Text>
-          </View>
-        )}
       </View>
 
       <View style={styles.priceContainer}>
         <Text style={styles.price}>{price}</Text>
-        <Text style={styles.period}>/ {period}</Text>
+        <Text style={styles.period}> one-time</Text>
       </View>
 
       <View style={styles.planFeatures}>
@@ -167,15 +153,6 @@ function PlanCard({
             <Text style={styles.featureText}>{feature}</Text>
           </View>
         ))}
-      </View>
-
-      <View style={styles.selectionIndicator}>
-        {selected && (
-          <Ionicons name="radio-button-on" size={24} color={Colors.neonCyan} />
-        )}
-        {!selected && (
-          <Ionicons name="radio-button-off" size={24} color={Colors.gray600} />
-        )}
       </View>
     </TouchableOpacity>
   );
@@ -212,7 +189,6 @@ function FeatureItem({ feature, index }: { feature: Feature; index: number }) {
 export default function PremiumScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('yearly');
   const [isPurchasing, setIsPurchasing] = useState(false);
 
   const {
@@ -222,40 +198,37 @@ export default function PremiumScreen() {
     mockOfferings,
     initialize,
     restorePurchases: doRestore,
-    setPremium,
+    _syncPremium,
   } = useSubscriptionStore();
 
   useEffect(() => {
     initialize();
   }, []);
 
-  // Get packages from offerings or use mock data
-  const monthlyPackage = offerings?.current?.availablePackages?.find(
-    (p) => p.packageType === 'MONTHLY'
-  );
-  const yearlyPackage = offerings?.current?.availablePackages?.find(
-    (p) => p.packageType === 'ANNUAL'
-  );
+  // Get the lifetime package from the default offering
+  const lifetimePackage = offerings?.current?.availablePackages?.find(
+    (p) => p.packageType === 'LIFETIME'
+  ) || offerings?.current?.availablePackages?.[0]; // fallback to first package
 
-  const monthlyPrice = monthlyPackage?.product.priceString || mockOfferings?.monthly.product.priceString || '$9.99';
-  const yearlyPrice = yearlyPackage?.product.priceString || mockOfferings?.yearly.product.priceString || '$79.99';
+  const lifetimePrice = lifetimePackage?.product.priceString
+    || mockOfferings?.lifetime.product.priceString
+    || '$99.99';
 
-  const handleSubscribe = async () => {
+  const handlePurchase = async () => {
     if (Platform.OS !== 'web') {
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     }
 
     if (!isRevenueCatConfigured()) {
-      // Demo mode - show info alert
       Alert.alert(
         'Demo Mode',
-        'RevenueCat is not configured. In production, this would start the subscription process.\n\nFor testing, premium access will be enabled.',
+        'RevenueCat is not configured. In production, this would start the purchase process.\n\nFor testing, premium access will be enabled.',
         [
           { text: 'Cancel', style: 'cancel' },
           {
             text: 'Enable Demo Premium',
             onPress: () => {
-              setPremium(true);
+              _syncPremium(true);
               Alert.alert('Success!', 'Demo premium access enabled!', [
                 { text: 'OK', onPress: () => router.back() },
               ]);
@@ -266,23 +239,38 @@ export default function PremiumScreen() {
       return;
     }
 
-    const packageToPurchase = selectedPlan === 'monthly' ? monthlyPackage : yearlyPackage;
+    // Try native RevenueCat paywall first
+    setIsPurchasing(true);
+    try {
+      const purchased = await presentPaywall();
+      if (purchased) {
+        _syncPremium(true);
+        Alert.alert(
+          'Welcome to Algoplay Pro! \u{1F389}',
+          'You now have lifetime access to all premium features.',
+          [{ text: 'Start Learning', onPress: () => router.back() }]
+        );
+        return;
+      }
+    } catch {
+      console.log('Native paywall unavailable, falling back to manual purchase');
+    }
 
-    if (!packageToPurchase) {
-      Alert.alert('Error', 'Unable to load subscription package. Please try again.');
+    // Fallback: manual package purchase
+    if (!lifetimePackage) {
+      Alert.alert('Error', 'Unable to load the lifetime package. Please try again.');
+      setIsPurchasing(false);
       return;
     }
 
-    setIsPurchasing(true);
-
     try {
-      const result = await purchasePackage(packageToPurchase as PurchasesPackage);
+      const result = await purchasePackage(lifetimePackage as PurchasesPackage);
 
       if (result.success && result.isPremium) {
-        setPremium(true);
+        _syncPremium(true);
         Alert.alert(
-          'Welcome to Premium! 🎉',
-          'You now have access to all premium features.',
+          'Welcome to Algoplay Pro! \u{1F389}',
+          'You now have lifetime access to all premium features.',
           [{ text: 'Start Learning', onPress: () => router.back() }]
         );
       } else if (result.error && result.error !== 'Purchase cancelled') {
@@ -405,55 +393,28 @@ export default function PremiumScreen() {
           </Text>
         </Animated.View>
 
-        {/* Plans */}
+        {/* Lifetime Plan */}
         <Animated.View entering={FadeInUp.delay(150)} style={styles.plansSection}>
-          <Text style={styles.sectionTitle}>Choose Your Plan</Text>
+          <Text style={styles.sectionTitle}>Lifetime Access</Text>
           {isLoading ? (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color={Colors.neonCyan} />
-              <Text style={styles.loadingText}>Loading plans...</Text>
+              <Text style={styles.loadingText}>Loading...</Text>
             </View>
           ) : (
             <View style={styles.plansContainer}>
               <PlanCard
-                title="Monthly"
-                subtitle="Flexible learning"
-                price={monthlyPrice}
-                period="month"
+                title="Algoplay Pro"
+                subtitle="Pay once, own it forever"
+                price={lifetimePrice}
+                label="BEST VALUE"
                 features={[
-                  'All premium features',
-                  'Cancel anytime',
+                  'All premium features unlocked',
+                  'Lifetime access — no recurring fees',
+                  'All future updates included',
                   'Priority support',
                 ]}
-                selected={selectedPlan === 'monthly'}
-                onSelect={() => {
-                  setSelectedPlan('monthly');
-                  if (Platform.OS !== 'web') {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  }
-                }}
-                isLoading={isPurchasing}
-              />
-              <PlanCard
-                title="Yearly"
-                subtitle="Best value"
-                price={yearlyPrice}
-                period="year"
-                discount="SAVE 33%"
-                features={[
-                  'All premium features',
-                  '2 months free',
-                  'Priority support',
-                  'Exclusive content',
-                ]}
-                isPopular
-                selected={selectedPlan === 'yearly'}
-                onSelect={() => {
-                  setSelectedPlan('yearly');
-                  if (Platform.OS !== 'web') {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  }
-                }}
+                onSelect={handlePurchase}
                 isLoading={isPurchasing}
               />
             </View>
@@ -508,7 +469,7 @@ export default function PremiumScreen() {
       >
         <TouchableOpacity
           style={[styles.subscribeButton, isPurchasing && styles.subscribeButtonDisabled]}
-          onPress={handleSubscribe}
+          onPress={handlePurchase}
           activeOpacity={0.8}
           disabled={isPurchasing}
         >
@@ -524,7 +485,7 @@ export default function PremiumScreen() {
             <>
               <Ionicons name="diamond" size={24} color={Colors.white} />
               <Text style={styles.subscribeButtonText}>
-                Start 7-Day Free Trial
+                Get Lifetime Access — {lifetimePrice}
               </Text>
               <Ionicons name="arrow-forward" size={24} color={Colors.white} />
             </>
@@ -532,7 +493,7 @@ export default function PremiumScreen() {
         </TouchableOpacity>
         <View style={styles.subscribeFooter}>
           <Text style={styles.subscribeNote}>
-            No commitment. Cancel anytime.
+            One-time purchase. No subscriptions.
           </Text>
           <TouchableOpacity onPress={handleRestore} disabled={isPurchasing}>
             <Text style={styles.restoreText}>Restore Purchases</Text>
@@ -667,19 +628,6 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.sm,
     color: Colors.gray400,
   },
-  discountBadge: {
-    backgroundColor: Colors.neonLime + '20',
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: 4,
-    borderRadius: BorderRadius.md,
-    borderWidth: 1,
-    borderColor: Colors.neonLime,
-  },
-  discountText: {
-    fontSize: FontSizes.xs,
-    fontWeight: '700',
-    color: Colors.neonLime,
-  },
   priceContainer: {
     flexDirection: 'row',
     alignItems: 'baseline',
@@ -709,13 +657,6 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.sm,
     color: Colors.gray300,
     flex: 1,
-  },
-  selectionIndicator: {
-    alignItems: 'center',
-    marginTop: Spacing.sm,
-    paddingTop: Spacing.md,
-    borderTopWidth: 1,
-    borderTopColor: Colors.gray700,
   },
   featuresSection: {
     gap: Spacing.md,

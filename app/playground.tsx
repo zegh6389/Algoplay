@@ -22,6 +22,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { Colors, BorderRadius, Spacing, FontSizes, Shadows, SafetyPadding, HeaderTheme } from '@/constants/theme';
+import PremiumGate from '@/components/PremiumGate';
 import { useAppStore } from '@/store/useAppStore';
 import AlgorithmMasteryTree from '@/components/AlgorithmMasteryTree';
 import DailyQuestsStreak from '@/components/DailyQuestsStreak';
@@ -40,6 +41,14 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 type PlaygroundTab = 'mastery' | 'quests' | 'challenge' | 'leaderboard';
 
 export default function PlaygroundScreen() {
+  return (
+    <PremiumGate featureName="Algorithm Playground">
+      <PlaygroundScreenInner />
+    </PremiumGate>
+  );
+}
+
+function PlaygroundScreenInner() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { userProgress, addXP } = useAppStore();

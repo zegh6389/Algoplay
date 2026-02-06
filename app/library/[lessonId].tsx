@@ -21,8 +21,9 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
-import { useTextGeneration } from '@fastshot/ai';
+import { useTextGeneration } from '@/hooks/useTextGeneration';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
+import PremiumGate from '@/components/PremiumGate';
 import { getLessonById, Lesson } from '@/constants/lessons';
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
@@ -231,6 +232,14 @@ function CodeBlock({ code }: { code: string[] }) {
 }
 
 export default function LessonDetailScreen() {
+  return (
+    <PremiumGate featureName="Lesson Details">
+      <LessonDetailScreenInner />
+    </PremiumGate>
+  );
+}
+
+function LessonDetailScreenInner() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ lessonId: string }>();

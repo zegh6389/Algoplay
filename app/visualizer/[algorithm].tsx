@@ -23,6 +23,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
+import PremiumGate from '@/components/PremiumGate';
 import { useAppStore } from '@/store/useAppStore';
 import {
   sortingAlgorithms,
@@ -291,7 +292,25 @@ function Legend({ algorithmType }: LegendProps) {
   );
 }
 
+const FREE_ALGORITHMS = ['linear-search', 'binary-search'];
+
 export default function VisualizerScreen() {
+  const params = useLocalSearchParams<{ algorithm: string }>();
+  const algorithmId = params.algorithm || '';
+  const isFree = FREE_ALGORITHMS.includes(algorithmId);
+
+  if (isFree) {
+    return <VisualizerScreenInner />;
+  }
+
+  return (
+    <PremiumGate featureName="Algorithm Visualizer">
+      <VisualizerScreenInner />
+    </PremiumGate>
+  );
+}
+
+function VisualizerScreenInner() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ algorithm: string }>();

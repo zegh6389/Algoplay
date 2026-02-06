@@ -24,7 +24,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
-import { useTextGeneration } from '@fastshot/ai';
+import { useTextGeneration } from '@/hooks/useTextGeneration';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
 
 const MIDNIGHT_BLACK = '#0a0e17';

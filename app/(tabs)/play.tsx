@@ -23,6 +23,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors, Spacing, FontSizes, BorderRadius } from '@/constants/theme';
+import PremiumGate from '@/components/PremiumGate';
 import { useAppStore } from '@/store/useAppStore';
 import CyberBackground from '@/components/CyberBackground';
 
@@ -252,6 +253,14 @@ function DailyChallengeSection() {
 }
 
 export default function PlayScreen() {
+  return (
+    <PremiumGate featureName="Play">
+      <PlayScreenInner />
+    </PremiumGate>
+  );
+}
+
+function PlayScreenInner() {
   const insets = useSafeAreaInsets();
 
   return (

@@ -21,6 +21,7 @@ import Animated, {
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Haptics from 'expo-haptics';
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
+import PremiumGate from '@/components/PremiumGate';
 import { useAppStore } from '@/store/useAppStore';
 import { generateRandomArray, bubbleSortGenerator, SortStep } from '@/utils/algorithms/sorting';
 
@@ -143,6 +144,14 @@ function ComputerElement({ value, state, totalElements }: ComputerElementProps) 
 }
 
 export default function TheSorterScreen() {
+  return (
+    <PremiumGate featureName="The Sorter">
+      <TheSorterScreenInner />
+    </PremiumGate>
+  );
+}
+
+function TheSorterScreenInner() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { updateHighScore, addXP, completeDailyChallenge } = useAppStore();
