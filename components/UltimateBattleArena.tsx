@@ -161,7 +161,7 @@ function EnhancedBattleBar({
 
   const getBarColor = () => {
     if (isSorted) return Colors.neonLime;
-    if (isSwapping) return Colors.neonCyan;
+    if (isSwapping) return '#FF4757';
     if (isComparing) return Colors.neonYellow;
     if (isPivot) return Colors.neonPurple;
     return color + '70';

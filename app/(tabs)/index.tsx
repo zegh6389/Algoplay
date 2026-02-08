@@ -259,7 +259,7 @@ export default function HomeScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [searchQuery, setSearchQuery] = React.useState('');
-  const { userProgress, guestState } = useAppStore();
+  const { userProgress } = useAppStore();
 
   const handleCategoryPress = (categoryId: string) => {
     if (Platform.OS !== 'web') {
@@ -277,11 +277,6 @@ export default function HomeScreen() {
       <Animated.View entering={FadeInDown.delay(0)} style={styles.header}>
         <View style={styles.headerLeft}>
           <Text style={styles.title}>Algoplay</Text>
-          {guestState.isGuest && (
-            <View style={styles.guestBadge}>
-              <Text style={styles.guestBadgeText}>Guest</Text>
-            </View>
-          )}
         </View>
         <TouchableOpacity
           style={styles.profileButton}
@@ -473,19 +468,6 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,
     letterSpacing: 1,
-  },
-  guestBadge: {
-    backgroundColor: Colors.neonLime + '20',
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: 2,
-    borderRadius: BorderRadius.sm,
-    borderWidth: 1,
-    borderColor: Colors.neonLime + '40',
-  },
-  guestBadgeText: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: Colors.neonLime,
   },
   profileButton: {
     width: 44,

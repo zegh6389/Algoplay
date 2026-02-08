@@ -212,7 +212,7 @@ export default function PremiumScreen() {
 
   const lifetimePrice = lifetimePackage?.product.priceString
     || mockOfferings?.lifetime.product.priceString
-    || '$99.99';
+    || '$9.99';
 
   const handlePurchase = async () => {
     if (Platform.OS !== 'web') {

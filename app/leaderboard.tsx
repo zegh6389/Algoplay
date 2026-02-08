@@ -26,8 +26,16 @@ import Animated, {
 import { Colors, Spacing, FontSizes, BorderRadius, Shadows } from '@/constants/theme';
 import PremiumGate from '@/components/PremiumGate';
 import { useAppStore } from '@/store/useAppStore';
-import { useAuth } from '@/components/AuthProvider';
-import { supabase, LeaderboardEntry } from '@/lib/supabase';
+
+interface LeaderboardEntry {
+  id: string;
+  user_id: string;
+  username: string;
+  avatar_url: string | null;
+  total_xp: number;
+  level: number;
+  rank?: number;
+}
 
 // Mock leaderboard data for demo (replace with real Supabase data)
 const MOCK_LEADERBOARD: LeaderboardEntry[] = [
@@ -223,7 +231,6 @@ function LeaderboardScreenInner() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { userProgress } = useAppStore();
-  const { user, isAuthenticated } = useAuth();
 
   const [activeFilter, setActiveFilter] = useState<'all' | 'weekly' | 'friends'>('all');
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
@@ -237,26 +244,24 @@ function LeaderboardScreenInner() {
       // For now, use mock data and include current user
       const mockData = [...MOCK_LEADERBOARD];
 
-      // Add current user to leaderboard if authenticated
-      if (isAuthenticated && user) {
-        const currentUserEntry: LeaderboardEntry = {
-          id: user.id,
-          user_id: user.id,
-          username: user.email?.split('@')[0] || 'You',
-          avatar_url: null,
-          total_xp: userProgress.totalXP,
-          level: userProgress.level,
-        };
+      // Add current user to leaderboard
+      const currentUserEntry: LeaderboardEntry = {
+        id: 'local-user',
+        user_id: 'local-user',
+        username: 'You',
+        avatar_url: null,
+        total_xp: userProgress.totalXP,
+        level: userProgress.level,
+      };
 
-        // Find where to insert current user based on XP
-        const insertIndex = mockData.findIndex((e) => e.total_xp < userProgress.totalXP);
-        if (insertIndex === -1) {
-          mockData.push(currentUserEntry);
-          setUserRank(mockData.length);
-        } else {
-          mockData.splice(insertIndex, 0, currentUserEntry);
-          setUserRank(insertIndex + 1);
-        }
+      // Find where to insert current user based on XP
+      const insertIndex = mockData.findIndex((e) => e.total_xp < userProgress.totalXP);
+      if (insertIndex === -1) {
+        mockData.push(currentUserEntry);
+        setUserRank(mockData.length);
+      } else {
+        mockData.splice(insertIndex, 0, currentUserEntry);
+        setUserRank(insertIndex + 1);
       }
 
       setLeaderboard(mockData);
@@ -326,7 +331,7 @@ function LeaderboardScreenInner() {
           <TopThreePodium entries={topThree} />
 
           {/* Your Rank Banner */}
-          {isAuthenticated && userRank && userRank > 3 && (
+          {userRank && userRank > 3 && (
             <Animated.View entering={FadeInDown.delay(400).springify()} style={styles.yourRankBanner}>
               <BlurView intensity={20} tint="dark" style={styles.yourRankBlur}>
                 <View style={styles.yourRankContent}>
@@ -350,30 +355,12 @@ function LeaderboardScreenInner() {
                 key={entry.id}
                 entry={entry}
                 rank={index + 4}
-                isCurrentUser={isAuthenticated && entry.user_id === user?.id}
+                isCurrentUser={entry.user_id === 'local-user'}
                 index={index}
               />
             ))}
           </View>
 
-          {/* Not Signed In Message */}
-          {!isAuthenticated && (
-            <Animated.View entering={FadeInUp.delay(600)} style={styles.signInPrompt}>
-              <BlurView intensity={15} tint="dark" style={styles.signInBlur}>
-                <Ionicons name="person-add" size={32} color={Colors.accent} />
-                <Text style={styles.signInTitle}>Join the Competition!</Text>
-                <Text style={styles.signInSubtitle}>
-                  Sign in to see your rank and compete with others
-                </Text>
-                <TouchableOpacity
-                  style={styles.signInButton}
-                  onPress={() => router.push('/(auth)/login')}
-                >
-                  <Text style={styles.signInButtonText}>Sign In</Text>
-                </TouchableOpacity>
-              </BlurView>
-            </Animated.View>
-          )}
         </ScrollView>
       )}
     </View>
@@ -639,41 +626,5 @@ const styles = StyleSheet.create({
   rowXPLabel: {
     fontSize: FontSizes.xs,
     color: Colors.gray500,
-  },
-  // Sign In Prompt
-  signInPrompt: {
-    marginTop: Spacing.xl,
-  },
-  signInBlur: {
-    borderRadius: BorderRadius.xxl,
-    padding: Spacing.xl,
-    alignItems: 'center',
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: Colors.glassBorder,
-  },
-  signInTitle: {
-    fontSize: FontSizes.xl,
-    fontWeight: '700',
-    color: Colors.textPrimary,
-    marginTop: Spacing.md,
-    marginBottom: Spacing.xs,
-  },
-  signInSubtitle: {
-    fontSize: FontSizes.sm,
-    color: Colors.gray400,
-    textAlign: 'center',
-    marginBottom: Spacing.lg,
-  },
-  signInButton: {
-    backgroundColor: Colors.accent,
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.xxl,
-    borderRadius: BorderRadius.lg,
-  },
-  signInButtonText: {
-    fontSize: FontSizes.md,
-    fontWeight: '600',
-    color: Colors.background,
   },
 });

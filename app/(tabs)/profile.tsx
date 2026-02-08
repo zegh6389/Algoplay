@@ -19,7 +19,6 @@ import { Colors, Spacing, FontSizes, BorderRadius } from '@/constants/theme';
 import { useAppStore } from '@/store/useAppStore';
 import { MasteryBadge } from '@/components/XPGainAnimation';
 import { getMasteryColor } from '@/utils/quizData';
-import { useAuth } from '@/components/AuthProvider';
 import CyberBackground from '@/components/CyberBackground';
 
 interface SettingItemProps {
@@ -53,8 +52,6 @@ function SettingItem({ icon, title, subtitle, onPress, rightElement, color = Col
 
 function ProfileHeader() {
   const { userProgress } = useAppStore();
-  const { user, isAuthenticated } = useAuth();
-  const router = useRouter();
 
   return (
     <Animated.View entering={FadeInDown.delay(100)} style={styles.profileHeader}>
@@ -69,21 +66,11 @@ function ProfileHeader() {
           <Text style={styles.levelBadgeText}>{userProgress.level}</Text>
         </View>
       </View>
-      <Text style={styles.username}>
-        {isAuthenticated ? user?.email?.split('@')[0] : 'Algorithm Learner'}
-      </Text>
+      <Text style={styles.username}>Algorithm Learner</Text>
       <Text style={styles.userStats}>
         Level {userProgress.level} • {userProgress.totalXP} XP
       </Text>
-      {!isAuthenticated && (
-        <TouchableOpacity
-          style={styles.signInPrompt}
-          onPress={() => router.push('/(auth)/login')}
-        >
-          <Ionicons name="cloud-upload" size={14} color={Colors.accent} />
-          <Text style={[styles.signInPromptText]}>Sign in to sync progress</Text>
-        </TouchableOpacity>
-      )}
+
     </Animated.View>
   );
 }
@@ -727,22 +714,5 @@ const styles = StyleSheet.create({
     color: Colors.neonCyan,
     textAlign: 'center',
     marginTop: Spacing.md,
-  },
-  signInPrompt: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.xs,
-    marginTop: Spacing.sm,
-    paddingVertical: Spacing.xs,
-    paddingHorizontal: Spacing.md,
-    backgroundColor: Colors.neonCyan + '15',
-    borderRadius: BorderRadius.full,
-    borderWidth: 1,
-    borderColor: Colors.neonCyan + '30',
-  },
-  signInPromptText: {
-    fontSize: FontSizes.sm,
-    color: Colors.neonCyan,
-    fontWeight: '500',
   },
 });

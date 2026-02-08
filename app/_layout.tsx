@@ -2,8 +2,6 @@ import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { AuthProvider } from '@/components/AuthProvider';
-import AuthGate from '@/components/AuthGate';
 import { Colors } from '@/constants/theme';
 import { initRevenueCat } from '@/lib/revenuecat';
 
@@ -16,8 +14,6 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: Colors.background }}>
       <StatusBar style="light" />
-      <AuthProvider>
-        <AuthGate>
           <Stack
             screenOptions={{
               headerShown: false,
@@ -25,7 +21,6 @@ export default function RootLayout() {
               animation: 'slide_from_right',
             }}
           >
-            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen
               name="visualizer/[algorithm]"
@@ -133,8 +128,6 @@ export default function RootLayout() {
               }}
             />
           </Stack>
-        </AuthGate>
-      </AuthProvider>
     </GestureHandlerRootView>
   );
 }

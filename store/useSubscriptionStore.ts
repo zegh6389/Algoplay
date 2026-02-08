@@ -15,6 +15,7 @@ import {
   PREMIUM_FEATURES,
   type MockPackage,
 } from '@/lib/revenuecat';
+import { preloadRewardedAd } from '@/lib/adService';
 import { PurchasesOfferings, PurchasesPackage } from 'react-native-purchases';
 
 interface SubscriptionState {
@@ -26,6 +27,9 @@ interface SubscriptionState {
   mockOfferings: { lifetime: MockPackage } | null;
   error: string | null;
 
+  // Ad stats
+  totalAdsWatched: number; // Lifetime count of rewarded ads watched
+
   // Actions
   initialize: () => Promise<void>;
   checkPremiumStatus: () => Promise<boolean>;
@@ -35,6 +39,9 @@ interface SubscriptionState {
   setUserIdentity: (userId: string) => Promise<void>;
   clearUserIdentity: () => Promise<void>;
   clearError: () => void;
+
+  // Ad access actions
+  recordAdWatched: () => void;
 
   // Internal — only called by PremiumGate after server verification
   _syncPremium: (isPremium: boolean) => void;
@@ -52,6 +59,7 @@ export const useSubscriptionStore = create<SubscriptionState>()(
       offerings: null,
       mockOfferings: null,
       error: null,
+      totalAdsWatched: 0,
 
       initialize: async () => {
         if (get().isInitialized) return;
@@ -75,6 +83,11 @@ export const useSubscriptionStore = create<SubscriptionState>()(
               isInitialized: true,
               isLoading: false,
             });
+
+            // Preload a rewarded ad for free users
+            if (!isPremium) {
+              preloadRewardedAd();
+            }
           } else {
             // Running in mock/demo mode
             set({
@@ -192,6 +205,13 @@ export const useSubscriptionStore = create<SubscriptionState>()(
         set({ isPremium: false });
       },
 
+      // ─── Ad Access ─────────────────────────────────────────────
+      recordAdWatched: () => {
+        set((state) => ({
+          totalAdsWatched: state.totalAdsWatched + 1,
+        }));
+      },
+
       _syncPremium: (isPremium: boolean) => {
         set({ isPremium });
       },
@@ -203,9 +223,12 @@ export const useSubscriptionStore = create<SubscriptionState>()(
       canAccessFeature: (feature: string) => {
         const { isPremium } = get();
 
-        // All features require premium
+        // Premium subscribers always have access
+        if (isPremium) return true;
+
+        // Free users must watch an ad to access premium features
         if (PREMIUM_FEATURES.includes(feature)) {
-          return isPremium;
+          return false;
         }
 
         // Default to accessible if not a premium feature
@@ -215,8 +238,11 @@ export const useSubscriptionStore = create<SubscriptionState>()(
     {
       name: 'algoverse-subscription',
       storage: createJSONStorage(() => AsyncStorage),
-      // Never persist isPremium — always verify from RevenueCat server
-      partialize: () => ({}),
+      // Persist ad access state so it survives app restarts.
+      // isPremium is NOT persisted — always verified from RevenueCat.
+      partialize: (state) => ({
+        totalAdsWatched: state.totalAdsWatched,
+      }),
     }
   )
 );

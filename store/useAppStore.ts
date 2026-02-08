@@ -83,17 +83,6 @@ export interface VisualizationSettings {
   showCode: boolean;
 }
 
-// Guest Mode State
-export interface GuestState {
-  isGuest: boolean;
-  guestUsername: string;
-}
-
-const initialGuestState: GuestState = {
-  isGuest: false,
-  guestUsername: 'Guest',
-};
-
 // Security state for anti-cheat
 export interface SecurityState {
   antiCheatData: AntiCheatData;
@@ -121,7 +110,6 @@ interface AppState {
   userProgress: UserProgress;
   gameState: GameState;
   visualizationSettings: VisualizationSettings;
-  guestState: GuestState;
   securityState: SecurityState;
 
   // Actions
@@ -136,10 +124,6 @@ interface AppState {
   updateHighScore: (game: 'sorterBest' | 'gridEscapeWins', score: number) => void;
   completeDailyChallenge: () => void;
   resetProgress: () => void;
-
-  // Guest Mode Actions
-  setGuestMode: (isGuest: boolean, username?: string) => void;
-  clearGuestMode: () => void;
 
   // Quiz & Mastery Actions
   recordQuizScore: (algorithmId: string, score: number, correctAnswers: number, totalQuestions: number) => void;
@@ -213,7 +197,6 @@ export const useAppStore = create<AppState>()(
       userProgress: initialUserProgress,
       gameState: initialGameState,
       visualizationSettings: initialVisualizationSettings,
-      guestState: initialGuestState,
       securityState: initialSecurityState,
 
       completeAlgorithm: (algorithmId: string, xp: number) => {
@@ -411,22 +394,6 @@ export const useAppStore = create<AppState>()(
       userProgress: initialUserProgress,
       gameState: initialGameState,
       visualizationSettings: initialVisualizationSettings,
-    });
-  },
-
-  // Guest Mode Actions
-  setGuestMode: (isGuest: boolean, username?: string) => {
-    set({
-      guestState: {
-        isGuest,
-        guestUsername: username || 'Guest',
-      },
-    });
-  },
-
-  clearGuestMode: () => {
-    set({
-      guestState: initialGuestState,
     });
   },
 
@@ -662,7 +629,6 @@ export const useAppStore = create<AppState>()(
         userProgress: state.userProgress,
         gameState: state.gameState,
         visualizationSettings: state.visualizationSettings,
-        guestState: state.guestState,
         // Don't persist security state - it should be fresh each session
       }),
     }
