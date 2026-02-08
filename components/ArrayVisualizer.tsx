@@ -72,7 +72,7 @@ function ArrayElement({
   }));
 
   const getBackgroundColor = () => {
-    if (isSwapping) return Colors.alertCoral;
+    if (isSwapping) return '#FF4757';
     if (isComparing) return Colors.logicGold;
     if (isHighlighted) return Colors.actionTeal;
     if (isSorted) return Colors.success;
@@ -80,7 +80,7 @@ function ArrayElement({
   };
 
   const getBorderColor = () => {
-    if (isSwapping) return Colors.alertCoralLight;
+    if (isSwapping) return '#FF475740';
     if (isComparing) return Colors.logicGoldLight;
     if (isHighlighted) return Colors.actionTealLight;
     if (isSorted) return Colors.success;

@@ -9,9 +9,15 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": false
+      "supportsTablet": false,
+      "bundleIdentifier": "com.awaiszegham.algoplay"
     },
     "android": {
+      "package": "com.awaiszegham.algoplay",
+      "permissions": [
+        "com.android.vending.BILLING",
+        "android.permission.INTERNET"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -28,7 +34,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/splash-screen.jpg",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
@@ -38,6 +44,12 @@
     "experiments": {
       "typedRoutes": true,
       "baseUrl": ""
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "987c333e-9b98-497a-a71e-3bb94fbcc943"
+      }
     }
   }
 }

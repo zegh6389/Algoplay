@@ -27,7 +27,6 @@ import { Colors, Spacing, FontSizes, BorderRadius, Shadows, GlassStyles } from '
 import PremiumGate from '@/components/PremiumGate';
 import { useAppStore } from '@/store/useAppStore';
 import { getMasteryColor, getMasteryIcon } from '@/utils/quizData';
-import { useAuth } from '@/components/AuthProvider';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -277,7 +276,6 @@ function DashboardScreenInner() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { userProgress, getLevelProgress } = useAppStore();
-  const { user, isAuthenticated } = useAuth();
   const { currentXP, xpForNextLevel, progress } = getLevelProgress();
 
   // Calculate category scores for radar chart
@@ -350,9 +348,7 @@ function DashboardScreenInner() {
                 </View>
               </View>
               <View style={styles.profileInfo}>
-                <Text style={styles.username}>
-                  {isAuthenticated ? user?.email?.split('@')[0] : 'Algorithm Learner'}
-                </Text>
+                <Text style={styles.username}>Algorithm Learner</Text>
                 <Text style={styles.levelText}>Level {userProgress.level}</Text>
               </View>
               <StreakFlame streak={userProgress.currentStreak} />
@@ -468,21 +464,16 @@ function DashboardScreenInner() {
           </TouchableOpacity>
         </Animated.View>
 
-        {/* Cloud Sync Status */}
+        {/* Progress saved locally */}
         <Animated.View entering={FadeInUp.delay(700)} style={styles.syncStatus}>
           <Ionicons
-            name={isAuthenticated ? 'cloud-done' : 'cloud-offline'}
+            name={'save'}
             size={16}
-            color={isAuthenticated ? Colors.success : Colors.gray500}
+            color={Colors.success}
           />
-          <Text style={[styles.syncText, !isAuthenticated && styles.syncTextOffline]}>
-            {isAuthenticated ? 'Progress synced to cloud' : 'Sign in to sync progress'}
+          <Text style={styles.syncText}>
+            Progress saved locally
           </Text>
-          {!isAuthenticated && (
-            <TouchableOpacity onPress={() => router.push('/(auth)/login')}>
-              <Text style={styles.syncLink}>Sign In</Text>
-            </TouchableOpacity>
-          )}
         </Animated.View>
       </ScrollView>
     </View>

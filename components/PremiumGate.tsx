@@ -1,6 +1,7 @@
-// PremiumGate — blocks access to premium features with a fullscreen lock overlay.
-// Server-verified: always re-checks entitlement from RevenueCat before granting access.
-import React, { useEffect, useState } from 'react';
+// PremiumGate — blocks access to premium features with ad-supported access.
+// Free users watch an ad each time they access a premium feature.
+// Premium subscribers never see ads.
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -8,6 +9,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Platform,
+  Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -17,6 +19,11 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import { Colors, Spacing, FontSizes, BorderRadius } from '@/constants/theme';
 import { useSubscriptionStore } from '@/store/useSubscriptionStore';
 import { checkPremiumAccess, isRevenueCatConfigured } from '@/lib/revenuecat';
+import {
+  showRewardedAd,
+  canShowAd,
+  preloadRewardedAd,
+} from '@/lib/adService';
 
 interface PremiumGateProps {
   children: React.ReactNode;
@@ -29,8 +36,9 @@ interface PremiumGateProps {
 /**
  * Wrap any screen or component to enforce premium access.
  *
- * On every mount it re-verifies entitlement directly from RevenueCat (server-side
- * source of truth) so that local store tampering is ineffective.
+ * For premium users: renders children directly.
+ * For free users: automatically plays a rewarded ad, then shows the content
+ * with a top banner to go ad-free.
  */
 export default function PremiumGate({
   children,
@@ -38,8 +46,11 @@ export default function PremiumGate({
   softLock = false,
 }: PremiumGateProps) {
   const router = useRouter();
-  const { isPremium } = useSubscriptionStore();
+  const { isPremium, recordAdWatched } = useSubscriptionStore();
   const [verified, setVerified] = useState<boolean | null>(null); // null = checking
+  const [adPlaying, setAdPlaying] = useState(false);
+  const [adGranted, setAdGranted] = useState(false);
+  const adAttempted = useRef(false);
 
   // Always verify against RevenueCat server, not just the local Zustand flag
   useEffect(() => {
@@ -55,6 +66,8 @@ export default function PremiumGate({
             if (serverPremium !== isPremium) {
               useSubscriptionStore.getState()._syncPremium(serverPremium);
             }
+            // Preload ad for free users
+            if (!serverPremium) preloadRewardedAd();
           }
         } catch {
           // Network error — trust local cache briefly
@@ -70,6 +83,39 @@ export default function PremiumGate({
     return () => { mounted = false; };
   }, [isPremium]);
 
+  // Auto-play ad for free users once verification completes
+  useEffect(() => {
+    if (verified === false && !adAttempted.current && !softLock && canShowAd()) {
+      adAttempted.current = true;
+      playAd();
+    }
+  }, [verified]);
+
+  // Play a rewarded ad
+  const playAd = useCallback(async () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+
+    setAdPlaying(true);
+    try {
+      const result = await showRewardedAd();
+      if (result.rewarded) {
+        recordAdWatched();
+        setAdGranted(true);
+        if (Platform.OS !== 'web') {
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        }
+      } else if (result.reason) {
+        Alert.alert('Ad Not Completed', result.reason);
+      }
+    } catch {
+      Alert.alert('Error', 'Something went wrong. Please try again.');
+    } finally {
+      setAdPlaying(false);
+    }
+  }, [recordAdWatched]);
+
   // Still verifying
   if (verified === null) {
     return (
@@ -79,9 +125,39 @@ export default function PremiumGate({
     );
   }
 
-  // Verified premium — render content
-  if (verified) {
+  // Premium user — render content directly, no ads ever
+  if (verified && isPremium) {
     return <>{children}</>;
+  }
+
+  // Free user who just watched an ad — show content with ad-free banner at top
+  if (adGranted) {
+    return (
+      <View style={{ flex: 1 }}>
+        <Animated.View entering={FadeIn} style={styles.adFreeBanner}>
+          <Ionicons name="diamond-outline" size={16} color={Colors.neonCyan} />
+          <Text style={styles.adFreeBannerText}>
+            Remove ads forever
+          </Text>
+          <TouchableOpacity
+            onPress={() => {
+              if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              router.push('/premium');
+            }}
+            style={styles.adFreeBannerBtn}
+          >
+            <LinearGradient
+              colors={[Colors.neonCyan, Colors.neonPurple]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={StyleSheet.absoluteFill}
+            />
+            <Text style={styles.adFreeBannerBtnText}>Go Ad-Free</Text>
+          </TouchableOpacity>
+        </Animated.View>
+        {children}
+      </View>
+    );
   }
 
   // Soft lock — show content with a floating upgrade banner
@@ -109,7 +185,17 @@ export default function PremiumGate({
     );
   }
 
-  // Hard lock — full-screen overlay
+  // Ad is loading/playing — show loading state
+  if (adPlaying) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={Colors.neonCyan} />
+        <Text style={[styles.subtitle, { marginTop: Spacing.md }]}>Loading ad...</Text>
+      </View>
+    );
+  }
+
+  // Free user, ad not played or failed — show lock screen with Watch Ad + Upgrade options
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -128,27 +214,38 @@ export default function PremiumGate({
           <Ionicons name="diamond" size={48} color={Colors.neonCyan} />
         </View>
 
-        <Text style={styles.title}>Algoplay Pro</Text>
+        <Text style={styles.title}>{featureName}</Text>
         <Text style={styles.subtitle}>
-          {featureName} requires Algoplay Pro.{'\n'}
-          Unlock lifetime access to every feature.
+          Watch a short video to access this feature,{'\n'}
+          or go ad-free with Algoplay Pro.
         </Text>
 
-        <View style={styles.featureList}>
-          {[
-            'All algorithm visualizations',
-            'AI Code Tutor',
-            'Advanced analytics & dashboard',
-            'Elite Arena & leaderboards',
-            'All game modes',
-          ].map((f, i) => (
-            <View key={i} style={styles.featureRow}>
-              <Ionicons name="checkmark-circle" size={18} color={Colors.neonLime} />
-              <Text style={styles.featureText}>{f}</Text>
-            </View>
-          ))}
+        {/* Watch Ad Button — Primary action */}
+        {Platform.OS !== 'web' && (
+          <TouchableOpacity
+            style={styles.watchAdButton}
+            onPress={playAd}
+            activeOpacity={0.8}
+          >
+            <LinearGradient
+              colors={[Colors.neonOrange + 'CC', Colors.neonYellow + 'CC']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={StyleSheet.absoluteFill}
+            />
+            <Ionicons name="play-circle" size={24} color={Colors.background} />
+            <Text style={styles.watchAdButtonText}>Watch Ad to Continue</Text>
+          </TouchableOpacity>
+        )}
+
+        {/* OR divider */}
+        <View style={styles.orDivider}>
+          <View style={styles.orLine} />
+          <Text style={styles.orText}>OR</Text>
+          <View style={styles.orLine} />
         </View>
 
+        {/* Go Ad-Free / Upgrade Button */}
         <TouchableOpacity
           style={styles.upgradeButton}
           onPress={() => {
@@ -164,7 +261,7 @@ export default function PremiumGate({
             style={StyleSheet.absoluteFill}
           />
           <Ionicons name="diamond" size={22} color={Colors.white} />
-          <Text style={styles.upgradeButtonText}>Unlock Algoplay Pro</Text>
+          <Text style={styles.upgradeButtonText}>Go Ad-Free — Algoplay Pro</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -280,5 +377,68 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.sm,
     fontWeight: '600',
     color: Colors.textPrimary,
+  },
+  // Watch Ad button & related styles
+  orDivider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.md,
+    width: '100%',
+    marginVertical: Spacing.md,
+  },
+  orLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: Colors.gray700 ?? '#2a2a3a',
+  },
+  orText: {
+    fontSize: FontSizes.sm,
+    fontWeight: '600',
+    color: Colors.textSecondary,
+  },
+  watchAdButton: {
+    width: '100%',
+    height: 56,
+    borderRadius: BorderRadius.xl,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.sm,
+    overflow: 'hidden',
+    marginBottom: Spacing.md,
+  },
+  watchAdButtonText: {
+    fontSize: FontSizes.lg,
+    fontWeight: '700',
+    color: Colors.background,
+  },
+  // Ad-free banner (shown at top after watching ad)
+  adFreeBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.sm,
+    backgroundColor: Colors.cardBackground,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.neonCyan + '30',
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+  },
+  adFreeBannerText: {
+    flex: 1,
+    fontSize: FontSizes.xs,
+    fontWeight: '600',
+    color: Colors.textSecondary,
+  },
+  adFreeBannerBtn: {
+    borderRadius: BorderRadius.md,
+    paddingVertical: 6,
+    paddingHorizontal: Spacing.md,
+    overflow: 'hidden',
+  },
+  adFreeBannerBtnText: {
+    fontSize: FontSizes.xs,
+    fontWeight: '700',
+    color: Colors.white,
   },
 });

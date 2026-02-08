@@ -8,9 +8,10 @@ import Purchases, {
 } from 'react-native-purchases';
 import RevenueCatUI, { PAYWALL_RESULT } from 'react-native-purchases-ui';
 
-// RevenueCat API keys (same key for both platforms in test mode)
+// RevenueCat API keys (use test key for iOS, production key for Android Play Store)
+// Values confirmed from user dashboard
 const REVENUECAT_IOS_API_KEY = 'test_CZqTmmrsHDGZiayzVeXtqLKGmij';
-const REVENUECAT_ANDROID_API_KEY = 'test_CZqTmmrsHDGZiayzVeXtqLKGmij';
+const REVENUECAT_ANDROID_API_KEY = 'goog_qnvnWdTnYRxBKkbRTNbXHfsoDsi';
 
 // Product identifiers
 export const PRODUCT_IDS = {
@@ -274,8 +275,8 @@ export const getMockOfferings = (): { lifetime: MockPackage } => {
         identifier: PRODUCT_IDS.LIFETIME,
         title: 'Algoplay Pro — Lifetime',
         description: 'One-time purchase. Unlimited access forever.',
-        priceString: '$99.99',
-        price: 99.99,
+        priceString: '$9.99',
+        price: 9.99,
       },
     },
   };

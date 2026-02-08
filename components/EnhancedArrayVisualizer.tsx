@@ -29,7 +29,7 @@ const MIDNIGHT_BLACK = '#0a0e17';
 const STATE_COLORS = {
   default: Colors.accent, // Neon cyan
   comparing: '#e5c07b', // Yellow for comparing
-  swapping: '#56b6c2', // Cyan for swapping
+  swapping: '#FF4757', // Red for swapping
   sorted: '#98c379', // Green for sorted
   pivot: Colors.neonPurple,
   found: Colors.neonLime,
