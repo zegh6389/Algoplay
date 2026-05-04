@@ -1,0 +1,29 @@
+# Algoplay Flutter
+*.freezed.dart
+*.g.dart
+*.mocks.dart
+
+# Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+*.iml
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local
+
+# Build
+*.apk
+*.aab
+*.ipa

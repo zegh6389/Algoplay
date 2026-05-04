@@ -1,0 +1,66 @@
+name: algoplay
+description: Algoplay — Gamified Algorithm Learning App
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # UI
+  cupertino_icons: ^1.0.8
+  google_fonts: ^6.2.1
+  flutter_svg: ^2.1.0
+  flutter_animate: ^4.5.2
+  shimmer: ^3.0.0
+
+  # Navigation
+  go_router: ^14.8.1
+
+  # State Management
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+
+  # Storage
+  shared_preferences: ^2.5.3
+  flutter_secure_storage: ^9.2.4
+
+  # Backend
+  supabase_flutter: ^2.8.4
+
+  # Monetization
+  purchases_flutter: ^8.7.3
+  google_mobile_ads: ^5.3.1
+
+  # Networking
+  url_launcher: ^6.3.1
+
+  # Utilities
+  uuid: ^4.5.1
+  intl: ^0.20.2
+  collection: ^1.19.1
+  path_provider: ^2.1.5
+  crypto: ^3.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  riverpod_generator: ^2.6.3
+  build_runner: ^2.4.15
+  mockito: ^5.4.5
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/fonts/
+    - assets/images/
+
+  fonts:
+    - family: SpaceMono
+      fonts:
+        - asset: assets/fonts/SpaceMono-Regular.ttf
