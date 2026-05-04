@@ -32,10 +32,8 @@ class AlgoplayApp extends ConsumerWidget {
       title: 'Algoplay',
       debugShowCheckedModeBanner: false,
 
-      // ── Theming ──────────────────────────────────────────────────────────
+      // ── Theming (light only — no dark mode for now) ────────────────────────
       theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.system,
 
       // ── Routing ──────────────────────────────────────────────────────────
       routerConfig: router,

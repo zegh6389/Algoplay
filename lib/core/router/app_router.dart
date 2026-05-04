@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'tab_shell.dart';
+import '../../features/learn/presentation/learn_page.dart' show LearnPage;
 
 // ── Placeholder pages ──────────────────────────────────────────────────────
 
@@ -33,13 +34,6 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
       const _PlaceholderPage(title: 'Home', color: null);
-}
-
-class LearnPage extends StatelessWidget {
-  const LearnPage({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const _PlaceholderPage(title: 'Learn', color: null);
 }
 
 class PlayPage extends StatelessWidget {
