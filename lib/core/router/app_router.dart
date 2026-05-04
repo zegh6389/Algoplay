@@ -7,6 +7,11 @@ import '../../features/stats/presentation/stats_page.dart' show StatsPage;
 import '../../features/profile/presentation/profile_page.dart' show ProfilePage;
 import '../../features/play/presentation/play_page.dart' show PlayPage;
 import '../../features/visualizer/presentation/algorithm_visualizer_page.dart' show AlgorithmVisualizerPage;
+import '../../features/the-sorter/presentation/the_sorter_page.dart' show TheSorterPage;
+import '../../features/race-mode/presentation/race_mode_page.dart' show RaceModePage;
+import '../../features/playground/presentation/playground_page.dart' show PlaygroundPage;
+import '../../features/tutor/presentation/tutor_page.dart' show TutorPage;
+import '../../features/dashboard/presentation/dashboard_page.dart' show DashboardPage;
 
 // ── Placeholder pages ──────────────────────────────────────────────────────
 
@@ -72,34 +77,6 @@ class GridEscapePage extends StatelessWidget {
       const _PlaceholderPage(title: 'Grid Escape', color: Colors.green);
 }
 
-class TheSorterPage extends StatelessWidget {
-  const TheSorterPage({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const _PlaceholderPage(title: 'The Sorter', color: Colors.orange);
-}
-
-class RaceModePage extends StatelessWidget {
-  const RaceModePage({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const _PlaceholderPage(title: 'Race Mode', color: Colors.red);
-}
-
-class PlaygroundPage extends StatelessWidget {
-  const PlaygroundPage({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const _PlaceholderPage(title: 'Playground', color: Colors.blueGrey);
-}
-
-class TutorPage extends StatelessWidget {
-  const TutorPage({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const _PlaceholderPage(title: 'Tutor', color: Colors.purple);
-}
-
 class LeaderboardPage extends StatelessWidget {
   const LeaderboardPage({super.key});
   @override
@@ -126,13 +103,6 @@ class CheatsheetPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
       const _PlaceholderPage(title: 'Cheatsheet', color: Colors.cyan);
-}
-
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const _PlaceholderPage(title: 'Dashboard', color: Colors.blue);
 }
 
 // ── GoRouter configuration ─────────────────────────────────────────────────
