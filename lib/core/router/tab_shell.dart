@@ -1,15 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class TabShellWidget extends StatelessWidget {
+import 'package:algoplay/shared/widgets/banner_ad_wrapper.dart';
+import 'package:algoplay/shared/providers/premium_provider.dart';
+
+class TabShellWidget extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
 
   const TabShellWidget({super.key, required this.navigationShell});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isPremium = ref.watch(premiumProvider);
+
     return Scaffold(
-      body: navigationShell,
+      body: BannerAdWrapper(
+        isPremium: isPremium,
+        child: navigationShell,
+      ),
       bottomNavigationBar: _AnimatedBottomNavBar(
         currentIndex: navigationShell.currentIndex,
         onTap: (index) => navigationShell.goBranch(
@@ -223,5 +232,3 @@ class _SpringTabButtonState extends State<_SpringTabButton>
     );
   }
 }
-
-

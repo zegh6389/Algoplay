@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:algoplay/core/theme/app_theme.dart';
 import 'package:algoplay/shared/providers/app_providers.dart';
+import 'package:algoplay/shared/providers/premium_provider.dart';
 import 'package:algoplay/shared/widgets/section_header.dart';
 import 'package:algoplay/shared/widgets/skill_category_card.dart';
 import 'package:algoplay/shared/widgets/xp_progress_bar.dart';
@@ -48,6 +49,7 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final progress = ref.watch(userProgressProvider);
+    final isPremium = ref.watch(premiumProvider);
 
     // XP within current level (100 XP per level formula from notifier)
     final xpInLevel = progress.totalXP % 100;
@@ -68,6 +70,12 @@ class HomePage extends ConsumerWidget {
               // ── 2. Daily streak row ────────────────────────────────────
               _buildStreakRow(progress.currentStreak),
               const SizedBox(height: AppSpacing.xl),
+
+              // ── Upgrade card (free users only) ─────────────────────────
+              if (!isPremium) ...[
+                _buildUpgradeCard(context),
+                const SizedBox(height: AppSpacing.xl),
+              ],
 
               // ── 3. Skill Categories ────────────────────────────────────
               _buildSkillCategories(context),
@@ -407,6 +415,79 @@ class HomePage extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Upgrade card (free users only — routes to /premium)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  Widget _buildUpgradeCard(BuildContext context) {
+    return GestureDetector(
+      onTap: () => context.push('/premium'),
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              AppColors.primary500,
+              AppColors.secondary500,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary500.withValues(alpha: 0.3),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '⚡ Unlock Everything',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Remove ads • All games • Unlimited hints',
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.85),
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Text(
+                'Upgrade',
+                style: TextStyle(
+                  color: AppColors.primary500,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

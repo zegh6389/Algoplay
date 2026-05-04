@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/services/ad_service.dart';
+import '../../../core/services/premium_service.dart';
 import '../../../algorithms/models/algorithm_models.dart';
 import '../../../algorithms/sorting/sorting_algorithms.dart';
 import '../../../algorithms/searching/searching_algorithms.dart';
 import '../../learn/data/algorithm_data.dart';
+import '../../../shared/providers/premium_provider.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 /// Algorithm Visualizer Page
@@ -36,6 +39,10 @@ class _AlgorithmVisualizerPageState
   AlgorithmInfo? _algorithmInfo;
   List<String> _pseudocode = [];
 
+  // Hint state for monetization
+  String? _hintText;
+  bool _isHintLoading = false;
+
   // Sample data for the algorithm
   late List<int> _sampleArray;
 
@@ -55,6 +62,11 @@ class _AlgorithmVisualizerPageState
 
     // Collect all steps from the stream
     _collectSteps();
+
+    // Pre-load a rewarded ad for the hint feature (free users only)
+    if (!PremiumService.instance.isPremium) {
+      AdService.instance.loadRewardedAd();
+    }
   }
 
   List<int> _generateSampleArray() {
@@ -263,10 +275,62 @@ class _AlgorithmVisualizerPageState
   bool get _isSorting =>
       _algorithmInfo?.category == AlgorithmCategory.sorting;
 
+  // ── Hint logic ──────────────────────────────────────────────────────────
+
+  String _generateHintText() {
+    if (_steps.isEmpty) {
+      return 'The visualization is loading. Watch how the algorithm works step by step!';
+    }
+    if (_currentStepIndex >= _steps.length - 1) {
+      return 'You\'ve reached the final step. The algorithm has finished processing!';
+    }
+    final nextStep = _steps[_currentStepIndex + 1];
+    final nextOp = nextStep is SortStep
+        ? nextStep.operation
+        : nextStep is SearchStep
+            ? nextStep.operation
+            : 'the next step';
+    return 'Next: $nextOp';
+  }
+
+  void _requestHint() {
+    final isPremium = ref.read(premiumProvider);
+    if (isPremium) {
+      _revealHint();
+    } else {
+      setState(() => _isHintLoading = true);
+      AdService.instance.showRewardedAd(
+        onReward: () {
+          if (mounted) {
+            _revealHint();
+          }
+        },
+      );
+      // Ad show is async; clear loading after a short delay if dismissed
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted) setState(() => _isHintLoading = false);
+      });
+    }
+  }
+
+  void _revealHint() {
+    setState(() {
+      _hintText = _generateHintText();
+      _isHintLoading = false;
+    });
+    // Auto-hide hint after 5 seconds
+    Future.delayed(const Duration(seconds: 5), () {
+      if (mounted) {
+        setState(() => _hintText = null);
+      }
+    });
+  }
+
   // ── Build ────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
+    final isPremium = ref.watch(premiumProvider);
     final algorithmName = _algorithmInfo?.name ?? widget.algorithmId;
     final currentStep =
         _steps.isNotEmpty ? _steps[_currentStepIndex] : null;
@@ -290,6 +354,24 @@ class _AlgorithmVisualizerPageState
         ),
         centerTitle: true,
         actions: [
+          // Hint button — premium gets direct hint, free users watch an ad
+          IconButton(
+            icon: _isHintLoading
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: AppColors.textSecondary,
+                    ),
+                  )
+                : Icon(
+                    isPremium ? Icons.lightbulb : Icons.lightbulb_outline,
+                    color: AppColors.textSecondary,
+                  ),
+            tooltip: isPremium ? 'Get Hint' : 'Watch ad for hint',
+            onPressed: _requestHint,
+          ),
           IconButton(
             icon: const Icon(Icons.info_outline),
             onPressed: () => _showAlgorithmInfoSheet(context),
@@ -304,6 +386,38 @@ class _AlgorithmVisualizerPageState
       ),
       body: Column(
         children: [
+          // ── Hint Banner ───────────────────────────────────────────────
+          if (_hintText != null)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.sm,
+              ),
+              color: AppColors.secondary100,
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.lightbulb,
+                    size: 18,
+                    color: AppColors.secondary500,
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: Text(
+                      _hintText!,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.secondary500,
+                        height: 1.4,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
           // ── Visualization Area ──────────────────────────────────────────
           Expanded(
             flex: 6,
