@@ -3,6 +3,10 @@ import 'package:go_router/go_router.dart';
 
 import 'tab_shell.dart';
 import '../../features/learn/presentation/learn_page.dart' show LearnPage;
+import '../../features/stats/presentation/stats_page.dart' show StatsPage;
+import '../../features/profile/presentation/profile_page.dart' show ProfilePage;
+import '../../features/play/presentation/play_page.dart' show PlayPage;
+import '../../features/visualizer/presentation/algorithm_visualizer_page.dart' show AlgorithmVisualizerPage;
 
 // ── Placeholder pages ──────────────────────────────────────────────────────
 
@@ -36,45 +40,9 @@ class HomePage extends StatelessWidget {
       const _PlaceholderPage(title: 'Home', color: null);
 }
 
-class PlayPage extends StatelessWidget {
-  const PlayPage({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const _PlaceholderPage(title: 'Play', color: null);
-}
 
-class StatsPage extends StatelessWidget {
-  const StatsPage({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const _PlaceholderPage(title: 'Stats', color: null);
-}
 
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const _PlaceholderPage(title: 'Profile', color: null);
-}
-
-class AlgorithmVisualizerPage extends StatelessWidget {
-  final String algorithmId;
-  const AlgorithmVisualizerPage({super.key, required this.algorithmId});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Visualizer: $algorithmId')),
-      body: Center(
-        child: Text(
-          'Algorithm Visualizer\n$algorithmId',
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headlineMedium,
-        ),
-      ),
-    );
-  }
-}
+// StatsPage and ProfilePage imported from feature modules above
 
 class DPVisualizerPage extends StatelessWidget {
   const DPVisualizerPage({super.key});
