@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../algorithms/sorting/sorting_algorithms.dart';
 import '../../../../algorithms/searching/searching_algorithms.dart';
+import '../../../../algorithms/models/sort_step.dart';
+import '../../../../algorithms/models/search_step.dart';
 import '../../../../features/learn/data/algorithm_data.dart';
 import '../../../../shared/providers/app_providers.dart';
 
@@ -662,9 +664,9 @@ class _PlaygroundPageState extends ConsumerState<PlaygroundPage> {
   Widget _buildSearchingViz(SearchStep? step) {
     final arr = step?.array ?? _array;
     final currentIndex = step?.currentIndex;
-    final leftBound = step?.leftBound;
-    final rightBound = step?.rightBound;
-    final foundIndex = step?.foundIndex;
+    final leftBound = step?.searchRange.left;
+    final rightBound = step?.searchRange.right;
+    final found = step?.found;
 
     final maxVal = arr.reduce((a, b) => a > b ? a : b);
 
@@ -711,7 +713,7 @@ class _PlaygroundPageState extends ConsumerState<PlaygroundPage> {
                     rightBound != null &&
                     i >= leftBound &&
                     i <= rightBound;
-                final isFound = i == foundIndex;
+                final isFound = found == true && i == currentIndex;
 
                 Color color = AppColors.catSearching.withValues(alpha: 0.3);
                 if (isFound) {
