@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'tab_shell.dart';
@@ -7,26 +6,41 @@ import '../../features/learn/presentation/learn_page.dart' show LearnPage;
 import '../../features/play/presentation/play_page.dart' show PlayPage;
 import '../../features/stats/presentation/stats_page.dart' show StatsPage;
 import '../../features/profile/presentation/profile_page.dart' show ProfilePage;
-import '../../features/visualizer/presentation/algorithm_visualizer_page.dart' show AlgorithmVisualizerPage;
-import '../../features/visualizer/presentation/dp_visualizer_page.dart' show DPVisualizerPage;
-import '../../features/visualizer/presentation/tree_visualizer_page.dart' show TreeVisualizerPage;
-import '../../features/the-sorter/presentation/the_sorter_page.dart' show TheSorterPage;
-import '../../features/race-mode/presentation/race_mode_page.dart' show RaceModePage;
-import '../../features/battle_arena/presentation/battle_arena_page.dart' show BattleArenaPage;
-import '../../features/grid_escape/presentation/grid_escape_page.dart' show GridEscapePage;
-import '../../features/playground/presentation/playground_page.dart' show PlaygroundPage;
+import '../../features/visualizer/presentation/algorithm_visualizer_page.dart'
+    show AlgorithmVisualizerPage;
+import '../../features/visualizer/presentation/dp_visualizer_page.dart'
+    show DPVisualizerPage;
+import '../../features/visualizer/presentation/tree_visualizer_page.dart'
+    show TreeVisualizerPage;
+import '../../features/the-sorter/presentation/the_sorter_page.dart'
+    show TheSorterPage;
+import '../../features/race-mode/presentation/race_mode_page.dart'
+    show RaceModePage;
+import '../../features/battle_arena/presentation/battle_arena_page.dart'
+    show BattleArenaPage;
+import '../../features/grid_escape/presentation/grid_escape_page.dart'
+    show GridEscapePage;
+import '../../features/playground/presentation/playground_page.dart'
+    show PlaygroundPage;
 import '../../features/tutor/presentation/tutor_page.dart' show TutorPage;
-import '../../features/leaderboard/presentation/leaderboard_page.dart' show LeaderboardPage;
+import '../../features/leaderboard/presentation/leaderboard_page.dart'
+    show LeaderboardPage;
 import '../../features/premium/presentation/premium_page.dart' show PremiumPage;
-import '../../features/arena/presentation/elite_arena_page.dart' show EliteArenaPage;
-import '../../features/cheatsheet/presentation/cheatsheet_page.dart' show CheatsheetPage;
-import '../../features/dashboard/presentation/dashboard_page.dart' show DashboardPage;
+import '../../features/arena/presentation/elite_arena_page.dart'
+    show EliteArenaPage;
+import '../../features/cheatsheet/presentation/cheatsheet_page.dart'
+    show CheatsheetPage;
+import '../../features/dashboard/presentation/dashboard_page.dart'
+    show DashboardPage;
+import '../../features/splash/presentation/splash_page.dart' show SplashPage;
 
 // ── GoRouter configuration ─────────────────────────────────────────────────
 
 final router = GoRouter(
-  initialLocation: '/home',
+  initialLocation: '/splash',
   routes: [
+    GoRoute(path: '/splash', builder: (context, state) => const SplashPage()),
+
     // ── Tabbed shell (bottom nav) ──
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
@@ -121,18 +135,12 @@ final router = GoRouter(
       path: '/playground',
       builder: (context, state) => const PlaygroundPage(),
     ),
-    GoRoute(
-      path: '/tutor',
-      builder: (context, state) => const TutorPage(),
-    ),
+    GoRoute(path: '/tutor', builder: (context, state) => const TutorPage()),
     GoRoute(
       path: '/leaderboard',
       builder: (context, state) => const LeaderboardPage(),
     ),
-    GoRoute(
-      path: '/premium',
-      builder: (context, state) => const PremiumPage(),
-    ),
+    GoRoute(path: '/premium', builder: (context, state) => const PremiumPage()),
     GoRoute(
       path: '/elite-arena',
       builder: (context, state) => const EliteArenaPage(),
