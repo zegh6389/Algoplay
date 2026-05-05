@@ -425,10 +425,10 @@ class _TutorPageState extends ConsumerState<TutorPage> {
       options: ['0/1 Knapsack', 'Longest Common Subsequence', 'Activity Selection', 'Traveling Salesman'],
       correctIndex: 2,
       explanation:
-          'Activity Selection (selecting max non-overlapping activities) has the greedy choice property — picking the earliest finishing activity is always optimal.',
+          'Activity Selection (selecting max non-overlapping activities) has the greedy choice property: picking the earliest finishing activity is always optimal.',
     ),
     _TutorQuestion(
-      question: 'What is the time complexity of Huffman's algorithm for encoding?',
+      question: 'What is the time complexity of Huffman\'s algorithm for encoding?',
       options: ['O(n)', 'O(n log n)', 'O(n2)', 'O(2^n)'],
       correctIndex: 1,
       explanation:
