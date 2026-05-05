@@ -4,33 +4,38 @@ import '../models/dp_step.dart';
 
 /// Streams the Fibonacci DP algorithm step by step.
 Stream<DPStep> fibonacciDp(int n) async* {
-  final memo = <int, int>{};
+  final memo = <int, int>{0: 0};
+  final table = List<int>.filled(n + 1, 0);
 
-  // Initialize table visualization
+  // Initialize table visualization with fib(0) stored in memo.
   yield DPStep(
-    array: List<int>.filled(n + 1, 0),
+    array: List<int>.from(table),
     memo: Map.from(memo),
     currentIndex: 0,
     operation: 'Initialize DP table with base case fib(0) = 0',
     line: 1,
+    result: n == 0 ? 0 : null,
   );
 
-  // Build table iteratively (bottom-up tabulation)
+  // Build table iteratively (bottom-up tabulation).
   for (var i = 1; i <= n; i++) {
     if (i == 1) {
       memo[i] = 1;
+      table[i] = 1;
       yield DPStep(
-        array: List<int>.filled(n + 1, 0)..[0] = 0..[1] = 1,
+        array: List<int>.from(table),
         memo: Map.from(memo),
         currentIndex: i,
         operation: 'Base case: fib(1) = 1',
         line: 2,
+        sorted: const [0, 1],
       );
     } else {
       final newVal = memo[i - 1]! + memo[i - 2]!;
       memo[i] = newVal;
+      table[i] = newVal;
       yield DPStep(
-        array: List<int>.filled(n + 1, 0)..[0] = 0..[1] = 1,
+        array: List<int>.from(table),
         memo: Map.from(memo),
         currentIndex: i,
         operation: 'fib($i) = fib(${i - 1}) + fib(${i - 2}) = $newVal',
@@ -42,7 +47,7 @@ Stream<DPStep> fibonacciDp(int n) async* {
   }
 
   yield DPStep(
-    array: List<int>.filled(n + 1, 0),
+    array: List<int>.from(table),
     memo: Map.from(memo),
     currentIndex: n,
     operation: 'fib($n) = ${memo[n]} — Complete!',
