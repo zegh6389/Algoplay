@@ -2,108 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'tab_shell.dart';
+import '../../features/home/presentation/home_page.dart' show HomePage;
 import '../../features/learn/presentation/learn_page.dart' show LearnPage;
+import '../../features/play/presentation/play_page.dart' show PlayPage;
 import '../../features/stats/presentation/stats_page.dart' show StatsPage;
 import '../../features/profile/presentation/profile_page.dart' show ProfilePage;
-import '../../features/play/presentation/play_page.dart' show PlayPage;
 import '../../features/visualizer/presentation/algorithm_visualizer_page.dart' show AlgorithmVisualizerPage;
+import '../../features/visualizer/presentation/dp_visualizer_page.dart' show DPVisualizerPage;
+import '../../features/visualizer/presentation/tree_visualizer_page.dart' show TreeVisualizerPage;
 import '../../features/the-sorter/presentation/the_sorter_page.dart' show TheSorterPage;
 import '../../features/race-mode/presentation/race_mode_page.dart' show RaceModePage;
+import '../../features/battle_arena/presentation/battle_arena_page.dart' show BattleArenaPage;
+import '../../features/grid_escape/presentation/grid_escape_page.dart' show GridEscapePage;
 import '../../features/playground/presentation/playground_page.dart' show PlaygroundPage;
 import '../../features/tutor/presentation/tutor_page.dart' show TutorPage;
+import '../../features/leaderboard/presentation/leaderboard_page.dart' show LeaderboardPage;
+import '../../features/premium/presentation/premium_page.dart' show PremiumPage;
+import '../../features/arena/presentation/elite_arena_page.dart' show EliteArenaPage;
+import '../../features/cheatsheet/presentation/cheatsheet_page.dart' show CheatsheetPage;
 import '../../features/dashboard/presentation/dashboard_page.dart' show DashboardPage;
-
-// ── Placeholder pages ──────────────────────────────────────────────────────
-
-class _PlaceholderPage extends StatelessWidget {
-  final String title;
-  final Color? color;
-
-  const _PlaceholderPage({required this.title, this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: color,
-      appBar: AppBar(title: Text(title)),
-      body: Center(
-        child: Text(
-          title,
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                color: color != null ? Colors.white : null,
-              ),
-        ),
-      ),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const _PlaceholderPage(title: 'Home', color: null);
-}
-
-
-
-// StatsPage and ProfilePage imported from feature modules above
-
-class DPVisualizerPage extends StatelessWidget {
-  const DPVisualizerPage({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const _PlaceholderPage(title: 'DP Visualizer', color: Colors.indigo);
-}
-
-class TreeVisualizerPage extends StatelessWidget {
-  const TreeVisualizerPage({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const _PlaceholderPage(title: 'Tree Visualizer', color: Colors.teal);
-}
-
-class BattleArenaPage extends StatelessWidget {
-  const BattleArenaPage({super.key});
-  @override
-  Widget build(BuildContext context) => const _PlaceholderPage(
-      title: 'Battle Arena', color: Colors.deepPurple);
-}
-
-class GridEscapePage extends StatelessWidget {
-  const GridEscapePage({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const _PlaceholderPage(title: 'Grid Escape', color: Colors.green);
-}
-
-class LeaderboardPage extends StatelessWidget {
-  const LeaderboardPage({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const _PlaceholderPage(title: 'Leaderboard', color: Colors.amber);
-}
-
-class PremiumPage extends StatelessWidget {
-  const PremiumPage({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const _PlaceholderPage(title: 'Premium', color: Colors.deepOrange);
-}
-
-class EliteArenaPage extends StatelessWidget {
-  const EliteArenaPage({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const _PlaceholderPage(title: 'Elite Arena', color: Colors.brown);
-}
-
-class CheatsheetPage extends StatelessWidget {
-  const CheatsheetPage({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const _PlaceholderPage(title: 'Cheatsheet', color: Colors.cyan);
-}
 
 // ── GoRouter configuration ─────────────────────────────────────────────────
 
