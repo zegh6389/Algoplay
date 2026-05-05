@@ -201,7 +201,7 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
                   SectionHeader(
                     title: 'Top Players',
                     actionLabel: 'Full Rankings',
-                    onAction: () => context.go('/leaderboard'),
+                    onAction: () => context.push('/leaderboard'),
                   ),
                   const SizedBox(height: AppSpacing.md),
                   _buildTopPlayers(),
@@ -410,7 +410,7 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
           color: AppColors.primary500,
           tier: 'All Ranks',
           reward: '+25 XP',
-          onTap: () => context.go('/game/battle-arena'),
+          onTap: () => context.push('/game/battle-arena'),
         ),
         const SizedBox(height: AppSpacing.md),
         _ArenaModeCard(

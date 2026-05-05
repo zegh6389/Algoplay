@@ -362,7 +362,7 @@ class HomePage extends ConsumerWidget {
                   description: game.description,
                   icon: game.icon,
                   color: game.color,
-                  onTap: () => context.go(game.route),
+                  onTap: () => context.push(game.route),
                 ),
               );
             },
@@ -410,7 +410,7 @@ class HomePage extends ConsumerWidget {
               difficulty: AlgorithmDifficulty.medium,
               timeComplexity: _getTimeComplexity(algoId),
               categoryColor: _getCategoryColor(algoId),
-              onTap: () => context.go('/visualizer/$algoId'),
+              onTap: () => context.push('/visualizer/$algoId'),
             ),
           ),
         ),

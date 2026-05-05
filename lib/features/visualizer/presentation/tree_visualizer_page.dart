@@ -21,7 +21,8 @@ class TreeVisualizerPage extends ConsumerStatefulWidget {
   ConsumerState<TreeVisualizerPage> createState() => _TreeVisualizerPageState();
 }
 
-class _TreeVisualizerPageState extends ConsumerState<TreeVisualizerPage> {
+class _TreeVisualizerPageState extends ConsumerState<TreeVisualizerPage>
+    with WidgetsBindingObserver {
   // Available tree algorithms
   static const _treeAlgorithms = [
     (id: 'bst-operations', name: 'BST Operations', description: 'Insert, search, delete in a Binary Search Tree'),
@@ -55,6 +56,7 @@ class _TreeVisualizerPageState extends ConsumerState<TreeVisualizerPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _initializeTree();
     _loadAlgorithm();
   }
@@ -587,8 +589,26 @@ class _TreeVisualizerPageState extends ConsumerState<TreeVisualizerPage> {
     if (_isPlaying) _startPlayTimer();
   }
 
+  void _pauseForLifecycle() {
+    _playTimer?.cancel();
+    if (mounted && _isPlaying) {
+      setState(() => _isPlaying = false);
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused ||
+        state == AppLifecycleState.hidden ||
+        state == AppLifecycleState.detached) {
+      _pauseForLifecycle();
+    }
+  }
+
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _playTimer?.cancel();
     super.dispose();
   }

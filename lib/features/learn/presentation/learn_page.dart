@@ -104,7 +104,7 @@ class _LearnPageState extends ConsumerState<LearnPage> {
                         return _AlgorithmListCard(
                           algorithm: algo,
                           onTap: () =>
-                              context.go('/visualizer/${algo.id}'),
+                              context.push('/visualizer/${algo.id}'),
                         );
                       },
                     ),

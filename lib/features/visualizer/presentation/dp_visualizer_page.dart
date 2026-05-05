@@ -22,7 +22,8 @@ class DPVisualizerPage extends ConsumerStatefulWidget {
   ConsumerState<DPVisualizerPage> createState() => _DPVisualizerPageState();
 }
 
-class _DPVisualizerPageState extends ConsumerState<DPVisualizerPage> {
+class _DPVisualizerPageState extends ConsumerState<DPVisualizerPage>
+    with WidgetsBindingObserver {
   // Available DP algorithms
   static const _dpAlgorithms = [
     (id: 'fibonacci', name: 'Fibonacci', description: 'Bottom-up tabulation of fib sequence'),
@@ -51,6 +52,7 @@ class _DPVisualizerPageState extends ConsumerState<DPVisualizerPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadAlgorithm();
   }
 
@@ -154,8 +156,26 @@ class _DPVisualizerPageState extends ConsumerState<DPVisualizerPage> {
     if (_isPlaying) _startPlayTimer();
   }
 
+  void _pauseForLifecycle() {
+    _playTimer?.cancel();
+    if (mounted && _isPlaying) {
+      setState(() => _isPlaying = false);
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused ||
+        state == AppLifecycleState.hidden ||
+        state == AppLifecycleState.detached) {
+      _pauseForLifecycle();
+    }
+  }
+
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _playTimer?.cancel();
     super.dispose();
   }

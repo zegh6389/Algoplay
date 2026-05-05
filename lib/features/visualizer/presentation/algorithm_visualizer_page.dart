@@ -28,8 +28,8 @@ class AlgorithmVisualizerPage extends ConsumerStatefulWidget {
       _AlgorithmVisualizerPageState();
 }
 
-class _AlgorithmVisualizerPageState
-    extends ConsumerState<AlgorithmVisualizerPage> {
+class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPage>
+    with WidgetsBindingObserver {
   // ── State ────────────────────────────────────────────────────────────────
   List<dynamic> _steps = [];
   int _currentStepIndex = 0;
@@ -49,6 +49,7 @@ class _AlgorithmVisualizerPageState
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _algorithmInfo = allAlgorithms.firstWhere(
       (a) => a.id == widget.algorithmId,
       orElse: () => allAlgorithms.first,
@@ -245,8 +246,26 @@ class _AlgorithmVisualizerPageState
     }
   }
 
+  void _pauseForLifecycle() {
+    _playTimer?.cancel();
+    if (mounted && _isPlaying) {
+      setState(() => _isPlaying = false);
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused ||
+        state == AppLifecycleState.hidden ||
+        state == AppLifecycleState.detached) {
+      _pauseForLifecycle();
+    }
+  }
+
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _playTimer?.cancel();
     super.dispose();
   }

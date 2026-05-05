@@ -56,28 +56,28 @@ class PlayPage extends ConsumerWidget {
                     icon: Icons.sports_martial_arts,
                     color: AppColors.secondary500,
                     badge: 'Popular',
-                    onTap: () => context.go('/game/battle-arena'),
+                    onTap: () => context.push('/game/battle-arena'),
                   ),
                   GameCard(
                     title: 'The Sorter',
                     description: 'Sorting algorithm challenge',
                     icon: Icons.sort,
                     color: AppColors.primary500,
-                    onTap: () => context.go('/game/the-sorter'),
+                    onTap: () => context.push('/game/the-sorter'),
                   ),
                   GameCard(
                     title: 'Grid Escape',
                     description: 'Grid-based algorithm puzzle',
                     icon: Icons.grid_on,
                     color: AppColors.solarGold,
-                    onTap: () => context.go('/game/grid-escape'),
+                    onTap: () => context.push('/game/grid-escape'),
                   ),
                   GameCard(
                     title: 'Race Mode',
                     description: 'Timed algorithm completion',
                     icon: Icons.speed,
                     color: AppColors.catSorting,
-                    onTap: () => context.go('/game/race-mode'),
+                    onTap: () => context.push('/game/race-mode'),
                   ),
                 ],
               ),
@@ -88,7 +88,7 @@ class PlayPage extends ConsumerWidget {
               SectionHeader(
                 title: 'Top Players',
                 actionLabel: 'View all',
-                onAction: () => context.go('/leaderboard'),
+                onAction: () => context.push('/leaderboard'),
               ),
               SizedBox(height: AppSpacing.md),
 
@@ -278,7 +278,7 @@ class _LeaderboardPreview extends StatelessWidget {
             )),
         SizedBox(height: AppSpacing.sm),
         TextButton(
-          onPressed: () => context.go('/leaderboard'),
+          onPressed: () => context.push('/leaderboard'),
           style: TextButton.styleFrom(
             foregroundColor: AppColors.primary500,
             padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
