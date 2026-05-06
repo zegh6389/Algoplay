@@ -103,26 +103,29 @@ class _CodeViewerState extends State<CodeViewer>
           // Code area
           Flexible(
             child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.zero,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minWidth: 400),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Line numbers
-                    _LineNumbers(
-                      count: lines.length,
-                      highlightLine: widget.currentLine,
-                    ),
-                    // Code
-                    _CodeBlock(
-                      code: _code,
-                      mode: _mode,
-                      highlightLine: widget.currentLine,
-                      totalLines: lines.length,
-                    ),
-                  ],
+              scrollDirection: Axis.vertical,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                padding: EdgeInsets.zero,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minWidth: 400),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Line numbers
+                      _LineNumbers(
+                        count: lines.length,
+                        highlightLine: widget.currentLine,
+                      ),
+                      // Code
+                      _CodeBlock(
+                        code: _code,
+                        mode: _mode,
+                        highlightLine: widget.currentLine,
+                        totalLines: lines.length,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -166,67 +169,81 @@ class _TopBar extends StatelessWidget {
           bottom: BorderSide(color: Color(0xFF333333), width: 1),
         ),
       ),
-      child: Row(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // macOS dots
           Row(
             children: [
-              _dot(Colors.redAccent),
-              const SizedBox(width: 6),
-              _dot(Colors.yellowAccent),
-              const SizedBox(width: 6),
-              _dot(Colors.greenAccent),
-            ],
-          ),
-          const SizedBox(width: 16),
-          // Language tabs
-          ...languages.map((lang) {
-            final (key, label, _) = lang;
-            final isSelected = key == selectedLanguage;
-            return Padding(
-              padding: const EdgeInsets.only(right: 4),
-              child: GestureDetector(
-                onTap: () => onLanguageSelected(key),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? const Color(0xFF3B82F6)
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    label,
-                    style: TextStyle(
-                      color: isSelected ? Colors.white : Colors.white54,
-                      fontSize: 12,
-                      fontWeight:
-                          isSelected ? FontWeight.w600 : FontWeight.w400,
-                    ),
+              // macOS dots
+              Row(
+                children: [
+                  _dot(Colors.redAccent),
+                  const SizedBox(width: 6),
+                  _dot(Colors.yellowAccent),
+                  const SizedBox(width: 6),
+                  _dot(Colors.greenAccent),
+                ],
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: languages.map(_languageTab).toList(),
                   ),
                 ),
               ),
-            );
-          }),
-          const Spacer(),
-          // Complexity badges
-          _badge('Time: $timeComplexity'),
-          const SizedBox(width: 6),
-          _badge('Space: $spaceComplexity'),
-          const SizedBox(width: 10),
-          // Copy button
-          GestureDetector(
-            onTap: onCopy,
-            child: Icon(
-              copied ? Icons.check : Icons.copy,
-              color: copied ? Colors.greenAccent : Colors.white54,
-              size: 18,
-            ),
+              const SizedBox(width: 8),
+              GestureDetector(
+                onTap: onCopy,
+                child: Icon(
+                  copied ? Icons.check : Icons.copy,
+                  color: copied ? Colors.greenAccent : Colors.white54,
+                  size: 18,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              _badge('Time: $timeComplexity'),
+              _badge('Space: $spaceComplexity'),
+            ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _languageTab((String, String, String) lang) {
+    final (key, label, _) = lang;
+    final isSelected = key == selectedLanguage;
+    return Padding(
+      padding: const EdgeInsets.only(right: 4),
+      child: GestureDetector(
+        onTap: () => onLanguageSelected(key),
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 5,
+          ),
+          decoration: BoxDecoration(
+            color: isSelected ? const Color(0xFF3B82F6) : Colors.transparent,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: isSelected ? Colors.white : Colors.white54,
+              fontSize: 12,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -340,7 +357,6 @@ class _CodeBlock extends StatelessWidget {
           final isHighlighted = lineNum == highlightLine;
 
           return Container(
-            width: double.maxFinite,
             padding: EdgeInsets.only(
               left: isHighlighted ? 4 : 0,
               right: 4,

@@ -135,6 +135,41 @@ class SortBarLayout {
   }
 }
 
+/// Public state palette for sorting bars.
+///
+/// Kept outside the painter so tests can guard against visually similar colors
+/// regressing back into the chart.
+class SortBarStatePalette {
+  SortBarStatePalette._();
+
+  static const Color defaultColor = Color(0xFF2563EB); // vivid blue
+  static const Color comparingColor = Color(0xFFD97706); // amber/orange
+  static const Color swappingColor = Color(0xFFDB2777); // magenta/rose
+  static const Color sortedColor = Color(0xFF16A34A); // emerald green
+  static const Color pivotColor = Color(0xFF7C3AED); // violet
+  static const Color foundColor = Color(0xFF15803D); // deep green
+  static const Color eliminatedColor = Color(0x59999999); // gray 35%
+
+  static Color colorForState(String state) {
+    switch (state) {
+      case 'comparing':
+        return comparingColor;
+      case 'swapping':
+        return swappingColor;
+      case 'sorted':
+        return sortedColor;
+      case 'pivot':
+        return pivotColor;
+      case 'found':
+        return foundColor;
+      case 'eliminated':
+        return eliminatedColor;
+      default:
+        return defaultColor;
+    }
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Private painter
 // ---------------------------------------------------------------------------
@@ -152,37 +187,12 @@ class _SortBarPainter extends CustomPainter {
 
   // -- Colour palette -------------------------------------------------------
 
-  static const Color _defaultColor = Color(0xFF00C4B1); // teal
-  static const Color _comparingColor = Color(0xFFE5C07B); // yellow
-  static const Color _swappingColor = Color(0xFF56B6C2); // cyan
-  static const Color _sortedColor = Color(0xFF98C379); // green
-  static const Color _pivotColor = Color(0xFF9B5CFF); // purple
-  static const Color _foundColor = Color(0xFFA6E3A1); // lime
-  static const Color _eliminatedColor = Color(0x59999999); // gray 35%
-
-  static const Color _trackColor = Color(0x0FFFFFFF); // white 6 %
+  static const Color _trackColor = Color(0x0F2563EB); // blue 6%
   static const Color _labelColor = Color(0xFFFFFFFF); // white
 
   static const double _topRadius = 4.0;
 
-  Color _colorForState(String state) {
-    switch (state) {
-      case 'comparing':
-        return _comparingColor;
-      case 'swapping':
-        return _swappingColor;
-      case 'sorted':
-        return _sortedColor;
-      case 'pivot':
-        return _pivotColor;
-      case 'found':
-        return _foundColor;
-      case 'eliminated':
-        return _eliminatedColor;
-      default:
-        return _defaultColor;
-    }
-  }
+  Color _colorForState(String state) => SortBarStatePalette.colorForState(state);
 
   double _blurForState(String state) {
     switch (state) {

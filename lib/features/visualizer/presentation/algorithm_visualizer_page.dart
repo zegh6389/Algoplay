@@ -46,8 +46,6 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
   // Hint state for monetization
   String? _hintText;
   bool _isHintLoading = false;
-  bool _showCodePanel = false;
-
   // Sample data for the algorithm
   late List<int> _sampleArray;
 
@@ -401,15 +399,6 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
             tooltip: 'Edit Array',
             onPressed: _openArrayInput,
           ),
-          // Code panel toggle
-          IconButton(
-            icon: Icon(
-              Icons.code,
-              color: _showCodePanel ? AppColors.primary500 : AppColors.textSecondary,
-            ),
-            tooltip: 'Code',
-            onPressed: () => setState(() => _showCodePanel = !_showCodePanel),
-          ),
           // Hint button — premium gets direct hint, free users watch an ad
           IconButton(
             icon: _isHintLoading
@@ -526,16 +515,15 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
             ),
           ),
 
-          // ── Code Panel (expandable) ──────────────────────────────────
-          if (_showCodePanel)
-            Container(
-              height: 280,
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md,
-                vertical: AppSpacing.sm,
-              ),
-              child: _buildCodeViewer(currentStep),
+          // ── Code Terminal ───────────────────────────────────────────────
+          Container(
+            height: 280,
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm,
             ),
+            child: _buildCodeViewer(currentStep),
+          ),
 
           // ── Controls Bar ───────────────────────────────────────────────
           Container(
