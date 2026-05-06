@@ -144,13 +144,26 @@ class SortBarStatePalette {
 
   static const Color defaultColor = Color(0xFF2563EB); // vivid blue
   static const Color comparingColor = Color(0xFFD97706); // amber/orange
-  static const Color swappingColor = Color(0xFFDB2777); // magenta/rose
-  static const Color sortedColor = Color(0xFF16A34A); // emerald green
+  static const Color swappingColor = Color(0xFFE11D48); // rose/magenta
+  static const Color sortedColor = Color(0xFF059669); // emerald green
   static const Color pivotColor = Color(0xFF7C3AED); // violet
-  static const Color foundColor = Color(0xFF15803D); // deep green
+  static const Color foundColor = Color(0xFF047857); // deep green
   static const Color eliminatedColor = Color(0x59999999); // gray 35%
 
+  /// Labels must remain visible for random arrays (default size 15), where bars
+  /// are narrower than the manual 10-item example.
+  static bool shouldShowValueLabel(double barWidth, double barHeight) {
+    return barWidth >= 14 && barHeight >= 28;
+  }
+
+  static double valueLabelFontSize(double barWidth) {
+    if (barWidth >= 26) return 14;
+    if (barWidth >= 20) return 12;
+    return 10;
+  }
+
   static Color colorForState(String state) {
+
     switch (state) {
       case 'comparing':
         return comparingColor;
@@ -288,13 +301,13 @@ class _SortBarPainter extends CustomPainter {
       }
 
       // Value label ---------------------------------------------------------
-      if (layout.barWidth > 22 && barHeight > 22) {
+      if (SortBarStatePalette.shouldShowValueLabel(layout.barWidth, barHeight)) {
         final TextSpan span = TextSpan(
           text: '${bar.value}',
-          style: const TextStyle(
+          style: TextStyle(
             color: _labelColor,
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
+            fontSize: SortBarStatePalette.valueLabelFontSize(layout.barWidth),
+            fontWeight: FontWeight.w700,
           ),
         );
         final TextPainter tp = TextPainter(

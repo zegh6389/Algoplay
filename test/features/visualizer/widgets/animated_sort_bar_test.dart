@@ -38,5 +38,16 @@ void main() {
       expect(layout.leftPadding, greaterThanOrEqualTo(8));
       expect(layout.leftForIndex(49), lessThanOrEqualTo(352));
     });
+    test('shows value labels for default random array density', () {
+      final layout = SortBarLayout.calculate(
+        width: 382,
+        height: 320,
+        count: 15,
+      );
+
+      expect(layout.barWidth, greaterThanOrEqualTo(14));
+      expect(SortBarStatePalette.shouldShowValueLabel(layout.barWidth, 80), isTrue);
+      expect(SortBarStatePalette.valueLabelFontSize(layout.barWidth), greaterThanOrEqualTo(10));
+    });
   });
 }

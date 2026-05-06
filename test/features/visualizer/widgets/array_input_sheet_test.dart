@@ -43,6 +43,18 @@ void main() {
     expect(find.textContaining('Elements: 3'), findsOneWidget);
   });
 
+  testWidgets('manual input field gives array text enough vertical room', (tester) async {
+    await openSheet(tester, initialArray: [64, 25, 12, 22, 11]);
+
+    final field = tester.widget<TextField>(find.byType(TextField).first);
+    expect(field.textAlignVertical, TextAlignVertical.center);
+
+    final decoration = field.decoration!;
+    final padding = decoration.contentPadding! as EdgeInsets;
+    expect(padding.top, greaterThanOrEqualTo(20));
+    expect(padding.bottom, greaterThanOrEqualTo(10));
+  });
+
   testWidgets('manual input applies parsed comma separated integers', (tester) async {
     ArrayInputResult? result;
 

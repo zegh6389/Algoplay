@@ -290,32 +290,37 @@ class _ArrayInputSheetState extends State<_ArrayInputSheet>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TextField(
-          controller: _manualController,
-          onChanged: _onManualChanged,
-          keyboardType: const TextInputType.numberWithOptions(signed: true),
-          decoration: InputDecoration(
-            hintText: 'e.g. 64, 25, 12, 22, 11',
-            hintStyle: const TextStyle(color: AppColors.textMuted),
-            labelText: 'Array values',
-            errorText: _parseError,
-            enabledBorder: OutlineInputBorder(
-              borderRadius: AppRadius.mdBorder,
-              borderSide: BorderSide(
-                color: _manualController.text.isEmpty
-                    ? AppColors.sunken
-                    : _isValid
-                        ? AppColors.success600
-                        : AppColors.error600,
+        SizedBox(
+          height: 64,
+          child: TextField(
+            controller: _manualController,
+            onChanged: _onManualChanged,
+            keyboardType: const TextInputType.numberWithOptions(signed: true),
+            textAlignVertical: TextAlignVertical.center,
+            decoration: InputDecoration(
+              hintText: 'e.g. 64, 25, 12, 22, 11',
+              hintStyle: const TextStyle(color: AppColors.textMuted),
+              labelText: 'Array values',
+              contentPadding: const EdgeInsets.fromLTRB(16, 22, 16, 10),
+              errorText: _parseError,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: AppRadius.mdBorder,
+                borderSide: BorderSide(
+                  color: _manualController.text.isEmpty
+                      ? AppColors.sunken
+                      : _isValid
+                          ? AppColors.success600
+                          : AppColors.error600,
+                ),
               ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: AppRadius.mdBorder,
-              borderSide: BorderSide(
-                color: _isValid
-                    ? AppColors.primary500
-                    : AppColors.error600,
-                width: 1.5,
+              focusedBorder: OutlineInputBorder(
+                borderRadius: AppRadius.mdBorder,
+                borderSide: BorderSide(
+                  color: _isValid
+                      ? AppColors.primary500
+                      : AppColors.error600,
+                  width: 1.5,
+                ),
               ),
             ),
           ),

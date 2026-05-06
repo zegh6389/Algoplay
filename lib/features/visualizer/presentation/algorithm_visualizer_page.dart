@@ -8,6 +8,8 @@ import '../../../core/services/premium_service.dart';
 import '../../../algorithms/models/algorithm_models.dart';
 import '../../../algorithms/sorting/sorting_algorithms.dart';
 import '../../../algorithms/searching/searching_algorithms.dart';
+import '../../../algorithms/pathfinding/pathfinding_algorithms.dart';
+import '../../../algorithms/trees/tree_algorithms.dart';
 import '../../../algorithms/code/code_implementations.dart';
 import '../../learn/data/algorithm_data.dart';
 import '../../../shared/providers/premium_provider.dart';
@@ -78,8 +80,56 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
       // Sorted array for searching algorithms
       return [3, 7, 11, 15, 22, 28, 35, 42, 56, 68];
     }
-    // Random-ish array for sorting
+    // Random-ish array for sorting and tree demos
     return [64, 34, 25, 12, 22, 11, 90, 45, 78, 33];
+  }
+
+  List<List<GridCell>> _generateSampleGrid() {
+    const rows = 7;
+    const cols = 9;
+    const start = (row: 0, col: 0);
+    const end = (row: 6, col: 8);
+    const obstacles = {
+      '1,2', '2,2', '3,2', '4,2',
+      '1,5', '2,5', '3,5', '5,5',
+    };
+
+    return List.generate(rows, (row) {
+      return List.generate(cols, (col) {
+        final key = '$row,$col';
+        return GridCell(
+          row: row,
+          col: col,
+          isStart: row == start.row && col == start.col,
+          isEnd: row == end.row && col == end.col,
+          isObstacle: obstacles.contains(key),
+        );
+      });
+    });
+  }
+
+  TreeNode? _buildSampleTree() {
+    TreeNode? root;
+    for (final value in [50, 30, 70, 20, 40, 60, 80]) {
+      root = _insertTreeNode(root, value, 0);
+    }
+    return root;
+  }
+
+  TreeNode _insertTreeNode(TreeNode? node, int value, int depth) {
+    if (node == null) {
+      return TreeNode(
+        id: '${value}_$depth',
+        value: value,
+        depth: depth,
+      );
+    }
+    if (value < node.value) {
+      node.left = _insertTreeNode(node.left, value, depth + 1);
+    } else if (value > node.value) {
+      node.right = _insertTreeNode(node.right, value, depth + 1);
+    }
+    return node;
   }
 
   void _loadPseudocode() {
@@ -125,6 +175,32 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
         break;
       case 'heap-sort':
         stream = heapSort(_sampleArray);
+        break;
+      // Graph/pathfinding algorithms
+      case 'bfs':
+        stream = bfs(_generateSampleGrid());
+        break;
+      case 'dfs':
+        stream = dfs(_generateSampleGrid());
+        break;
+      case 'dijkstra':
+        stream = dijkstra(_generateSampleGrid());
+        break;
+      case 'a-star':
+        stream = astar(_generateSampleGrid());
+        break;
+      // Tree algorithms
+      case 'bst-operations':
+        stream = bstSearch(_buildSampleTree(), 60);
+        break;
+      case 'avl-tree':
+        stream = avlInsert(_buildSampleTree(), 65);
+        break;
+      case 'tree-traversals':
+        stream = inorderTraversal(_buildSampleTree());
+        break;
+      case 'heap-sort-tree':
+        stream = heapInsert([90, 78, 64, 45, 33, 25, 12], 88);
         break;
       // Searching algorithms
       case 'linear-search':
@@ -297,6 +373,15 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
   bool get _isSorting =>
       _algorithmInfo?.category == AlgorithmCategory.sorting;
 
+  bool get _isSearching =>
+      _algorithmInfo?.category == AlgorithmCategory.searching;
+
+  bool get _isGraph =>
+      _algorithmInfo?.category == AlgorithmCategory.graphs;
+
+  bool get _isTree =>
+      _algorithmInfo?.category == AlgorithmCategory.trees;
+
   // ── Hint logic ──────────────────────────────────────────────────────────
 
   String _generateHintText() {
@@ -468,9 +553,7 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
               ),
               child: _steps.isEmpty
                   ? const Center(child: CircularProgressIndicator())
-                  : _isSorting
-                      ? _buildSortingVisualization(currentStep as SortStep?)
-                      : _buildSearchingVisualization(currentStep as SearchStep?),
+                  : _buildVisualization(currentStep),
             ),
           ),
 
@@ -492,7 +575,11 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
                       ? currentStep.operation
                       : currentStep is SearchStep
                           ? currentStep.operation
-                          : 'Ready',
+                          : currentStep is PathfindingStep
+                              ? currentStep.operation
+                              : currentStep is TreeStep
+                                  ? currentStep.operation
+                                  : 'Ready',
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -582,6 +669,29 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // ── Visualization dispatch ─────────────────────────────────────────────
+
+  Widget _buildVisualization(dynamic step) {
+    if (_isSorting && step is SortStep) {
+      return _buildSortingVisualization(step);
+    }
+    if (_isSearching && step is SearchStep) {
+      return _buildSearchingVisualization(step);
+    }
+    if (_isGraph && step is PathfindingStep) {
+      return _buildPathfindingVisualization(step);
+    }
+    if (_isTree && step is TreeStep) {
+      return _buildTreeVisualization(step);
+    }
+    return const Center(
+      child: Text(
+        'Visualization is loading…',
+        style: TextStyle(color: AppColors.textMuted),
       ),
     );
   }
@@ -782,6 +892,129 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
     );
   }
 
+  // ── Graph/pathfinding visualization ───────────────────────────────────
+
+  Widget _buildPathfindingVisualization(PathfindingStep step) {
+    final rows = step.grid.length;
+    final cols = rows == 0 ? 0 : step.grid.first.length;
+    if (rows == 0 || cols == 0) return const SizedBox.shrink();
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _MetricPill(label: 'Grid', value: '$rows×$cols'),
+            _MetricPill(label: 'Visited', value: '${step.nodesVisited}'),
+            _MetricPill(label: 'Path', value: '${step.pathLength}'),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.md),
+        Expanded(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final cell = (constraints.maxWidth / cols)
+                  .clamp(22.0, constraints.maxHeight / rows);
+              return Center(
+                child: SizedBox(
+                  width: cell * cols,
+                  height: cell * rows,
+                  child: GridView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: EdgeInsets.zero,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: cols,
+                      mainAxisSpacing: 4,
+                      crossAxisSpacing: 4,
+                    ),
+                    itemCount: rows * cols,
+                    itemBuilder: (context, index) {
+                      final row = index ~/ cols;
+                      final col = index % cols;
+                      final c = step.grid[row][col];
+                      final isCurrent = step.current?.row == row && step.current?.col == col;
+                      final color = c.isStart
+                          ? const Color(0xFF2563EB)
+                          : c.isEnd
+                              ? const Color(0xFFE11D48)
+                              : c.isPath
+                                  ? const Color(0xFFF59E0B)
+                                  : isCurrent
+                                      ? const Color(0xFF7C3AED)
+                                      : c.isFrontier
+                                          ? const Color(0xFF06B6D4)
+                                          : c.isVisited
+                                              ? const Color(0xFF059669)
+                                              : c.isObstacle
+                                                  ? AppColors.textPrimary
+                                                  : AppColors.sunken;
+                      final label = c.isStart
+                          ? 'S'
+                          : c.isEnd
+                              ? 'E'
+                              : isCurrent
+                                  ? '•'
+                                  : '';
+                      return AnimatedContainer(
+                        duration: const Duration(milliseconds: 220),
+                        decoration: BoxDecoration(
+                          color: color,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: isCurrent ? AppColors.textPrimary : Colors.white,
+                            width: isCurrent ? 2 : 1,
+                          ),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          label,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ── Tree visualization ────────────────────────────────────────────────
+
+  Widget _buildTreeVisualization(TreeStep step) {
+    final root = step.tree;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const _MetricPill(label: 'Tree', value: 'BST'),
+            _MetricPill(label: 'Visited', value: '${step.visitedNodes.length}'),
+            _MetricPill(label: 'Path', value: '${step.pathNodes.length}'),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.md),
+        Expanded(
+          child: root == null
+              ? const Center(child: Text('Tree is empty'))
+              : CustomPaint(
+                  painter: _TreePainter(step),
+                  child: const SizedBox.expand(),
+                ),
+        ),
+      ],
+    );
+  }
+
   // ── Code Viewer helper ────────────────────────────────────────────────
 
   Widget _buildCodeViewer(dynamic currentStep) {
@@ -798,7 +1031,9 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
         ? currentStep.line
         : currentStep is SearchStep
             ? currentStep.line
-            : null;
+            : currentStep is TreeStep
+                ? currentStep.line
+                : null;
     return CodeViewer(
       code: code,
       currentLine: currentLine,
@@ -937,6 +1172,149 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
       ],
     );
   }
+}
+
+class _MetricPill extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _MetricPill({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: AppColors.sunken,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.sunken),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 11,
+              color: AppColors.textMuted,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 12,
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TreePainter extends CustomPainter {
+  final TreeStep step;
+
+  _TreePainter(this.step);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final root = step.tree;
+    if (root == null) return;
+    final positions = <String, Offset>{};
+    _layout(root, size.width / 2, 32, size.width / 4, positions);
+
+    final edgePaint = Paint()
+      ..color = AppColors.textMuted.withValues(alpha: 0.28)
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke;
+
+    void drawEdges(TreeNode node) {
+      final from = positions[node.id]!;
+      for (final child in [node.left, node.right]) {
+        if (child == null) continue;
+        final to = positions[child.id]!;
+        canvas.drawLine(from, to, edgePaint);
+        drawEdges(child);
+      }
+    }
+
+    drawEdges(root);
+    _drawNodes(canvas, root, positions);
+  }
+
+  void _layout(
+    TreeNode node,
+    double x,
+    double y,
+    double xGap,
+    Map<String, Offset> positions,
+  ) {
+    positions[node.id] = Offset(x, y);
+    final nextGap = xGap * 0.58;
+    if (node.left != null) {
+      _layout(node.left!, x - xGap, y + 62, nextGap, positions);
+    }
+    if (node.right != null) {
+      _layout(node.right!, x + xGap, y + 62, nextGap, positions);
+    }
+  }
+
+  void _drawNodes(Canvas canvas, TreeNode node, Map<String, Offset> positions) {
+    final center = positions[node.id]!;
+    final isVisited = step.visitedNodes.contains(node.id);
+    final isPath = step.pathNodes.contains(node.id);
+    final isHighlighted = node.isHighlighted || isVisited || isPath;
+    final fill = isPath
+        ? const Color(0xFF7C3AED)
+        : isVisited
+            ? const Color(0xFF059669)
+            : isHighlighted
+                ? const Color(0xFFF59E0B)
+                : AppColors.card;
+    final border = isHighlighted ? fill : AppColors.sunken;
+
+    final shadowPaint = Paint()
+      ..color = fill.withValues(alpha: isHighlighted ? 0.20 : 0.08)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
+    canvas.drawCircle(center.translate(0, 2), 24, shadowPaint);
+
+    final nodePaint = Paint()..color = fill;
+    canvas.drawCircle(center, 21, nodePaint);
+    canvas.drawCircle(
+      center,
+      21,
+      Paint()
+        ..color = border
+        ..strokeWidth = 2
+        ..style = PaintingStyle.stroke,
+    );
+
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: '${node.value}',
+        style: TextStyle(
+          color: isHighlighted ? Colors.white : AppColors.textPrimary,
+          fontSize: 12,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    textPainter.paint(
+      canvas,
+      center - Offset(textPainter.width / 2, textPainter.height / 2),
+    );
+
+    if (node.left != null) _drawNodes(canvas, node.left!, positions);
+    if (node.right != null) _drawNodes(canvas, node.right!, positions);
+  }
+
+  @override
+  bool shouldRepaint(covariant _TreePainter oldDelegate) => oldDelegate.step != step;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
