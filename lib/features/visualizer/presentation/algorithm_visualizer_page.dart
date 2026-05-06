@@ -8,8 +8,12 @@ import '../../../core/services/premium_service.dart';
 import '../../../algorithms/models/algorithm_models.dart';
 import '../../../algorithms/sorting/sorting_algorithms.dart';
 import '../../../algorithms/searching/searching_algorithms.dart';
+import '../../../algorithms/code/code_implementations.dart';
 import '../../learn/data/algorithm_data.dart';
 import '../../../shared/providers/premium_provider.dart';
+import '../widgets/animated_sort_bar.dart';
+import '../widgets/array_input_sheet.dart';
+import '../widgets/code_viewer.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 /// Algorithm Visualizer Page
@@ -42,6 +46,7 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
   // Hint state for monetization
   String? _hintText;
   bool _isHintLoading = false;
+  bool _showCodePanel = false;
 
   // Sample data for the algorithm
   late List<int> _sampleArray;
@@ -99,7 +104,7 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
     }
   }
 
-  Future<void> _collectSteps() async {
+  Future<void> _collectSteps({int? target}) async {
     final id = widget.algorithmId;
     Stream<dynamic>? stream;
 
@@ -127,13 +132,13 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
       case 'linear-search':
         stream = linearSearch(
           _sampleArray,
-          _sampleArray[4], // search for 5th element
+          target ?? _sampleArray[_sampleArray.length ~/ 2],
         );
         break;
       case 'binary-search':
         stream = binarySearch(
           _sampleArray,
-          _sampleArray[3], // search for 4th element (15)
+          target ?? _sampleArray[_sampleArray.length ~/ 4],
         );
         break;
     }
@@ -332,6 +337,23 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
     }
   }
 
+  Future<void> _openArrayInput() async {
+    final result = await showArrayInputSheet(
+      context,
+      initialArray: _sampleArray,
+      showTarget: !_isSorting,
+    );
+    if (result != null && mounted) {
+      setState(() {
+        _sampleArray = result.array;
+        _steps = [];
+        _currentStepIndex = 0;
+        _isPlaying = false;
+      });
+      _collectSteps(target: result.target);
+    }
+  }
+
   void _revealHint() {
     setState(() {
       _hintText = _generateHintText();
@@ -373,6 +395,21 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
         ),
         centerTitle: true,
         actions: [
+          // Edit array button
+          IconButton(
+            icon: const Icon(Icons.edit_note),
+            tooltip: 'Edit Array',
+            onPressed: _openArrayInput,
+          ),
+          // Code panel toggle
+          IconButton(
+            icon: Icon(
+              Icons.code,
+              color: _showCodePanel ? AppColors.primary500 : AppColors.textSecondary,
+            ),
+            tooltip: 'Code',
+            onPressed: () => setState(() => _showCodePanel = !_showCodePanel),
+          ),
           // Hint button — premium gets direct hint, free users watch an ad
           IconButton(
             icon: _isHintLoading
@@ -394,12 +431,6 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
           IconButton(
             icon: const Icon(Icons.info_outline),
             onPressed: () => _showAlgorithmInfoSheet(context),
-          ),
-          IconButton(
-            icon: const Icon(Icons.share_outlined),
-            onPressed: () {
-              // Share placeholder
-            },
           ),
         ],
       ),
@@ -495,6 +526,17 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
             ),
           ),
 
+          // ── Code Panel (expandable) ──────────────────────────────────
+          if (_showCodePanel)
+            Container(
+              height: 280,
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.sm,
+              ),
+              child: _buildCodeViewer(currentStep),
+            ),
+
           // ── Controls Bar ───────────────────────────────────────────────
           Container(
             decoration: const BoxDecoration(
@@ -562,81 +604,28 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
     if (step == null) return const SizedBox.shrink();
 
     final array = step.array;
-    final maxValue = array.reduce((a, b) => a > b ? a : b);
+    final maxValue = array.isEmpty ? 1.0 : array.reduce((a, b) => a > b ? a : b).toDouble();
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final availableWidth = constraints.maxWidth;
-        final availableHeight = constraints.maxHeight - 32; // space for value labels
-        final barWidth = (availableWidth - (array.length - 1) * 2) / array.length;
+    // Convert SortStep to SortBarData list
+    final bars = List.generate(array.length, (i) {
+      String state = 'default';
+      if (step.sorted.contains(i) || step.swapping.contains(i)) {
+        state = 'sorted';
+      } else if (step.pivot == i) {
+        state = 'pivot';
+      } else if (step.comparing.contains(i)) {
+        state = 'comparing';
+      }
+      return SortBarData(value: array[i], state: state);
+    });
 
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            // Bars
-            SizedBox(
-              height: availableHeight,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: List.generate(array.length, (i) {
-                  final barHeight = (array[i] / maxValue) * availableHeight;
-                  final isComparing = step.comparing.contains(i);
-                  final isSwapping = step.swapping.contains(i);
-                  final isSorted = step.sorted.contains(i);
-                  final isPivot = step.pivot == i;
-
-                  Color barColor;
-                  if (isSorted || isSwapping) {
-                    barColor = AppColors.success600;
-                  } else if (isPivot) {
-                    barColor = AppColors.secondary500;
-                  } else if (isComparing) {
-                    barColor = _categoryColor;
-                  } else {
-                    barColor = _categoryColor.withValues(alpha: 0.4);
-                  }
-
-                  return Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 1),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            height: barHeight.clamp(4.0, availableHeight),
-                            decoration: BoxDecoration(
-                              color: barColor,
-                              borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(3),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            '${array[i]}',
-                            style: TextStyle(
-                              fontSize: barWidth > 30 ? 11 : 9,
-                              fontWeight: FontWeight.w600,
-                              color: isComparing || isSwapping || isSorted
-                                  ? AppColors.textPrimary
-                                  : AppColors.textMuted,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }),
-              ),
-            ),
-          ],
-        );
-      },
+    return AnimatedSortBar(
+      bars: bars,
+      maxValue: maxValue,
     );
   }
 
-  // ── Searching visualization (horizontal cells) ────────────────────────
+  // ── Searching visualization (horizontal cells with spotlight) ────────────
 
   Widget _buildSearchingVisualization(SearchStep? step) {
     if (step == null) return const SizedBox.shrink();
@@ -645,6 +634,7 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
     final comparing = step.comparing;
     final eliminated = step.eliminated;
     final found = step.found;
+    final searchRange = step.searchRange;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -654,16 +644,45 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Target indicator
+            // Target badge
             if (step.target != 0)
+              Container(
+                margin: const EdgeInsets.only(bottom: AppSpacing.md),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: AppColors.secondary500.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppColors.secondary500, width: 2),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.search, color: AppColors.secondary500, size: 18),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Target: ${step.target}',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.secondary500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            // Search range indicator
+            if (searchRange.left >= 0)
               Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                child: Text(
-                  'Target: ${step.target}',
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
+                padding: EdgeInsets.only(
+                  left: searchRange.left * (cellWidth + 4),
+                  right: availableWidth - (searchRange.right + 1) * (cellWidth + 4),
+                  bottom: 4,
+                ),
+                child: Container(
+                  height: 3,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF12D7C5).withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(2),
                   ),
                 ),
               ),
@@ -674,42 +693,75 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
                 final isComparing = comparing.contains(i);
                 final isFound = found && isComparing;
                 final isEliminated = eliminated.contains(i);
+                final inRange = i >= searchRange.left &&
+                    i <= searchRange.right;
 
                 Color bgColor;
                 Color textColor;
+                Color borderColor;
+                double borderWidth;
                 if (isFound) {
-                  bgColor = AppColors.primary500;
-                  textColor = AppColors.textInverse;
+                  bgColor = const Color(0xFFA6E3A1).withValues(alpha: 0.2);
+                  textColor = const Color(0xFFA6E3A1);
+                  borderColor = const Color(0xFFA6E3A1);
+                  borderWidth = 3;
                 } else if (isComparing) {
-                  bgColor = AppColors.primary500;
-                  textColor = AppColors.textInverse;
+                  bgColor = const Color(0xFFE5C07B).withValues(alpha: 0.2);
+                  textColor = const Color(0xFFE5C07B);
+                  borderColor = const Color(0xFFE5C07B);
+                  borderWidth = 3;
                 } else if (isEliminated) {
+                  bgColor = Colors.grey.withValues(alpha: 0.08);
+                  textColor = AppColors.textMuted;
+                  borderColor = Colors.transparent;
+                  borderWidth = 0;
+                } else if (inRange) {
+                  bgColor = const Color(0xFF12D7C5).withValues(alpha: 0.1);
+                  textColor = const Color(0xFF12D7C5);
+                  borderColor = const Color(0xFF12D7C5).withValues(alpha: 0.3);
+                  borderWidth = 1;
+                } else {
                   bgColor = AppColors.sunken;
                   textColor = AppColors.textMuted;
-                } else {
-                  bgColor = AppColors.primary100;
-                  textColor = AppColors.textPrimary;
+                  borderColor = Colors.transparent;
+                  borderWidth = 0;
                 }
 
                 return AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeOutCubic,
                   width: cellWidth.clamp(28.0, 60.0),
-                  height: 48,
+                  height: isComparing ? 54.0 : 48.0,
                   margin: const EdgeInsets.symmetric(horizontal: 2),
                   decoration: BoxDecoration(
                     color: bgColor,
-                    borderRadius: AppRadius.smBorder,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: borderColor, width: borderWidth),
+                    boxShadow: isComparing
+                        ? [
+                            BoxShadow(
+                              color: borderColor.withValues(alpha: 0.4),
+                              blurRadius: 12,
+                              spreadRadius: 2,
+                            ),
+                          ]
+                        : null,
                   ),
                   alignment: Alignment.center,
-                  child: FittedBox(
-                    child: Text(
-                      '${array[i]}',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: textColor,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FittedBox(
+                        child: Text(
+                          '${array[i]}',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: textColor,
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 );
               }),
@@ -723,11 +775,11 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
                   return SizedBox(
                     width: cellWidth.clamp(28.0, 60.0),
                     child: Text(
-                      '$i',
+                      '[$i]',
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 10,
-                        color: AppColors.textMuted,
+                      style: TextStyle(
+                        fontSize: 9,
+                        color: AppColors.textMuted.withValues(alpha: 0.6),
                       ),
                     ),
                   );
@@ -737,6 +789,29 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
           ],
         );
       },
+    );
+  }
+
+  // ── Code Viewer helper ────────────────────────────────────────────────
+
+  Widget _buildCodeViewer(dynamic currentStep) {
+    final code = algorithmCodeImplementations[widget.algorithmId];
+    if (code == null) {
+      return const Center(
+        child: Text(
+          'Code not available for this algorithm yet.',
+          style: TextStyle(color: AppColors.textMuted, fontSize: 13),
+        ),
+      );
+    }
+    final currentLine = currentStep is SortStep
+        ? currentStep.line
+        : currentStep is SearchStep
+            ? currentStep.line
+            : null;
+    return CodeViewer(
+      code: code,
+      currentLine: currentLine,
     );
   }
 
