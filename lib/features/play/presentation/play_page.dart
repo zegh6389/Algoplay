@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../../shared/widgets/game_card.dart';
+import '../../learn/data/algorithm_data.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════════
 /// Play Page — Games Hub
@@ -102,7 +104,8 @@ class PlayPage extends ConsumerWidget {
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: () {
-                        // TODO: Navigate to random algorithm
+                        final randomAlgo = allAlgorithms[Random().nextInt(allAlgorithms.length)];
+                        context.push('/visualizer/${randomAlgo.id}');
                       },
                       icon: const Icon(Icons.shuffle, size: 18),
                       label: const Text('Random Algorithm'),
@@ -127,7 +130,7 @@ class PlayPage extends ConsumerWidget {
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: () {
-                        // TODO: Navigate to practice mode
+                        context.push('/game/race-mode');
                       },
                       icon: const Icon(Icons.psychology, size: 18),
                       label: const Text('Practice Mode'),
@@ -201,7 +204,7 @@ class _DailyChallengeCard extends StatelessWidget {
                     height: 40,
                     child: ElevatedButton(
                       onPressed: () {
-                        // TODO: Start daily challenge
+                        context.push('/game/battle-arena');
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary500,
