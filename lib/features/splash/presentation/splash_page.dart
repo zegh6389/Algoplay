@@ -20,10 +20,10 @@ class _SplashPageState extends State<SplashPage>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
-    )..repeat();
+      duration: const Duration(milliseconds: 2400),
+    )..forward(from: 0.0);
 
-    _navigationTimer = Timer(const Duration(milliseconds: 2400), () {
+    _navigationTimer = Timer(const Duration(milliseconds: 3200), () {
       if (mounted) context.go('/home');
     });
   }
@@ -38,30 +38,31 @@ class _SplashPageState extends State<SplashPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF030D3B),
+      backgroundColor: const Color(0xFF000B31),
       body: Stack(
         fit: StackFit.expand,
         children: [
+          // User's splash image as background
           Image.asset(
             'assets/images/splash-screen.png',
             fit: BoxFit.cover,
             alignment: Alignment.center,
           ),
-          const _SplashVignette(),
+          // Bottom loading overlay
           SafeArea(
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(40, 0, 40, 42),
+                padding: const EdgeInsets.fromLTRB(48, 0, 48, 48),
                 child: AnimatedBuilder(
                   animation: _controller,
                   builder: (context, _) {
                     return Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        _AnimatedLoadingBar(value: _controller.value),
-                        const SizedBox(height: 18),
-                        _LoadingText(value: _controller.value),
+                        _LoadingBar(progress: _controller.value),
+                        const SizedBox(height: 16),
+                        const _LoadingText(),
                       ],
                     );
                   },
@@ -75,52 +76,21 @@ class _SplashPageState extends State<SplashPage>
   }
 }
 
-class _SplashVignette extends StatelessWidget {
-  const _SplashVignette();
+/// Animated gradient loading bar matching splash screen teal/cyan palette
+class _LoadingBar extends StatelessWidget {
+  const _LoadingBar({required this.progress});
+
+  final double progress;
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.transparent,
-            Colors.transparent,
-            const Color(0xFF020832).withValues(alpha: 0.08),
-            const Color(0xFF020832).withValues(alpha: 0.24),
-          ],
-          stops: const [0.0, 0.64, 0.82, 1.0],
-        ),
-      ),
-    );
-  }
-}
-
-class _AnimatedLoadingBar extends StatelessWidget {
-  const _AnimatedLoadingBar({required this.value});
-
-  final double value;
-
-  @override
-  Widget build(BuildContext context) {
-    final progress = 0.18 + (value * 0.76);
-    final shimmer = (value * 2) - 1;
+    final fillWidth = (0.05 + progress * 0.90).clamp(0.0, 1.0);
 
     return Container(
-      height: 14,
+      height: 6,
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF10D6D0).withValues(alpha: 0.22),
-            blurRadius: 24,
-            offset: const Offset(0, 6),
-          ),
-        ],
       ),
       clipBehavior: Clip.antiAlias,
       child: Stack(
@@ -128,85 +98,66 @@ class _AnimatedLoadingBar extends StatelessWidget {
         children: [
           FractionallySizedBox(
             alignment: Alignment.centerLeft,
-            widthFactor: progress.clamp(0.0, 1.0),
+            widthFactor: fillWidth,
             child: DecoratedBox(
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [
-                    Color(0xFF12D7C5),
-                    Color(0xFF178BFF),
-                    Color(0xFF8E4DFF),
+                    Color(0xFF00C4B1), // teal from image
+                    Color(0xFF12D7C5), // cyan
+                    Color(0xFF178BFF), // blue
+                    Color(0xFF8E4DFF), // purple
                   ],
                 ),
                 borderRadius: BorderRadius.circular(999),
               ),
             ),
           ),
-          Transform.translate(
-            offset: Offset(shimmer * 170, 0),
-            child: Container(
-              width: 80,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.white.withValues(alpha: 0),
-                    Colors.white.withValues(alpha: 0.38),
-                    Colors.white.withValues(alpha: 0),
-                  ],
-                ),
+          // Shimmer sweep
+          if (progress < 1.0)
+            FractionallySizedBox(
+              alignment: Alignment.centerLeft,
+              widthFactor: fillWidth,
+              child: Stack(
+                children: [
+                  Transform.translate(
+                    offset: Offset((progress * 2 - 1) * 200, 0),
+                    child: Container(
+                      width: 60,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.white.withValues(alpha: 0),
+                            Colors.white.withValues(alpha: 0.3),
+                            Colors.white.withValues(alpha: 0),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
         ],
       ),
     );
   }
 }
 
+/// Fixed text: "Loading your next adventure... 💚"
 class _LoadingText extends StatelessWidget {
-  const _LoadingText({required this.value});
-
-  final double value;
-
-  static const _text = 'Loading Algoplay';
-  static const _cursor = '│';
+  const _LoadingText();
 
   @override
   Widget build(BuildContext context) {
-    // Typewriter reveal: characters appear one by one
-    final charCount = (value * _text.length).floor().clamp(0, _text.length);
-    final revealed = _text.substring(0, charCount);
-    final showCursor = (value * 8).floor().isOdd;
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          revealed,
-          style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.92),
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.2,
-            shadows: [
-              Shadow(
-                color: const Color(0xFF12D7C5).withValues(alpha: 0.35),
-                blurRadius: 12,
-              ),
-            ],
-          ),
-        ),
-        if (charCount < _text.length)
-          Text(
-            showCursor ? _cursor : ' ',
-            style: TextStyle(
-              color: const Color(0xFF12D7C5).withValues(alpha: 0.8),
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.2,
-            ),
-          ),
-      ],
+    return const Text(
+      'Loading your next adventure...  💚',
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: 15,
+        fontWeight: FontWeight.w500,
+        letterSpacing: 0.3,
+      ),
     );
   }
 }
