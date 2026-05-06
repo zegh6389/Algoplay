@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/app_theme.dart';
 
 /// Data model for a single bar in the sorting visualizer.
 class SortBarData {
@@ -135,6 +136,8 @@ class SortBarLayout {
   }
 }
 
+enum SortBarLabelPlacement { inside, above }
+
 /// Public state palette for sorting bars.
 ///
 /// Kept outside the painter so tests can guard against visually similar colors
@@ -153,7 +156,11 @@ class SortBarStatePalette {
   /// Labels must remain visible for random arrays (default size 15), where bars
   /// are narrower than the manual 10-item example.
   static bool shouldShowValueLabel(double barWidth, double barHeight) {
-    return barWidth >= 14 && barHeight >= 28;
+    return barWidth >= 14;
+  }
+
+  static SortBarLabelPlacement labelPlacementForHeight(double barHeight) {
+    return barHeight >= 34 ? SortBarLabelPlacement.inside : SortBarLabelPlacement.above;
   }
 
   static double valueLabelFontSize(double barWidth) {
@@ -302,12 +309,16 @@ class _SortBarPainter extends CustomPainter {
 
       // Value label ---------------------------------------------------------
       if (SortBarStatePalette.shouldShowValueLabel(layout.barWidth, barHeight)) {
+        final placement = SortBarStatePalette.labelPlacementForHeight(barHeight);
+        final Color labelColor = placement == SortBarLabelPlacement.inside
+            ? _labelColor
+            : AppColors.textPrimary;
         final TextSpan span = TextSpan(
           text: '${bar.value}',
           style: TextStyle(
-            color: _labelColor,
+            color: labelColor,
             fontSize: SortBarStatePalette.valueLabelFontSize(layout.barWidth),
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w800,
           ),
         );
         final TextPainter tp = TextPainter(
@@ -316,7 +327,14 @@ class _SortBarPainter extends CustomPainter {
         )..layout(maxWidth: layout.barWidth);
 
         final double labelX = left + (layout.barWidth - tp.width) / 2;
-        final double labelY = top + 6; // near the top of the bar
+        final double insideY = top + 6;
+        final double aboveY = (top - tp.height - 4).clamp(
+          layout.chartTop,
+          layout.baseline - tp.height,
+        );
+        final double labelY = placement == SortBarLabelPlacement.inside
+            ? insideY
+            : aboveY;
 
         tp.paint(canvas, Offset(labelX, labelY));
       }

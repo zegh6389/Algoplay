@@ -57,4 +57,36 @@ void main() {
     expect(find.textContaining('Visited'), findsWidgets);
     _expectNoFlutterExceptions(tester);
   });
+
+  testWidgets('dynamic programming algorithms render DP cells instead of loading forever',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(430, 932));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(
+      _wrap(const AlgorithmVisualizerPage(algorithmId: 'fibonacci')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Visualization is loading'), findsNothing);
+    expect(find.text('DP Table'), findsOneWidget);
+    expect(find.textContaining('State'), findsWidgets);
+    _expectNoFlutterExceptions(tester);
+  });
+
+  testWidgets('greedy algorithms render decision cards instead of loading forever',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(430, 932));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(
+      _wrap(const AlgorithmVisualizerPage(algorithmId: 'activity-selection')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Visualization is loading'), findsNothing);
+    expect(find.text('Greedy Choices'), findsOneWidget);
+    expect(find.textContaining('Chosen'), findsWidgets);
+    _expectNoFlutterExceptions(tester);
+  });
 }

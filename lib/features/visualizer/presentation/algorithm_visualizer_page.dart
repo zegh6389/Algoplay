@@ -10,6 +10,8 @@ import '../../../algorithms/sorting/sorting_algorithms.dart';
 import '../../../algorithms/searching/searching_algorithms.dart';
 import '../../../algorithms/pathfinding/pathfinding_algorithms.dart';
 import '../../../algorithms/trees/tree_algorithms.dart';
+import '../../../algorithms/dp/dp_algorithms.dart';
+import '../../../algorithms/greedy/greedy_algorithms.dart';
 import '../../../algorithms/code/code_implementations.dart';
 import '../../learn/data/algorithm_data.dart';
 import '../../../shared/providers/premium_provider.dart';
@@ -202,6 +204,23 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
       case 'heap-sort-tree':
         stream = heapInsert([90, 78, 64, 45, 33, 25, 12], 88);
         break;
+      // Dynamic programming algorithms
+      case 'fibonacci':
+        stream = fibonacciDp(8);
+        break;
+      case 'knapsack':
+        stream = knapsackDp([2, 3, 4, 5], [3, 4, 5, 8], 8);
+        break;
+      case 'lcs':
+        stream = lcsDp('ALGO', 'PLAY');
+        break;
+      // Greedy algorithms
+      case 'activity-selection':
+        stream = activitySelectionGreedy();
+        break;
+      case 'huffman':
+        stream = huffmanGreedy();
+        break;
       // Searching algorithms
       case 'linear-search':
         stream = linearSearch(
@@ -381,6 +400,12 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
 
   bool get _isTree =>
       _algorithmInfo?.category == AlgorithmCategory.trees;
+
+  bool get _isDp =>
+      _algorithmInfo?.category == AlgorithmCategory.dp;
+
+  bool get _isGreedy =>
+      _algorithmInfo?.category == AlgorithmCategory.greedy;
 
   // ── Hint logic ──────────────────────────────────────────────────────────
 
@@ -579,7 +604,9 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
                               ? currentStep.operation
                               : currentStep is TreeStep
                                   ? currentStep.operation
-                                  : 'Ready',
+                                  : currentStep is DPStep
+                                      ? currentStep.operation
+                                      : 'Ready',
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -687,6 +714,12 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
     }
     if (_isTree && step is TreeStep) {
       return _buildTreeVisualization(step);
+    }
+    if (_isDp && step is DPStep) {
+      return _buildDpVisualization(step);
+    }
+    if (_isGreedy && step is DPStep) {
+      return _buildGreedyVisualization(step);
     }
     return const Center(
       child: Text(
@@ -1015,6 +1048,236 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
     );
   }
 
+  // ── Dynamic programming visualization ─────────────────────────────────
+
+  Widget _buildDpVisualization(DPStep step) {
+    final cells = step.array;
+    final maxValue = cells.isEmpty ? 1 : cells.reduce((a, b) => a > b ? a : b).clamp(1, 9999);
+    final memoEntries = step.memo.entries.take(8).toList();
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const _MetricPill(label: 'State', value: 'DP'),
+            _MetricPill(label: 'Cells', value: '${cells.length}'),
+            _MetricPill(label: 'Result', value: step.result?.toString() ?? '...'),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.md),
+        Text(
+          widget.algorithmId == 'lcs' || widget.algorithmId == 'knapsack'
+              ? 'DP Table'
+              : 'DP Table',
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            color: AppColors.textPrimary,
+            fontSize: 16,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        Expanded(
+          child: Center(
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 8,
+              runSpacing: 8,
+              children: List.generate(cells.length, (i) {
+                final isCurrent = i == step.currentIndex ||
+                    i == step.currentIndex % cells.length;
+                final isComparing = step.comparing.contains(i);
+                final isSorted = step.sorted.contains(i);
+                final intensity = (cells[i] / maxValue).clamp(0.08, 1.0).toDouble();
+                final color = isCurrent
+                    ? const Color(0xFFD97706)
+                    : isComparing
+                        ? const Color(0xFF7C3AED)
+                        : isSorted
+                            ? const Color(0xFF16A34A)
+                            : AppColors.primary500.withValues(alpha: 0.25 + intensity * 0.45);
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 220),
+                  width: 54,
+                  height: 54,
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: isCurrent ? AppColors.textPrimary : Colors.white,
+                      width: isCurrent ? 2 : 1,
+                    ),
+                    boxShadow: isCurrent
+                        ? [
+                            BoxShadow(
+                              color: color.withValues(alpha: 0.28),
+                              blurRadius: 14,
+                              spreadRadius: 2,
+                            ),
+                          ]
+                        : null,
+                  ),
+                  alignment: Alignment.center,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '$i',
+                        style: TextStyle(
+                          color: AppColors.textPrimary.withValues(alpha: 0.55),
+                          fontSize: 9,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Text(
+                        '${cells[i]}',
+                        style: TextStyle(
+                          color: isCurrent || isComparing || isSorted
+                              ? AppColors.textInverse
+                              : AppColors.textPrimary,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+            ),
+          ),
+        ),
+        if (memoEntries.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.sm),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 6,
+            runSpacing: 6,
+            children: memoEntries.map((entry) {
+              return _MetricPill(label: '${entry.key}', value: '${entry.value}');
+            }).toList(),
+          ),
+        ],
+      ],
+    );
+  }
+
+  // ── Greedy visualization ───────────────────────────────────────────────
+
+  Widget _buildGreedyVisualization(DPStep step) {
+    final values = step.array;
+    final chosen = step.sorted.toSet();
+    final current = step.currentIndex;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const _MetricPill(label: 'Strategy', value: 'Greedy'),
+              _MetricPill(label: 'Chosen', value: '${chosen.length}'),
+              _MetricPill(label: 'Result', value: step.result?.toString() ?? '...'),
+            ],
+          ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        const Text(
+          'Greedy Choices',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontSize: 16,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        Expanded(
+          child: Center(
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 10,
+              runSpacing: 10,
+              children: List.generate(values.length, (i) {
+                final isChosen = chosen.contains(i);
+                final isCurrent = i == current;
+                final color = isChosen
+                    ? const Color(0xFF16A34A)
+                    : isCurrent
+                        ? const Color(0xFFD97706)
+                        : AppColors.sunken;
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 220),
+                  width: 74,
+                  height: 68,
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: isCurrent ? AppColors.textPrimary : Colors.white,
+                      width: isCurrent ? 2 : 1,
+                    ),
+                    boxShadow: isCurrent
+                        ? [
+                            BoxShadow(
+                              color: color.withValues(alpha: 0.30),
+                              blurRadius: 14,
+                              spreadRadius: 2,
+                            ),
+                          ]
+                        : null,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Choice ${i + 1}',
+                        style: TextStyle(
+                          color: isChosen || isCurrent
+                              ? AppColors.textInverse
+                              : AppColors.textMuted,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        '${values[i]}',
+                        style: TextStyle(
+                          color: isChosen || isCurrent
+                              ? AppColors.textInverse
+                              : AppColors.textPrimary,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+            ),
+          ),
+        ),
+        if (step.memo.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.sm),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 6,
+            runSpacing: 6,
+            children: step.memo.entries.take(4).map((entry) {
+              return _MetricPill(label: '${entry.key}', value: '${entry.value}');
+            }).toList(),
+          ),
+        ],
+      ],
+    );
+  }
+
   // ── Code Viewer helper ────────────────────────────────────────────────
 
   Widget _buildCodeViewer(dynamic currentStep) {
@@ -1033,7 +1296,9 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
             ? currentStep.line
             : currentStep is TreeStep
                 ? currentStep.line
-                : null;
+                : currentStep is DPStep
+                    ? currentStep.line
+                    : null;
     return CodeViewer(
       code: code,
       currentLine: currentLine,

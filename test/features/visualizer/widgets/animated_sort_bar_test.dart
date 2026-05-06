@@ -49,5 +49,17 @@ void main() {
       expect(SortBarStatePalette.shouldShowValueLabel(layout.barWidth, 80), isTrue);
       expect(SortBarStatePalette.valueLabelFontSize(layout.barWidth), greaterThanOrEqualTo(10));
     });
+
+    test('keeps labels visible for short bars by placing them above the bar', () {
+      final layout = SortBarLayout.calculate(
+        width: 382,
+        height: 320,
+        count: 10,
+      );
+
+      expect(SortBarStatePalette.shouldShowValueLabel(layout.barWidth, 18), isTrue);
+      expect(SortBarStatePalette.labelPlacementForHeight(18), SortBarLabelPlacement.above);
+      expect(SortBarStatePalette.labelPlacementForHeight(120), SortBarLabelPlacement.inside);
+    });
   });
 }
