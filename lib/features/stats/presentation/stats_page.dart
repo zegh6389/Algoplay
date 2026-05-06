@@ -5,6 +5,20 @@ import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/stat_card.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../../shared/widgets/progress_indicator_bar.dart';
+import '../data/stats_repository.dart';
+
+// ═══════════════════════════════════════════════════════════════════════════════
+/// Provider for [StatsRepository].
+// ═══════════════════════════════════════════════════════════════════════════════
+final statsRepositoryProvider = Provider<StatsRepository>((ref) {
+  return StatsRepository();
+});
+
+/// Provider that loads stats asynchronously.
+final statsProvider = FutureProvider<UserStats>((ref) async {
+  final repo = ref.watch(statsRepositoryProvider);
+  return repo.loadStats();
+});
 
 // ═══════════════════════════════════════════════════════════════════════════════
 /// Stats Page — Statistics screen with overview cards, category progress,
@@ -15,6 +29,8 @@ class StatsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final statsAsync = ref.watch(statsProvider);
+
     return Scaffold(
       backgroundColor: AppColors.card,
       body: SingleChildScrollView(
@@ -30,19 +46,19 @@ class StatsPage extends ConsumerWidget {
             const SizedBox(height: AppSpacing.xl),
 
             // ── Overview 2×2 Grid ───────────────────────────────────────────
-            _buildOverviewGrid(),
+            _buildOverviewGrid(statsAsync),
             const SizedBox(height: AppSpacing.xxl),
 
             // ── Category Progress ───────────────────────────────────────────
             SectionHeader(title: 'Category Progress'),
             const SizedBox(height: AppSpacing.md),
-            _buildCategoryProgress(),
+            _buildCategoryProgress(statsAsync),
             const SizedBox(height: AppSpacing.xxl),
 
             // ── Weekly Activity ─────────────────────────────────────────────
             SectionHeader(title: 'This Week'),
             const SizedBox(height: AppSpacing.md),
-            _buildWeeklyActivity(),
+            _buildWeeklyActivity(statsAsync),
             const SizedBox(height: AppSpacing.xxl),
 
             // ── Recent Activity ─────────────────────────────────────────────
@@ -58,7 +74,10 @@ class StatsPage extends ConsumerWidget {
 
   // ── Overview Grid ─────────────────────────────────────────────────────────
 
-  Widget _buildOverviewGrid() {
+  Widget _buildOverviewGrid(AsyncValue<UserStats> statsAsync) {
+    final stats = statsAsync.valueOrNull;
+    final repo = StatsRepository();
+
     return GridView.count(
       crossAxisCount: 2,
       shrinkWrap: true,
@@ -66,28 +85,28 @@ class StatsPage extends ConsumerWidget {
       mainAxisSpacing: AppSpacing.md,
       crossAxisSpacing: AppSpacing.md,
       childAspectRatio: 1.45,
-      children: const [
+      children: [
         StatCard(
           title: 'Algorithms Learned',
-          value: '24',
+          value: '${stats?.algorithmsCompleted ?? 0}',
           icon: Icons.school,
           color: AppColors.primary500,
         ),
         StatCard(
-          title: 'Games Played',
-          value: '156',
+          title: 'Total XP',
+          value: '${stats?.totalXP ?? 0}',
           icon: Icons.sports_esports,
           color: AppColors.secondary500,
         ),
         StatCard(
           title: 'Current Streak',
-          value: '7',
+          value: '${stats != null ? repo.getStreak(stats) : 0}',
           icon: Icons.local_fire_department,
           color: AppColors.solarGold,
         ),
         StatCard(
-          title: 'Accuracy',
-          value: '87%',
+          title: 'Active Days',
+          value: '${stats?.activityMap.length ?? 0}',
           icon: Icons.track_changes,
           color: AppColors.success600,
         ),
@@ -97,14 +116,28 @@ class StatsPage extends ConsumerWidget {
 
   // ── Category Progress ─────────────────────────────────────────────────────
 
-  Widget _buildCategoryProgress() {
-    const categories = <Map<String, dynamic>>[
-      {'label': 'Sorting',   'current': 8,  'total': 12, 'color': AppColors.catSorting},
-      {'label': 'Searching', 'current': 6,  'total': 10, 'color': AppColors.catSearching},
-      {'label': 'Graphs',    'current': 4,  'total': 10, 'color': AppColors.catGraphs},
-      {'label': 'DP',        'current': 3,  'total': 8,  'color': AppColors.catDp},
-      {'label': 'Greedy',    'current': 5,  'total': 8,  'color': AppColors.catGreedy},
-      {'label': 'Trees',     'current': 2,  'total': 6,  'color': AppColors.catTrees},
+  Widget _buildCategoryProgress(AsyncValue<UserStats> statsAsync) {
+    final stats = statsAsync.valueOrNull;
+    final breakdown = stats?.categoryBreakdown ?? {};
+
+    // Category metadata: label, color, and total available
+    const categoryMeta = <String, _CategoryMeta>{
+      'Sorting':   _CategoryMeta(total: 12, color: AppColors.catSorting),
+      'Searching': _CategoryMeta(total: 10, color: AppColors.catSearching),
+      'Graphs':    _CategoryMeta(total: 10, color: AppColors.catGraphs),
+      'DP':        _CategoryMeta(total: 8,  color: AppColors.catDp),
+      'Greedy':    _CategoryMeta(total: 8,  color: AppColors.catGreedy),
+      'Trees':     _CategoryMeta(total: 6,  color: AppColors.catTrees),
+    };
+
+    final categories = <Map<String, dynamic>>[
+      for (final entry in categoryMeta.entries)
+        {
+          'label': entry.key,
+          'current': breakdown[entry.key.toLowerCase()] ?? 0,
+          'total': entry.value.total,
+          'color': entry.value.color,
+        },
     ];
 
     return Column(
@@ -125,13 +158,19 @@ class StatsPage extends ConsumerWidget {
 
   // ── Weekly Activity Bar Chart ─────────────────────────────────────────────
 
-  Widget _buildWeeklyActivity() {
-    // Mock data: activity hours per day (Mon–Sun)
-    const activityData = [2.0, 3.5, 1.0, 4.0, 2.5, 5.0, 3.0];
+  Widget _buildWeeklyActivity(AsyncValue<UserStats> statsAsync) {
+    final stats = statsAsync.valueOrNull;
+    final repo = StatsRepository();
+
+    // Real activity data from repository
+    final activityData = stats != null
+        ? repo.getWeeklyActivity(stats)
+        : List<double>.filled(7, 0.0);
+
     const dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    const maxActivity = 5.0;
-    // Assume today is Saturday (index 5) for mock purposes
-    const todayIndex = 5;
+    final maxActivity =
+        activityData.reduce((a, b) => a > b ? a : b).clamp(1.0, double.infinity);
+    final todayIndex = repo.todayWeekdayIndex;
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -163,6 +202,9 @@ class StatsPage extends ConsumerWidget {
   // ── Recent Activity ───────────────────────────────────────────────────────
 
   Widget _buildRecentActivity() {
+    // Recent activity is kept as static/placeholder for now —
+    // it depends on a separate activity log model.
+    // This will be wired to real data when an activity-log feature is added.
     const activities = [
       _ActivityItem(
         icon: Icons.check_circle,
@@ -206,6 +248,15 @@ class StatsPage extends ConsumerWidget {
       ],
     );
   }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+/// Metadata for a category (total items available + color)
+// ═══════════════════════════════════════════════════════════════════════════════
+class _CategoryMeta {
+  final int total;
+  final Color color;
+  const _CategoryMeta({required this.total, required this.color});
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
