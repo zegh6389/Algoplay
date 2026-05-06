@@ -33,7 +33,7 @@ jobs:
         run: flutter test
 
   build-android:
-    name: Build Android APK
+    name: Build Android
     needs: analyze
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
@@ -62,8 +62,17 @@ jobs:
           storeFile=release-keystore.jks
           EOF
 
-      - name: Build Android APK
+      - name: Build Android AAB (Play Store)
+        run: flutter build appbundle --release
+
+      - name: Build Android APK (sideload)
         run: flutter build apk --release
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-aab
+          path: build/app/outputs/bundle/release/app-release.aab
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
@@ -71,11 +80,13 @@ jobs:
           name: release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
 
-      - name: Upload APK to latest release
+      - name: Upload to GitHub Release
         if: github.event_name == 'push'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: latest
-          files: build/app/outputs/flutter-apk/app-release.apk
+          files: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/bundle/release/app-release.aab
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
