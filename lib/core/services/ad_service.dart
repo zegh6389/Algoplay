@@ -10,37 +10,36 @@ import 'premium_service.dart';
 /// AdService — Thin wrapper around Google Mobile Ads (AdMob).
 ///
 /// All public methods check [PremiumService.isPremiumUser()] first; premium
-/// users never see ads.  Uses test ad-unit IDs by default — swap for real
-/// IDs before release.
+/// users never see ads.  Production ad-unit IDs configured for Android;
+/// iOS IDs still use test units until iOS release.
 // ═══════════════════════════════════════════════════════════════════════════════
 
 class AdService {
   AdService._();
   static final AdService instance = AdService._();
 
-  // ── Test Ad Unit IDs ─────────────────────────────────────────────────────
-  // https://developers.google.com/admob/android/test-ads
-  // https://developers.google.com/admob/ios/test-ads
+  // ── Ad Unit IDs ──────────────────────────────────────────────────────────
+  // Production IDs (Android). iOS still uses test IDs until iOS release.
 
   static String get _bannerAdUnitId {
     if (Platform.isAndroid) {
-      return 'ca-app-pub-3940256099942544/6300978111';
+      return 'ca-app-pub-8157621642469961/2735757394';
     }
-    return 'ca-app-pub-3940256099942544/2934735716'; // iOS
+    return 'ca-app-pub-3940256099942544/2934735716'; // iOS test
   }
 
   static String get _interstitialAdUnitId {
     if (Platform.isAndroid) {
-      return 'ca-app-pub-3940256099942544/1033173712';
+      return 'ca-app-pub-8157621642469961/9109594050';
     }
-    return 'ca-app-pub-3940256099942544/4411468910'; // iOS
+    return 'ca-app-pub-3940256099942544/4411468910'; // iOS test
   }
 
   static String get _rewardedAdUnitId {
     if (Platform.isAndroid) {
-      return 'ca-app-pub-3940256099942544/5224354917';
+      return 'ca-app-pub-8157621642469961/6734712153';
     }
-    return 'ca-app-pub-3940256099942544/1712485313'; // iOS
+    return 'ca-app-pub-3940256099942544/1712485313'; // iOS test
   }
 
   // ── State ────────────────────────────────────────────────────────────────
