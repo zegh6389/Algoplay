@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -551,9 +550,6 @@ class _RaceModePageState extends ConsumerState<RaceModePage> {
   }
 
   Widget _buildGameOver() {
-    final highScore = _score; // Would come from gameState in production
-    final isNewBest = _score > highScore;
-
     return Container(
       color: AppColors.card,
       child: SafeArea(

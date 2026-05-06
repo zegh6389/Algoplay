@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../algorithms/models/tree_models.dart';
-import '../../learn/data/algorithm_data.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════════
 /// Tree Visualizer Page
@@ -41,17 +40,6 @@ class _TreeVisualizerPageState extends ConsumerState<TreeVisualizerPage>
   // Tree state
   TreeNode? _root;
   List<int> _arrayRepr = [];
-  List<int> _highlightedIndices = [];
-  List<String> _visitedNodes = [];
-  List<String> _pathNodes = [];
-
-  // BST state
-  int? _searchTarget;
-  int? _insertValue;
-  int? _deleteValue;
-
-  // Traversal state
-  String _traversalResult = '';
 
   @override
   void initState() {
@@ -242,7 +230,6 @@ class _TreeVisualizerPageState extends ConsumerState<TreeVisualizerPage>
       inorderFn(node.right);
     }
     inorderFn(_root);
-    _traversalResult = 'In-order: ${inorder.join(' → ')}';
 
     steps.add(TreeStep(
       tree: _cloneTree(_root),
@@ -914,7 +901,6 @@ class _TreeVisualizerPageState extends ConsumerState<TreeVisualizerPage>
   Widget _buildArrayRepresentation(TreeStep? step) {
     final array = step?.array ?? [];
     final highlighted = step?.highlightedIndices ?? [];
-    final visited = step?.visitedNodes ?? [];
 
     return Container(
       height: 60,

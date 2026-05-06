@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../algorithms/models/dp_step.dart';
 import '../../../algorithms/dp/dp_algorithms.dart';
-import '../../learn/data/algorithm_data.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════════
 /// DP Visualizer Page
@@ -47,8 +46,6 @@ class _DPVisualizerPageState extends ConsumerState<DPVisualizerPage>
   List<int> _knapValues = [3, 4, 5, 6];
   int _knapCapacity = 8;
 
-  Stream<DPStep>? _stream;
-
   @override
   void initState() {
     super.initState();
@@ -62,7 +59,6 @@ class _DPVisualizerPageState extends ConsumerState<DPVisualizerPage>
       _steps = [];
       _currentStepIndex = 0;
       _isPlaying = false;
-      _stream = _createStream();
     });
     _collectSteps();
   }

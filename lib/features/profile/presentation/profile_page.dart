@@ -1,13 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/providers/app_providers.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../../shared/widgets/xp_progress_bar.dart';
+import '../../../shared/models/user_progress.dart';
+
+// ═══════════════════════════════════════════════════════════════════════════════
+/// SharedPreferences keys used by ProfilePage.
+// ═══════════════════════════════════════════════════════════════════════════════
+class ProfilePrefs {
+  static const username = 'algoplay_username';
+  static const avatarInitial = 'algoplay_avatar_initial';
+  static const notifications = 'algoplay_notifications';
+  static const sound = 'algoplay_sound';
+  static const haptic = 'algoplay_haptic';
+
+  // Prevent instantiation.
+  ProfilePrefs._();
+}
 
 // ═══════════════════════════════════════════════════════════════════════════════
 /// Profile Page — User profile with avatar, achievements, settings, and
-/// account management. Uses ConsumerStatefulWidget for toggle states.
+/// account management. All data persisted via SharedPreferences.
 // ═══════════════════════════════════════════════════════════════════════════════
 class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
@@ -17,12 +35,118 @@ class ProfilePage extends ConsumerStatefulWidget {
 }
 
 class _ProfilePageState extends ConsumerState<ProfilePage> {
+  // ── Profile fields ────────────────────────────────────────────────────────
+  String _username = 'Student';
+  String _avatarInitial = 'S';
+
+  // ── Settings toggles ──────────────────────────────────────────────────────
   bool _notificationsEnabled = true;
   bool _soundEnabled = true;
   bool _hapticEnabled = false;
 
+  // ── Loading guard ─────────────────────────────────────────────────────────
+  bool _initialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFromPrefs();
+  }
+
+  // ── Load everything from SharedPreferences ────────────────────────────────
+
+  Future<void> _loadFromPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
+    setState(() {
+      _username = prefs.getString(ProfilePrefs.username) ?? 'Student';
+      _avatarInitial = prefs.getString(ProfilePrefs.avatarInitial) ??
+          (_username.isNotEmpty ? _username[0].toUpperCase() : 'S');
+      _notificationsEnabled = prefs.getBool(ProfilePrefs.notifications) ?? true;
+      _soundEnabled = prefs.getBool(ProfilePrefs.sound) ?? true;
+      _hapticEnabled = prefs.getBool(ProfilePrefs.haptic) ?? false;
+      _initialized = true;
+    });
+  }
+
+  // ── Persist helpers ───────────────────────────────────────────────────────
+
+  Future<void> _saveUsername(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    final initial = value.isNotEmpty ? value[0].toUpperCase() : 'S';
+    await prefs.setString(ProfilePrefs.username, value);
+    await prefs.setString(ProfilePrefs.avatarInitial, initial);
+    if (!mounted) return;
+    setState(() {
+      _username = value;
+      _avatarInitial = initial;
+    });
+  }
+
+  Future<void> _saveSetting(String key, bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(key, value);
+  }
+
+  // ── Level / XP helpers ────────────────────────────────────────────────────
+  // Level formula mirrors UserProgressNotifier.addXP: level = (xp ~/ 100) + 1
+
+  int get _level => ref.read(userProgressProvider).level;
+  int get _totalXP => ref.read(userProgressProvider).totalXP;
+  int get _nextLevelXP => _level * 100;
+
+  // ── Achievements computed from UserProgress ───────────────────────────────
+
+  List<_AchievementDef> _computeAchievements(UserProgress progress) {
+    return [
+      _AchievementDef(
+        label: 'First Sort',
+        icon: Icons.sort,
+        achieved: progress.completedAlgorithms.isNotEmpty,
+      ),
+      _AchievementDef(
+        label: 'Speed Demon',
+        icon: Icons.speed,
+        achieved: progress.quizHistory.any((q) => q.score == q.totalQuestions),
+      ),
+      _AchievementDef(
+        label: 'Streak Master',
+        icon: Icons.local_fire_department,
+        achieved: progress.currentStreak >= 3,
+      ),
+      _AchievementDef(
+        label: 'Algorithm Guru',
+        icon: Icons.psychology,
+        achieved: progress.completedAlgorithms.length >= 10,
+      ),
+      _AchievementDef(
+        label: 'Battle Champ',
+        icon: Icons.emoji_events,
+        achieved: progress.challengeHistory.any((c) => c.passed),
+      ),
+      _AchievementDef(
+        label: 'Perfect Score',
+        icon: Icons.star,
+        achieved: progress.quizHistory
+            .any((q) => q.correctAnswers == q.totalQuestions),
+      ),
+    ];
+  }
+
+  // ── Build ─────────────────────────────────────────────────────────────────
+
   @override
   Widget build(BuildContext context) {
+    // Don't render until prefs have been loaded.
+    if (!_initialized) {
+      return const Scaffold(
+        backgroundColor: AppColors.card,
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    final progress = ref.watch(userProgressProvider);
+
     return Scaffold(
       backgroundColor: AppColors.card,
       body: SingleChildScrollView(
@@ -33,30 +157,26 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ── Profile Header ──────────────────────────────────────────────
+            // ── Profile Header ────────────────────────────────────────────
             _buildProfileHeader(),
             const SizedBox(height: AppSpacing.xxl),
 
-            // ── Achievements ────────────────────────────────────────────────
-            SectionHeader(title: 'Achievements'),
+            // ── Achievements ──────────────────────────────────────────────
+            const SectionHeader(title: 'Achievements'),
             const SizedBox(height: AppSpacing.md),
-            _buildAchievements(),
+            _buildAchievements(progress),
             const SizedBox(height: AppSpacing.xxl),
 
-            // ── Settings ────────────────────────────────────────────────────
-            SectionHeader(title: 'Settings'),
+            // ── Settings ──────────────────────────────────────────────────
+            const SectionHeader(title: 'Settings'),
             const SizedBox(height: AppSpacing.md),
             _buildSettings(),
             const SizedBox(height: AppSpacing.xxl),
 
-            // ── Account ─────────────────────────────────────────────────────
-            SectionHeader(title: 'Account'),
+            // ── Account ───────────────────────────────────────────────────
+            const SectionHeader(title: 'Account'),
             const SizedBox(height: AppSpacing.md),
             _buildAccount(),
-            const SizedBox(height: AppSpacing.xxl),
-
-            // ── Sign Out ────────────────────────────────────────────────────
-            _buildSignOutButton(),
             const SizedBox(height: AppSpacing.xl),
           ],
         ),
@@ -79,7 +199,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
           ),
           alignment: Alignment.center,
           child: Text(
-            'S',
+            _avatarInitial,
             style: AppTypography.h1.copyWith(
               color: AppColors.primary500,
               fontSize: 36,
@@ -89,12 +209,12 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         const SizedBox(height: AppSpacing.md),
 
         // Username
-        Text('Student', style: AppTypography.h2),
+        Text(_username, style: AppTypography.h2),
         const SizedBox(height: AppSpacing.xs),
 
         // Level caption
         Text(
-          'Level 5',
+          'Level $_level',
           style: AppTypography.caption.copyWith(
             color: AppColors.secondary500,
             fontWeight: FontWeight.w600,
@@ -103,10 +223,10 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         const SizedBox(height: AppSpacing.lg),
 
         // XP Progress Bar
-        const XpProgressBar(
-          currentXP: 420,
-          nextLevelXP: 500,
-          level: 5,
+        XpProgressBar(
+          currentXP: _totalXP,
+          nextLevelXP: _nextLevelXP,
+          level: _level,
         ),
       ],
     );
@@ -114,15 +234,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
   // ── Achievements ──────────────────────────────────────────────────────────
 
-  Widget _buildAchievements() {
-    const achievements = <Map<String, dynamic>>[
-      {'label': 'First Sort',     'icon': Icons.sort,              'achieved': true},
-      {'label': 'Speed Demon',    'icon': Icons.speed,             'achieved': true},
-      {'label': 'Streak Master',  'icon': Icons.local_fire_department, 'achieved': true},
-      {'label': 'Algorithm Guru', 'icon': Icons.psychology,        'achieved': false},
-      {'label': 'Battle Champ',   'icon': Icons.emoji_events,      'achieved': false},
-      {'label': 'Perfect Score',  'icon': Icons.star,              'achieved': false},
-    ];
+  Widget _buildAchievements(UserProgress progress) {
+    final achievements = _computeAchievements(progress);
 
     return SizedBox(
       height: 100,
@@ -132,11 +245,10 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.md),
         itemBuilder: (context, index) {
           final item = achievements[index];
-          final achieved = item['achieved'] as bool;
           return _AchievementBadge(
-            label: item['label'] as String,
-            icon: item['icon'] as IconData,
-            achieved: achieved,
+            label: item.label,
+            icon: item.icon,
+            achieved: item.achieved,
           );
         },
       ),
@@ -158,21 +270,30 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
             icon: Icons.notifications_outlined,
             title: 'Notifications',
             value: _notificationsEnabled,
-            onChanged: (v) => setState(() => _notificationsEnabled = v),
+            onChanged: (v) {
+              setState(() => _notificationsEnabled = v);
+              _saveSetting(ProfilePrefs.notifications, v);
+            },
           ),
           const Divider(height: 1, indent: 56),
           _SettingsTile(
             icon: Icons.volume_up_outlined,
             title: 'Sound Effects',
             value: _soundEnabled,
-            onChanged: (v) => setState(() => _soundEnabled = v),
+            onChanged: (v) {
+              setState(() => _soundEnabled = v);
+              _saveSetting(ProfilePrefs.sound, v);
+            },
           ),
           const Divider(height: 1, indent: 56),
           _SettingsTile(
             icon: Icons.vibration_outlined,
             title: 'Haptic Feedback',
             value: _hapticEnabled,
-            onChanged: (v) => setState(() => _hapticEnabled = v),
+            onChanged: (v) {
+              setState(() => _hapticEnabled = v);
+              _saveSetting(ProfilePrefs.haptic, v);
+            },
           ),
         ],
       ),
@@ -196,7 +317,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
             title: Text('Edit Profile', style: AppTypography.body),
             trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted, size: 20),
             contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-            onTap: () {},
+            onTap: () => _showEditProfileDialog(),
           ),
           const Divider(height: 1, indent: 56),
           // Subscription
@@ -232,36 +353,66 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               ],
             ),
             contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-            onTap: () {},
+            onTap: () => context.go('/premium'),
           ),
         ],
       ),
     );
   }
 
-  // ── Sign Out ──────────────────────────────────────────────────────────────
+  // ── Edit Profile Dialog ───────────────────────────────────────────────────
 
-  Widget _buildSignOutButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton(
-        onPressed: () {},
-        style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.error600,
-          side: const BorderSide(color: AppColors.error600),
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-          shape: RoundedRectangleBorder(
-            borderRadius: AppRadius.mdBorder,
+  void _showEditProfileDialog() {
+    final controller = TextEditingController(text: _username);
+
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: const Text('Edit Username'),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
+            maxLength: 20,
+            decoration: const InputDecoration(
+              labelText: 'Username',
+              border: OutlineInputBorder(),
+            ),
           ),
-          textStyle: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        child: const Text('Sign Out'),
-      ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () {
+                final newName = controller.text.trim();
+                if (newName.isNotEmpty) {
+                  _saveUsername(newName);
+                }
+                Navigator.of(ctx).pop();
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
     );
   }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+/// Internal data class for computed achievements.
+// ═══════════════════════════════════════════════════════════════════════════════
+class _AchievementDef {
+  final String label;
+  final IconData icon;
+  final bool achieved;
+  const _AchievementDef({
+    required this.label,
+    required this.icon,
+    required this.achieved,
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════

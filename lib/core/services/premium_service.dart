@@ -49,9 +49,13 @@ class PremiumService {
       _isPremium = prefs.getBool(_kPremiumKey) ?? false;
       _purchaseReceipt = prefs.getString(_kReceiptKey);
       _initialized = true;
-      debugPrint('[PremiumService] initialized — isPremium: $_isPremium');
+      if (kDebugMode) {
+        debugPrint('[PremiumService] initialized — isPremium: $_isPremium');
+      }
     } catch (e) {
-      debugPrint('[PremiumService] initialize error: $e');
+      if (kDebugMode) {
+        debugPrint('[PremiumService] initialize error: $e');
+      }
       _isPremium = false;
       _initialized = true;
     }
@@ -70,9 +74,13 @@ class PremiumService {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_kPremiumKey, value);
-      debugPrint('[PremiumService] setPremium($value)');
+      if (kDebugMode) {
+        debugPrint('[PremiumService] setPremium($value)');
+      }
     } catch (e) {
-      debugPrint('[PremiumService] setPremium error: $e');
+      if (kDebugMode) {
+        debugPrint('[PremiumService] setPremium error: $e');
+      }
     }
   }
 
@@ -82,9 +90,13 @@ class PremiumService {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_kReceiptKey, receipt);
-      debugPrint('[PremiumService] receipt saved');
+      if (kDebugMode) {
+        debugPrint('[PremiumService] receipt saved');
+      }
     } catch (e) {
-      debugPrint('[PremiumService] setPurchaseReceipt error: $e');
+      if (kDebugMode) {
+        debugPrint('[PremiumService] setPurchaseReceipt error: $e');
+      }
     }
   }
 
@@ -96,9 +108,13 @@ class PremiumService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_kPremiumKey);
       await prefs.remove(_kReceiptKey);
-      debugPrint('[PremiumService] cleared');
+      if (kDebugMode) {
+        debugPrint('[PremiumService] cleared');
+      }
     } catch (e) {
-      debugPrint('[PremiumService] clear error: $e');
+      if (kDebugMode) {
+        debugPrint('[PremiumService] clear error: $e');
+      }
     }
   }
 

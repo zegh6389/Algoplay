@@ -7,6 +7,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../../shared/widgets/game_card.dart';
 import '../../learn/data/algorithm_data.dart';
+import '../../leaderboard/data/leaderboard_repository.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════════
 /// Play Page — Games Hub
@@ -258,26 +259,57 @@ class _DailyChallengeCard extends StatelessWidget {
 }
 
 /// ─────────────────────────────────────────────────────────────────────────────
-/// Leaderboard Preview — 3 mock entries with avatar circles.
+/// Leaderboard Preview — top entries loaded from LeaderboardRepository.
 /// ─────────────────────────────────────────────────────────────────────────────
-class _LeaderboardPreview extends StatelessWidget {
+class _LeaderboardPreview extends ConsumerStatefulWidget {
   const _LeaderboardPreview();
 
-  static const _mockPlayers = [
-    (name: 'Alex Chen', initials: 'AC', xp: '2,450'),
-    (name: 'Sarah Kim', initials: 'SK', xp: '1,820'),
-    (name: 'Mike Torres', initials: 'MT', xp: '1,340'),
-  ];
+  @override
+  ConsumerState<_LeaderboardPreview> createState() =>
+      _LeaderboardPreviewState();
+}
+
+class _LeaderboardPreviewState extends ConsumerState<_LeaderboardPreview> {
+  List<LeaderboardEntry> _topPlayers = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTopPlayers();
+  }
+
+  Future<void> _loadTopPlayers() async {
+    final repo = LeaderboardRepository();
+    final entries = await repo.getLeaderboard();
+    if (mounted) {
+      setState(() {
+        _topPlayers = entries.take(3).toList();
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const SizedBox(
+        height: 120,
+        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      );
+    }
+
+    if (_topPlayers.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Column(
       children: [
-        ..._mockPlayers.map((player) => _LeaderboardEntry(
-              rank: _mockPlayers.indexOf(player) + 1,
+        ..._topPlayers.map((player) => _LeaderboardEntry(
+              rank: player.rank,
               initials: player.initials,
               name: player.name,
-              xp: player.xp,
+              xp: '${player.xp}',
             )),
         SizedBox(height: AppSpacing.sm),
         TextButton(

@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:algoplay/shared/providers/app_providers.dart';
-import 'package:algoplay/shared/models/user_progress.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

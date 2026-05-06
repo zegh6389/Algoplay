@@ -64,7 +64,7 @@ class StatsPage extends ConsumerWidget {
             // ── Recent Activity ─────────────────────────────────────────────
             SectionHeader(title: 'Recent Activity'),
             const SizedBox(height: AppSpacing.md),
-            _buildRecentActivity(),
+            _buildRecentActivity(statsAsync),
             const SizedBox(height: AppSpacing.xl),
           ],
         ),
@@ -201,52 +201,70 @@ class StatsPage extends ConsumerWidget {
 
   // ── Recent Activity ───────────────────────────────────────────────────────
 
-  Widget _buildRecentActivity() {
-    // Recent activity is kept as static/placeholder for now —
-    // it depends on a separate activity log model.
-    // This will be wired to real data when an activity-log feature is added.
-    const activities = [
-      _ActivityItem(
-        icon: Icons.check_circle,
-        title: 'Completed Merge Sort',
-        time: '2h ago',
-        xp: 50,
-      ),
-      _ActivityItem(
-        icon: Icons.emoji_events,
-        title: 'Won Battle: Quick Sort',
-        time: '4h ago',
-        xp: 100,
-      ),
-      _ActivityItem(
-        icon: Icons.quiz,
-        title: 'Quiz: Binary Search',
-        time: '6h ago',
-        xp: 30,
-      ),
-      _ActivityItem(
-        icon: Icons.trending_up,
-        title: 'Level Up! Now Level 5',
-        time: '1d ago',
-        xp: 200,
-      ),
-      _ActivityItem(
-        icon: Icons.local_fire_department,
-        title: '5-Day Streak Bonus',
-        time: '1d ago',
-        xp: 75,
-      ),
-    ];
+  Widget _buildRecentActivity(AsyncValue<UserStats> statsAsync) {
+    final stats = statsAsync.valueOrNull;
+    if (stats == null) {
+      return const SizedBox(
+        height: 80,
+        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      );
+    }
+
+    final activityMap = stats.activityMap;
+    if (activityMap.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
+        child: Center(
+          child: Text(
+            'No activity yet. Start playing to see your history!',
+            style: AppTypography.caption,
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    }
+
+    // Show last 5 activity sessions, most recent first
+    final sortedDays = activityMap.keys.toList()
+      ..sort((a, b) => b.compareTo(a)); // descending
+
+    final recentDays = sortedDays.take(5).toList();
 
     return Column(
       children: [
-        for (int i = 0; i < activities.length; i++) ...[
-          _ActivityTile(item: activities[i]),
-          if (i < activities.length - 1)
+        for (int i = 0; i < recentDays.length; i++) ...[
+          _ActivityTile(
+            item: _ActivityItem(
+              icon: Icons.access_time,
+              title: _formatDate(recentDays[i]),
+              time: '${activityMap[recentDays[i]]!.round()} min',
+              xp: (activityMap[recentDays[i]]! * 5).round(), // estimate XP from minutes
+            ),
+          ),
+          if (i < recentDays.length - 1)
             const Divider(height: 1),
         ],
       ],
     );
+  }
+
+  String _formatDate(String isoDate) {
+    try {
+      final parts = isoDate.split('-');
+      final date = DateTime(
+        int.parse(parts[0]),
+        int.parse(parts[1]),
+        int.parse(parts[2]),
+      );
+      final now = DateTime.now();
+      final diff = now.difference(date).inDays;
+      if (diff == 0) return 'Today';
+      if (diff == 1) return 'Yesterday';
+      if (diff < 7) return '$diff days ago';
+      return '${date.month}/${date.day}/${date.year}';
+    } catch (_) {
+      return isoDate;
+    }
   }
 }
 

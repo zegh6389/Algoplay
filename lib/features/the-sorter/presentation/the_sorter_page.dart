@@ -26,7 +26,6 @@ class TheSorterPage extends ConsumerStatefulWidget {
 class _TheSorterPageState extends ConsumerState<TheSorterPage> {
   // ── Game state ──────────────────────────────────────────────────────────
   late List<int> _array;
-  List<int> _targetArray = []; // the "goal" sorted array
   int _score = 0;
   int _lives = 3;
   int _round = 1;
@@ -43,7 +42,6 @@ class _TheSorterPageState extends ConsumerState<TheSorterPage> {
   List<_SortChoice> _choices = [];
 
   // Animation state
-  bool _showSwapAnimation = false;
   bool _showCorrectFeedback = false;
   bool _showWrongFeedback = false;
 
@@ -78,7 +76,6 @@ class _TheSorterPageState extends ConsumerState<TheSorterPage> {
     _gameTimer?.cancel();
     setState(() {
       _isRoundActive = true;
-      _showSwapAnimation = false;
       _showCorrectFeedback = false;
       _showWrongFeedback = false;
       _comparingIndices = [];
@@ -90,7 +87,6 @@ class _TheSorterPageState extends ConsumerState<TheSorterPage> {
 
     // Generate a new random array (small enough to keep the game playable)
     _array = generateRandomArray(6, max: 50);
-    _targetArray = List<int>.from(_array)..sort();
 
     // Generate the 4 choices for this round
     _generateChoices();

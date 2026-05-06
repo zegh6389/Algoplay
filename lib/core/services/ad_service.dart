@@ -55,9 +55,13 @@ class AdService {
     try {
       await MobileAds.instance.initialize();
       _isInitialized = true;
-      debugPrint('[AdService] MobileAds initialized');
+      if (kDebugMode) {
+        debugPrint('[AdService] MobileAds initialized');
+      }
     } catch (e) {
-      debugPrint('[AdService] init error: $e');
+      if (kDebugMode) {
+        debugPrint('[AdService] init error: $e');
+      }
     }
   }
 
@@ -70,7 +74,9 @@ class AdService {
   /// Returns `null` for premium users or on load failure.
   Future<BannerAd?> getBannerAd() async {
     if (PremiumService.instance.isPremium) {
-      debugPrint('[AdService] banner skipped — premium user');
+      if (kDebugMode) {
+        debugPrint('[AdService] banner skipped — premium user');
+      }
       return null;
     }
 
@@ -83,11 +89,15 @@ class AdService {
       request: const AdRequest(),
       listener: BannerAdListener(
         onAdLoaded: (_) {
-          debugPrint('[AdService] banner loaded');
+          if (kDebugMode) {
+            debugPrint('[AdService] banner loaded');
+          }
           completer.complete(banner);
         },
         onAdFailedToLoad: (ad, error) {
-          debugPrint('[AdService] banner failed: $error');
+          if (kDebugMode) {
+            debugPrint('[AdService] banner failed: $error');
+          }
           ad.dispose();
           completer.complete(null);
         },
@@ -105,7 +115,9 @@ class AdService {
   /// Pre-loads a rewarded ad.  No-op for premium users.
   void loadRewardedAd() {
     if (PremiumService.instance.isPremium) {
-      debugPrint('[AdService] rewarded load skipped — premium user');
+      if (kDebugMode) {
+        debugPrint('[AdService] rewarded load skipped — premium user');
+      }
       return;
     }
 
@@ -115,10 +127,14 @@ class AdService {
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (ad) {
           _rewardedAd = ad;
-          debugPrint('[AdService] rewarded ad loaded');
+          if (kDebugMode) {
+            debugPrint('[AdService] rewarded ad loaded');
+          }
         },
         onAdFailedToLoad: (error) {
-          debugPrint('[AdService] rewarded ad failed to load: $error');
+          if (kDebugMode) {
+            debugPrint('[AdService] rewarded ad failed to load: $error');
+          }
           _rewardedAd = null;
         },
       ),
@@ -131,25 +147,33 @@ class AdService {
   /// No-op for premium users or when no ad is cached.
   void showRewardedAd({required VoidCallback onReward}) {
     if (PremiumService.instance.isPremium) {
-      debugPrint('[AdService] rewarded show skipped — premium user');
+      if (kDebugMode) {
+        debugPrint('[AdService] rewarded show skipped — premium user');
+      }
       return;
     }
 
     if (_rewardedAd == null) {
-      debugPrint('[AdService] no rewarded ad cached — loading now');
+      if (kDebugMode) {
+        debugPrint('[AdService] no rewarded ad cached — loading now');
+      }
       loadRewardedAd();
       return;
     }
 
     _rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
       onAdDismissedFullScreenContent: (ad) {
-        debugPrint('[AdService] rewarded ad dismissed');
+        if (kDebugMode) {
+          debugPrint('[AdService] rewarded ad dismissed');
+        }
         ad.dispose();
         _rewardedAd = null;
         loadRewardedAd(); // pre-load next
       },
       onAdFailedToShowFullScreenContent: (ad, error) {
-        debugPrint('[AdService] rewarded show error: $error');
+        if (kDebugMode) {
+          debugPrint('[AdService] rewarded show error: $error');
+        }
         ad.dispose();
         _rewardedAd = null;
         loadRewardedAd();
@@ -158,7 +182,9 @@ class AdService {
 
     _rewardedAd!.show(
       onUserEarnedReward: (ad, reward) {
-        debugPrint('[AdService] user earned reward: ${reward.amount} ${reward.type}');
+        if (kDebugMode) {
+          debugPrint('[AdService] user earned reward: ${reward.amount} ${reward.type}');
+        }
         onReward();
       },
     );
@@ -171,7 +197,9 @@ class AdService {
   /// Pre-loads an interstitial ad.  No-op for premium users.
   void loadInterstitialAd() {
     if (PremiumService.instance.isPremium) {
-      debugPrint('[AdService] interstitial load skipped — premium user');
+      if (kDebugMode) {
+        debugPrint('[AdService] interstitial load skipped — premium user');
+      }
       return;
     }
 
@@ -181,10 +209,14 @@ class AdService {
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
           _interstitialAd = ad;
-          debugPrint('[AdService] interstitial ad loaded');
+          if (kDebugMode) {
+            debugPrint('[AdService] interstitial ad loaded');
+          }
         },
         onAdFailedToLoad: (error) {
-          debugPrint('[AdService] interstitial failed to load: $error');
+          if (kDebugMode) {
+            debugPrint('[AdService] interstitial failed to load: $error');
+          }
           _interstitialAd = null;
         },
       ),
@@ -195,25 +227,33 @@ class AdService {
   /// no ad is cached.
   void showInterstitialAd() {
     if (PremiumService.instance.isPremium) {
-      debugPrint('[AdService] interstitial show skipped — premium user');
+      if (kDebugMode) {
+        debugPrint('[AdService] interstitial show skipped — premium user');
+      }
       return;
     }
 
     if (_interstitialAd == null) {
-      debugPrint('[AdService] no interstitial ad cached — loading now');
+      if (kDebugMode) {
+        debugPrint('[AdService] no interstitial ad cached — loading now');
+      }
       loadInterstitialAd();
       return;
     }
 
     _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
       onAdDismissedFullScreenContent: (ad) {
-        debugPrint('[AdService] interstitial ad dismissed');
+        if (kDebugMode) {
+          debugPrint('[AdService] interstitial ad dismissed');
+        }
         ad.dispose();
         _interstitialAd = null;
         loadInterstitialAd(); // pre-load next
       },
       onAdFailedToShowFullScreenContent: (ad, error) {
-        debugPrint('[AdService] interstitial show error: $error');
+        if (kDebugMode) {
+          debugPrint('[AdService] interstitial show error: $error');
+        }
         ad.dispose();
         _interstitialAd = null;
         loadInterstitialAd();
@@ -231,6 +271,8 @@ class AdService {
     _rewardedAd?.dispose();
     _interstitialAd = null;
     _rewardedAd = null;
-    debugPrint('[AdService] disposed');
+    if (kDebugMode) {
+      debugPrint('[AdService] disposed');
+    }
   }
 }

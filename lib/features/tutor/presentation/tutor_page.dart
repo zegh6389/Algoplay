@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -26,8 +25,6 @@ class _TutorPageState extends ConsumerState<TutorPage> {
   AlgorithmCategory _selectedCategory = AlgorithmCategory.sorting;
   List<_TutorQuestion> _questions = [];
   int _questionIndex = 0;
-  int _score = 0;
-  int _totalAnswered = 0;
   int? _selectedAnswer;
   bool _answered = false;
   bool _isLoading = false;
@@ -68,11 +65,9 @@ class _TutorPageState extends ConsumerState<TutorPage> {
     setState(() {
       _selectedAnswer = index;
       _answered = true;
-      _totalAnswered++;
     });
 
     if (isCorrect) {
-      _score++;
       _correctInCategory++;
       _sessionXP += 10;
       ref.read(userProgressProvider.notifier).addXP(10);
