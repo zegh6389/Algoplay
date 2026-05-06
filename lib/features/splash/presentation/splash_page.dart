@@ -168,42 +168,42 @@ class _LoadingText extends StatelessWidget {
 
   final double value;
 
+  static const _text = 'Loading Algoplay';
+  static const _cursor = '│';
+
   @override
   Widget build(BuildContext context) {
-    final activeDot = (value * 3).floor() % 3;
+    // Typewriter reveal: characters appear one by one
+    final charCount = (value * _text.length).floor().clamp(0, _text.length);
+    final revealed = _text.substring(0, charCount);
+    final showCursor = (value * 8).floor().isOdd;
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Loading Algoplay',
+          revealed,
           style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.9),
+            color: Colors.white.withValues(alpha: 0.92),
             fontSize: 18,
             fontWeight: FontWeight.w700,
             letterSpacing: 0.2,
             shadows: [
               Shadow(
-                color: Colors.black.withValues(alpha: 0.28),
-                blurRadius: 10,
+                color: const Color(0xFF12D7C5).withValues(alpha: 0.35),
+                blurRadius: 12,
               ),
             ],
           ),
         ),
-        const SizedBox(width: 8),
-        for (var i = 0; i < 3; i++)
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
-            margin: const EdgeInsets.symmetric(horizontal: 2.5),
-            width: i == activeDot ? 8 : 6,
-            height: i == activeDot ? 8 : 6,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: [
-                const Color(0xFF13D6C5),
-                const Color(0xFF34A5FF),
-                const Color(0xFF9B5CFF),
-              ][i].withValues(alpha: i == activeDot ? 1 : 0.42),
+        if (charCount < _text.length)
+          Text(
+            showCursor ? _cursor : ' ',
+            style: TextStyle(
+              color: const Color(0xFF12D7C5).withValues(alpha: 0.8),
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.2,
             ),
           ),
       ],
