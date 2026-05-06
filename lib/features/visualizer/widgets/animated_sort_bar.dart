@@ -47,12 +47,90 @@ class AnimatedSortBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _SortBarPainter(
-        bars: bars,
-        maxValue: maxValue,
-        highlightIndex: highlightIndex,
+    return SizedBox.expand(
+      child: CustomPaint(
+        painter: _SortBarPainter(
+          bars: bars,
+          maxValue: maxValue,
+          highlightIndex: highlightIndex,
+        ),
       ),
+    );
+  }
+}
+
+/// Deterministic geometry for the sort bar chart.
+///
+/// Exposed for tests so layout regressions are caught without brittle golden
+/// screenshots.
+class SortBarLayout {
+  final double width;
+  final double height;
+  final int count;
+  final double leftPadding;
+  final double chartTop;
+  final double chartHeight;
+  final double barWidth;
+  final double barGap;
+
+  const SortBarLayout({
+    required this.width,
+    required this.height,
+    required this.count,
+    required this.leftPadding,
+    required this.chartTop,
+    required this.chartHeight,
+    required this.barWidth,
+    required this.barGap,
+  });
+
+  double get contentWidth => width - (leftPadding * 2);
+  double get baseline => chartTop + chartHeight;
+
+  double leftForIndex(int index) => leftPadding + index * (barWidth + barGap);
+
+  static SortBarLayout calculate({
+    required double width,
+    required double height,
+    required int count,
+  }) {
+    if (count <= 0 || width <= 0 || height <= 0) {
+      return SortBarLayout(
+        width: width,
+        height: height,
+        count: count,
+        leftPadding: 0,
+        chartTop: 0,
+        chartHeight: 0,
+        barWidth: 0,
+        barGap: 0,
+      );
+    }
+
+    final chartHeight = (height * 0.72).clamp(120.0, 340.0).toDouble();
+    final chartTop = ((height - chartHeight) / 2)
+        .clamp(0.0, double.infinity)
+        .toDouble();
+    final gap = count > 32 ? 1.5 : 3.0;
+    const outerPadding = 8.0;
+    final availableWidth = width - outerPadding * 2 - (count - 1) * gap;
+    final naturalBarWidth = availableWidth / count;
+    final maxBarWidth = count > 24 ? 18.0 : 34.0;
+    final barWidth = naturalBarWidth.clamp(3.0, maxBarWidth).toDouble();
+    final usedWidth = count * barWidth + (count - 1) * gap;
+    final leftPadding = ((width - usedWidth) / 2)
+        .clamp(outerPadding, double.infinity)
+        .toDouble();
+
+    return SortBarLayout(
+      width: width,
+      height: height,
+      count: count,
+      leftPadding: leftPadding,
+      chartTop: chartTop,
+      chartHeight: chartHeight,
+      barWidth: barWidth,
+      barGap: gap,
     );
   }
 }
@@ -86,8 +164,6 @@ class _SortBarPainter extends CustomPainter {
   static const Color _labelColor = Color(0xFFFFFFFF); // white
 
   static const double _topRadius = 4.0;
-  static const double _barGap = 2.0;
-  static const double _sidePadding = 8.0;
 
   Color _colorForState(String state) {
     switch (state) {
@@ -130,12 +206,13 @@ class _SortBarPainter extends CustomPainter {
     if (bars.isEmpty || maxValue <= 0) return;
 
     final int count = bars.length;
-    final double totalGapWidth = (count - 1) * _barGap;
-    final double availableWidth =
-        size.width - 2 * _sidePadding - totalGapWidth;
-    final double barWidth = availableWidth / count;
+    final layout = SortBarLayout.calculate(
+      width: size.width,
+      height: size.height,
+      count: count,
+    );
 
-    final double maxBarHeight = size.height;
+    final double maxBarHeight = layout.chartHeight;
 
     for (int i = 0; i < count; i++) {
       final SortBarData bar = bars[i];
@@ -146,14 +223,19 @@ class _SortBarPainter extends CustomPainter {
           maxValue > 0 ? (bar.value.toDouble() / maxValue) : 0.0;
       final double barHeight = fraction.clamp(0.0, 1.0) * maxBarHeight;
 
-      final double left = _sidePadding + i * (barWidth + _barGap);
-      final double top = maxBarHeight - barHeight;
+      final double left = layout.leftForIndex(i);
+      final double top = layout.baseline - barHeight;
 
-      final Rect barRect = Rect.fromLTWH(left, top, barWidth, barHeight);
+      final Rect barRect = Rect.fromLTWH(
+        left,
+        top,
+        layout.barWidth,
+        barHeight,
+      );
 
       // Background track ---------------------------------------------------
       final RRect trackRect = RRect.fromRectAndCorners(
-        Rect.fromLTWH(left, 0, barWidth, maxBarHeight),
+        Rect.fromLTWH(left, layout.chartTop, layout.barWidth, maxBarHeight),
         topLeft: const Radius.circular(_topRadius),
         topRight: const Radius.circular(_topRadius),
       );
@@ -174,8 +256,7 @@ class _SortBarPainter extends CustomPainter {
         barRRect,
         Paint()
           ..color = color.withValues(alpha: 0.45)
-          ..maskFilter =
-              MaskFilter.blur(BlurStyle.normal, blurRadius * _devicePixelRatio)
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, blurRadius)
           ..style = PaintingStyle.fill,
       );
 
@@ -197,7 +278,7 @@ class _SortBarPainter extends CustomPainter {
       }
 
       // Value label ---------------------------------------------------------
-      if (barWidth > 22 && barHeight > 18) {
+      if (layout.barWidth > 22 && barHeight > 22) {
         final TextSpan span = TextSpan(
           text: '${bar.value}',
           style: const TextStyle(
@@ -209,25 +290,13 @@ class _SortBarPainter extends CustomPainter {
         final TextPainter tp = TextPainter(
           text: span,
           textDirection: TextDirection.ltr,
-        )..layout(maxWidth: barWidth);
+        )..layout(maxWidth: layout.barWidth);
 
-        final double labelX = left + (barWidth - tp.width) / 2;
+        final double labelX = left + (layout.barWidth - tp.width) / 2;
         final double labelY = top + 6; // near the top of the bar
 
         tp.paint(canvas, Offset(labelX, labelY));
       }
-    }
-  }
-
-  // Cache a reasonable device-pixel-ratio for the blur calculation.
-  static double get _devicePixelRatio {
-    // WidgetsBinding may not be available during tests; fall back to 2.5.
-    try {
-      return WidgetsBinding.instance.platformDispatcher.views.first
-              .devicePixelRatio /
-          1.0;
-    } catch (_) {
-      return 2.5;
     }
   }
 

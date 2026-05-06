@@ -53,7 +53,7 @@ class _ArrayInputSheet extends StatefulWidget {
 }
 
 class _ArrayInputSheetState extends State<_ArrayInputSheet>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   // ── Tabs ─────────────────────────────────────────────────────────────────
   late final TabController _tabController;
 
@@ -213,22 +213,22 @@ class _ArrayInputSheetState extends State<_ArrayInputSheet>
               const SizedBox(height: AppSpacing.lg),
               _buildTabBar(),
               const SizedBox(height: AppSpacing.md),
-              SizedBox(
-                height: 220,
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    _buildManualTab(),
-                    _buildRandomTab(),
-                  ],
+              Flexible(
+                child: SizedBox(
+                  height: 190,
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      _buildManualTab(),
+                      _buildRandomTab(),
+                    ],
+                  ),
                 ),
               ),
               if (widget.showTarget) ...[
                 const SizedBox(height: AppSpacing.md),
                 _buildTargetField(),
               ],
-              const SizedBox(height: AppSpacing.lg),
-              _buildBarPreview(),
               const SizedBox(height: AppSpacing.lg),
               _buildApplyButton(),
             ],
@@ -339,55 +339,46 @@ class _ArrayInputSheetState extends State<_ArrayInputSheet>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Array size: ${_randomSize.round()}',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  Slider(
-                    value: _randomSize,
-                    min: 5,
-                    max: 50,
-                    divisions: 45,
-                    activeColor: AppColors.primary500,
-                    inactiveColor: AppColors.primary100,
-                    label: _randomSize.round().toString(),
-                    onChanged: (v) => setState(() => _randomSize = v),
-                  ),
-                ],
+        Text(
+          'Array size: ${_randomSize.round()}',
+          softWrap: false,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        Slider(
+          value: _randomSize,
+          min: 5,
+          max: 50,
+          divisions: 45,
+          activeColor: AppColors.primary500,
+          inactiveColor: AppColors.primary100,
+          label: _randomSize.round().toString(),
+          onChanged: (v) => setState(() => _randomSize = v),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        SizedBox(
+          width: double.infinity,
+          height: 44,
+          child: OutlinedButton.icon(
+            onPressed: _generateRandom,
+            icon: const Icon(Icons.casino, size: 18),
+            label: const Text('Generate Random Array'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.primary500,
+              side: const BorderSide(color: AppColors.primary500, width: 1.5),
+              shape: RoundedRectangleBorder(
+                borderRadius: AppRadius.mdBorder,
+              ),
+              textStyle: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(width: AppSpacing.md),
-            SizedBox(
-              height: 40,
-              child: ElevatedButton.icon(
-                onPressed: _generateRandom,
-                icon: const Icon(Icons.casino, size: 18),
-                label: const Text('Generate'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary500,
-                  foregroundColor: AppColors.textInverse,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: AppRadius.mdBorder,
-                  ),
-                  textStyle: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
         const SizedBox(height: AppSpacing.sm),
         Text(
@@ -413,61 +404,6 @@ class _ArrayInputSheetState extends State<_ArrayInputSheet>
         hintStyle: TextStyle(color: AppColors.textMuted),
         labelText: 'Target',
         prefixIcon: Icon(Icons.track_changes, size: 20),
-      ),
-    );
-  }
-
-  // ── Mini Bar Preview (40 px) ─────────────────────────────────────────────
-
-  Widget _buildBarPreview() {
-    final isManual = _tabController.index == 0;
-    final values = isManual ? _manualValues : _randomValues;
-
-    if (values.isEmpty) {
-      return Container(
-        height: 40,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: AppColors.sunken,
-          borderRadius: AppRadius.smBorder,
-        ),
-        child: const Center(
-          child: Text(
-            'Preview will appear here',
-            style: TextStyle(
-              fontSize: 12,
-              color: AppColors.textMuted,
-            ),
-          ),
-        ),
-      );
-    }
-
-    final maxVal = values.reduce(max) * 1.0;
-
-    return SizedBox(
-      height: 40,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final barWidth = (constraints.maxWidth / values.length).clamp(1.0, 20.0);
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: values.map((v) {
-              final height = maxVal == 0 ? 4.0 : (v / maxVal) * 36.0;
-              return Container(
-                width: barWidth - 1,
-                height: height + 4,
-                margin: const EdgeInsets.symmetric(horizontal: 0.5),
-                decoration: BoxDecoration(
-                  color: AppColors.primary500,
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(2),
-                  ),
-                ),
-              );
-            }).toList(),
-          );
-        },
       ),
     );
   }

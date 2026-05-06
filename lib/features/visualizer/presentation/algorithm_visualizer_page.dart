@@ -609,8 +609,10 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
     // Convert SortStep to SortBarData list
     final bars = List.generate(array.length, (i) {
       String state = 'default';
-      if (step.sorted.contains(i) || step.swapping.contains(i)) {
+      if (step.sorted.contains(i)) {
         state = 'sorted';
+      } else if (step.swapping.contains(i)) {
+        state = 'swapping';
       } else if (step.pivot == i) {
         state = 'pivot';
       } else if (step.comparing.contains(i)) {
