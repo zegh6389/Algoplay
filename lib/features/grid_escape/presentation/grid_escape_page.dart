@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../data/level_generator.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 /// Grid Escape Page — Grid-based pathfinding puzzle game.
@@ -28,61 +29,23 @@ class GridPos {
   int get hashCode => row.hashCode ^ col.hashCode;
 }
 
-/// Level configuration
-class _LevelConfig {
-  final int gridSize;
-  final List<GridPos> walls;
-  final GridPos start;
-  final GridPos goal;
-  final String question;
-  final String correctAnswer;
-  final List<String> options;
-  final String hint;
+/// Helper extensions to adapt LevelConfig to GridPos-based UI.
+extension LevelConfigX on LevelConfig {
+  GridPos get startGridPos {
+    final (r, c) = startTuple;
+    return GridPos(r, c);
+  }
 
-  const _LevelConfig({
-    required this.gridSize,
-    required this.walls,
-    required this.start,
-    required this.goal,
-    required this.question,
-    required this.correctAnswer,
-    required this.options,
-    required this.hint,
-  });
+  GridPos get endGridPos {
+    final (r, c) = endTuple;
+    return GridPos(r, c);
+  }
+
+  List<GridPos> get wallPositions => walls.map((w) {
+        final parts = w.split(',').map(int.parse).toList();
+        return GridPos(parts[0], parts[1]);
+      }).toList();
 }
-
-const _mockLevels = <_LevelConfig>[
-  _LevelConfig(
-    gridSize: 6,
-    walls: [GridPos(1, 2), GridPos(2, 2), GridPos(3, 2), GridPos(3, 3)],
-    start: GridPos(0, 0),
-    goal: GridPos(5, 5),
-    question: 'Which algorithm would find the SHORTEST path on this grid?',
-    correctAnswer: 'BFS',
-    options: ['DFS', 'BFS', 'Dijkstra', 'Linear Search'],
-    hint: 'BFS explores uniformly in all directions — ideal for unweighted shortest path.',
-  ),
-  _LevelConfig(
-    gridSize: 6,
-    walls: [GridPos(0, 1), GridPos(1, 1), GridPos(2, 1), GridPos(3, 1), GridPos(4, 1)],
-    start: GridPos(0, 0),
-    goal: GridPos(5, 2),
-    question: 'DFS might find a path, but is it the shortest?',
-    correctAnswer: 'No',
-    options: ['Yes', 'No', 'Depends on grid size', 'Only in trees'],
-    hint: 'DFS dives deep along one branch before backtracking — it does not guarantee the shortest path.',
-  ),
-  _LevelConfig(
-    gridSize: 7,
-    walls: [GridPos(1, 1), GridPos(2, 3), GridPos(4, 2), GridPos(5, 4)],
-    start: GridPos(0, 0),
-    goal: GridPos(6, 6),
-    question: 'If edges have different weights, which algorithm is appropriate?',
-    correctAnswer: "Dijkstra's",
-    options: ['BFS', 'DFS', "Dijkstra's", 'Binary Search'],
-    hint: 'Dijkstra handles weighted edges with non-negative weights.',
-  ),
-];
 
 // ═══════════════════════════════════════════════════════════════════════════════
 /// GridEscapePage
@@ -106,21 +69,23 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
   bool _levelComplete = false;
   bool _gameComplete = false;
   int _hintsUsed = 0;
+  late List<LevelConfig> _levels;
 
   @override
   void initState() {
     super.initState();
+    _levels = LevelGenerator.generateAll(10, seed: Random().nextInt(100000));
     _loadLevel(0);
   }
 
   void _loadLevel(int index) {
-    final level = _mockLevels[index];
+    final level = _levels[index];
     setState(() {
       _currentLevel = index;
       _levelScore = 100;
       _path = [];
       _visited = [];
-      _playerPos = level.start;
+      _playerPos = level.startGridPos;
       _selectedAnswer = null;
       _answerCorrect = null;
       _levelComplete = false;
@@ -128,7 +93,7 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
   }
 
   void _selectAnswer(String answer) {
-    final level = _mockLevels[_currentLevel];
+    final level = _levels[_currentLevel];
     final isCorrect = answer == level.correctAnswer;
 
     setState(() {
@@ -146,14 +111,14 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
   }
 
   void _animateSolution() {
-    final level = _mockLevels[_currentLevel];
+    final level = _levels[_currentLevel];
 
     // Simulate BFS finding the path
     Future.delayed(const Duration(milliseconds: 300), () {
       if (!mounted) return;
       setState(() {
-        _visited.add(level.start);
-        _playerPos = level.start;
+        _visited.add(level.startGridPos);
+        _playerPos = level.startGridPos;
       });
 
       // Compute simple path
@@ -164,15 +129,18 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
     });
   }
 
-  Future<List<GridPos>> _computeBFSPath(_LevelConfig level) async {
+  Future<List<GridPos>> _computeBFSPath(LevelConfig level) async {
+    final start = level.startGridPos;
+    final goal = level.endGridPos;
+
     // Simple BFS simulation
-    final queue = <GridPos>[level.start];
-    final visited = <GridPos>{level.start};
+    final queue = <GridPos>[start];
+    final visited = <GridPos>{start};
     final parent = <GridPos, GridPos>{};
 
     while (queue.isNotEmpty) {
       final current = queue.removeAt(0);
-      if (current == level.goal) break;
+      if (current == goal) break;
 
       for (final dir in [
         GridPos(0, 1),
@@ -191,19 +159,19 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
 
     // Reconstruct path
     final path = <GridPos>[];
-    var node = level.goal;
-    while (parent.containsKey(node) || node == level.start) {
+    var node = goal;
+    while (parent.containsKey(node) || node == start) {
       path.add(node);
-      if (node == level.start) break;
+      if (node == start) break;
       node = parent[node]!;
     }
     return path.reversed.toList();
   }
 
-  bool _isValid(GridPos pos, _LevelConfig level) {
+  bool _isValid(GridPos pos, LevelConfig level) {
     if (pos.row < 0 || pos.row >= level.gridSize) return false;
     if (pos.col < 0 || pos.col >= level.gridSize) return false;
-    if (level.walls.contains(pos)) return false;
+    if (level.wallPositions.contains(pos)) return false;
     return true;
   }
 
@@ -236,7 +204,7 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
   }
 
   void _nextLevel() {
-    if (_currentLevel < _mockLevels.length - 1) {
+    if (_currentLevel < _levels.length - 1) {
       _loadLevel(_currentLevel + 1);
     } else {
       setState(() => _gameComplete = true);
@@ -244,6 +212,7 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
   }
 
   void _restartGame() {
+    _levels = LevelGenerator.generateAll(10, seed: Random().nextInt(100000));
     _loadLevel(0);
     setState(() {
       _totalScore = 0;
@@ -270,7 +239,7 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
   }
 
   Widget _buildLevelPlay() {
-    final level = _mockLevels[_currentLevel];
+    final level = _levels[_currentLevel];
 
     return Column(
       children: [
@@ -293,7 +262,7 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Level ${_currentLevel + 1} of ${_mockLevels.length}',
+                      'Level ${_currentLevel + 1} of ${_levels.length}',
                       style: AppTypography.caption,
                     ),
                     Text(
@@ -456,7 +425,7 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
           ),
         ),
         child: Text(
-          _currentLevel < _mockLevels.length - 1
+          _currentLevel < _levels.length - 1
               ? 'Next Level'
               : 'See Results',
         ),
@@ -464,7 +433,7 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
     );
   }
 
-  Widget _buildGrid(_LevelConfig level) {
+  Widget _buildGrid(LevelConfig level) {
     return AspectRatio(
       aspectRatio: 1,
       child: Container(
@@ -493,18 +462,18 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
     );
   }
 
-  Widget _buildCell(GridPos pos, _LevelConfig level) {
+  Widget _buildCell(GridPos pos, LevelConfig level) {
     CellType type;
 
     if (pos == _playerPos && (_levelComplete || _path.isNotEmpty)) {
       type = CellType.current;
     } else if (_path.contains(pos)) {
       type = CellType.path;
-    } else if (pos == level.start) {
+    } else if (pos == level.startGridPos) {
       type = CellType.start;
-    } else if (pos == level.goal) {
+    } else if (pos == level.endGridPos) {
       type = CellType.goal;
-    } else if (level.walls.contains(pos)) {
+    } else if (level.wallPositions.contains(pos)) {
       type = CellType.wall;
     } else if (_visited.contains(pos)) {
       type = CellType.visited;
@@ -513,7 +482,6 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
     }
 
     Color backgroundColor;
-    Color borderColor;
     Widget? child;
 
     switch (type) {
@@ -557,7 +525,7 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
         color: backgroundColor,
         borderRadius: BorderRadius.circular(4),
         border: Border.all(
-          color: borderColor = (type == CellType.goal || type == CellType.start)
+          color: (type == CellType.goal || type == CellType.start)
               ? Colors.white.withValues(alpha: 0.3)
               : Colors.transparent,
           width: 1,
@@ -592,7 +560,7 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
           Text('Escape Complete!', style: AppTypography.h1),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'You escaped all ${_mockLevels.length} grids',
+            'You escaped all ${_levels.length} grids',
             style: AppTypography.body.copyWith(color: AppColors.textSecondary),
           ),
           const SizedBox(height: AppSpacing.xxl),
