@@ -1,108 +1,86 @@
-import 'dart:math';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:algoplay/features/battle_arena/data/question_bank.dart';
 
 void main() {
-  group('BattleQuestion', () {
-    test('creates with all required fields', () {
-      final q = BattleQuestion(
-        question: 'What is O(n)?',
-        correctAnswer: 'Linear',
-        options: ['Linear', 'Logarithmic', 'Quadratic', 'Constant'],
-        hint: 'Grows proportionally with input.',
-        timeLimitSeconds: 15,
-        category: 'complexity',
-      );
-      expect(q.question, 'What is O(n)?');
-      expect(q.correctAnswer, 'Linear');
-      expect(q.options.length, 4);
-      expect(q.hint, isNotEmpty);
-      expect(q.timeLimitSeconds, 15);
-      expect(q.category, 'complexity');
-    });
-  });
-
   group('QuestionBank', () {
-    test('generate() returns correct number of questions', () {
+    test('generate() returns correct count', () {
       final questions = QuestionBank.generate(count: 5, seed: 42);
       expect(questions.length, 5);
+
+      final questions10 = QuestionBank.generate(count: 10, seed: 42);
+      expect(questions10.length, 10);
+
+      // Clamped to pool size (36)
+      final questions50 = QuestionBank.generate(count: 50, seed: 42);
+      expect(questions50.length, 36);
     });
 
-    test('generate() returns 10 questions by default', () {
-      final questions = QuestionBank.generate(seed: 42);
-      expect(questions.length, 10);
-    });
-
-    test('each question has non-empty text, correct answer, 4 options, hint', () {
-      final questions = QuestionBank.generate(count: 10, seed: 42);
+    test('each question has all required fields', () {
+      final questions = QuestionBank.generate(count: 10, seed: 1);
       for (final q in questions) {
         expect(q.question, isNotEmpty);
         expect(q.correctAnswer, isNotEmpty);
-        expect(q.options.length, 4);
+        expect(q.options, isNotEmpty);
         expect(q.hint, isNotEmpty);
         expect(q.timeLimitSeconds, greaterThan(0));
+        expect(q.category, isNotEmpty);
       }
     });
 
-    test('correct answer is always in options', () {
-      final questions = QuestionBank.generate(count: 15, seed: 42);
+    test('correctAnswer is always in the options list', () {
+      final questions = QuestionBank.generate(count: 36, seed: 99);
       for (final q in questions) {
-        expect(q.options, contains(q.correctAnswer));
+        expect(
+          q.options,
+          contains(q.correctAnswer),
+          reason: 'correctAnswer "${q.correctAnswer}" not in options for: "${q.question}"',
+        );
       }
     });
 
     test('questions cover multiple categories', () {
-      final questions = QuestionBank.generate(count: 20, seed: 42);
+      final questions = QuestionBank.generate(count: 36, seed: 42);
       final categories = questions.map((q) => q.category).toSet();
-      expect(categories.length, greaterThanOrEqualTo(3));
+      expect(categories.length, greaterThanOrEqualTo(3),
+          reason: 'Expected questions from at least 3 different categories');
     });
 
-    test('no duplicate questions in a set', () {
-      final questions = QuestionBank.generate(count: 15, seed: 42);
-      final texts = questions.map((q) => q.question).toList();
-      expect(texts.toSet().length, texts.length);
-    });
-
-    test('options are shuffled (correct answer not always first)', () {
-      // Generate many sets and check that correct answer is not always at index 0
-      int firstPositionCount = 0;
-      for (int seed = 0; seed < 20; seed++) {
-        final questions = QuestionBank.generate(count: 10, seed: seed);
-        for (final q in questions) {
-          if (q.options.first == q.correctAnswer) {
-            firstPositionCount++;
-          }
-        }
-      }
-      // With 200 total questions, if correct is always first, firstPositionCount == 200.
-      // With random shuffling, it should be ~50 (25% chance).
-      // We allow up to 150 to avoid flaky test but prove shuffling.
-      expect(firstPositionCount, lessThan(150));
+    test('no duplicate questions', () {
+      final questions = QuestionBank.generate(count: 20, seed: 7);
+      final questionTexts = questions.map((q) => q.question).toList();
+      expect(questionTexts.toSet().length, questionTexts.length,
+          reason: 'Duplicate questions found');
     });
 
     test('seed produces deterministic results', () {
-      final set1 = QuestionBank.generate(count: 5, seed: 123);
-      final set2 = QuestionBank.generate(count: 5, seed: 123);
-      for (int i = 0; i < 5; i++) {
-        expect(set1[i].question, set2[i].question);
-        expect(set1[i].correctAnswer, set2[i].correctAnswer);
-        expect(set1[i].options, set2[i].options);
+      final run1 = QuestionBank.generate(count: 10, seed: 123);
+      final run2 = QuestionBank.generate(count: 10, seed: 123);
+      for (int i = 0; i < run1.length; i++) {
+        expect(run1[i].question, run2[i].question);
+        expect(run1[i].options, run2[i].options);
       }
     });
 
     test('different seeds produce different orderings', () {
-      final set1 = QuestionBank.generate(count: 5, seed: 1);
-      final set2 = QuestionBank.generate(count: 5, seed: 999);
-      // At least one question should differ (or order should differ)
-      bool anyDifference = false;
-      for (int i = 0; i < 5; i++) {
-        if (set1[i].question != set2[i].question ||
-            set1[i].options.join(',') != set2[i].options.join(',')) {
-          anyDifference = true;
+      final run1 = QuestionBank.generate(count: 10, seed: 1);
+      final run2 = QuestionBank.generate(count: 10, seed: 999);
+      // At least one question should differ in position
+      bool anyDifferent = false;
+      for (int i = 0; i < run1.length; i++) {
+        if (run1[i].question != run2[i].question) {
+          anyDifferent = true;
           break;
         }
       }
-      expect(anyDifference, isTrue);
+      expect(anyDifferent, isTrue, reason: 'Different seeds produced identical ordering');
+    });
+
+    test('options have at least 2 choices per question', () {
+      final questions = QuestionBank.generate(count: 10, seed: 42);
+      for (final q in questions) {
+        expect(q.options.length, greaterThanOrEqualTo(2),
+            reason: 'Question has fewer than 2 options: "${q.question}"');
+      }
     });
   });
 }

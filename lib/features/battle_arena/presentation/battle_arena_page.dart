@@ -1,8 +1,9 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../../shared/widgets/section_header.dart';
+import '../data/question_bank.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 /// Battle Arena Page — Head-to-head algorithm battle game.
@@ -13,61 +14,6 @@ import '../../../shared/widgets/section_header.dart';
 
 /// Battle state enum
 enum BattleState { idle, countdown, battle, finished }
-
-/// Mock question for the battle
-class _BattleQuestion {
-  final String question;
-  final String correctAnswer;
-  final List<String> options;
-  final String hint;
-  final int timeLimitSeconds;
-
-  const _BattleQuestion({
-    required this.question,
-    required this.correctAnswer,
-    required this.options,
-    required this.hint,
-    required this.timeLimitSeconds,
-  });
-}
-
-const _mockQuestions = <_BattleQuestion>[
-  _BattleQuestion(
-    question: 'What is the time complexity of binary search?',
-    correctAnswer: 'O(log n)',
-    options: ['O(n)', 'O(log n)', 'O(n²)', 'O(1)'],
-    hint: 'Divides the search space in half each step.',
-    timeLimitSeconds: 15,
-  ),
-  _BattleQuestion(
-    question: 'Which sorting algorithm has O(n log n) average case and is not stable?',
-    correctAnswer: 'Quick Sort',
-    options: ['Merge Sort', 'Quick Sort', 'Insertion Sort', 'Bubble Sort'],
-    hint: 'It picks a pivot element.',
-    timeLimitSeconds: 15,
-  ),
-  _BattleQuestion(
-    question: 'What data structure does BFS use?',
-    correctAnswer: 'Queue',
-    options: ['Stack', 'Queue', 'Heap', 'Tree'],
-    hint: 'First-in, first-out.',
-    timeLimitSeconds: 10,
-  ),
-  _BattleQuestion(
-    question: 'What is the space complexity of merge sort?',
-    correctAnswer: 'O(n)',
-    options: ['O(1)', 'O(log n)', 'O(n)', 'O(n²)'],
-    hint: 'Requires auxiliary space proportional to input size.',
-    timeLimitSeconds: 12,
-  ),
-  _BattleQuestion(
-    question: 'Which algorithm finds the shortest path in a weighted graph?',
-    correctAnswer: "Dijkstra's",
-    options: ['DFS', 'BFS', "Dijkstra's", 'Binary Search'],
-    hint: 'Named after a Dutch computer scientist.',
-    timeLimitSeconds: 15,
-  ),
-];
 
 // ═══════════════════════════════════════════════════════════════════════════════
 /// BattleArenaPage
@@ -91,6 +37,7 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
   bool? _answerCorrect;
   int _timeRemaining = 15;
   int _questionNumber = 1;
+  late List<BattleQuestion> _questions;
 
   late AnimationController _countdownController;
   late Animation<int> _countdownAnimation;
@@ -98,6 +45,7 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
   @override
   void initState() {
     super.initState();
+    _questions = QuestionBank.generate(count: 5, seed: Random().nextInt(100000));
     _countdownController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 3),
@@ -115,6 +63,7 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
 
   void _startBattle() {
     setState(() {
+      _questions = QuestionBank.generate(count: 5, seed: Random().nextInt(100000));
       _state = BattleState.countdown;
       _playerScore = 0;
       _opponentScore = 0;
@@ -131,7 +80,7 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
   }
 
   void _startQuestionTimer() {
-    final question = _mockQuestions[_currentQuestionIndex];
+    final question = _questions[_currentQuestionIndex];
     _timeRemaining = question.timeLimitSeconds;
     _selectedAnswer = null;
     _answerCorrect = null;
@@ -140,7 +89,7 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
     _simulateOpponent(question);
   }
 
-  void _simulateOpponent(_BattleQuestion question) {
+  void _simulateOpponent(BattleQuestion question) {
     Future.delayed(Duration(seconds: (_timeRemaining * 0.6).round()), () {
       if (mounted && _state == BattleState.battle) {
         setState(() {
@@ -159,7 +108,7 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
   void _selectAnswer(String answer) {
     if (_selectedAnswer != null) return;
 
-    final question = _mockQuestions[_currentQuestionIndex];
+    final question = _questions[_currentQuestionIndex];
     final isCorrect = answer == question.correctAnswer;
 
     setState(() {
@@ -180,7 +129,7 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
   }
 
   void _advanceQuestion() {
-    if (_currentQuestionIndex < _mockQuestions.length - 1) {
+    if (_currentQuestionIndex < _questions.length - 1) {
       setState(() {
         _currentQuestionIndex++;
         _questionNumber++;
@@ -342,7 +291,7 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
   }
 
   Widget _buildBattleState() {
-    final question = _mockQuestions[_currentQuestionIndex];
+    final question = _questions[_currentQuestionIndex];
 
     return Column(
       children: [
@@ -358,7 +307,7 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
           child: Row(
             children: [
               Text(
-                'Question $_questionNumber / ${_mockQuestions.length}',
+                'Question $_questionNumber / ${_questions.length}',
                 style: AppTypography.caption,
               ),
               const Spacer(),

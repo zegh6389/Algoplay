@@ -127,10 +127,7 @@ class ArenaRepository {
     'DataNinja', 'GraphGuru', 'HashHunter', 'QueueQueen', 'StackStar',
   ];
 
-  static const _algorithms = <String>[
-    'Quick Sort', 'Merge Sort', 'Binary Search', 'Dijkstra', 'Heap Sort',
-    'BFS', 'DFS', 'Dynamic Programming', 'Greedy', 'Backtracking',
-  ];
+
 
   /// Returns 10 generated opponent players, sorted by rating descending.
   Future<List<ArenaPlayer>> getPlayers() async {

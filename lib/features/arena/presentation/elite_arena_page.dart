@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../learn/data/algorithm_data.dart';
 import '../../../shared/widgets/section_header.dart';
+import '../data/arena_repository.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════════
 /// Elite Arena Page — Competitive Algorithm Arena
@@ -24,6 +24,10 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
   // Track selected rank tier
   int _selectedTierIndex = 0;
 
+  List<ArenaPlayer> _arenaPlayers = [];
+  List<MatchRecord> _matchHistory = [];
+  bool _isLoading = true;
+
   static const _rankTiers = [
     (label: 'Bronze', icon: Icons.workspace_premium, color: Color(0xFFCD7F32)),
     (label: 'Silver', icon: Icons.workspace_premium, color: Color(0xFFC0C0C0)),
@@ -33,23 +37,23 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
     (label: 'Master', icon: Icons.emoji_events, color: Color(0xFFFF6B6B)),
   ];
 
-  // Mock arena players
-  static const _arenaPlayers = [
-    (rank: 1, name: 'CodeMaster', initials: 'CM', rating: '2847', streak: 12),
-    (rank: 2, name: 'AlgoKing', initials: 'AK', rating: '2756', streak: 8),
-    (rank: 3, name: 'SwiftSort', initials: 'SS', rating: '2691', streak: -3),
-    (rank: 4, name: 'BitWizard', initials: 'BW', rating: '2643', streak: 5),
-    (rank: 5, name: 'TreeHero', initials: 'TH', rating: '2588', streak: -1),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _loadArenaData();
+  }
 
-  // Mock match history
-  static const _matchHistory = [
-    (result: 'WIN', opponent: 'AlgoKing', algorithm: 'Quick Sort', rating: '+18'),
-    (result: 'LOSS', opponent: 'SwiftSort', algorithm: 'Merge Sort', rating: '-12'),
-    (result: 'WIN', opponent: 'BitWizard', algorithm: 'Binary Search', rating: '+15'),
-    (result: 'WIN', opponent: 'TreeHero', algorithm: 'Dijkstra', rating: '+22'),
-    (result: 'WIN', opponent: 'DataNinja', algorithm: 'Heap Sort', rating: '+10'),
-  ];
+  Future<void> _loadArenaData() async {
+    final repo = ArenaRepository();
+    final players = await repo.getPlayers();
+    final history = await repo.getMatchHistory();
+    if (!mounted) return;
+    setState(() {
+      _arenaPlayers = players;
+      _matchHistory = history;
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -420,9 +424,7 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
           color: AppColors.solarGold,
           tier: 'Gold+',
           reward: '1000 Coins',
-          onTap: () {
-            // TODO: Navigate to tournament
-          },
+          onTap: () => context.push('/game/battle-arena'),
         ),
         const SizedBox(height: AppSpacing.md),
         _ArenaModeCard(
@@ -432,15 +434,19 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
           color: AppColors.secondary500,
           tier: 'All Ranks',
           reward: '+50 XP',
-          onTap: () {
-            // TODO: Navigate to daily sprint
-          },
+          onTap: () => context.push('/game/race-mode'),
         ),
       ],
     );
   }
 
   Widget _buildTopPlayers() {
+    if (_isLoading) {
+      return const Center(child: Padding(
+        padding: EdgeInsets.all(AppSpacing.xl),
+        child: CircularProgressIndicator(),
+      ));
+    }
     return Container(
       decoration: BoxDecoration(
         color: AppColors.card,
@@ -518,21 +524,21 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
                         Row(
                           children: [
                             Icon(
-                              player.streak > 0
+                              player.wins > player.losses
                                   ? Icons.trending_up
                                   : Icons.trending_down,
                               size: 12,
-                              color: player.streak > 0
+                              color: player.wins > player.losses
                                   ? AppColors.success600
                                   : AppColors.error600,
                             ),
                             const SizedBox(width: 2),
                             Text(
-                              '${player.streak > 0 ? '+' : ''}${player.streak}',
+                              '${player.wins}W ${player.losses}L',
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w500,
-                                color: player.streak > 0
+                                color: player.wins > player.losses
                                     ? AppColors.success600
                                     : AppColors.error600,
                               ),
@@ -545,7 +551,7 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
 
                   // Rating
                   Text(
-                    player.rating,
+                    '${player.rating}',
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
@@ -562,11 +568,35 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
   }
 
   Widget _buildMatchHistory() {
+    if (_isLoading) {
+      return const Center(child: Padding(
+        padding: EdgeInsets.all(AppSpacing.xl),
+        child: CircularProgressIndicator(),
+      ));
+    }
+    if (_matchHistory.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(AppSpacing.xl),
+        decoration: BoxDecoration(
+          color: AppColors.card,
+          borderRadius: AppRadius.mdBorder,
+        ),
+        child: const Center(
+          child: Text(
+            'No matches yet. Start a battle!',
+            style: TextStyle(
+              fontSize: 14,
+              color: AppColors.textMuted,
+            ),
+          ),
+        ),
+      );
+    }
     return Column(
       children: [
         ...List.generate(_matchHistory.length, (i) {
           final match = _matchHistory[i];
-          final isWin = match.result == 'WIN';
+          final isWin = match.result == 'win';
           return Container(
             margin: const EdgeInsets.only(bottom: AppSpacing.sm),
             padding: const EdgeInsets.all(AppSpacing.md),
@@ -595,7 +625,7 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
                     borderRadius: AppRadius.smBorder,
                   ),
                   child: Text(
-                    match.result,
+                    match.result.toUpperCase(),
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
@@ -629,7 +659,7 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
                   ),
                 ),
                 Text(
-                  match.rating,
+                  match.score,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
@@ -685,9 +715,7 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {
-                    // TODO: Navigate to rewards page
-                  },
+                  onPressed: () => context.push('/premium'),
                   child: const Text(
                     'View All',
                     style: TextStyle(

@@ -2,71 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../../shared/widgets/section_header.dart';
+import '../data/leaderboard_repository.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 /// Leaderboard Page — Global player rankings.
 /// Displays top-100 players with filters for weekly / monthly / all-time.
 // ═══════════════════════════════════════════════════════════════════════════════
-
-/// Mock leaderboard data
-class _LeaderboardEntry {
-  final int rank;
-  final String initials;
-  final String name;
-  final int xp;
-  final int wins;
-  final int streak;
-  final bool isCurrentUser;
-
-  const _LeaderboardEntry({
-    required this.rank,
-    required this.initials,
-    required this.name,
-    required this.xp,
-    required this.wins,
-    required this.streak,
-    this.isCurrentUser = false,
-  });
-}
-
-const _mockLeaderboard = <_LeaderboardEntry>[
-  _LeaderboardEntry(rank: 1,   initials: 'AC', name: 'Alex Chen',       xp: 12450, wins: 312, streak: 28),
-  _LeaderboardEntry(rank: 2,   initials: 'SK', name: 'Sarah Kim',        xp: 11200, wins: 287, streak: 21),
-  _LeaderboardEntry(rank: 3,   initials: 'MT', name: 'Mike Torres',       xp: 10890, wins: 265, streak: 14),
-  _LeaderboardEntry(rank: 4,   initials: 'EJ', name: 'Emma Johnson',     xp: 9870,  wins: 248, streak: 7),
-  _LeaderboardEntry(rank: 5,   initials: 'DL', name: 'David Lee',       xp: 9210,  wins: 231, streak: 19),
-  _LeaderboardEntry(rank: 6,   initials: 'AR', name: 'Aisha Rahman',    xp: 8740,  wins: 218, streak: 3),
-  _LeaderboardEntry(rank: 7,   initials: 'JW', name: 'James Wilson',     xp: 8100,  wins: 202, streak: 11),
-  _LeaderboardEntry(rank: 8,   initials: 'LP', name: 'Lisa Park',        xp: 7890,  wins: 197, streak: 5),
-  _LeaderboardEntry(rank: 9,   initials: 'RO', name: 'Raj Oberoi',       xp: 7430,  wins: 186, streak: 8),
-  _LeaderboardEntry(rank: 10,  initials: 'MG', name: 'Maria Garcia',    xp: 7100,  wins: 178, streak: 4),
-  _LeaderboardEntry(rank: 11,  initials: 'TN', name: 'Tom Nielsen',     xp: 6890,  wins: 172, streak: 2),
-  _LeaderboardEntry(rank: 12,  initials: 'KB', name: 'Kim Brown',        xp: 6540,  wins: 164, streak: 0),
-  _LeaderboardEntry(rank: 13,  initials: 'YZ', name: 'Yuki Zhang',      xp: 6210,  wins: 155, streak: 6),
-  _LeaderboardEntry(rank: 14,  initials: 'AH', name: 'Ali Hassan',      xp: 5980,  wins: 149, streak: 9),
-  _LeaderboardEntry(rank: 15,  initials: 'SW', name: 'Sophia Wang',     xp: 5720,  wins: 143, streak: 1),
-  _LeaderboardEntry(rank: 16,  initials: 'JM', name: 'John Miller',     xp: 5490,  wins: 137, streak: 0),
-  _LeaderboardEntry(rank: 17,  initials: 'EP', name: 'Elena Petrova',    xp: 5210,  wins: 130, streak: 12),
-  _LeaderboardEntry(rank: 18,  initials: 'CK', name: 'Chris Kim',        xp: 4980,  wins: 124, streak: 3),
-  _LeaderboardEntry(rank: 19,  initials: 'NB', name: 'Nadia Benali',    xp: 4740,  wins: 118, streak: 7),
-  _LeaderboardEntry(rank: 20,  initials: 'PL', name: 'Paul Liu',         xp: 4510,  wins: 113, streak: 0),
-  _LeaderboardEntry(rank: 21,  initials: 'AM', name: 'Anna Martin',      xp: 4320,  wins: 108, streak: 4),
-  _LeaderboardEntry(rank: 22,  initials: 'JS', name: 'Jack Smith',       xp: 4180,  wins: 104, streak: 2),
-  _LeaderboardEntry(rank: 23,  initials: 'FT', name: 'Fatima Taha',      xp: 3960,  wins: 99,  streak: 0),
-  _LeaderboardEntry(rank: 24,  initials: 'DK', name: 'Denis Kowalski',   xp: 3740,  wins: 93,  streak: 5),
-  _LeaderboardEntry(rank: 25,  initials: 'RN', name: 'Rina Nakamura',    xp: 3520,  wins: 88,  streak: 1),
-];
-
-final _currentUserEntry = _LeaderboardEntry(
-  rank: 47,
-  initials: 'S',
-  name: 'Student',
-  xp: 1420,
-  wins: 35,
-  streak: 3,
-  isCurrentUser: true,
-);
 
 // ═══════════════════════════════════════════════════════════════════════════════
 /// LeaderboardPage
@@ -80,6 +21,28 @@ class LeaderboardPage extends ConsumerStatefulWidget {
 
 class _LeaderboardPageState extends ConsumerState<LeaderboardPage> {
   int _selectedTab = 0; // 0=Weekly, 1=Monthly, 2=All-Time
+
+  List<LeaderboardEntry> _allEntries = [];
+  LeaderboardEntry? _currentUserEntry;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLeaderboard();
+  }
+
+  Future<void> _loadLeaderboard() async {
+    final repo = LeaderboardRepository();
+    final filter = ['weekly', 'monthly', 'all'][_selectedTab];
+    final entries = await repo.getLeaderboard(filter: filter);
+    if (!mounted) return;
+    setState(() {
+      _allEntries = entries;
+      _currentUserEntry = entries.where((e) => e.isCurrentUser).firstOrNull;
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,25 +73,32 @@ class _LeaderboardPageState extends ConsumerState<LeaderboardPage> {
               ),
             ),
 
-            // ── Top 3 Podium ──
-            if (_selectedTab == 2) ...[
-              _buildPodium(),
-              const SizedBox(height: AppSpacing.lg),
-            ],
+            // ── Content ──
+            if (_isLoading)
+              const Expanded(
+                child: Center(child: CircularProgressIndicator()),
+              )
+            else ...[
+              // ── Top 3 Podium (all-time only) ──
+              if (_selectedTab == 2) ...[
+                _buildPodium(),
+                const SizedBox(height: AppSpacing.lg),
+              ],
 
-            // ── Rest of list ──
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                itemCount: _restOfList.length + 1, // +1 for current user
-                itemBuilder: (context, index) {
-                  if (index == _restOfList.length) {
-                    return _buildCurrentUserEntry();
-                  }
-                  return _LeaderboardTile(entry: _restOfList[index]);
-                },
+              // ── Rest of list ──
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                  itemCount: _restOfList.length + (_currentUserEntry != null ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (index == _restOfList.length) {
+                      return _buildCurrentUserEntry();
+                    }
+                    return _LeaderboardTile(entry: _restOfList[index]);
+                  },
+                ),
               ),
-            ),
+            ],
           ],
         ),
       ),
@@ -150,23 +120,27 @@ class _LeaderboardPageState extends ConsumerState<LeaderboardPage> {
             _TabChip(
               label: tabs[i],
               isSelected: _selectedTab == i,
-              onTap: () => setState(() => _selectedTab = i),
+              onTap: () {
+                setState(() => _selectedTab = i);
+                _loadLeaderboard();
+              },
             ),
         ],
       ),
     );
   }
 
-  List<_LeaderboardEntry> get _restOfList {
+  List<LeaderboardEntry> get _restOfList {
     // For weekly/monthly show subset, all-time shows full
     if (_selectedTab < 2) {
-      return _mockLeaderboard.skip(3).take(15).toList();
+      return _allEntries.skip(3).take(15).toList();
     }
-    return _mockLeaderboard;
+    return _allEntries;
   }
 
   Widget _buildPodium() {
-    final top3 = _mockLeaderboard.take(3).toList();
+    final top3 = _allEntries.take(3).toList();
+    if (top3.length < 3) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Row(
@@ -192,13 +166,14 @@ class _LeaderboardPageState extends ConsumerState<LeaderboardPage> {
   }
 
   Widget _buildCurrentUserEntry() {
+    if (_currentUserEntry == null) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.only(top: AppSpacing.md, bottom: AppSpacing.xl),
       child: Column(
         children: [
           const Divider(height: 1),
           const SizedBox(height: AppSpacing.md),
-          _LeaderboardTile(entry: _currentUserEntry),
+          _LeaderboardTile(entry: _currentUserEntry!),
         ],
       ),
     );
@@ -253,14 +228,13 @@ class _TabChip extends StatelessWidget {
 class _PodiumEntry extends StatelessWidget {
   const _PodiumEntry({required this.entry, required this.height});
 
-  final _LeaderboardEntry entry;
+  final LeaderboardEntry entry;
   final double height;
 
   @override
   Widget build(BuildContext context) {
     final isGold = entry.rank == 1;
     final isSilver = entry.rank == 2;
-    final isBronze = entry.rank == 3;
 
     Color podiumColor;
     if (isGold) {
@@ -339,7 +313,7 @@ class _PodiumEntry extends StatelessWidget {
 class _LeaderboardTile extends StatelessWidget {
   const _LeaderboardTile({required this.entry});
 
-  final _LeaderboardEntry entry;
+  final LeaderboardEntry entry;
 
   @override
   Widget build(BuildContext context) {
