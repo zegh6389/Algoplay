@@ -1,4 +1,4 @@
-package com.awaiszegham.algoplay
+package com.algoplay.app
 
 import io.flutter.embedding.android.FlutterActivity
 
