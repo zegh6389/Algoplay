@@ -32,6 +32,11 @@ dependencies:
   google_mobile_ads: ^8.0.0
   in_app_purchase: ^3.2.3
 
+  # Visualization
+  flutter_highlight: ^0.7.0
+  audioplayers: ^6.1.0
+  confetti: ^0.8.0
+
   # Networking
   url_launcher: ^6.3.1
 
