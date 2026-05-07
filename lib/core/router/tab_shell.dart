@@ -4,27 +4,56 @@ import 'package:go_router/go_router.dart';
 
 import 'package:algoplay/shared/widgets/banner_ad_wrapper.dart';
 import 'package:algoplay/shared/providers/premium_provider.dart';
+import 'package:algoplay/core/services/ad_service.dart';
 
-class TabShellWidget extends ConsumerWidget {
+class TabShellWidget extends ConsumerStatefulWidget {
   final StatefulNavigationShell navigationShell;
 
   const TabShellWidget({super.key, required this.navigationShell});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TabShellWidget> createState() => _TabShellWidgetState();
+}
+
+class _TabShellWidgetState extends ConsumerState<TabShellWidget> {
+  int _tabSwitchCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Pre-load interstitial on app start
+    AdService.instance.loadInterstitialAd();
+  }
+
+  void _onTabTap(int index) {
+    if (index != widget.navigationShell.currentIndex) {
+      _tabSwitchCount++;
+      // Show interstitial every 4th tab switch
+      if (_tabSwitchCount % 4 == 0) {
+        final isPremium = ref.read(premiumProvider);
+        if (!isPremium) {
+          AdService.instance.showInterstitialAd();
+        }
+      }
+    }
+    widget.navigationShell.goBranch(
+      index,
+      initialLocation: index == widget.navigationShell.currentIndex,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final isPremium = ref.watch(premiumProvider);
 
     return Scaffold(
       body: BannerAdWrapper(
         isPremium: isPremium,
-        child: navigationShell,
+        child: widget.navigationShell,
       ),
       bottomNavigationBar: _AnimatedBottomNavBar(
-        currentIndex: navigationShell.currentIndex,
-        onTap: (index) => navigationShell.goBranch(
-          index,
-          initialLocation: index == navigationShell.currentIndex,
-        ),
+        currentIndex: widget.navigationShell.currentIndex,
+        onTap: _onTabTap,
       ),
     );
   }
