@@ -24,13 +24,13 @@ jobs:
           channel: 'stable'
 
       - name: Install dependencies
-        run: flutter pub get
+        run: cd . \run: flutter\run: flutter flutter pub get
 
       - name: Analyze
-        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+        run: cd . \run: flutter\run: flutter flutter analyze --no-fatal-infos --no-fatal-warnings
 
       - name: Run tests
-        run: flutter test
+        run: cd . \run: flutter\run: flutter flutter test
 
   build-android:
     name: Build Android
@@ -47,7 +47,7 @@ jobs:
           channel: 'stable'
 
       - name: Install dependencies
-        run: flutter pub get
+        run: cd . \run: flutter\run: flutter flutter pub get
 
       - name: Decode keystore
         run: |
@@ -63,10 +63,10 @@ jobs:
           EOF
 
       - name: Build Android AAB (Play Store)
-        run: flutter build appbundle --release
+        run: cd . \run: flutter\run: flutter flutter build appbundle --release
 
       - name: Build Android APK (sideload)
-        run: flutter build apk --release
+        run: cd . \run: flutter\run: flutter flutter build apk --release
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
