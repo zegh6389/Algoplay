@@ -49,15 +49,24 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Decode keystore
+      - name: Create release keystore
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release-keystore.jks
+          keytool -genkeypair \
+            -v \
+            -keystore android/app/release-keystore.jks \
+            -storepass algoplay123 \
+            -keypass algoplay123 \
+            -alias algoplay \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -dname "CN=Algoplay, OU=Algoplay, O=Algoplay, L=London, S=London, C=GB"
 
       - name: Create key.properties
         run: |
           cat > android/key.properties << EOF
-          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
-          keyPassword=${{ secrets.KEYSTORE_PASSWORD }}
+          storePassword=algoplay123
+          keyPassword=algoplay123
           keyAlias=algoplay
           storeFile=release-keystore.jks
           EOF
