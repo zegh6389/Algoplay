@@ -18,7 +18,7 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final progressAsync = ref.watch(userProgressProvider);
+    final userProgress = ref.watch(userProgressProvider);
     final allLessons = ref.watch(lessonsProvider);
 
     return Scaffold(
@@ -42,16 +42,12 @@ class HomePage extends ConsumerWidget {
                       color: AppColors.primary100,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: progressAsync.when(
-                      data: (p) => Row(
-                        children: [
-                          const Icon(Icons.star, color: AppColors.solarGold, size: 16),
-                          const SizedBox(width: 4),
-                          Text('${p.totalXP} XP', style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary700, fontSize: 14)),
-                        ],
-                      ),
-                      loading: () => const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
-                      error: (_, __) => const Text('0 XP'),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.star, color: AppColors.solarGold, size: 16),
+                        const SizedBox(width: 4),
+                        Text('${userProgress.totalXP} XP', style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary700, fontSize: 14)),
+                      ],
                     ),
                   ),
                 ],
@@ -120,25 +116,29 @@ class HomePage extends ConsumerWidget {
       childAspectRatio: 1.1,
       children: [
         SkillCategoryCard(
-          category: AlgorithmCategory.sorting,
+          name: 'Sorting',
+          algorithmCount: 6,
           icon: Icons.sort,
           color: AppColors.catSorting,
           onTap: () => context.push('/explore?category=sorting'),
         ),
         SkillCategoryCard(
-          category: AlgorithmCategory.searching,
+          name: 'Searching',
+          algorithmCount: 4,
           icon: Icons.search,
           color: AppColors.catSearching,
           onTap: () => context.push('/explore?category=searching'),
         ),
         SkillCategoryCard(
-          category: AlgorithmCategory.graphs,
+          name: 'Graphs',
+          algorithmCount: 5,
           icon: Icons.account_tree,
           color: AppColors.catGraphs,
           onTap: () => context.push('/explore?category=graphs'),
         ),
         SkillCategoryCard(
-          category: AlgorithmCategory.dp,
+          name: 'Dynamic Prog.',
+          algorithmCount: 3,
           icon: Icons.grid_on,
           color: AppColors.catDp,
           onTap: () => context.push('/explore?category=dp'),
