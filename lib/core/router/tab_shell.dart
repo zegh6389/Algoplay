@@ -64,8 +64,8 @@ class _AnimatedBottomNavBar extends StatelessWidget {
   final ValueChanged<int> onTap;
 
   static const _tabs = <_TabConfig>[
-    _TabConfig(icon: Icons.home, label: 'Home'),
-    _TabConfig(icon: Icons.menu_book, label: 'Learn'),
+    _TabConfig(icon: Icons.menu_book, label: 'Lessons'),
+    _TabConfig(icon: Icons.explore, label: 'Explore'),
     _TabConfig(icon: Icons.sports_esports, label: 'Play'),
     _TabConfig(icon: Icons.bar_chart, label: 'Stats'),
     _TabConfig(icon: Icons.person, label: 'Profile'),

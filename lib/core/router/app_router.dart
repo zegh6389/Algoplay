@@ -3,6 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'tab_shell.dart';
 import '../../features/home/presentation/home_page.dart' show HomePage;
 import '../../features/learn/presentation/learn_page.dart' show LearnPage;
+import '../../features/learn/presentation/lessons_home_page.dart' show LessonsHomePage;
+import '../../features/learn/presentation/lesson_detail_page.dart' show LessonDetailPage;
+import '../../features/learn/presentation/module_content_page.dart' show ModuleContentPage;
 import '../../features/play/presentation/play_page.dart' show PlayPage;
 import '../../features/stats/presentation/stats_page.dart' show StatsPage;
 import '../../features/profile/presentation/profile_page.dart' show ProfilePage;
@@ -47,12 +50,12 @@ final router = GoRouter(
         return TabShellWidget(navigationShell: navigationShell);
       },
       branches: [
-        // Tab 0 — Home
+        // Tab 0 — Lessons (Home)
         StatefulShellBranch(
           routes: [
             GoRoute(
               path: '/home',
-              builder: (context, state) => const HomePage(),
+              builder: (context, state) => const LessonsHomePage(),
             ),
           ],
         ),
@@ -93,6 +96,23 @@ final router = GoRouter(
           ],
         ),
       ],
+    ),
+
+    // ── Lesson routes (fullscreen, no tab bar) ──
+    GoRoute(
+      path: '/lesson/:lessonId',
+      builder: (context, state) {
+        final lessonId = int.parse(state.pathParameters['lessonId']!);
+        return LessonDetailPage(lessonId: lessonId);
+      },
+    ),
+    GoRoute(
+      path: '/lesson/:lessonId/module/:moduleId',
+      builder: (context, state) {
+        final lessonId = int.parse(state.pathParameters['lessonId']!);
+        final moduleId = state.pathParameters['moduleId']!;
+        return ModuleContentPage(lessonId: lessonId, moduleId: moduleId);
+      },
     ),
 
     // ── Visualizer routes (fullscreen, no tab bar) ──
