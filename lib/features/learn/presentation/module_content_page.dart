@@ -36,6 +36,7 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
   void initState() {
     super.initState();
     _loadModule();
+    _restoreScrollPosition();
   }
 
   void _loadModule() {
@@ -56,6 +57,34 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
       contentBlocks: const [TextBlock('Module content not found.')],
       order: 0,
     );
+  }
+
+  Future<void> _restoreScrollPosition() async {
+    final repo = ref.read(lessonProgressRepoProvider);
+    final offset = await repo.getScrollPosition(widget.lessonId);
+    if (!mounted || offset <= 0) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_scrollController.hasClients) return;
+      _scrollController.jumpTo(
+        offset.clamp(0.0, _scrollController.position.maxScrollExtent),
+      );
+    });
+  }
+
+  Future<void> _saveReaderState() async {
+    final repo = ref.read(lessonProgressRepoProvider);
+    await repo.setCurrentModule(widget.lessonId, widget.moduleId);
+    if (_scrollController.hasClients) {
+      await repo.setScrollPosition(widget.lessonId, _scrollController.offset);
+    }
+  }
+
+  Future<void> _openVisualizer() async {
+    final algorithmId = _module.algorithmId;
+    if (algorithmId == null) return;
+    await _saveReaderState();
+    if (!mounted) return;
+    context.push('/visualizer/$algorithmId');
   }
 
   @override
@@ -99,15 +128,9 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            // Save scroll position on exit.
-            if (_scrollController.hasClients) {
-              final repo = ref.read(lessonProgressRepoProvider);
-              repo.setScrollPosition(
-                widget.lessonId,
-                _scrollController.offset,
-              );
-            }
+          onPressed: () async {
+            await _saveReaderState();
+            if (!context.mounted) return;
             context.pop();
           },
         ),
@@ -118,11 +141,10 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
         ),
         actions: [
           if (_module.algorithmId != null)
-            TextButton.icon(
-              onPressed: () =>
-                  context.push('/visualizer/${_module.algorithmId}'),
-              icon: const Icon(Icons.auto_awesome, size: 16),
-              label: const Text('✨ Visualize'),
+            FilledButton.tonalIcon(
+              onPressed: _openVisualizer,
+              icon: const Icon(Icons.auto_awesome, size: 18),
+              label: const Text('See the Magic'),
             ),
         ],
       ),
@@ -135,7 +157,8 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
                 horizontal: AppSpacing.lg,
                 vertical: AppSpacing.xl,
               ),
-              itemCount: _module.contentBlocks.length + 1, // +1 for bottom padding
+              itemCount:
+                  _module.contentBlocks.length + 1, // +1 for bottom padding
               itemBuilder: (context, index) {
                 if (index == _module.contentBlocks.length) {
                   // Bottom spacer so last item isn't hidden behind button.
@@ -159,9 +182,7 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
             ),
             decoration: const BoxDecoration(
               color: AppColors.card,
-              border: Border(
-                top: BorderSide(color: AppColors.sunken),
-              ),
+              border: Border(top: BorderSide(color: AppColors.sunken)),
             ),
             child: SafeArea(
               top: false,
@@ -184,28 +205,31 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
   Widget _buildBlock(ContentBlock block, int index) {
     return switch (block) {
       TextBlock(:final text) => _TextBlockWidget(text: text),
-      CodeBlock(:final code, :final language) =>
-        _CodeBlockWidget(code: code, language: language),
-      DefinitionBlock(:final term, :final definition) =>
-        _DefinitionBlockWidget(term: term, definition: definition),
-      KeyTakeawayBlock(:final text) =>
-        _KeyTakeawayBlockWidget(text: text),
+      CodeBlock(:final code, :final language) => _CodeBlockWidget(
+        code: code,
+        language: language,
+      ),
+      DefinitionBlock(:final term, :final definition) => _DefinitionBlockWidget(
+        term: term,
+        definition: definition,
+      ),
+      KeyTakeawayBlock(:final text) => _KeyTakeawayBlockWidget(text: text),
       QuizBlock() => _QuizBlockWidget(
-          block: block,
-          index: index,
-          selectedIndex: _selectedQuizAnswers[index],
-          checked: _quizChecked[index] ?? false,
-          onSelect: (optionIndex) {
-            setState(() {
-              _selectedQuizAnswers[index] = optionIndex;
-            });
-          },
-          onCheck: () {
-            setState(() {
-              _quizChecked[index] = true;
-            });
-          },
-        ),
+        block: block,
+        index: index,
+        selectedIndex: _selectedQuizAnswers[index],
+        checked: _quizChecked[index] ?? false,
+        onSelect: (optionIndex) {
+          setState(() {
+            _selectedQuizAnswers[index] = optionIndex;
+          });
+        },
+        onCheck: () {
+          setState(() {
+            _quizChecked[index] = true;
+          });
+        },
+      ),
     };
   }
 }
@@ -275,10 +299,7 @@ class _CodeBlockWidget extends StatelessWidget {
 /// Definition block — lightbulb card.
 // ═══════════════════════════════════════════════════════════════════════════════
 class _DefinitionBlockWidget extends StatelessWidget {
-  const _DefinitionBlockWidget({
-    required this.term,
-    required this.definition,
-  });
+  const _DefinitionBlockWidget({required this.term, required this.definition});
 
   final String term;
   final String definition;
@@ -296,20 +317,13 @@ class _DefinitionBlockWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            Icons.lightbulb_rounded,
-            color: AppColors.solarGold,
-            size: 22,
-          ),
+          Icon(Icons.lightbulb_rounded, color: AppColors.solarGold, size: 22),
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  term,
-                  style: AppTypography.bodyBold,
-                ),
+                Text(term, style: AppTypography.bodyBold),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   definition,
@@ -347,11 +361,7 @@ class _KeyTakeawayBlockWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            Icons.star_rounded,
-            color: AppColors.solarGold,
-            size: 22,
-          ),
+          Icon(Icons.star_rounded, color: AppColors.solarGold, size: 22),
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Text(
@@ -407,17 +417,10 @@ class _QuizBlockWidget extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                Icons.quiz_rounded,
-                color: AppColors.primary500,
-                size: 20,
-              ),
+              Icon(Icons.quiz_rounded, color: AppColors.primary500, size: 20),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
-                child: Text(
-                  block.question,
-                  style: AppTypography.bodyBold,
-                ),
+                child: Text(block.question, style: AppTypography.bodyBold),
               ),
             ],
           ),

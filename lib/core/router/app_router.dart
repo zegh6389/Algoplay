@@ -3,9 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'tab_shell.dart';
 import '../../features/home/presentation/home_page.dart' show HomePage;
 import '../../features/learn/presentation/learn_page.dart' show LearnPage;
-import '../../features/learn/presentation/lessons_home_page.dart' show LessonsHomePage;
-import '../../features/learn/presentation/lesson_detail_page.dart' show LessonDetailPage;
-import '../../features/learn/presentation/module_content_page.dart' show ModuleContentPage;
+import '../../features/learn/presentation/lesson_detail_page.dart'
+    show LessonDetailPage;
+import '../../features/learn/presentation/module_content_page.dart'
+    show ModuleContentPage;
 import '../../features/play/presentation/play_page.dart' show PlayPage;
 import '../../features/stats/presentation/stats_page.dart' show StatsPage;
 import '../../features/profile/presentation/profile_page.dart' show ProfilePage;
@@ -50,12 +51,12 @@ final router = GoRouter(
         return TabShellWidget(navigationShell: navigationShell);
       },
       branches: [
-        // Tab 0 — Lessons (Home)
+        // Tab 0 — Home: lessons first, then explore algorithms, then games
         StatefulShellBranch(
           routes: [
             GoRoute(
               path: '/home',
-              builder: (context, state) => const LessonsHomePage(),
+              builder: (context, state) => const HomePage(),
             ),
           ],
         ),
