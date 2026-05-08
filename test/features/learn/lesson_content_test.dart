@@ -264,8 +264,8 @@ void main() {
       lesson2 = lessons.firstWhere((l) => l.id == 2);
     });
 
-    test('has 2 modules', () {
-      expect(lesson2.modules.length, 2);
+    test('has 3 modules', () {
+      expect(lesson2.modules.length, 3);
     });
 
     test('Module 1 introduces input size and basic operation counting', () {
