@@ -304,8 +304,8 @@ void main() {
       lesson2 = lessons.firstWhere((l) => l.id == 2);
     });
 
-    test('has 3 modules', () {
-      expect(lesson2.modules.length, 3);
+    test('has 6 modules', () {
+      expect(lesson2.modules.length, 6);
     });
 
     test('Module 1 introduces input size and basic operation counting', () {
@@ -387,6 +387,140 @@ void main() {
       expect(combined, contains('Average case'));
       expect(combined, contains('linear search'));
       expect(combined, contains(r'\frac{n + 1}{2}'));
+    });
+
+    test('Module 3 covers asymptotic bounds', () {
+      final module = lesson2.modules[2];
+      expect(module.id, 'lesson2_module3');
+      expect(module.title, 'The Formal Framework for Growth');
+      expect(module.order, 2);
+      expect(module.contentBlocks.whereType<GraphBlock>().length, 3);
+      expect(module.contentBlocks.any((b) => b is QuizBlock), isTrue);
+      expect(module.contentBlocks.last, isA<KeyTakeawayBlock>());
+    });
+
+    test('Module 4 works through cubic disjoint set analysis', () {
+      final module = lesson2.modules[3];
+      expect(module.id, 'lesson2_module4');
+      expect(module.title, 'Worked Example of Time Analysis');
+      expect(module.order, 3);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(2),
+      );
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(2));
+      expect(blocks.any((b) => b is CodeBlock), isTrue);
+      expect(blocks.any((b) => b is QuizBlock), isTrue);
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = blocks
+          .map((block) {
+            return switch (block) {
+              TextBlock(:final text) => text,
+              DefinitionBlock(:final term, :final definition) =>
+                '$term $definition',
+              KeyTakeawayBlock(:final text) => text,
+              QuizBlock(:final question, :final options, :final explanation) =>
+                '$question ${options.join(' ')} $explanation',
+              CodeBlock(:final code, :final language) => '$language $code',
+              MathBlock(:final tex, :final semanticsLabel) =>
+                '$semanticsLabel $tex',
+              GraphBlock(:final type) => type,
+            };
+          })
+          .join(' ');
+
+      expect(combined, contains('disjoint'));
+      expect(combined, contains('Sᵢ'));
+      expect(combined, contains('Sⱼ'));
+      expect(combined, contains('O(n³)'));
+      expect(combined, contains(r'O(n) \cdot O(n) \cdot O(n) = O(n^3)'));
+      expect(
+        combined,
+        contains('doubling n makes cubic work about 8 times larger'),
+      );
+    });
+
+    test('Module 5 explains practical caveats beyond speed', () {
+      final module = lesson2.modules[4];
+      expect(module.id, 'lesson2_module5');
+      expect(module.title, 'Caveats: Fast Is Not Always Best');
+      expect(module.order, 4);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(5),
+      );
+      expect(blocks.any((b) => b is QuizBlock), isTrue);
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = blocks
+          .map((block) {
+            return switch (block) {
+              TextBlock(:final text) => text,
+              DefinitionBlock(:final term, :final definition) =>
+                '$term $definition',
+              KeyTakeawayBlock(:final text) => text,
+              QuizBlock(:final question, :final options, :final explanation) =>
+                '$question ${options.join(' ')} $explanation',
+              CodeBlock(:final code, :final language) => '$language $code',
+              MathBlock(:final tex, :final semanticsLabel) =>
+                '$semanticsLabel $tex',
+              GraphBlock(:final type) => type,
+            };
+          })
+          .join(' ');
+
+      expect(combined, contains('Small inputs'));
+      expect(combined, contains('Maintainability'));
+      expect(combined, contains('memory'));
+      expect(combined, contains('Accuracy'));
+      expect(combined, contains('stability'));
+      expect(combined, contains('O(n log n)'));
+    });
+
+    test('Module 6 concludes Lesson 2 and points to recurrence analysis', () {
+      final module = lesson2.modules[5];
+      expect(module.id, 'lesson2_conclusion');
+      expect(module.title, 'Lesson 2 Wrap-Up');
+      expect(module.order, 5);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(4),
+      );
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = blocks
+          .map((block) {
+            return switch (block) {
+              TextBlock(:final text) => text,
+              DefinitionBlock(:final term, :final definition) =>
+                '$term $definition',
+              KeyTakeawayBlock(:final text) => text,
+              QuizBlock(:final question, :final options, :final explanation) =>
+                '$question ${options.join(' ')} $explanation',
+              CodeBlock(:final code, :final language) => '$language $code',
+              MathBlock(:final tex, :final semanticsLabel) =>
+                '$semanticsLabel $tex',
+              GraphBlock(:final type) => type,
+            };
+          })
+          .join(' ');
+
+      expect(combined, contains('Big-O'));
+      expect(combined, contains('Big-Omega'));
+      expect(combined, contains('Big-Theta'));
+      expect(combined, contains('nonrecursive'));
+      expect(combined, contains('recursive'));
+      expect(combined, contains('Lesson 3'));
     });
 
     List<String> lesson2Prose() {

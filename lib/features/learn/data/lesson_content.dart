@@ -870,6 +870,226 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+      ModuleContent(
+        id: 'lesson2_module4',
+        title: 'Worked Example of Time Analysis',
+        order: 3,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'Now we use the notation from the previous module on a real example. '
+            'The goal is not to guess from the number of loops. The goal is to '
+            'read the structure, count each layer of repeated work, and combine '
+            'the pieces.',
+          ),
+          DefinitionBlock(
+            term: 'Disjoint sets',
+            definition:
+                'Two sets are disjoint when they share no element. For example, '
+                '{1, 3, 5} and {2, 4} are disjoint, while {1, 3, 5} and {3, 7} '
+                'are not disjoint because both contain 3.',
+          ),
+          TextBlock(
+            'Suppose we are given sets S₁, S₂, …, Sₙ. Each set is a subset of '
+            '{1, 2, …, n}. We want to know whether at least one pair of sets has '
+            'nothing in common.',
+          ),
+          CodeBlock(
+            'for each set Sᵢ:\n'
+            '  for each other set Sⱼ:\n'
+            '    found overlap = false\n'
+            '    for each element p in Sᵢ:\n'
+            '      if p belongs to Sⱼ:\n'
+            '        found overlap = true\n'
+            '    if found overlap is false:\n'
+            '      report Sᵢ and Sⱼ are disjoint',
+            language: 'text',
+          ),
+          DefinitionBlock(
+            term: 'Brute-force comparison',
+            definition:
+                'A direct approach that checks possible pairs one by one instead '
+                'of using a clever shortcut. It is often the easiest correct '
+                'solution to analyze first.',
+          ),
+          TextBlock(
+            'There are O(n) choices for Sᵢ. For each one, there are O(n) choices '
+            'for Sⱼ. For each pair, the algorithm may scan O(n) elements from Sᵢ. '
+            'Multiplying those layers gives cubic growth.',
+          ),
+          MathBlock(
+            r'O(n) \cdot O(n) \cdot O(n) = O(n^3)',
+            semanticsLabel:
+                'O of n times O of n times O of n equals O of n cubed',
+          ),
+          TextBlock(
+            'This does not mean every three-loop algorithm is automatically O(n³). '
+            'The smart move is to ask how many times each loop really runs and '
+            'whether a hidden operation inside the loop adds more cost.',
+          ),
+          MathBlock(
+            r'n 	o 2n \quad \Rightarrow \quad n^3 	o (2n)^3 = 8n^3',
+            semanticsLabel:
+                'when n doubles to two n, n cubed becomes eight n cubed',
+          ),
+          TextBlock(
+            'That is why doubling n makes cubic work about 8 times larger. Cubic '
+            'time can be acceptable for small data, but it gets heavy quickly as '
+            'the input grows.',
+          ),
+          QuizBlock(
+            question:
+                'If an algorithm has two loops that each run n times and an inner loop that runs 5 times, what is the growth class?',
+            options: ['O(n)', 'O(n²)', 'O(n³)', 'O(5ⁿ)'],
+            correctIndex: 1,
+            explanation:
+                'The constant 5 is O(1), so the total is O(n)·O(n)·O(1) = O(n²).',
+          ),
+          KeyTakeawayBlock(
+            'Analyze nested loops layer by layer. For the disjoint-set brute-force '
+            'algorithm, the three repeated layers give O(n³). The method matters '
+            'more than the memorized answer.',
+          ),
+        ],
+      ),
+      ModuleContent(
+        id: 'lesson2_module5',
+        title: 'Caveats: Fast Is Not Always Best',
+        order: 4,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'Efficiency is important, but real software design is not a speed '
+            'worship contest. A faster growth class can help a lot, but it is not '
+            'the only reason to choose an algorithm.',
+          ),
+          DefinitionBlock(
+            term: 'One-time programs',
+            definition:
+                'If a script runs once or twice, ease of implementation and '
+                'correctness may matter more than shaving a few seconds from runtime.',
+          ),
+          DefinitionBlock(
+            term: 'Small inputs',
+            definition:
+                'Asymptotic growth matters most when n becomes large. For tiny '
+                'inputs, a simple O(n²) method can beat or match a complex O(n log n) '
+                'method because constants and setup costs still matter.',
+          ),
+          DefinitionBlock(
+            term: 'Maintainability',
+            definition:
+                'A slightly slower algorithm that people can read, test, and modify '
+                'may be more valuable than a clever implementation nobody trusts.',
+          ),
+          DefinitionBlock(
+            term: 'Space tradeoff',
+            definition:
+                'Some algorithms buy speed with memory. If memory use gets too high, '
+                'the system may slow down or fail, erasing the time advantage.',
+          ),
+          DefinitionBlock(
+            term: 'Accuracy and stability',
+            definition:
+                'For numerical algorithms, a fast answer is not useful if rounding '
+                'error grows and the result becomes unreliable.',
+          ),
+          TextBlock(
+            'The practical question is not only which algorithm has the smallest '
+            'Big-O expression. The better question is which algorithm is appropriate '
+            'for this problem, this input size, this team, and this machine.',
+          ),
+          CodeBlock(
+            'Choose with context:\n'
+            '1. Is the input large enough for growth rate to dominate?\n'
+            '2. Is the implementation likely to be correct?\n'
+            '3. Can future developers maintain it?\n'
+            '4. Does it fit comfortably in memory?\n'
+            '5. Does it produce reliable answers?',
+            language: 'text',
+          ),
+          QuizBlock(
+            question:
+                'Why might a simple O(n²) algorithm be the right choice for a small fixed input?',
+            options: [
+              'Because O(n²) is always faster than O(n log n).',
+              'Because constants, implementation time, and clarity can matter more at small sizes.',
+              'Because memory never matters.',
+              'Because asymptotic notation only applies to sorting.',
+            ],
+            correctIndex: 1,
+            explanation:
+                'For small fixed inputs, the simpler method may be easier to build, easier to verify, and fast enough in practice.',
+          ),
+          KeyTakeawayBlock(
+            'A good algorithm is correct, practical, understandable, and appropriate. '
+            'Efficiency is powerful, but wisdom is knowing when speed should win '
+            'and when another concern matters more.',
+          ),
+        ],
+      ),
+      ModuleContent(
+        id: 'lesson2_conclusion',
+        title: 'Lesson 2 Wrap-Up',
+        order: 5,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'Nice work. Lesson 2 moved from informal ideas about efficiency to the '
+            'mathematical language used to describe algorithm growth.',
+          ),
+          DefinitionBlock(
+            term: 'Growth language',
+            definition:
+                'You can now talk about how work changes as the input gets bigger, '
+                'not just how many seconds one run takes on one machine.',
+          ),
+          DefinitionBlock(
+            term: 'Efficiency classes',
+            definition:
+                'You practiced reading growth patterns such as O(n), O(n²), O(n³), '
+                'and O(n log n), then choosing the simplest useful bound.',
+          ),
+          DefinitionBlock(
+            term: 'Asymptotic bounds',
+            definition:
+                'Big-O gives an upper bound, Big-Omega gives a lower bound, and '
+                'Big-Theta gives a tight bound when both sides match.',
+          ),
+          DefinitionBlock(
+            term: 'Nonrecursive analysis',
+            definition:
+                'You learned how to inspect loops, choose a basic operation, and '
+                'estimate running time by combining repeated work.',
+          ),
+          TextBlock(
+            'Before this lesson, code may have looked like statements and loops. '
+            'Now you should start seeing behavior: growth, bounds, and tradeoffs.',
+          ),
+          TextBlock(
+            'Lesson 3 moves from nonrecursive algorithms to recursive algorithms. '
+            'Instead of only counting loops, we will study algorithms that solve a '
+            'problem by calling themselves on smaller versions of the same problem.',
+          ),
+          QuizBlock(
+            question: 'What is the main shift from Lesson 2 to Lesson 3?',
+            options: [
+              'From analyzing loops to analyzing recursive self-calls.',
+              'From algorithms to hardware repair.',
+              'From Big-O to ignoring running time.',
+              'From exact stopwatch timing to guessing randomly.',
+            ],
+            correctIndex: 0,
+            explanation:
+                'Lesson 2 focused mostly on nonrecursive algorithms. Lesson 3 introduces recursive analysis.',
+          ),
+          KeyTakeawayBlock(
+            'You now have a framework for describing efficiency, comparing algorithms, '
+            'and reasoning about growth. That framework will keep showing up through '
+            'the rest of the course.',
+          ),
+        ],
+      ),
     ],
   ),
 
