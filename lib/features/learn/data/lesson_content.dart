@@ -228,8 +228,8 @@ const List<LessonContent> lessons = [
           ),
           KeyTakeawayBlock(
             "An algorithm must be definite, finite, effective, and produce "
-            "output from input. If your \"algorithm\" runs forever, it's not "
-            "an algorithm — it's a screensaver.",
+            "output from input. If your \"algorithm\" runs forever, it is not "
+            "an algorithm. It is a screensaver wearing a fake mustache.",
           ),
         ],
       ),
@@ -243,7 +243,7 @@ const List<LessonContent> lessons = [
         contentBlocks: [
           TextBlock(
             'Quick side quest before we start measuring algorithms like tiny '
-            'speed demons: Levitin Section 1.4 reviews the background gear — '
+            'speed demons. Levitin Section 1.4 reviews the background gear: '
             'data structures, graphs, trees, sets, and dictionaries. If any '
             'of those sound like mysterious forest creatures, flag it on the '
             'Discussion Board. We need that toolbox soon.',
@@ -265,7 +265,7 @@ const List<LessonContent> lessons = [
           ),
           TextBlock(
             'Example: base 2 asks how many times the number 2 must multiply by '
-            'itself to reach 8. The log asks the question; the exponent answers '
+            'itself to reach 8. The log asks the question. The exponent answers '
             'while looking smug.',
           ),
           MathBlock(
@@ -325,7 +325,7 @@ const List<LessonContent> lessons = [
           TextBlock(
             'That last rule is why algorithm books often write just log n '
             'without naming the base. The base changes the scale by a constant, '
-            'not the growth-family drama.',
+            'not the growth category. Same monster, different hat.',
           ),
           MathBlock(
             r'\log_c x = \frac{1}{\log_b c}\log_b x = k\log_b x',
@@ -372,10 +372,10 @@ const List<LessonContent> lessons = [
                 'the base does not change the growth class.',
           ),
           KeyTakeawayBlock(
-            'Logarithms answer "what exponent?" In CS, lg means base 2, and '
-            'plain log usually means "base does not matter for growth" because '
-            'change of base only adds a constant multiplier. Tiny formula, huge '
-            'algorithm-analysis energy.',
+            'Logarithms answer "what exponent?" In CS, lg means base 2. '
+            'Plain log usually means the base does not matter for growth, because '
+            'change of base only adds a constant multiplier. Tiny formula. Big '
+            'algorithm analysis energy.',
           ),
         ],
       ),
@@ -397,7 +397,7 @@ const List<LessonContent> lessons = [
             definition:
                 'Ask what we have, what we need, and what weird edge cases are '
                 'lurking in the bushes. Solving the wrong problem beautifully is '
-                'still wrong — like delivering a peanut-butter sandwich to someone '
+                'still wrong. It is like delivering a peanut butter sandwich to someone '
                 'with a peanut allergy.',
           ),
           DefinitionBlock(
@@ -411,7 +411,7 @@ const List<LessonContent> lessons = [
             term: 'Step 3: Design the Algorithm',
             definition:
                 'Sketch the plan in words, boxes, arrows, or tiny battle maps. '
-                'No code yet. Paper is cheap; debugging 200 lines at 2 AM is not.',
+                'No code yet. Paper is cheap. Debugging 200 lines at 2 AM is not.',
           ),
           DefinitionBlock(
             term: 'Step 4: Prove It Works',
@@ -425,7 +425,7 @@ const List<LessonContent> lessons = [
             definition:
                 'Ask how much work it does and how much memory it eats. If the '
                 'design is too slow or too hungry, loop back and redesign. That '
-                'backward arrow is not failure; it is professional wizardry.',
+                'backward arrow is not failure. It is professional wizardry.',
           ),
           DefinitionBlock(
             term: 'Step 6: Code the Algorithm',
@@ -435,8 +435,8 @@ const List<LessonContent> lessons = [
                 'coding becomes translation instead of panic typing.',
           ),
           TextBlock(
-            'Feedback Loops matter. Real problem solving is not a straight '
-            'slide; it is GPS yelling "recalculating" after every bad turn. '
+            'Feedback loops matter. Real problem solving is not a straight '
+            'slide. It is GPS yelling "recalculating" after every bad turn. '
             'We may jump from analysis back to design, or from proof back to '
             'understanding. Smart builders loop. Chaos builders just commit bugs.',
           ),
@@ -455,8 +455,8 @@ const List<LessonContent> lessons = [
           ),
           KeyTakeawayBlock(
             'The keyboard is the final tool, not the starting pistol. Understand, '
-            'choose techniques, design, prove, analyze, then code. Plan first; '
-            'your future self gets fewer 2 AM emergencies.',
+            'choose techniques, design, prove, analyze, then code. Plan first. '
+            'Your future self gets fewer 2 AM emergencies.',
           ),
         ],
       ),
@@ -478,7 +478,7 @@ const List<LessonContent> lessons = [
             term: 'Correctness',
             definition:
                 'The algorithm must do exactly what it promises. Preconditions '
-                'say what must be true before we start; Postconditions say what '
+                'say what must be true before we start. Postconditions say what '
                 'must be true when we finish. One counterexample can prove a '
                 'recipe is broken. Proving it always works takes real evidence.',
           ),
@@ -494,7 +494,7 @@ const List<LessonContent> lessons = [
             term: 'Space Usage',
             definition:
                 'Algorithms need room for input, instructions, and temporary '
-                'scratch work. An array is like neat containers in a row; a linked '
+                'scratch work. An array is like neat containers in a row. A linked '
                 'list is a scavenger hunt of pointers. Storage choices matter.',
           ),
           DefinitionBlock(
@@ -507,9 +507,9 @@ const List<LessonContent> lessons = [
           DefinitionBlock(
             term: 'Optimality',
             definition:
-                'An optimal algorithm is not merely good; it matches the best '
-                'possible performance. To prove that, we show a lower bound — the '
-                'minimum work any algorithm must do — and then match it.',
+                'An optimal algorithm is not merely good. It matches the best '
+                'possible performance. To prove that, we show a lower bound, meaning '
+                'the minimum work any algorithm must do, and then match it.',
           ),
           TextBlock(
             'Our main focus will be efficiency because it is measurable and '

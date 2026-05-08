@@ -144,7 +144,7 @@ void main() {
       expect(combined, contains('Prove It Works'));
       expect(combined, contains('Analyze the Algorithm'));
       expect(combined, contains('Code the Algorithm'));
-      expect(combined, contains('Feedback Loops'));
+      expect(combined, contains('Feedback loops'));
       expect(combined, contains('keyboard'));
     });
 
@@ -186,9 +186,38 @@ void main() {
 
     test('Module 1 contains mixed content block types', () {
       final blocks = lesson1.modules[0].contentBlocks;
-      expect(blocks.any((b) => b is TextBlock), isTrue);
-      expect(blocks.any((b) => b is DefinitionBlock), isTrue);
-      expect(blocks.any((b) => b is KeyTakeawayBlock), isTrue);
+      expect(blocks.whereType<TextBlock>(), isNotEmpty);
+      expect(blocks.whereType<DefinitionBlock>(), isNotEmpty);
+      expect(blocks.whereType<KeyTakeawayBlock>(), isNotEmpty);
+    });
+
+    test('Lesson 1 prose avoids AI punctuation tells', () {
+      final prose = <String>[];
+      for (final module in lesson1.modules) {
+        for (final block in module.contentBlocks) {
+          switch (block) {
+            case TextBlock(:final text):
+              prose.add(text);
+            case DefinitionBlock(:final term, :final definition):
+              prose.add(term);
+              prose.add(definition);
+            case KeyTakeawayBlock(:final text):
+              prose.add(text);
+            case QuizBlock(:final question, :final options, :final explanation):
+              prose.add(question);
+              prose.addAll(options);
+              prose.add(explanation);
+            case CodeBlock():
+            case MathBlock():
+              break;
+          }
+        }
+      }
+
+      final combined = prose.join('\n');
+      expect(combined, isNot(contains('—')));
+      expect(combined, isNot(contains(';')));
+      expect(combined, isNot(contains(' - ')));
     });
 
     test('Module 2 contains definition blocks for five properties', () {
