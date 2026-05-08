@@ -625,8 +625,8 @@ void main() {
       return prose;
     }
 
-    test('has 2 modules', () {
-      expect(lesson3.modules.length, 2);
+    test('has 4 modules', () {
+      expect(lesson3.modules.length, 4);
     });
 
     test(
@@ -682,6 +682,61 @@ void main() {
       expect(combined, contains(r'f(n) = 2^{n + 1} - 3'));
       expect(combined, contains(r'f(n) = \alpha 3^n + \beta (-1)^n'));
       expect(combined, contains('inhomogeneous'));
+    });
+
+    test('Module 3 teaches the Master Theorem cases and limits', () {
+      final module = lesson3.modules[2];
+      expect(module.id, 'lesson3_module3');
+      expect(module.title, 'Master Theorem');
+      expect(module.order, 2);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(3),
+      );
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(8));
+      expect(blocks.any((b) => b is CodeBlock), isTrue);
+      expect(blocks.any((b) => b is QuizBlock), isTrue);
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = combinedText(blocks);
+      expect(combined, contains('Master Theorem'));
+      expect(combined, contains(r'T(n) = aT(n / b) + f(n)'));
+      expect(combined, contains(r'f(n) \in \Theta(n^d)'));
+      expect(combined, contains('Case 1'));
+      expect(combined, contains('Case 2'));
+      expect(combined, contains('Case 3'));
+      expect(combined, contains('divide-and-conquer'));
+      expect(combined, contains('recursive sequential search'));
+      expect(combined, contains(r'T(n) = T(n - 1) + 1'));
+      expect(combined, contains('Θ(n log n)'));
+    });
+
+    test('Module 4 concludes Lesson 3 and points to brute force', () {
+      final module = lesson3.modules[3];
+      expect(module.id, 'lesson3_module4');
+      expect(module.title, 'Lesson 3 Conclusion');
+      expect(module.order, 3);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(1),
+      );
+      expect(blocks.any((b) => b is QuizBlock), isTrue);
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = combinedText(blocks);
+      expect(combined, contains('recurrence relation'));
+      expect(combined, contains('forward substitution'));
+      expect(combined, contains('backward substitution'));
+      expect(combined, contains('characteristic equations'));
+      expect(combined, contains('Master Theorem'));
+      expect(combined, contains('choosing the right method'));
+      expect(combined, contains('brute force'));
     });
 
     test('Lesson 3 prose avoids AI punctuation tells', () {

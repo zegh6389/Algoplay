@@ -1351,6 +1351,205 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+      ModuleContent(
+        id: 'lesson3_module3',
+        title: 'Master Theorem',
+        order: 2,
+        contentBlocks: [
+          TextBlock(
+            'The Master Theorem is a shortcut for a common recursive pattern. It usually does not give an exact formula for T(n). Instead, it gives the efficiency class directly.',
+          ),
+          DefinitionBlock(
+            term: 'Master Theorem',
+            definition:
+                'A theorem for many divide-and-conquer recurrences that identifies the asymptotic growth class without fully solving the recurrence.',
+          ),
+          TextBlock(
+            'It applies to recurrences where a problem of size n is split into smaller subproblems of size n / b, then combined with some extra nonrecursive work.',
+          ),
+          MathBlock(
+            r'T(n) = aT(n / b) + f(n)',
+            semanticsLabel: 'Master Theorem recurrence form',
+          ),
+          MathBlock(
+            r'T(1) = c,\quad a \ge 1,\quad b \ge 2,\quad c > 0',
+            semanticsLabel: 'Master Theorem assumptions',
+          ),
+          DefinitionBlock(
+            term: 'a',
+            definition:
+                'The number of recursive subproblems created at each step.',
+          ),
+          DefinitionBlock(
+            term: 'b',
+            definition: 'The shrink factor. Each subproblem has size n / b.',
+          ),
+          DefinitionBlock(
+            term: 'f(n)',
+            definition:
+                'The nonrecursive work done outside the recursive calls, such as splitting, merging, or loop work.',
+          ),
+          TextBlock(
+            'The big idea is to compare recursive work with outside work. For the simple version of the theorem, write f(n) as Θ(nᵈ), then compare a with bᵈ.',
+          ),
+          MathBlock(
+            r'f(n) \in \Theta(n^d)',
+            semanticsLabel: 'outside work as theta n to the d',
+          ),
+          CodeBlock(
+            'Master Theorem checklist:\n'
+            '1. Put the recurrence in T(n) = aT(n / b) + f(n) form\n'
+            '2. Identify a, b, and f(n)\n'
+            '3. Rewrite f(n) as Θ(n^d)\n'
+            '4. Compute b^d\n'
+            '5. Compare a with b^d\n'
+            '6. Pick the matching case',
+            language: 'text',
+          ),
+          TextBlock(
+            'Case 1 happens when a is smaller than bᵈ. The outside work dominates, so the result follows f(n).',
+          ),
+          MathBlock(
+            r'a < b^d \Rightarrow T(n) \in \Theta(n^d)',
+            semanticsLabel: 'Master Theorem case one',
+          ),
+          TextBlock(
+            'Case 2 happens when a equals bᵈ. The recursive work and outside work are balanced, so a log factor appears.',
+          ),
+          MathBlock(
+            r'a = b^d \Rightarrow T(n) \in \Theta(n^d \log n)',
+            semanticsLabel: 'Master Theorem case two',
+          ),
+          TextBlock(
+            'Case 3 happens when a is larger than bᵈ. The recursive branching dominates the total work.',
+          ),
+          MathBlock(
+            r'a > b^d \Rightarrow T(n) \in \Theta(n^{\log_b a})',
+            semanticsLabel: 'Master Theorem case three',
+          ),
+          MathBlock(
+            r'T(n) = T(n / 2) + 5n',
+            semanticsLabel: 'Master Theorem example one',
+          ),
+          TextBlock(
+            'Here a = 1, b = 2, and f(n) = 5n, so d = 1. Since bᵈ = 2 and 1 < 2, this is Case 1 and T(n) is Θ(n).',
+          ),
+          MathBlock(
+            r'T(n) \in \Theta(n)',
+            semanticsLabel: 'example one theta n',
+          ),
+          MathBlock(
+            r'T(n) = 2T(n / 2) + 5n',
+            semanticsLabel: 'Master Theorem example two',
+          ),
+          TextBlock(
+            'Now a = 2, b = 2, and d = 1. Since a = bᵈ, this is Case 2. This famous pattern gives Θ(n log n).',
+          ),
+          MathBlock(
+            r'T(n) \in \Theta(n \log n)',
+            semanticsLabel: 'example two theta n log n',
+          ),
+          MathBlock(
+            r'T(n) = 2T(n / 2) + 5n^2',
+            semanticsLabel: 'Master Theorem example three',
+          ),
+          TextBlock(
+            'Here d = 2, so bᵈ = 4. Since 2 < 4, the outside n² work dominates and the result is Θ(n²).',
+          ),
+          MathBlock(
+            r'T(n) \in \Theta(n^2)',
+            semanticsLabel: 'example three theta n squared',
+          ),
+          TextBlock(
+            'Do not force every recurrence into the Master Theorem. Recursive sequential search gives a helpful warning example because the input shrinks by one item, not by a constant factor.',
+          ),
+          MathBlock(
+            r'T(n) = T(n - 1) + 1,\quad T(0) = 0',
+            semanticsLabel: 'recursive sequential search recurrence',
+          ),
+          CodeBlock(
+            'Unroll sequential search:\n'
+            'T(n) = T(n - 1) + 1\n'
+            '     = T(n - 2) + 2\n'
+            '     = T(n - i) + i\n'
+            'set i = n, so T(n) = T(0) + n = n',
+            language: 'text',
+          ),
+          TextBlock(
+            'That recurrence is easy to solve by forward or backward substitution, and it gives Θ(n). The real skill is choosing the right tool.',
+          ),
+          QuizBlock(
+            question:
+                'Why does T(n) = T(n − 1) + 1 not fit the Master Theorem?',
+            options: [
+              'The recursive call uses n − 1 instead of n / b.',
+              'It has a base case.',
+              'It is recursive.',
+              'Its final answer is linear.',
+            ],
+            correctIndex: 0,
+            explanation:
+                'The Master Theorem needs subproblems of size n / b. Shrinking by one item is a different recurrence shape.',
+          ),
+          KeyTakeawayBlock(
+            'Use the Master Theorem when the recurrence has divide-and-conquer shape. Compare a with bᵈ, pick the case, and remember to switch methods when the recurrence does not fit.',
+          ),
+        ],
+      ),
+      ModuleContent(
+        id: 'lesson3_module4',
+        title: 'Lesson 3 Conclusion',
+        order: 3,
+        contentBlocks: [
+          TextBlock(
+            'Lesson 3 moved from understanding recursion to analyzing it with structured mathematical tools.',
+          ),
+          TextBlock(
+            'You learned how to model recursive work with a recurrence relation, solve many recurrences, and estimate the growth of recursive algorithms without tracing every call by hand.',
+          ),
+          DefinitionBlock(
+            term: 'Method choice',
+            definition:
+                'The habit of matching a recurrence to the analysis method that actually fits its structure.',
+          ),
+          CodeBlock(
+            'Lesson 3 toolbox:\n'
+            'recurrence relation: model recursive cost\n'
+            'forward substitution: spot a pattern from early terms\n'
+            'backward substitution: unroll from T(n) to the base case\n'
+            'characteristic equations: solve certain second-order recurrences\n'
+            'Master Theorem: classify divide-and-conquer growth',
+            language: 'text',
+          ),
+          TextBlock(
+            'The biggest idea is choosing the right method. Some recurrences are easy to unroll. Some reveal a pattern from early terms. Some fit characteristic equations. Some fit the Master Theorem.',
+          ),
+          TextBlock(
+            'That means algorithm analysis is not only about formulas. It is also about strategy.',
+          ),
+          TextBlock(
+            'Lessons 2 and 3 focused mostly on analysis: how fast an algorithm grows, what class it belongs to, and how to model its running time.',
+          ),
+          TextBlock(
+            'Lesson 4 changes the focus from measuring algorithms to designing them. The first design strategy is brute force.',
+          ),
+          QuizBlock(
+            question: 'What is the most important strategy from Lesson 3?',
+            options: [
+              'Choose the method that matches the recurrence structure.',
+              'Use the Master Theorem for every recurrence.',
+              'Ignore base cases after finding a formula.',
+              'Trace every recursive call manually forever.',
+            ],
+            correctIndex: 0,
+            explanation:
+                'Different recurrence shapes need different tools, so method choice matters as much as algebra.',
+          ),
+          KeyTakeawayBlock(
+            'Recursive algorithms stop feeling like magic when you can model their work. Recurrences, substitution, characteristic equations, and the Master Theorem turn recursive behavior into measurable growth.',
+          ),
+        ],
+      ),
     ],
   ),
 
