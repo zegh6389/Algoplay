@@ -539,12 +539,193 @@ const List<LessonContent> lessons = [
     ],
   ),
 
-  // ── Lesson 2 (stub) ───────────────────────────────────────────────────────
+  // ── Lesson 2: Algorithm Analysis ─────────────────────────────────────────
   LessonContent(
     id: 2,
     title: 'Algorithm Analysis',
     categoryColor: '#F43F5E',
-    modules: [],
+    modules: [
+      ModuleContent(
+        id: 'lesson2_module1',
+        title: 'Counting Steps Without a Stopwatch',
+        order: 0,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'Algorithm analysis starts with one rude little question: how much '
+            'work does this thing do when the input gets bigger? We are not '
+            'timing it with a stopwatch. Stopwatches lie. They get distracted '
+            'by laptops, battery settings, browser tabs, and whatever chaos '
+            'your computer was already chewing on.',
+          ),
+          DefinitionBlock(
+            term: 'Input size',
+            definition:
+                'The number n that measures how big the problem is. For a list, '
+                'n is usually the number of items. For a graph, it might be '
+                'vertices, edges, or both.',
+          ),
+          MathBlock(
+            r'n = \text{number of items in the input}',
+            semanticsLabel: 'n equals the number of items in the input',
+          ),
+          DefinitionBlock(
+            term: 'Running time',
+            definition:
+                'A function that describes how many steps an algorithm takes as '
+                'the input size grows. We write it as T of n because math likes '
+                'wearing a tiny lab coat.',
+          ),
+          MathBlock(
+            r'T(n) = \text{number of basic operations for input size } n',
+            semanticsLabel:
+                'T of n equals the number of basic operations for input size n',
+          ),
+          DefinitionBlock(
+            term: 'Basic operation',
+            definition:
+                'The operation we count because it happens the most or controls '
+                'the cost. It might be a comparison, an assignment, or one loop '
+                'body doing its little treadmill dance.',
+          ),
+          TextBlock(
+            'Imagine scanning a list to find a lost cookie. The basic operation '
+            'is checking one item. If the list doubles, the cookie patrol may '
+            'have twice as many items to inspect. That is the kind of growth we '
+            'care about.',
+          ),
+          CodeBlock(
+            'for each item in list:\n'
+            '  check whether item is the target',
+            language: 'text',
+          ),
+          TextBlock(
+            'Sometimes we can write an exact count. Maybe an algorithm does two '
+            'operations per item, then three extra setup steps. That gives us a '
+            'clean little formula. The formula is not the whole personality of '
+            'the algorithm, but it tells us how the work grows.',
+          ),
+          MathBlock(
+            r'T(n) = 2n + 3',
+            semanticsLabel: 'T of n equals two n plus three',
+          ),
+          TextBlock(
+            'For small inputs, the extra three steps might feel important. For '
+            'huge inputs, the 2n part drives the bus while the plus 3 sits in '
+            'the back eating chips.',
+          ),
+          QuizBlock(
+            question: 'Why do we count basic operations instead of trusting stopwatch time?',
+            options: [
+              'Because real machines add noise that hides the growth pattern.',
+              'Because stopwatches are illegal in computer science.',
+              'Because T(n) only works on cake recipes.',
+              'Because input size never matters.',
+            ],
+            correctIndex: 0,
+            explanation:
+                'Stopwatch time depends on hardware and runtime noise. Counting '
+                'basic operations lets us study how the algorithm grows with n.',
+          ),
+          KeyTakeawayBlock(
+            'Algorithm analysis studies T(n), the work done as input size n '
+            'grows. Pick a basic operation, count it, and the fog starts clearing.',
+          ),
+        ],
+      ),
+      ModuleContent(
+        id: 'lesson2_module2',
+        title: 'Best, Worst, and Average Case Mischief',
+        order: 1,
+        algorithmId: 'linear-search',
+        contentBlocks: [
+          TextBlock(
+            'One algorithm can behave like three different creatures depending '
+            'on the input. Friendly input brings snacks. Mean input hides the '
+            'answer in the last drawer. Average input stands in the middle '
+            'holding a clipboard.',
+          ),
+          DefinitionBlock(
+            term: 'Best case',
+            definition:
+                'The least work the algorithm can do for inputs of size n. It is '
+                'the lucky day version, where the target is exactly where we '
+                'wanted it and everyone claps too early.',
+          ),
+          MathBlock(
+            r'B(n) = \min T(I)',
+            semanticsLabel:
+                'B of n equals the minimum running time over inputs of size n',
+          ),
+          DefinitionBlock(
+            term: 'Worst case',
+            definition:
+                'The most work the algorithm can do for inputs of size n. This is '
+                'the villain case. It makes the algorithm check every dusty '
+                'corner before it lets us go home.',
+          ),
+          MathBlock(
+            r'W(n) = \max T(I)',
+            semanticsLabel:
+                'W of n equals the maximum running time over inputs of size n',
+          ),
+          DefinitionBlock(
+            term: 'Average case',
+            definition:
+                'The expected amount of work over all inputs of size n, using a '
+                'probability model. Translation: we need assumptions, or the '
+                'average is just vibes in a fake mustache.',
+          ),
+          MathBlock(
+            r'A(n) = \sum_I P(I)T(I)',
+            semanticsLabel:
+                'A of n equals the sum over inputs I of probability of I times running time of I',
+          ),
+          TextBlock(
+            'Linear search is the perfect tiny goblin for this. We check items '
+            'from left to right until the target appears. If it is first, we '
+            'throw confetti. If it is last or missing, we inspect the whole list '
+            'while the confetti gets embarrassed.',
+          ),
+          CodeBlock(
+            'linear search on n items:\n'
+            'best case: target at position 1\n'
+            'worst case: target at position n, or missing\n'
+            'average case: target position depends on probability',
+            language: 'text',
+          ),
+          MathBlock(
+            r'\text{successful average checks} = \frac{n + 1}{2}',
+            semanticsLabel:
+                'successful average checks equals n plus one divided by two',
+          ),
+          TextBlock(
+            'That fraction assumes the target is equally likely to be in any '
+            'position. Change the assumption and the average changes too. This '
+            'is why worst case analysis is popular. It does not need a crystal '
+            'ball. It just prepares for the gremlin input.',
+          ),
+          QuizBlock(
+            question: 'For linear search, what is the worst case?',
+            options: [
+              'The target is the first item.',
+              'The target is in the middle every time.',
+              'The target is last, or it is not in the list.',
+              'The list politely sorts itself.',
+            ],
+            correctIndex: 2,
+            explanation:
+                'Worst case means the most checks. Linear search must inspect all '
+                'n items when the target is last or missing.',
+          ),
+          KeyTakeawayBlock(
+            'Best case is lucky. Worst case is safe. Average case is useful only '
+            'when the probability model is honest. Linear search shows all three '
+            'without needing a circus permit.',
+          ),
+        ],
+      ),
+    ],
   ),
 
   // ── Lesson 3 (stub) ───────────────────────────────────────────────────────

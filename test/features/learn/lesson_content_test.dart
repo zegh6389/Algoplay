@@ -229,6 +229,112 @@ void main() {
     });
   });
 
+  group('Lesson 2 content', () {
+    late LessonContent lesson2;
+
+    setUp(() {
+      lesson2 = lessons.firstWhere((l) => l.id == 2);
+    });
+
+    test('has 2 modules', () {
+      expect(lesson2.modules.length, 2);
+    });
+
+    test('Module 1 introduces input size and basic operation counting', () {
+      final module = lesson2.modules[0];
+      expect(module.id, 'lesson2_module1');
+      expect(module.title, 'Counting Steps Without a Stopwatch');
+      expect(module.order, 0);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(2));
+      expect(blocks.any((b) => b is QuizBlock), isTrue);
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = blocks.map((block) {
+        return switch (block) {
+          TextBlock(:final text) => text,
+          DefinitionBlock(:final term, :final definition) => '$term $definition',
+          KeyTakeawayBlock(:final text) => text,
+          QuizBlock(:final question, :final options, :final explanation) =>
+            '$question ${options.join(' ')} $explanation',
+          CodeBlock(:final code, :final language) => '$language $code',
+          MathBlock(:final tex, :final semanticsLabel) => '$semanticsLabel $tex',
+        };
+      }).join(' ');
+
+      expect(combined, contains('input size'));
+      expect(combined, contains('basic operation'));
+      expect(combined, contains('Running time'));
+      expect(combined, contains(r'T(n)'));
+      expect(combined, contains(r'2n + 3'));
+    });
+
+    test('Module 2 covers best worst and average cases', () {
+      final module = lesson2.modules[1];
+      expect(module.id, 'lesson2_module2');
+      expect(module.title, 'Best, Worst, and Average Case Mischief');
+      expect(module.order, 1);
+      expect(module.algorithmId, 'linear-search');
+
+      final blocks = module.contentBlocks;
+      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(2));
+      expect(blocks.any((b) => b is CodeBlock), isTrue);
+      expect(blocks.any((b) => b is QuizBlock), isTrue);
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = blocks.map((block) {
+        return switch (block) {
+          TextBlock(:final text) => text,
+          DefinitionBlock(:final term, :final definition) => '$term $definition',
+          KeyTakeawayBlock(:final text) => text,
+          QuizBlock(:final question, :final options, :final explanation) =>
+            '$question ${options.join(' ')} $explanation',
+          CodeBlock(:final code, :final language) => '$language $code',
+          MathBlock(:final tex, :final semanticsLabel) => '$semanticsLabel $tex',
+        };
+      }).join(' ');
+
+      expect(combined, contains('Best case'));
+      expect(combined, contains('Worst case'));
+      expect(combined, contains('Average case'));
+      expect(combined, contains('linear search'));
+      expect(combined, contains(r'\frac{n + 1}{2}'));
+    });
+
+    test('Lesson 2 prose avoids AI punctuation tells', () {
+      final prose = <String>[];
+      for (final module in lesson2.modules) {
+        for (final block in module.contentBlocks) {
+          switch (block) {
+            case TextBlock(:final text):
+              prose.add(text);
+            case DefinitionBlock(:final term, :final definition):
+              prose.add(term);
+              prose.add(definition);
+            case KeyTakeawayBlock(:final text):
+              prose.add(text);
+            case QuizBlock(:final question, :final options, :final explanation):
+              prose.add(question);
+              prose.addAll(options);
+              prose.add(explanation);
+            case CodeBlock():
+            case MathBlock():
+              break;
+          }
+        }
+      }
+
+      final combined = prose.join('\n');
+      expect(combined, isNot(contains('—')));
+      expect(combined, isNot(contains(';')));
+      expect(combined, isNot(contains(' - ')));
+    });
+  });
+
   group('ContentBlock subclasses', () {
     test('TextBlock holds text', () {
       const block = TextBlock('hello');
