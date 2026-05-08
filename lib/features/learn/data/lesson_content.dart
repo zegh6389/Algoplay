@@ -148,15 +148,13 @@ const List<LessonContent> lessons = [
           ),
           TextBlock(
             "Think of it this way: every recipe is an algorithm. Every set of "
-            "directions from Google Maps is an algorithm. Even your morning "
-            "routine (wake up → groan → coffee → function) is technically an "
-            "algorithm.",
+            "directions from Google Maps is an algorithm. Even a morning "
+            "routine has ordered steps, though it is not written for a computer.",
           ),
           TextBlock(
-            "But here's where it gets interesting. Not all chocolate cakes are "
-            "created equal. Some taste like heaven. Some taste like cardboard "
-            "with frosting. Some take 20 minutes, some take 4 hours and three "
-            "sinks full of dishes.",
+            "But here is where it gets useful. Not all chocolate cake recipes are "
+            "equally good. Some are clear, fast, and reliable. Others waste time "
+            "or leave too much room for mistakes.",
           ),
           TextBlock(
             "Same goes for algorithms. There's usually more than one way to "
@@ -164,9 +162,9 @@ const List<LessonContent> lessons = [
             "More elegant. Cheaper to run.",
           ),
           KeyTakeawayBlock(
-            "An algorithm is just a recipe for a computer. But unlike cooking, "
-            "we can precisely measure which recipe is better using math. That's "
-            "what this whole course is about.",
+            "An algorithm is a recipe for solving a problem. In computer science, "
+            "we can compare those recipes with math. That is the main habit this "
+            "course will build.",
           ),
         ],
       ),
@@ -188,22 +186,22 @@ const List<LessonContent> lessons = [
                 'A series of instructions designed to accomplish a specific task.',
           ),
           TextBlock(
-            "Sounds simple, right? But buried in that definition are five "
-            "crucial properties every algorithm must have:",
+            "The definition sounds simple, but it carries five properties every "
+            "algorithm must have:",
           ),
           DefinitionBlock(
             term: '1. Input',
-            definition: 'Zero or more inputs. (A recipe needs ingredients.)',
+            definition: 'Zero or more inputs. A recipe needs ingredients, and an algorithm may need data.',
           ),
           DefinitionBlock(
             term: '2. Output',
             definition:
-                "At least one output. (No point baking if there's no cake.)",
+                "At least one output. A procedure should produce some result.",
           ),
           DefinitionBlock(
             term: '3. Definiteness',
             definition:
-                'Each step is crystal clear. No "add some salt" vagueness.',
+                'Each step is clear enough to follow without guessing.',
           ),
           DefinitionBlock(
             term: '4. Finiteness',
@@ -213,23 +211,21 @@ const List<LessonContent> lessons = [
           DefinitionBlock(
             term: '5. Effectiveness',
             definition:
-                "Every step is doable. \"Teleport the cake into the oven\" "
-                "doesn't count.",
+                'Every step is basic enough that a real machine or person can carry it out.',
           ),
           TextBlock(
-            "Violate any of these, and you don't have an algorithm. You have "
-            "a wish.",
+            "If a procedure misses any of these properties, it is not a complete "
+            "algorithm yet.",
           ),
           TextBlock(
-            "Fun fact: The word \"algorithm\" comes from Muhammad ibn Musa "
-            "al-Khwarizmi, a 9th-century Persian mathematician. His name was "
-            "Latinized to \"Algoritmi.\" So every time you sort an array, "
-            "you're honoring a mathematician from Baghdad. Respect.",
+            "The word \"algorithm\" comes from Muhammad ibn Musa al-Khwarizmi, "
+            "a 9th-century Persian mathematician. His name was Latinized to "
+            "\"Algoritmi.\" The history is a useful reminder that algorithms "
+            "are older than computers.",
           ),
           KeyTakeawayBlock(
-            "An algorithm must be definite, finite, effective, and produce "
-            "output from input. If your \"algorithm\" runs forever, it is not "
-            "an algorithm. It is a screensaver wearing a fake mustache.",
+            'An algorithm must accept the required input, produce output, use clear '
+            'steps, eventually stop, and rely on operations that can actually be done.',
           ),
         ],
       ),
@@ -242,16 +238,15 @@ const List<LessonContent> lessons = [
         algorithmId: null,
         contentBlocks: [
           TextBlock(
-            'Quick side quest before we start measuring algorithms like tiny '
-            'speed demons. Levitin Section 1.4 reviews the background gear: '
-            'data structures, graphs, trees, sets, and dictionaries. If any '
-            'of those sound like mysterious forest creatures, flag it on the '
-            'Discussion Board. We need that toolbox soon.',
+            'Before we measure algorithms, Levitin Section 1.4 reviews the tools '
+            'we will rely on: data structures, graphs, trees, sets, and dictionaries. '
+            'If any of those are unfamiliar, flag them on the Discussion Board. '
+            'We will use that toolbox soon.',
           ),
           TextBlock(
-            'Now for the math goblin that keeps showing up in computer '
-            'science: logarithms. Do not panic. A logarithm is just an exponent '
-            'wearing a fake mustache.',
+            'Now for logarithms, which appear constantly in computer science. A '
+            'logarithm is the exponent needed to reach a value from a given base. '
+            'That is the whole idea.',
           ),
           DefinitionBlock(
             term: 'Logarithm definition',
@@ -265,8 +260,8 @@ const List<LessonContent> lessons = [
           ),
           TextBlock(
             'Example: base 2 asks how many times the number 2 must multiply by '
-            'itself to reach 8. The log asks the question. The exponent answers '
-            'while looking smug.',
+            'itself to reach 8. The logarithm asks the question. The exponent '
+            'gives the answer.',
           ),
           MathBlock(
             r'\log_2 8 = 3 \text{ because } 2^3 = 8',
@@ -275,8 +270,7 @@ const List<LessonContent> lessons = [
           DefinitionBlock(
             term: 'Rule 1: strictly increasing',
             definition:
-                'For bases greater than 1, bigger input means bigger logarithm output. '
-                'No plot twist, just math behaving.',
+                'For bases greater than 1, bigger input means bigger logarithm output.',
           ),
           MathBlock(
             r'b > 1 \text{ and } x < y \implies \log_b x < \log_b y',
@@ -285,8 +279,7 @@ const List<LessonContent> lessons = [
           DefinitionBlock(
             term: 'Rule 2: inverse rule',
             definition:
-                'A logarithm and its matching exponential undo each other, like two '
-                'rival wizards agreeing to stop yelling.',
+                'A logarithm and its matching exponential undo each other.',
           ),
           MathBlock(
             r'\log_b(b^a) = a',
@@ -295,8 +288,7 @@ const List<LessonContent> lessons = [
           DefinitionBlock(
             term: 'Rule 3: product rule',
             definition:
-                'Multiplication inside a logarithm turns into addition outside. '
-                'The log is basically a math translator with a clipboard.',
+                'Multiplication inside a logarithm turns into addition outside.',
           ),
           MathBlock(
             r'\log_b(xy) = \log_b x + \log_b y',
@@ -305,8 +297,7 @@ const List<LessonContent> lessons = [
           DefinitionBlock(
             term: 'Rule 4: power rule',
             definition:
-                'Powers can be pulled down in front, like a bouncer escorting the '
-                'exponent out of the club.',
+                'Powers can be pulled down in front as a multiplier.',
           ),
           MathBlock(
             r'\log_b(x^a) = a\log_b x',
@@ -325,7 +316,7 @@ const List<LessonContent> lessons = [
           TextBlock(
             'That last rule is why algorithm books often write just log n '
             'without naming the base. The base changes the scale by a constant, '
-            'not the growth category. Same monster, different hat.',
+            'not the growth category.',
           ),
           MathBlock(
             r'\log_c x = \frac{1}{\log_b c}\log_b x = k\log_b x',
@@ -335,8 +326,8 @@ const List<LessonContent> lessons = [
             term: 'Binary logarithm',
             definition:
                 'The notation lg is shorthand for base 2 logarithm. Computer science '
-                'loves base 2 because computers speak in bits, powers of two, and '
-                'the occasional screaming fan noise.',
+                'uses base 2 often because computers store information in bits and '
+                'powers of two appear everywhere.',
           ),
           MathBlock(
             r'\lg x = \log_2 x',
@@ -346,7 +337,7 @@ const List<LessonContent> lessons = [
             'Why do we care? Because logs appear whenever a problem keeps '
             'getting cut down by a constant factor: binary search halves the '
             'search space, balanced trees split paths, and divide-and-conquer '
-            'keeps chopping the monster into smaller monsters.',
+            'keeps reducing a problem into smaller problems.',
           ),
           CodeBlock(
             'binary search on 16 items: 16 -> 8 -> 4 -> 2 -> 1\n'
@@ -363,7 +354,7 @@ const List<LessonContent> lessons = [
               'Because all logarithms are exactly equal.',
               'Because change of base only changes the value by a constant factor.',
               'Because computers refuse to calculate other bases.',
-              'Because logarithms are optional decorative math confetti.',
+              'Because logarithm bases are never part of algorithm analysis.',
             ],
             correctIndex: 1,
             explanation:
@@ -374,8 +365,8 @@ const List<LessonContent> lessons = [
           KeyTakeawayBlock(
             'Logarithms answer "what exponent?" In CS, lg means base 2. '
             'Plain log usually means the base does not matter for growth, because '
-            'change of base only adds a constant multiplier. Tiny formula. Big '
-            'algorithm analysis energy.',
+            'change of base only adds a constant multiplier. This is one reason '
+            'logarithms matter so much in algorithm analysis.',
           ),
         ],
       ),
@@ -390,62 +381,57 @@ const List<LessonContent> lessons = [
           TextBlock(
             'Before anyone touches the keyboard, we need the algorithmic '
             'equivalent of reading the recipe. Levitin gives us six steps for '
-            'solving problems without accidentally building a spaghetti cannon.',
+            'solving problems in a disciplined order.',
           ),
           DefinitionBlock(
             term: 'Step 1: Understand the Problem',
             definition:
-                'Ask what we have, what we need, and what weird edge cases are '
-                'lurking in the bushes. Solving the wrong problem beautifully is '
-                'still wrong. It is like delivering a peanut butter sandwich to someone '
-                'with a peanut allergy.',
+                'Ask what we have, what we need, and which edge cases might break '
+                'the plan. Solving the wrong problem beautifully is still wrong.',
           ),
           DefinitionBlock(
             term: 'Step 2: Pick the Right Techniques',
             definition:
                 'Choose the tools: list, tree, graph, sorting idea, divide and '
-                'conquer, or something else. We do not bring a rocket launcher to '
-                'swat a mosquito, even if the rocket launcher has nice branding.',
+                'conquer, or something else. The technique should match the problem.',
           ),
           DefinitionBlock(
             term: 'Step 3: Design the Algorithm',
             definition:
-                'Sketch the plan in words, boxes, arrows, or tiny battle maps. '
-                'No code yet. Paper is cheap. Debugging 200 lines at 2 AM is not.',
+                'Sketch the plan in words, boxes, or arrows. No code yet. It is '
+                'usually cheaper to fix an idea before it becomes source code.',
           ),
           DefinitionBlock(
             term: 'Step 4: Prove It Works',
             definition:
-                'Run the plan through your brain before letting the computer '
-                'suffer. Try small inputs, empty inputs, and suspicious goblin '
-                'cases. If the idea fails here, fix it while the mistake is cheap.',
+                'Test the idea before implementing it. Try small inputs, empty inputs, '
+                'and boundary cases. If the idea fails here, fix it while the mistake is cheap.',
           ),
           DefinitionBlock(
             term: 'Step 5: Analyze the Algorithm',
             definition:
                 'Ask how much work it does and how much memory it eats. If the '
-                'design is too slow or too hungry, loop back and redesign. That '
-                'backward arrow is not failure. It is professional wizardry.',
+                'design is too slow or uses too much memory, loop back and redesign. '
+                'That loop is part of the process.',
           ),
           DefinitionBlock(
             term: 'Step 6: Code the Algorithm',
             definition:
-                'Finally, the keyboard gets invited to the party. Because we '
-                'already understand, designed, proved, and analyzed the plan, '
-                'coding becomes translation instead of panic typing.',
+                'Finally, write the code. Because we already understand, designed, '
+                'proved, and analyzed the plan, coding becomes translation instead '
+                'of guesswork.',
           ),
           TextBlock(
             'Feedback loops matter. Real problem solving is not a straight '
-            'slide. It is GPS yelling "recalculating" after every bad turn. '
-            'We may jump from analysis back to design, or from proof back to '
-            'understanding. Smart builders loop. Chaos builders just commit bugs.',
+            'line. We may jump from analysis back to design, or from proof back to '
+            'understanding. Good problem solving allows those feedback loops.',
           ),
           QuizBlock(
             question: 'In Levitin\'s six-step problem-solving process, when should we write the code?',
             options: [
-              'Immediately, before thinking, for maximum keyboard thunder.',
+              'Immediately, before defining the problem clearly.',
               'After understanding, choosing techniques, designing, proving, and analyzing.',
-              'Only after the algorithm has been posted on social media.',
+              'Only after someone else writes it first.',
               'Before defining the input and output.',
             ],
             correctIndex: 1,
@@ -456,7 +442,7 @@ const List<LessonContent> lessons = [
           KeyTakeawayBlock(
             'The keyboard is the final tool, not the starting pistol. Understand, '
             'choose techniques, design, prove, analyze, then code. Plan first. '
-            'Your future self gets fewer 2 AM emergencies.',
+            'This saves time and prevents many avoidable bugs.',
           ),
         ],
       ),
@@ -469,10 +455,9 @@ const List<LessonContent> lessons = [
         algorithmId: null,
         contentBlocks: [
           TextBlock(
-            'Not every algorithm deserves a trophy. Some are chocolate cake: '
-            'fast, clean, correct, and suspiciously delicious. Others are burnt '
-            'cake that took five hours and still tastes like printer toner. '
-            'Baase and Van Gelder give us five ways to judge the recipe.',
+            'Not every algorithm is equally good. Some are correct, efficient, and '
+            'simple to understand. Others solve the problem but waste time, memory, '
+            'or attention. Baase and Van Gelder give us five ways to judge the design.',
           ),
           DefinitionBlock(
             term: 'Correctness',
@@ -486,23 +471,22 @@ const List<LessonContent> lessons = [
             term: 'Efficiency',
             definition:
                 'Also called the amount of work done. We do not trust wall-clock '
-                'time because different machines are different kitchens. Instead '
+                'time because different machines can give different measurements. Instead '
                 'we count basic operations and ask how the work grows as input '
-                'gets bigger. Yes, Big-O is waiting in the hallway.',
+                'gets bigger. This leads directly to Big-O notation.',
           ),
           DefinitionBlock(
             term: 'Space Usage',
             definition:
                 'Algorithms need room for input, instructions, and temporary '
-                'scratch work. An array is like neat containers in a row. A linked '
-                'list is a scavenger hunt of pointers. Storage choices matter.',
+                'scratch work. Arrays and linked lists organize memory differently, '
+                'so storage choices matter.',
           ),
           DefinitionBlock(
             term: 'Simplicity',
             definition:
                 'A simple algorithm is easier to understand, code, test, and fix. '
-                'If the plan needs 47 timers and a ceremonial hat, bugs will find '
-                'rent-free apartments inside it.',
+                'If the plan is hard to explain, it is usually harder to implement correctly.',
           ),
           DefinitionBlock(
             term: 'Optimality',
@@ -513,8 +497,8 @@ const List<LessonContent> lessons = [
           ),
           TextBlock(
             'Our main focus will be efficiency because it is measurable and '
-            'useful for comparing algorithms. But here is the giant neon warning: '
-            'a fast wrong answer is still wrong. Correctness always comes first.',
+            'useful for comparing algorithms. But a fast wrong answer is still wrong. '
+            'Correctness always comes first.',
           ),
           QuizBlock(
             question: 'Which criterion asks whether an algorithm is the best possible, not just pretty good?',

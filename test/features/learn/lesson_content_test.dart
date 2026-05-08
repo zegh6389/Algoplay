@@ -191,7 +191,7 @@ void main() {
       expect(blocks.whereType<KeyTakeawayBlock>(), isNotEmpty);
     });
 
-    test('Lesson 1 prose avoids AI punctuation tells', () {
+    List<String> lesson1Prose() {
       final prose = <String>[];
       for (final module in lesson1.modules) {
         for (final block in module.contentBlocks) {
@@ -213,11 +213,39 @@ void main() {
           }
         }
       }
+      return prose;
+    }
 
-      final combined = prose.join('\n');
+    test('Lesson 1 prose avoids AI punctuation tells', () {
+      final combined = lesson1Prose().join('\n');
       expect(combined, isNot(contains('—')));
       expect(combined, isNot(contains(';')));
       expect(combined, isNot(contains(' - ')));
+    });
+
+    test('Lesson 1 keeps a learning-first tone with limited humor', () {
+      final combined = lesson1Prose().join(' ').toLowerCase();
+      const overusedJokeWords = [
+        'goblin',
+        'monster',
+        'wizard',
+        'mustache',
+        'cannon',
+        'rocket launcher',
+        'printer toner',
+        'screensaver',
+        'thunder',
+        'confetti',
+        'ceremonial hat',
+      ];
+
+      for (final word in overusedJokeWords) {
+        expect(combined, isNot(contains(word)),
+            reason: 'Lesson 1 should not joke after nearly every point.');
+      }
+      expect(combined, contains('algorithm'));
+      expect(combined, contains('correctness'));
+      expect(combined, contains('efficiency'));
     });
 
     test('Module 2 contains definition blocks for five properties', () {
