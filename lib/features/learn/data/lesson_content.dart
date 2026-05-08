@@ -10,6 +10,13 @@ import 'package:flutter/foundation.dart' show immutable;
 ///
 /// Subclasses represent different content types: plain text, code snippets,
 /// term definitions, key takeaway callouts, and interactive quizzes.
+/// An animated asymptotic bound graph (O, Ω, Θ) rendered with CustomPaint.
+class GraphBlock extends ContentBlock {
+  /// 'bigO' | 'bigOmega' | 'bigTheta'
+  final String type;
+  const GraphBlock(this.type);
+}
+
 sealed class ContentBlock {
   const ContentBlock();
 }
@@ -753,6 +760,13 @@ const List<LessonContent> lessons = [
             'times, but the shape of the curve stays the same. Now we want a mathematical '
             'framework that lets us describe that shape precisely.',
           ),
+          TextBlock(
+            'The goal is to describe the rate of growth of an algorithm formally. '
+            'We express this using bounds: upper, lower, and tight. If we can say an '
+            'algorithm grows no faster than n squared, that tells us something useful '
+            'even before we run it on any machine.',
+          ),
+          GraphBlock('bigO'),
           DefinitionBlock(
             term: 'Big-O',
             definition:
@@ -765,6 +779,7 @@ const List<LessonContent> lessons = [
             semanticsLabel:
                 'f of n is less than or equal to c times g of n for all n greater than or equal to n zero',
           ),
+          GraphBlock('bigOmega'),
           DefinitionBlock(
             term: 'Big-Omega',
             definition:
@@ -777,6 +792,7 @@ const List<LessonContent> lessons = [
             semanticsLabel:
                 'f of n is greater than or equal to c times g of n for all n greater than or equal to n zero',
           ),
+          GraphBlock('bigTheta'),
           DefinitionBlock(
             term: 'Big-Theta',
             definition:
@@ -790,21 +806,9 @@ const List<LessonContent> lessons = [
                 'c two times g of n is less than or equal to f of n is less than or equal to c one times g of n for all n greater than or equal to n zero',
           ),
           TextBlock(
-            'In practice we simplify as much as possible. If g1(n) = 15n squared '
-            'minus 6n plus 27, we usually just write O(n squared). We ignore constant '
-            'factors and slower-growing terms because for large n the n squared term '
-            'dominates.',
-          ),
-          TextBlock(
-            'The limit method is a shortcut: look at the limit as n approaches '
-            'infinity of f(n) over g(n). If it equals 0, f grows more slowly than g. '
-            'If it equals a positive constant c, f and g grow at the same rate, so '
-            'f is in Theta of g. If it equals infinity, f grows faster than g.',
-          ),
-          MathBlock(
-            r'\lim_{n \to \infty} \frac{f(n)}{g(n)} = \begin{cases} 0 & \text{f grows slower} \\ c > 0 & \text{same rate} \\ \infty & \text{f grows faster} \end{cases}',
-            semanticsLabel:
-                'limit as n approaches infinity of f of n over g of n equals zero when f grows slower, a positive constant when same rate, or infinity when f grows faster',
+            'The most common way of reading f is in Theta of g is: f is order g. '
+            'The phrases asymptotic order and asymptotic complexity are used '
+            'interchangeably. In practice, we almost always report either O or Theta efficiency.',
           ),
           TextBlock(
             'A bound is tight if it is as strong and simple as possible. For f(n) = '
@@ -812,11 +816,32 @@ const List<LessonContent> lessons = [
             'and O(2 to the n) are all valid upper bounds. But O(n squared) is the '
             'tightest and most informative. Always report the simplest true bound.',
           ),
+          TextBlock(
+            'In practice we simplify as much as possible. If g1(n) = 15n squared '
+            'minus 6n plus 27, we usually just write O(n squared). We drop constant '
+            'factors and slower-growing terms because for large n the n squared term '
+            'dominates. Why can we drop the lower-order terms? Because if f(n) is '
+            'bounded above by c times (n squared plus 3n plus 5), then for n >= 1, '
+            'f(n) is also bounded above by 9c times n squared. The lower-order terms '
+            'get swallowed by the dominant term once n is large enough.',
+          ),
+          TextBlock(
+            'The limit method is a shortcut for determining which bound applies: '
+            'look at the limit as n approaches infinity of f(n) over g(n). '
+            'If it equals 0, f grows more slowly than g and is in O(g). '
+            'If it equals a positive constant, f and g grow at the same rate and f is in Theta of g. '
+            'If it equals infinity, f grows faster than g and is in Omega of g.',
+          ),
+          MathBlock(
+            r'\lim_{n \to \infty} \frac{f(n)}{g(n)} = \begin{cases} 0 & \text{f grows slower} \\ c > 0 & \text{same rate} \\ \infty & \text{f grows faster} \end{cases}',
+            semanticsLabel:
+                'limit as n approaches infinity of f of n over g of n equals zero when f grows slower, a positive constant when same rate, or infinity when f grows faster',
+          ),
           CodeBlock(
-            '// Example: verify f(n) = 4n^2 + 8n - 3 is in O(n^2)\n'
-            '// Choose c = 12, n0 = 1\n'
-            '// Need: 4n^2 + 8n - 3 <= 12n^2 for all n >= 1\n'
-            '// 4n^2 + 8n - 3 <= 4n^2 + 8n <= 4n^2 + 8n^2 = 12n^2  QED',
+            '// Example: prove f(n) = 4n^2 + 8n - 3 is in O(n^2)\n'
+            '// Choose g(n) = n^2, c = 15, n0 = 1\n'
+            '// Need: 4n^2 + 8n - 3 <= 15n^2 for all n >= 1\n'
+            '// 4n^2 + 8n - 3 <= 4n^2 + 8n^2 + 3n^2 = 15n^2  QED',
             language: 'text',
           ),
           QuizBlock(
