@@ -709,6 +709,107 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+      ModuleContent(
+        id: 'lesson2_module3',
+        title: 'The Formal Framework for Growth',
+        order: 2,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'So far we have talked about growth in an intuitive way. Some algorithms '
+            'grow slowly, some grow quickly, and some explode. We used examples like '
+            'Selection Sort to see that different machines give different exact running '
+            'times, but the shape of the curve stays the same. Now we want a mathematical '
+            'framework that lets us describe that shape precisely.',
+          ),
+          DefinitionBlock(
+            term: 'Big-O',
+            definition:
+                'The set of functions that grow no faster than g(n). Formally, '
+                'f(n) is in O(g(n)) if there exist a positive constant c and a '
+                'nonnegative integer n0 such that f(n) <= c * g(n) for all n >= n0.',
+          ),
+          MathBlock(
+            r'f(n) \le c \cdot g(n) \quad \text{for all } n \ge n_0',
+            semanticsLabel:
+                'f of n is less than or equal to c times g of n for all n greater than or equal to n zero',
+          ),
+          DefinitionBlock(
+            term: 'Big-Omega',
+            definition:
+                'The set of functions that grow at least as fast as g(n). Formally, '
+                'f(n) is in Omega(g(n)) if there exist a positive constant c and a '
+                'nonnegative integer n0 such that f(n) >= c * g(n) for all n >= n0.',
+          ),
+          MathBlock(
+            r'f(n) \ge c \cdot g(n) \quad \text{for all } n \ge n_0',
+            semanticsLabel:
+                'f of n is greater than or equal to c times g of n for all n greater than or equal to n zero',
+          ),
+          DefinitionBlock(
+            term: 'Big-Theta',
+            definition:
+                'The set of functions that grow at the same rate as g(n), up to '
+                'constant factors. f(n) is in Theta(g(n)) if it is in both O(g(n)) '
+                'and Omega(g(n)).',
+          ),
+          MathBlock(
+            r'c_2 \cdot g(n) \le f(n) \le c_1 \cdot g(n) \quad \text{for all } n \ge n_0',
+            semanticsLabel:
+                'c two times g of n is less than or equal to f of n is less than or equal to c one times g of n for all n greater than or equal to n zero',
+          ),
+          TextBlock(
+            'In practice we simplify as much as possible. If g1(n) = 15n squared '
+            'minus 6n plus 27, we usually just write O(n squared). We ignore constant '
+            'factors and slower-growing terms because for large n the n squared term '
+            'dominates.',
+          ),
+          TextBlock(
+            'The limit method is a shortcut: look at the limit as n approaches '
+            'infinity of f(n) over g(n). If it equals 0, f grows more slowly than g. '
+            'If it equals a positive constant c, f and g grow at the same rate, so '
+            'f is in Theta of g. If it equals infinity, f grows faster than g.',
+          ),
+          MathBlock(
+            r'\lim_{n \to \infty} \frac{f(n)}{g(n)} = \begin{cases} 0 & \text{f grows slower} \\ c > 0 & \text{same rate} \\ \infty & \text{f grows faster} \end{cases}',
+            semanticsLabel:
+                'limit as n approaches infinity of f of n over g of n equals zero when f grows slower, a positive constant when same rate, or infinity when f grows faster',
+          ),
+          TextBlock(
+            'A bound is tight if it is as strong and simple as possible. For f(n) = '
+            '5n squared, it is technically true that O(n cubed), O(n squared log n), '
+            'and O(2 to the n) are all valid upper bounds. But O(n squared) is the '
+            'tightest and most informative. Always report the simplest true bound.',
+          ),
+          CodeBlock(
+            '// Example: verify f(n) = 4n^2 + 8n - 3 is in O(n^2)\n'
+            '// Choose c = 12, n0 = 1\n'
+            '// Need: 4n^2 + 8n - 3 <= 12n^2 for all n >= 1\n'
+            '// 4n^2 + 8n - 3 <= 4n^2 + 8n <= 4n^2 + 8n^2 = 12n^2  QED',
+            language: 'text',
+          ),
+          QuizBlock(
+            question:
+                'If f(n) = 5n^2, which of the following is the tightest bound?',
+            options: [
+              'O(n)',
+              'O(n^2)',
+              'O(n^3)',
+              'O(2^n)',
+            ],
+            correctIndex: 1,
+            explanation:
+                'O(n^2) is the tightest bound. O(n) is too tight (false). '
+                'O(n^3) and O(2^n) are technically true but do not tell us '
+                'as much. The tightest bound is always the simplest that is still correct.',
+          ),
+          KeyTakeawayBlock(
+            'Big-O is an upper bound. Big-Omega is a lower bound. Big-Theta is both '
+            'together, meaning same rate of growth. Drop constants and lower-order '
+            'terms when you write bounds. Report the tightest one.',
+          ),
+        ],
+      ),
     ],
   ),
 
