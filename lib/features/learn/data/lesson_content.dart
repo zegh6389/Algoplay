@@ -562,7 +562,7 @@ const List<LessonContent> lessons = [
             'you fit curves to this data you get the same shape both times: '
             'quadratic, roughly an n squared term dominates. The home computer '
             'curve might be 0.00078 n squared and the desktop might be 0.00017 '
-            'n squared - different coefficients, same shape. This is why we study '
+            'n squared, different coefficients, same shape. This is why we study '
             'growth patterns instead of stopwatch times. The shape is the signal: '
             'the coefficients are noise.',
           ),
@@ -571,7 +571,7 @@ const List<LessonContent> lessons = [
             'as the input grows. One algorithm might take n + 2 steps. Another '
             'might take 5n + 1 steps. Surprisingly, that difference of a few extra '
             'steps per item is often irrelevant. What matters is the shape of the '
-            'growth - whether the work grows linearly with the input, or faster, '
+            'growth, whether the work grows linearly with the input, or faster, '
             'or slower. This lens is called the rate of growth, and it is the core '
             'idea that ties together everything in algorithm analysis.',
           ),
@@ -725,7 +725,7 @@ const List<LessonContent> lessons = [
             'That fraction assumes the target is equally likely to be in any '
             'position. Change the assumption and the average changes too. This '
             'is why worst case analysis is popular. It does not need a probability '
-            'model - it only requires thinking about the hardest input.',
+            'model, it only requires thinking about the hardest input.',
           ),
           QuizBlock(
             question: 'For linear search, what is the worst case?',
