@@ -32,8 +32,8 @@ void main() {
       lesson1 = lessons.firstWhere((l) => l.id == 1);
     });
 
-    test('has 2 modules', () {
-      expect(lesson1.modules.length, 2);
+    test('has 3 modules', () {
+      expect(lesson1.modules.length, 3);
     });
 
     test('modules have titles', () {
@@ -73,6 +73,41 @@ void main() {
       expect(lesson1.modules[1].title, 'Formally Speaking…');
       expect(lesson1.modules[1].order, 1);
       expect(lesson1.modules[1].algorithmId, isNull);
+    });
+
+    test('Module 3 has logarithm foundations for algorithm analysis', () {
+      final module = lesson1.modules[2];
+      expect(module.id, 'lesson1_module3');
+      expect(module.title, 'Logarithms: The Shrinking Spell');
+      expect(module.order, 2);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(blocks.whereType<TextBlock>().length, greaterThanOrEqualTo(4));
+      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(7));
+      expect(blocks.any((b) => b is QuizBlock), isTrue);
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = blocks.map((block) {
+        return switch (block) {
+          TextBlock(:final text) => text,
+          DefinitionBlock(:final term, :final definition) => '$term $definition',
+          KeyTakeawayBlock(:final text) => text,
+          QuizBlock(:final question, :final options, :final explanation) =>
+            '$question ${options.join(' ')} $explanation',
+          CodeBlock(:final code, :final language) => '$language $code',
+        };
+      }).join(' ');
+
+      expect(combined, contains('Levitin'));
+      expect(combined, contains('log_b x'));
+      expect(combined, contains('strictly increasing'));
+      expect(combined, contains('log_b(b^a) = a'));
+      expect(combined, contains('log_b(xy) = log_b x + log_b y'));
+      expect(combined, contains('log_b(x^a) = a log_b x'));
+      expect(combined, contains('change of base'));
+      expect(combined, contains('lg'));
+      expect(combined, contains('base 2'));
     });
 
     test('Module 1 contains mixed content block types', () {

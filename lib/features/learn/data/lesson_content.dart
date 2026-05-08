@@ -226,6 +226,113 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+
+      // Module 3: "Logarithms: The Shrinking Spell"
+      ModuleContent(
+        id: 'lesson1_module3',
+        title: 'Logarithms: The Shrinking Spell',
+        order: 2,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'Quick side quest before we start measuring algorithms like tiny '
+            'speed demons: Levitin Section 1.4 reviews the background gear — '
+            'data structures, graphs, trees, sets, and dictionaries. If any '
+            'of those sound like mysterious forest creatures, flag it on the '
+            'Discussion Board. We need that toolbox soon.',
+          ),
+          TextBlock(
+            'Now for the math goblin that keeps showing up in computer '
+            'science: logarithms. Do not panic. A logarithm is just an exponent '
+            'wearing a fake mustache.',
+          ),
+          DefinitionBlock(
+            term: 'log_b x',
+            definition:
+                'The real number a such that b^a = x. In plain English: '
+                '"what power do we raise b to so we get x?"',
+          ),
+          TextBlock(
+            'Example: log_2 8 = 3 because 2^3 = 8. The log asks the question; '
+            'the exponent answers while looking smug.',
+          ),
+          DefinitionBlock(
+            term: 'Rule 1: strictly increasing',
+            definition:
+                'For b > 1, log_b is a strictly increasing function. Bigger '
+                'input means bigger log output. No plot twist, just math behaving.',
+          ),
+          DefinitionBlock(
+            term: 'Rule 2: inverse rule',
+            definition:
+                'log_b(b^a) = a. The log and exponent cancel like two rival '
+                'wizards agreeing to stop yelling.',
+          ),
+          DefinitionBlock(
+            term: 'Rule 3: product rule',
+            definition:
+                'log_b(xy) = log_b x + log_b y. Multiplication inside the log '
+                'turns into addition outside.',
+          ),
+          DefinitionBlock(
+            term: 'Rule 4: power rule',
+            definition:
+                'log_b(x^a) = a log_b x. Powers can be pulled down in front, '
+                'like a bouncer escorting the exponent out of the club.',
+          ),
+          DefinitionBlock(
+            term: 'Rule 5: change of base',
+            definition:
+                'log_c x = log_b x / log_b c. This lets us convert between '
+                'bases. In algorithm analysis, changing the base only multiplies '
+                'by a constant.',
+          ),
+          TextBlock(
+            'That last rule is why algorithm books often write just log n '
+            'without naming the base. If log_c x = (1 / log_b c) log_b x, then '
+            'log_c x = k log_b x for some constant k. The base changes the '
+            'scale, not the growth-family drama.',
+          ),
+          DefinitionBlock(
+            term: 'lg x',
+            definition:
+                'Shorthand for log_2 x. Computer science loves base 2 because '
+                'computers speak in bits, powers of two, and the occasional '
+                'screaming fan noise.',
+          ),
+          TextBlock(
+            'Why do we care? Because logs appear whenever a problem keeps '
+            'getting cut down by a constant factor: binary search halves the '
+            'search space, balanced trees split paths, and divide-and-conquer '
+            'keeps chopping the monster into smaller monsters.',
+          ),
+          CodeBlock(
+            'binary search on 16 items: 16 -> 8 -> 4 -> 2 -> 1\n'
+            'that is 4 cuts, and log_2 16 = 4',
+            language: 'text',
+          ),
+          QuizBlock(
+            question: 'Why can algorithm analysis usually write log n without specifying the base?',
+            options: [
+              'Because all logarithms are exactly equal.',
+              'Because change of base only changes the value by a constant factor.',
+              'Because computers refuse to calculate other bases.',
+              'Because logarithms are optional decorative math confetti.',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Change of base gives log_c n = k log_b n for a constant k. '
+                'Asymptotic analysis usually ignores constant multipliers, so '
+                'the base does not change the growth class.',
+          ),
+          KeyTakeawayBlock(
+            'Logarithms answer "what exponent?" In CS, lg means base 2, and '
+            'plain log usually means "base does not matter for growth" because '
+            'change of base only adds a constant multiplier. Tiny formula, huge '
+            'algorithm-analysis energy.',
+          ),
+        ],
+      ),
     ],
   ),
 

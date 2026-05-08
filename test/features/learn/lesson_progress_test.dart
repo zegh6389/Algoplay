@@ -52,8 +52,10 @@ void main() {
       final progress1 = await repo.getLessonProgress(1);
       expect(progress1, 1 / totalModules);
 
-      // Complete second module
-      await repo.markModuleComplete(1, lesson1.modules[1].id);
+      // Complete remaining modules
+      for (final module in lesson1.modules.skip(1)) {
+        await repo.markModuleComplete(1, module.id);
+      }
       final progress2 = await repo.getLessonProgress(1);
       expect(progress2, 1.0);
     });
