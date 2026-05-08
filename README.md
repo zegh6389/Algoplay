@@ -265,29 +265,17 @@ The project uses **GitHub Actions** for continuous integration and delivery:
 
 ---
 
-## 🔄 Migration Notes (React Native → Flutter)
+## ✅ Flutter-only repository
 
-This project was migrated from a React Native / Expo codebase. Key mapping:
+This repository is the single active Algoplay app. It is Flutter/Dart only:
 
-| React Native           | Flutter Equivalent                     |
-|------------------------|----------------------------------------|
-| React Navigation       | GoRouter (`go_router`)                 |
-| Redux / Zustand        | Riverpod (`flutter_riverpod`)          |
-| `StyleSheet.create()`  | `ThemeData` + `AppColors` / `AppSpacing` |
-| `expo-linear-gradient` | `LinearGradient` (built-in)            |
-| `react-native-svg`     | `flutter_svg`                          |
-| `AsyncStorage`         | `shared_preferences` + `flutter_secure_storage` |
-| `supabase-js`          | `supabase_flutter`                     |
-| `react-native-reanimated` | `flutter_animate`                   |
-| `expo-font`            | `google_fonts` + bundled `SpaceMono`   |
-| Expo EAS Build         | GitHub Actions + Fastlane              |
+- UI: Flutter Material widgets
+- Navigation: GoRouter (`go_router`)
+- State: Riverpod (`flutter_riverpod`)
+- Storage: `shared_preferences` and `flutter_secure_storage`
+- CI/CD: GitHub Actions builds APK and AAB artifacts
 
-### What changed
-- **State**: All Redux stores → Riverpod `Provider`s (co-located per feature)
-- **Navigation**: Stack navigators → GoRouter with `StatefulShellRoute` for tab persistence
-- **Theming**: JavaScript theme tokens → Dart `AppColors`, `AppSpacing`, `AppTheme` static classes
-- **Platform code**: No more native bridges — pure Dart with `MethodChannel` only if needed
-- **Performance**: No JS bridge overhead; tree shaking removes unused algorithm code
+Old JavaScript, Expo, React Native, and `node_modules` files are intentionally excluded from this repo to prevent agents and build tools from choosing the wrong stack.
 
 ---
 

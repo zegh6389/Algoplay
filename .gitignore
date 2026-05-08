@@ -10,6 +10,13 @@
 build/
 *.iml
 
+# JavaScript leftovers should never be part of this Flutter repo
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.expo/
+
 # IDE
 .idea/
 .vscode/
