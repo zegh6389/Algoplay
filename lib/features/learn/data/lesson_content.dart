@@ -198,7 +198,8 @@ const List<LessonContent> lessons = [
           ),
           DefinitionBlock(
             term: '1. Input',
-            definition: 'Zero or more inputs. A recipe needs ingredients, and an algorithm may need data.',
+            definition:
+                'Zero or more inputs. A recipe needs ingredients, and an algorithm may need data.',
           ),
           DefinitionBlock(
             term: '2. Output',
@@ -207,8 +208,7 @@ const List<LessonContent> lessons = [
           ),
           DefinitionBlock(
             term: '3. Definiteness',
-            definition:
-                'Each step is clear enough to follow without guessing.',
+            definition: 'Each step is clear enough to follow without guessing.',
           ),
           DefinitionBlock(
             term: '4. Finiteness',
@@ -263,7 +263,8 @@ const List<LessonContent> lessons = [
           ),
           MathBlock(
             r'\log_b x = a \iff b^a = x',
-            semanticsLabel: 'log base b of x equals a if and only if b to the a equals x',
+            semanticsLabel:
+                'log base b of x equals a if and only if b to the a equals x',
           ),
           TextBlock(
             'Example: base 2 asks how many times the number 2 must multiply by '
@@ -281,7 +282,8 @@ const List<LessonContent> lessons = [
           ),
           MathBlock(
             r'b > 1 \text{ and } x < y \implies \log_b x < \log_b y',
-            semanticsLabel: 'for b greater than 1 and x less than y, log base b of x is less than log base b of y',
+            semanticsLabel:
+                'for b greater than 1 and x less than y, log base b of x is less than log base b of y',
           ),
           DefinitionBlock(
             term: 'Rule 2: inverse rule',
@@ -299,16 +301,17 @@ const List<LessonContent> lessons = [
           ),
           MathBlock(
             r'\log_b(xy) = \log_b x + \log_b y',
-            semanticsLabel: 'log base b of x times y equals log base b of x plus log base b of y',
+            semanticsLabel:
+                'log base b of x times y equals log base b of x plus log base b of y',
           ),
           DefinitionBlock(
             term: 'Rule 4: power rule',
-            definition:
-                'Powers can be pulled down in front as a multiplier.',
+            definition: 'Powers can be pulled down in front as a multiplier.',
           ),
           MathBlock(
             r'\log_b(x^a) = a\log_b x',
-            semanticsLabel: 'log base b of x to the a equals a times log base b of x',
+            semanticsLabel:
+                'log base b of x to the a equals a times log base b of x',
           ),
           DefinitionBlock(
             term: 'Rule 5: change of base',
@@ -318,7 +321,8 @@ const List<LessonContent> lessons = [
           ),
           MathBlock(
             r'\log_c x = \frac{\log_b x}{\log_b c}',
-            semanticsLabel: 'log base c of x equals log base b of x divided by log base b of c',
+            semanticsLabel:
+                'log base c of x equals log base b of x divided by log base b of c',
           ),
           TextBlock(
             'That last rule is why algorithm books often write just log n '
@@ -327,7 +331,8 @@ const List<LessonContent> lessons = [
           ),
           MathBlock(
             r'\log_c x = \frac{1}{\log_b c}\log_b x = k\log_b x',
-            semanticsLabel: 'log base c of x equals one over log base b of c times log base b of x equals k times log base b of x',
+            semanticsLabel:
+                'log base c of x equals one over log base b of c times log base b of x equals k times log base b of x',
           ),
           DefinitionBlock(
             term: 'Binary logarithm',
@@ -356,7 +361,8 @@ const List<LessonContent> lessons = [
             semanticsLabel: 'log base 2 of 16 equals 4',
           ),
           QuizBlock(
-            question: 'Why can algorithm analysis usually write log n without specifying the base?',
+            question:
+                'Why can algorithm analysis usually write log n without specifying the base?',
             options: [
               'Because all logarithms are exactly equal.',
               'Because change of base only changes the value by a constant factor.',
@@ -434,7 +440,8 @@ const List<LessonContent> lessons = [
             'understanding. Good problem solving allows those feedback loops.',
           ),
           QuizBlock(
-            question: 'In Levitin\'s six-step problem-solving process, when should we write the code?',
+            question:
+                'In Levitin\'s six-step problem-solving process, when should we write the code?',
             options: [
               'Immediately, before defining the problem clearly.',
               'After understanding, choosing techniques, designing, proving, and analyzing.',
@@ -508,7 +515,8 @@ const List<LessonContent> lessons = [
             'Correctness always comes first.',
           ),
           QuizBlock(
-            question: 'Which criterion asks whether an algorithm is the best possible, not just pretty good?',
+            question:
+                'Which criterion asks whether an algorithm is the best possible, not just pretty good?',
             options: [
               'Simplicity',
               'Space Usage',
@@ -548,21 +556,21 @@ const List<LessonContent> lessons = [
             'input grew and recorded the running times in seconds.',
           ),
           CodeBlock(
-            'Array size n  |  Home Computer  |  Desktop Computer\n'
-            '--------------------------------------------------\n'
-            '     125       |      12.5        |       2.8\n'
-            '     250       |      49.3        |      11.0\n'
-            '     500       |     195.8        |      43.4\n'
-            '    1000       |     780.3        |     172.9\n'
-            '    2000       |    3114.9        |     690.5',
+            'n    | Home PC | Desktop PC\n'
+            '-----+---------+-----------\n'
+            '125  |   12.5  |     2.8\n'
+            '250  |   49.3  |    11.0\n'
+            '500  |  195.8  |    43.4\n'
+            '1000 |  780.3  |   172.9\n'
+            '2000 | 3114.9  |   690.5',
             language: 'text',
           ),
           TextBlock(
             'Different machines, different speeds, different compilers. But when '
             'you fit curves to this data you get the same shape both times: '
-            'quadratic, roughly an n squared term dominates. The home computer '
-            'curve might be 0.00078 n squared and the desktop might be 0.00017 '
-            'n squared, different coefficients, same shape. This is why we study '
+            'quadratic, roughly an n² term dominates. The home computer '
+            'curve might be 0.00078n² and the desktop might be 0.00017n², '
+            'different coefficients, same shape. This is why we study '
             'growth patterns instead of stopwatch times. The shape is the signal: '
             'the coefficients are noise.',
           ),
@@ -638,7 +646,8 @@ const List<LessonContent> lessons = [
             'the back eating chips.',
           ),
           QuizBlock(
-            question: 'Why do we count basic operations instead of trusting stopwatch time?',
+            question:
+                'Why do we count basic operations instead of trusting stopwatch time?',
             options: [
               'Because real machines add noise that hides the growth pattern.',
               'Because stopwatches are illegal in computer science.',
@@ -763,7 +772,7 @@ const List<LessonContent> lessons = [
           TextBlock(
             'The goal is to describe the rate of growth of an algorithm formally. '
             'We express this using bounds: upper, lower, and tight. If we can say an '
-            'algorithm grows no faster than n squared, that tells us something useful '
+            'algorithm grows no faster than n², that tells us something useful '
             'even before we run it on any machine.',
           ),
           GraphBlock('bigO'),
@@ -772,7 +781,7 @@ const List<LessonContent> lessons = [
             definition:
                 'The set of functions that grow no faster than g(n). Formally, '
                 'f(n) is in O(g(n)) if there exist a positive constant c and a '
-                'nonnegative integer n0 such that f(n) <= c * g(n) for all n >= n0.',
+                'nonnegative integer n₀ such that f(n) ≤ c·g(n) for all n ≥ n₀.',
           ),
           MathBlock(
             r'f(n) \le c \cdot g(n) \quad \text{for all } n \ge n_0',
@@ -785,7 +794,7 @@ const List<LessonContent> lessons = [
             definition:
                 'The set of functions that grow at least as fast as g(n). Formally, '
                 'f(n) is in Omega(g(n)) if there exist a positive constant c and a '
-                'nonnegative integer n0 such that f(n) >= c * g(n) for all n >= n0.',
+                'nonnegative integer n₀ such that f(n) ≥ c·g(n) for all n ≥ n₀.',
           ),
           MathBlock(
             r'f(n) \ge c \cdot g(n) \quad \text{for all } n \ge n_0',
@@ -812,17 +821,17 @@ const List<LessonContent> lessons = [
           ),
           TextBlock(
             'A bound is tight if it is as strong and simple as possible. For f(n) = '
-            '5n squared, it is technically true that O(n cubed), O(n squared log n), '
-            'and O(2 to the n) are all valid upper bounds. But O(n squared) is the '
+            '5n², it is technically true that O(n³), O(n² log n), '
+            'and O(2ⁿ) are all valid upper bounds. But O(n²) is the '
             'tightest and most informative. Always report the simplest true bound.',
           ),
           TextBlock(
-            'In practice we simplify as much as possible. If g1(n) = 15n squared '
-            'minus 6n plus 27, we usually just write O(n squared). We drop constant '
-            'factors and slower-growing terms because for large n the n squared term '
+            'In practice we simplify as much as possible. If g₁(n) = 15n² '
+            'minus 6n plus 27, we usually just write O(n²). We drop constant '
+            'factors and slower-growing terms because for large n the n² term '
             'dominates. Why can we drop the lower-order terms? Because if f(n) is '
-            'bounded above by c times (n squared plus 3n plus 5), then for n >= 1, '
-            'f(n) is also bounded above by 9c times n squared. The lower-order terms '
+            'bounded above by c·(n² + 3n + 5), then for n ≥ 1, '
+            'f(n) is also bounded above by 9c·n². The lower-order terms '
             'get swallowed by the dominant term once n is large enough.',
           ),
           TextBlock(
@@ -838,25 +847,20 @@ const List<LessonContent> lessons = [
                 'limit as n approaches infinity of f of n over g of n equals zero when f grows slower, a positive constant when same rate, or infinity when f grows faster',
           ),
           CodeBlock(
-            '// Example: prove f(n) = 4n^2 + 8n - 3 is in O(n^2)\n'
-            '// Choose g(n) = n^2, c = 15, n0 = 1\n'
-            '// Need: 4n^2 + 8n - 3 <= 15n^2 for all n >= 1\n'
-            '// 4n^2 + 8n - 3 <= 4n^2 + 8n^2 + 3n^2 = 15n^2  QED',
+            'Example: prove f(n) = 4n² + 8n - 3 is in O(n²)\n'
+            'Choose g(n) = n², c = 15, n₀ = 1\n'
+            'Need: 4n² + 8n - 3 ≤ 15n² for all n ≥ 1\n'
+            '4n² + 8n - 3 ≤ 4n² + 8n² + 3n² = 15n²  QED',
             language: 'text',
           ),
           QuizBlock(
             question:
-                'If f(n) = 5n^2, which of the following is the tightest bound?',
-            options: [
-              'O(n)',
-              'O(n^2)',
-              'O(n^3)',
-              'O(2^n)',
-            ],
+                'If f(n) = 5n², which of the following is the tightest bound?',
+            options: ['O(n)', 'O(n²)', 'O(n³)', 'O(2ⁿ)'],
             correctIndex: 1,
             explanation:
-                'O(n^2) is the tightest bound. O(n) is too tight (false). '
-                'O(n^3) and O(2^n) are technically true but do not tell us '
+                'O(n²) is the tightest bound. O(n) is too tight (false). '
+                'O(n³) and O(2ⁿ) are technically true but do not tell us '
                 'as much. The tightest bound is always the simplest that is still correct.',
           ),
           KeyTakeawayBlock(

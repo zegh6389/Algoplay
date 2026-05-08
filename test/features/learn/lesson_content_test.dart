@@ -6,8 +6,11 @@ void main() {
     test('all 12 lessons exist', () {
       expect(lessons.length, 12);
       for (var i = 1; i <= 12; i++) {
-        expect(lessons.any((l) => l.id == i), isTrue,
-            reason: 'Lesson $i should exist');
+        expect(
+          lessons.any((l) => l.id == i),
+          isTrue,
+          reason: 'Lesson $i should exist',
+        );
       }
     });
 
@@ -19,8 +22,11 @@ void main() {
 
     test('lesson titles are non-empty', () {
       for (final lesson in lessons) {
-        expect(lesson.title, isNotEmpty,
-            reason: 'Lesson ${lesson.id} should have a title');
+        expect(
+          lesson.title,
+          isNotEmpty,
+          reason: 'Lesson ${lesson.id} should have a title',
+        );
       }
     });
   });
@@ -38,15 +44,21 @@ void main() {
 
     test('modules have titles', () {
       for (final module in lesson1.modules) {
-        expect(module.title, isNotEmpty,
-            reason: 'Module ${module.id} should have a title');
+        expect(
+          module.title,
+          isNotEmpty,
+          reason: 'Module ${module.id} should have a title',
+        );
       }
     });
 
     test('content blocks are non-empty', () {
       for (final module in lesson1.modules) {
-        expect(module.contentBlocks, isNotEmpty,
-            reason: 'Module ${module.id} should have content blocks');
+        expect(
+          module.contentBlocks,
+          isNotEmpty,
+          reason: 'Module ${module.id} should have content blocks',
+        );
       }
     });
 
@@ -57,8 +69,11 @@ void main() {
           allModuleIds.add(module.id);
         }
       }
-      expect(allModuleIds.toSet().length, allModuleIds.length,
-          reason: 'All module IDs must be unique');
+      expect(
+        allModuleIds.toSet().length,
+        allModuleIds.length,
+        reason: 'All module IDs must be unique',
+      );
     });
 
     test('Module 1 has id "lesson1_module1" and correct title', () {
@@ -84,23 +99,30 @@ void main() {
 
       final blocks = module.contentBlocks;
       expect(blocks.whereType<TextBlock>().length, greaterThanOrEqualTo(4));
-      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(7));
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(7),
+      );
       expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(7));
       expect(blocks.any((b) => b is QuizBlock), isTrue);
       expect(blocks.last, isA<KeyTakeawayBlock>());
 
-      final combined = blocks.map((block) {
-        return switch (block) {
-          TextBlock(:final text) => text,
-          DefinitionBlock(:final term, :final definition) => '$term $definition',
-          KeyTakeawayBlock(:final text) => text,
-          QuizBlock(:final question, :final options, :final explanation) =>
-            '$question ${options.join(' ')} $explanation',
-          CodeBlock(:final code, :final language) => '$language $code',
-          MathBlock(:final tex, :final semanticsLabel) => '$semanticsLabel $tex',
-          GraphBlock(:final type) => type,
-        };
-      }).join(' ');
+      final combined = blocks
+          .map((block) {
+            return switch (block) {
+              TextBlock(:final text) => text,
+              DefinitionBlock(:final term, :final definition) =>
+                '$term $definition',
+              KeyTakeawayBlock(:final text) => text,
+              QuizBlock(:final question, :final options, :final explanation) =>
+                '$question ${options.join(' ')} $explanation',
+              CodeBlock(:final code, :final language) => '$language $code',
+              MathBlock(:final tex, :final semanticsLabel) =>
+                '$semanticsLabel $tex',
+              GraphBlock(:final type) => type,
+            };
+          })
+          .join(' ');
 
       expect(combined, contains('Levitin'));
       expect(combined, contains(r'\log_b x'));
@@ -127,18 +149,22 @@ void main() {
       expect(blocks.any((b) => b is QuizBlock), isTrue);
       expect(blocks.last, isA<KeyTakeawayBlock>());
 
-      final combined = blocks.map((block) {
-        return switch (block) {
-          TextBlock(:final text) => text,
-          DefinitionBlock(:final term, :final definition) => '$term $definition',
-          KeyTakeawayBlock(:final text) => text,
-          QuizBlock(:final question, :final options, :final explanation) =>
-            '$question ${options.join(' ')} $explanation',
-          CodeBlock(:final code, :final language) => '$language $code',
-          MathBlock(:final tex, :final semanticsLabel) => '$semanticsLabel $tex',
-          GraphBlock(:final type) => type,
-        };
-      }).join(' ');
+      final combined = blocks
+          .map((block) {
+            return switch (block) {
+              TextBlock(:final text) => text,
+              DefinitionBlock(:final term, :final definition) =>
+                '$term $definition',
+              KeyTakeawayBlock(:final text) => text,
+              QuizBlock(:final question, :final options, :final explanation) =>
+                '$question ${options.join(' ')} $explanation',
+              CodeBlock(:final code, :final language) => '$language $code',
+              MathBlock(:final tex, :final semanticsLabel) =>
+                '$semanticsLabel $tex',
+              GraphBlock(:final type) => type,
+            };
+          })
+          .join(' ');
 
       expect(combined, contains('Understand the Problem'));
       expect(combined, contains('Pick the Right Techniques'));
@@ -158,22 +184,29 @@ void main() {
       expect(module.algorithmId, isNull);
 
       final blocks = module.contentBlocks;
-      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(5));
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(5),
+      );
       expect(blocks.any((b) => b is QuizBlock), isTrue);
       expect(blocks.last, isA<KeyTakeawayBlock>());
 
-      final combined = blocks.map((block) {
-        return switch (block) {
-          TextBlock(:final text) => text,
-          DefinitionBlock(:final term, :final definition) => '$term $definition',
-          KeyTakeawayBlock(:final text) => text,
-          QuizBlock(:final question, :final options, :final explanation) =>
-            '$question ${options.join(' ')} $explanation',
-          CodeBlock(:final code, :final language) => '$language $code',
-          MathBlock(:final tex, :final semanticsLabel) => '$semanticsLabel $tex',
-          GraphBlock(:final type) => type,
-        };
-      }).join(' ');
+      final combined = blocks
+          .map((block) {
+            return switch (block) {
+              TextBlock(:final text) => text,
+              DefinitionBlock(:final term, :final definition) =>
+                '$term $definition',
+              KeyTakeawayBlock(:final text) => text,
+              QuizBlock(:final question, :final options, :final explanation) =>
+                '$question ${options.join(' ')} $explanation',
+              CodeBlock(:final code, :final language) => '$language $code',
+              MathBlock(:final tex, :final semanticsLabel) =>
+                '$semanticsLabel $tex',
+              GraphBlock(:final type) => type,
+            };
+          })
+          .join(' ');
 
       expect(combined, contains('Correctness'));
       expect(combined, contains('Preconditions'));
@@ -244,8 +277,11 @@ void main() {
       ];
 
       for (final word in overusedJokeWords) {
-        expect(combined, isNot(contains(word)),
-            reason: 'Lesson 1 should not joke after nearly every point.');
+        expect(
+          combined,
+          isNot(contains(word)),
+          reason: 'Lesson 1 should not joke after nearly every point.',
+        );
       }
       expect(combined, contains('algorithm'));
       expect(combined, contains('correctness'));
@@ -280,23 +316,30 @@ void main() {
       expect(module.algorithmId, isNull);
 
       final blocks = module.contentBlocks;
-      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(3));
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(3),
+      );
       expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(2));
       expect(blocks.any((b) => b is QuizBlock), isTrue);
       expect(blocks.last, isA<KeyTakeawayBlock>());
 
-      final combined = blocks.map((block) {
-        return switch (block) {
-          TextBlock(:final text) => text,
-          DefinitionBlock(:final term, :final definition) => '$term $definition',
-          KeyTakeawayBlock(:final text) => text,
-          QuizBlock(:final question, :final options, :final explanation) =>
-            '$question ${options.join(' ')} $explanation',
-          CodeBlock(:final code, :final language) => '$language $code',
-          MathBlock(:final tex, :final semanticsLabel) => '$semanticsLabel $tex',
-          GraphBlock(:final type) => type,
-        };
-      }).join(' ');
+      final combined = blocks
+          .map((block) {
+            return switch (block) {
+              TextBlock(:final text) => text,
+              DefinitionBlock(:final term, :final definition) =>
+                '$term $definition',
+              KeyTakeawayBlock(:final text) => text,
+              QuizBlock(:final question, :final options, :final explanation) =>
+                '$question ${options.join(' ')} $explanation',
+              CodeBlock(:final code, :final language) => '$language $code',
+              MathBlock(:final tex, :final semanticsLabel) =>
+                '$semanticsLabel $tex',
+              GraphBlock(:final type) => type,
+            };
+          })
+          .join(' ');
 
       expect(combined, contains('input size'));
       expect(combined, contains('basic operation'));
@@ -313,24 +356,31 @@ void main() {
       expect(module.algorithmId, 'linear-search');
 
       final blocks = module.contentBlocks;
-      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(3));
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(3),
+      );
       expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(2));
       expect(blocks.any((b) => b is CodeBlock), isTrue);
       expect(blocks.any((b) => b is QuizBlock), isTrue);
       expect(blocks.last, isA<KeyTakeawayBlock>());
 
-      final combined = blocks.map((block) {
-        return switch (block) {
-          TextBlock(:final text) => text,
-          DefinitionBlock(:final term, :final definition) => '$term $definition',
-          KeyTakeawayBlock(:final text) => text,
-          QuizBlock(:final question, :final options, :final explanation) =>
-            '$question ${options.join(' ')} $explanation',
-          CodeBlock(:final code, :final language) => '$language $code',
-          MathBlock(:final tex, :final semanticsLabel) => '$semanticsLabel $tex',
-          GraphBlock(:final type) => type,
-        };
-      }).join(' ');
+      final combined = blocks
+          .map((block) {
+            return switch (block) {
+              TextBlock(:final text) => text,
+              DefinitionBlock(:final term, :final definition) =>
+                '$term $definition',
+              KeyTakeawayBlock(:final text) => text,
+              QuizBlock(:final question, :final options, :final explanation) =>
+                '$question ${options.join(' ')} $explanation',
+              CodeBlock(:final code, :final language) => '$language $code',
+              MathBlock(:final tex, :final semanticsLabel) =>
+                '$semanticsLabel $tex',
+              GraphBlock(:final type) => type,
+            };
+          })
+          .join(' ');
 
       expect(combined, contains('Best case'));
       expect(combined, contains('Worst case'));
@@ -339,7 +389,7 @@ void main() {
       expect(combined, contains(r'\frac{n + 1}{2}'));
     });
 
-    test('Lesson 2 prose avoids AI punctuation tells', () {
+    List<String> lesson2Prose() {
       final prose = <String>[];
       for (final module in lesson2.modules) {
         for (final block in module.contentBlocks) {
@@ -362,11 +412,30 @@ void main() {
           }
         }
       }
+      return prose;
+    }
 
-      final combined = prose.join('\n');
+    test('Lesson 2 prose avoids AI punctuation tells', () {
+      final combined = lesson2Prose().join('\n');
       expect(combined, isNot(contains('—')));
       expect(combined, isNot(contains(';')));
       expect(combined, isNot(contains(' - ')));
+    });
+
+    test('Lesson 2 prose uses readable math notation', () {
+      final combined = lesson2Prose().join('\n');
+      expect(combined, isNot(contains('n squared')));
+      expect(combined, isNot(contains('n cubed')));
+      expect(combined, isNot(contains('2 to the n')));
+      expect(combined, isNot(contains('n0')));
+      expect(combined, isNot(contains('<=')));
+      expect(combined, isNot(contains('>=')));
+      expect(combined, isNot(contains('c * g')));
+
+      expect(combined, contains('n²'));
+      expect(combined, contains('≤'));
+      expect(combined, contains('≥'));
+      expect(combined, contains('n₀'));
     });
   });
 

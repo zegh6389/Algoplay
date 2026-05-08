@@ -266,38 +266,56 @@ class _CodeBlockWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E293B), // dark blue-gray
-        borderRadius: AppRadius.mdBorder,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Language label
-          Text(
-            language.toUpperCase(),
-            style: const TextStyle(
-              color: Color(0xFF94A3B8),
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.8,
-            ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const horizontalPadding = AppSpacing.lg * 2;
+        final longestLine = code
+            .split('\n')
+            .fold<int>(0, (longest, line) => math.max(longest, line.length));
+        final availableWidth = math.max(
+          1.0,
+          constraints.maxWidth - horizontalPadding,
+        );
+        final fittedFontSize = longestLine == 0
+            ? 13.0
+            : (availableWidth / (longestLine * 0.62)).clamp(9.0, 13.0);
+
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          decoration: BoxDecoration(
+            color: const Color(0xFF1E293B), // dark blue-gray
+            borderRadius: AppRadius.mdBorder,
           ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            code,
-            style: const TextStyle(
-              fontFamily: 'monospace',
-              fontSize: 13,
-              height: 1.6,
-              color: Color(0xFFE2E8F0),
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Language label
+              Text(
+                language.toUpperCase(),
+                style: const TextStyle(
+                  color: Color(0xFF94A3B8),
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.8,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                code,
+                softWrap: false,
+                overflow: TextOverflow.visible,
+                style: TextStyle(
+                  fontFamily: 'monospace',
+                  fontSize: fittedFontSize,
+                  height: 1.6,
+                  color: const Color(0xFFE2E8F0),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
@@ -772,10 +790,9 @@ class _GraphBlockWidgetState extends State<_GraphBlockWidget>
 
   String _formulaText(String type) {
     return switch (type) {
-      'bigO' => r'f(n) \le c\u00b7g(n)  for all n \ge n\u2080',
-      'bigOmega' => r'f(n) \ge c\u00b7g(n)  for all n \ge n\u2080',
-      'bigTheta' =>
-        r'c\u2082\u00b7g(n) \le f(n) \le c\u2081\u00b7g(n)  for all n \ge n\u2080',
+      'bigO' => 'f(n) ≤ c·g(n)  for all n ≥ n₀',
+      'bigOmega' => 'f(n) ≥ c·g(n)  for all n ≥ n₀',
+      'bigTheta' => 'c₂·g(n) ≤ f(n) ≤ c₁·g(n)  for all n ≥ n₀',
       _ => '',
     };
   }
