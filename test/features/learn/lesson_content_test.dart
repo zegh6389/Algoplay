@@ -212,6 +212,7 @@ void main() {
               prose.add(explanation);
             case CodeBlock():
             case MathBlock():
+            case GraphBlock():
               break;
           }
         }
@@ -356,6 +357,7 @@ void main() {
               prose.add(explanation);
             case CodeBlock():
             case MathBlock():
+            case GraphBlock():
               break;
           }
         }

@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-import 'dart:ui' show PathEffect;
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -954,16 +953,56 @@ class _AsymptoticGraphPainter extends CustomPainter {
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round;
-    if (dash != null) paint.pathEffect = PathEffect.dash(dash);
-
-    if (shadow) {
-      canvas.drawPath(path, Paint()
-        ..color = color.withValues(alpha: opacity * 0.25)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = strokeWidth + 3
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4));
+    if (dash != null) {
+      // Manual dash: draw segments directly with drawLine, shadow drawn solid
+      if (shadow) {
+        final sp = Paint()
+          ..color = color.withValues(alpha: opacity * 0.25)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = strokeWidth + 3
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
+        _drawDashedLine(canvas, pts, count, [strokeWidth + 3, strokeWidth + 3], sp);
+      }
+      _drawDashedLine(canvas, pts, count, dash, paint);
+    } else {
+      if (shadow) {
+        canvas.drawPath(path, Paint()
+          ..color = color.withValues(alpha: opacity * 0.25)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = strokeWidth + 3
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4));
+      }
+      canvas.drawPath(path, paint);
     }
-    canvas.drawPath(path, paint);
+  }
+
+  void _drawDashedLine(
+    Canvas canvas, List<Offset> pts, int count,
+    List<double> dash, Paint paint,
+  ) {
+    final dashLen = dash[0], gapLen = dash.length > 1 ? dash[1] : dash[0];
+    var drawn = 0.0, skipping = false;
+    for (int i = 0; i < count - 1; i++) {
+      final segLen = (pts[i + 1] - pts[i]).distance;
+      if (segLen == 0) continue;
+      var pos = 0.0;
+      while (pos < segLen) {
+        final remaining = dashLen - (drawn % (dashLen + gapLen));
+        final step = (!skipping ? dashLen : gapLen).clamp(0, remaining);
+        if (!skipping && step > 0) {
+          canvas.drawLine(pts[i], Offset(
+            pts[i].dx + (pts[i + 1].dx - pts[i].dx) * (step / segLen),
+            pts[i].dy + (pts[i + 1].dy - pts[i].dy) * (step / segLen),
+          ), paint);
+        }
+        pos += step; drawn += step;
+        skipping = !skipping;
+      }
+    }
   }
 
   List<Offset> _pts(double w, double h, double Function(double) fn, int n) {
