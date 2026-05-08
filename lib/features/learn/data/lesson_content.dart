@@ -1093,12 +1093,265 @@ const List<LessonContent> lessons = [
     ],
   ),
 
-  // ── Lesson 3 (stub) ───────────────────────────────────────────────────────
+  // ── Lesson 3 ───────────────────────────────────────────────────────────────
   LessonContent(
     id: 3,
     title: 'Recurrence Relations',
     categoryColor: '#8B5CF6',
-    modules: [],
+    modules: [
+      ModuleContent(
+        id: 'lesson3_module1',
+        title: 'Introduction to Recursive Algorithms',
+        order: 0,
+        contentBlocks: [
+          TextBlock(
+            'Lesson 3 begins the move from loop counting to recursive analysis. '
+            'Recursive code can be short, but a small-looking function can create '
+            'many waiting calls before the final answer returns.',
+          ),
+          TextBlock(
+            'The core question is simple: how do we analyze recursive algorithms '
+            'without tracing every single call by hand? The answer starts with '
+            'recurrence relations.',
+          ),
+          DefinitionBlock(
+            term: 'Recursion',
+            definition:
+                'A way to define a problem by solving smaller versions of the same problem.',
+          ),
+          DefinitionBlock(
+            term: 'Base case',
+            definition:
+                'The stopping point. It is the small version of the problem that can be solved immediately.',
+          ),
+          DefinitionBlock(
+            term: 'Recursive call',
+            definition:
+                'The step where the algorithm calls itself on a smaller input and waits for that answer.',
+          ),
+          TextBlock(
+            'A recursive algorithm usually says: I cannot solve the full problem '
+            'right away, but I can solve a smaller version and build from there.',
+          ),
+          CodeBlock(
+            'recursiveSolve(problem):\n'
+            '  if problem is small enough:\n'
+            '    return direct answer\n'
+            '  smaller = shrink(problem)\n'
+            '  return combine(recursiveSolve(smaller))',
+            language: 'text',
+          ),
+          TextBlock(
+            'Recursion becomes expensive when many calls are pending at the same '
+            'time. Each earlier call waits while smaller calls run. If the algorithm '
+            'solves similar subproblems again and again, the cost can grow quickly.',
+          ),
+          TextBlock(
+            'The Fibonacci sequence is the classic example. It begins 0, 1, 1, 2, '
+            '3, 5, 8, 13, 21, and each new value adds the previous two values.',
+          ),
+          MathBlock(
+            r'F(0) = 0,\quad F(1) = 1',
+            semanticsLabel: 'Fibonacci base cases',
+          ),
+          MathBlock(
+            r'F(n) = F(n - 1) + F(n - 2)',
+            semanticsLabel: 'Fibonacci recurrence relation',
+          ),
+          DefinitionBlock(
+            term: 'Recurrence relation',
+            definition:
+                'An equation that defines a value such as M(n) using values at smaller inputs.',
+          ),
+          TextBlock(
+            'Base cases matter because they anchor the whole sequence. The same '
+            'rule with different starting values produces different values.',
+          ),
+          CodeBlock(
+            'Base cases        First five terms\n'
+            'F(0)=6, F(1)=12   6, 12, 18, 30, 48\n'
+            'F(0)=2, F(1)=2    2, 2, 4, 6, 10\n'
+            'F(0)=0, F(1)=1    0, 1, 1, 2, 3',
+            language: 'text',
+          ),
+          TextBlock(
+            'A recurrence relation describes the recursive structure, but it does '
+            'not always make the efficiency obvious. For large inputs such as F(100), '
+            'we want a formula or a growth class instead of a giant call trace.',
+          ),
+          QuizBlock(
+            question:
+                'Why is a recurrence relation useful in recursive analysis?',
+            options: [
+              'It describes the work using smaller inputs.',
+              'It removes the need for base cases.',
+              'It always gives the exact running time instantly.',
+              'It only works for loop-based algorithms.',
+            ],
+            correctIndex: 0,
+            explanation:
+                'A recurrence relation captures how the algorithm depends on smaller versions of the input.',
+          ),
+          KeyTakeawayBlock(
+            'Recursive algorithms need recurrence relations because plain loop '
+            'counting is not enough. Always identify the base cases, the recursive '
+            'calls, and the pending work those calls create.',
+          ),
+        ],
+      ),
+      ModuleContent(
+        id: 'lesson3_module2',
+        title: 'Solving Recurrence Relations',
+        order: 1,
+        contentBlocks: [
+          TextBlock(
+            'Once we have a recurrence, the next goal is to solve it. Solving means '
+            'turning a recursive definition into a clearer formula or at least a '
+            'growth class.',
+          ),
+          TextBlock(
+            'This module introduces three tools: forward substitution, backward '
+            'substitution, and characteristic equations for second-order linear '
+            'recurrences.',
+          ),
+          DefinitionBlock(
+            term: 'Forward substitution',
+            definition:
+                'Generate early terms from the base case, spot a pattern, then verify the guessed formula.',
+          ),
+          MathBlock(
+            r'f(0) = 1,\quad f(n) = f(n - 1) + n',
+            semanticsLabel: 'forward substitution example recurrence',
+          ),
+          CodeBlock(
+            'f(1) = 1 + 1 = 2\n'
+            'f(2) = 1 + 1 + 2 = 4\n'
+            'f(3) = 1 + 1 + 2 + 3 = 7\n'
+            'f(4) = 1 + 1 + 2 + 3 + 4 = 11',
+            language: 'text',
+          ),
+          TextBlock(
+            'The pattern is 1 plus the sum of the first n integers. Since that sum '
+            'is n(n + 1)/2, the dominant term is n²/2, so the growth is O(n²).',
+          ),
+          MathBlock(
+            r'f(n) = 1 + \frac{n(n + 1)}{2}',
+            semanticsLabel: 'closed form from forward substitution',
+          ),
+          DefinitionBlock(
+            term: 'Backward substitution',
+            definition:
+                'Start from f(n), repeatedly replace smaller terms using the recurrence, then plug in the base case.',
+          ),
+          MathBlock(
+            r'f(n) = 2f(n - 1) + 3,\quad f(1) = 1',
+            semanticsLabel: 'backward substitution example recurrence',
+          ),
+          CodeBlock(
+            'f(n) = 2f(n - 1) + 3\n'
+            '     = 4f(n - 2) + 9\n'
+            '     = 8f(n - 3) + 21\n'
+            'pattern: 2^i f(n - i) + 3(2^i - 1)',
+            language: 'text',
+          ),
+          MathBlock(
+            r'f(n) = 2^{n + 1} - 3',
+            semanticsLabel: 'closed form from backward substitution',
+          ),
+          TextBlock(
+            'This grows like O(2ⁿ). We ignore the extra factor of 2 because Big-O '
+            'notation ignores constant multipliers.',
+          ),
+          DefinitionBlock(
+            term: 'Linear second-order recurrence',
+            definition:
+                'A recurrence that depends linearly on f(n), f(n − 1), and f(n − 2) with constant coefficients.',
+          ),
+          DefinitionBlock(
+            term: 'Homogeneous recurrence',
+            definition:
+                'A recurrence where the nonrecursive right-hand side is 0.',
+          ),
+          DefinitionBlock(
+            term: 'Inhomogeneous recurrence',
+            definition:
+                'A recurrence with an extra nonrecursive term g(n) that is not 0.',
+          ),
+          MathBlock(
+            r'a f(n) + b f(n - 1) + c f(n - 2) = g(n)',
+            semanticsLabel: 'general second-order recurrence form',
+          ),
+          DefinitionBlock(
+            term: 'Characteristic equation',
+            definition:
+                'A quadratic equation built from the recurrence. Its roots determine the shape of the solution.',
+          ),
+          MathBlock(
+            r'a r^2 + b r + c = 0',
+            semanticsLabel: 'characteristic equation form',
+          ),
+          TextBlock(
+            'For two distinct real roots r₁ and r₂, the solution has the form '
+            'αr₁ⁿ + βr₂ⁿ. For a repeated root r, the solution has the form '
+            'αrⁿ + βnrⁿ.',
+          ),
+          MathBlock(
+            r'f(n) = 2f(n - 1) + 3f(n - 2)',
+            semanticsLabel: 'second-order recurrence example',
+          ),
+          MathBlock(
+            r'r^2 - 2r - 3 = 0 = (r - 3)(r + 1)',
+            semanticsLabel: 'factored characteristic equation',
+          ),
+          MathBlock(
+            r'f(n) = \alpha 3^n + \beta (-1)^n',
+            semanticsLabel: 'general solution with two roots',
+          ),
+          TextBlock(
+            'With f(0) = 1 and f(1) = 1, the constants become α = 1/2 and '
+            'β = 1/2. The 3ⁿ term dominates, so the growth is O(3ⁿ).',
+          ),
+          MathBlock(
+            r'f(n) = \frac{1}{2}\cdot 3^n + \frac{1}{2}\cdot (-1)^n',
+            semanticsLabel: 'explicit second-order recurrence solution',
+          ),
+          TextBlock(
+            'For an inhomogeneous recurrence, solve the matching homogeneous '
+            'version first. Then add one particular solution for g(n), and use the '
+            'base cases to finish the constants.',
+          ),
+          MathBlock(
+            r'f(n) = f_h(n) + f_p(n)',
+            semanticsLabel: 'inhomogeneous solution structure',
+          ),
+          CodeBlock(
+            'Which tool should you try?\n'
+            'small terms reveal pattern: forward substitution\n'
+            'one previous term plus constants: backward substitution\n'
+            'depends on f(n-1) and f(n-2): characteristic equation',
+            language: 'text',
+          ),
+          QuizBlock(
+            question:
+                'Which method is designed for second-order linear recurrences with constant coefficients?',
+            options: [
+              'Characteristic equation method',
+              'Guessing random values',
+              'Only stopwatch timing',
+              'Ignoring the base cases',
+            ],
+            correctIndex: 0,
+            explanation:
+                'The characteristic equation turns that recurrence type into a quadratic whose roots shape the solution.',
+          ),
+          KeyTakeawayBlock(
+            'Forward substitution spots patterns, backward substitution unrolls the '
+            'definition, and characteristic equations solve a special but important '
+            'family of second-order recurrences.',
+          ),
+        ],
+      ),
+    ],
   ),
 
   // ── Lesson 4 (stub) ───────────────────────────────────────────────────────

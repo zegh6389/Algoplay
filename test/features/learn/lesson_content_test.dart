@@ -573,6 +573,137 @@ void main() {
     });
   });
 
+  group('Lesson 3 content', () {
+    late LessonContent lesson3;
+
+    setUp(() {
+      lesson3 = lessons.firstWhere((l) => l.id == 3);
+    });
+
+    String combinedText(Iterable<ContentBlock> blocks) {
+      return blocks
+          .map((block) {
+            return switch (block) {
+              TextBlock(:final text) => text,
+              DefinitionBlock(:final term, :final definition) =>
+                '$term $definition',
+              KeyTakeawayBlock(:final text) => text,
+              QuizBlock(:final question, :final options, :final explanation) =>
+                '$question ${options.join(' ')} $explanation',
+              CodeBlock(:final code, :final language) => '$language $code',
+              MathBlock(:final tex, :final semanticsLabel) =>
+                '$semanticsLabel $tex',
+              GraphBlock(:final type) => type,
+            };
+          })
+          .join(' ');
+    }
+
+    List<String> lesson3Prose() {
+      final prose = <String>[];
+      for (final module in lesson3.modules) {
+        for (final block in module.contentBlocks) {
+          switch (block) {
+            case TextBlock(:final text):
+              prose.add(text);
+            case DefinitionBlock(:final term, :final definition):
+              prose.add(term);
+              prose.add(definition);
+            case KeyTakeawayBlock(:final text):
+              prose.add(text);
+            case QuizBlock(:final question, :final options, :final explanation):
+              prose.add(question);
+              prose.addAll(options);
+              prose.add(explanation);
+            case CodeBlock():
+            case MathBlock():
+            case GraphBlock():
+              break;
+          }
+        }
+      }
+      return prose;
+    }
+
+    test('has 2 modules', () {
+      expect(lesson3.modules.length, 2);
+    });
+
+    test(
+      'Module 1 introduces recursive algorithms and recurrence relations',
+      () {
+        final module = lesson3.modules[0];
+        expect(module.id, 'lesson3_module1');
+        expect(module.title, 'Introduction to Recursive Algorithms');
+        expect(module.order, 0);
+        expect(module.algorithmId, isNull);
+
+        final blocks = module.contentBlocks;
+        expect(
+          blocks.whereType<DefinitionBlock>().length,
+          greaterThanOrEqualTo(3),
+        );
+        expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(2));
+        expect(blocks.any((b) => b is CodeBlock), isTrue);
+        expect(blocks.any((b) => b is QuizBlock), isTrue);
+        expect(blocks.last, isA<KeyTakeawayBlock>());
+
+        final combined = combinedText(blocks);
+        expect(combined, contains('Base case'));
+        expect(combined, contains('Recursive call'));
+        expect(combined, contains('recurrence relation'));
+        expect(combined, contains(r'F(n) = F(n - 1) + F(n - 2)'));
+        expect(combined, contains('pending work'));
+      },
+    );
+
+    test('Module 2 covers three recurrence solving methods', () {
+      final module = lesson3.modules[1];
+      expect(module.id, 'lesson3_module2');
+      expect(module.title, 'Solving Recurrence Relations');
+      expect(module.order, 1);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(5),
+      );
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(8));
+      expect(blocks.any((b) => b is CodeBlock), isTrue);
+      expect(blocks.any((b) => b is QuizBlock), isTrue);
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = combinedText(blocks);
+      expect(combined, contains('Forward substitution'));
+      expect(combined, contains('Backward substitution'));
+      expect(combined, contains('Characteristic equation'));
+      expect(combined, contains(r'f(n) = 1 + \frac{n(n + 1)}{2}'));
+      expect(combined, contains(r'f(n) = 2^{n + 1} - 3'));
+      expect(combined, contains(r'f(n) = \alpha 3^n + \beta (-1)^n'));
+      expect(combined, contains('inhomogeneous'));
+    });
+
+    test('Lesson 3 prose avoids AI punctuation tells', () {
+      final combined = lesson3Prose().join('\n');
+      expect(combined, isNot(contains('—')));
+      expect(combined, isNot(contains(';')));
+      expect(combined, isNot(contains(' - ')));
+    });
+
+    test('Lesson 3 prose uses readable math notation', () {
+      final combined = lesson3Prose().join('\n');
+      expect(combined, isNot(contains('n squared')));
+      expect(combined, isNot(contains('2 to the n')));
+      expect(combined, isNot(contains('n0')));
+      expect(combined, isNot(contains('<=')));
+      expect(combined, isNot(contains('>=')));
+
+      expect(combined, contains('n²'));
+      expect(combined, contains('2ⁿ'));
+    });
+  });
+
   group('ContentBlock subclasses', () {
     test('TextBlock holds text', () {
       const block = TextBlock('hello');
