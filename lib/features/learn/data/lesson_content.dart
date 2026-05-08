@@ -536,11 +536,43 @@ const List<LessonContent> lessons = [
         algorithmId: null,
         contentBlocks: [
           TextBlock(
-            'Algorithm analysis starts with one rude little question: how much '
-            'work does this thing do when the input gets bigger? We are not '
-            'timing it with a stopwatch. Stopwatches lie. They get distracted '
-            'by laptops, battery settings, browser tabs, and whatever chaos '
-            'your computer was already chewing on.',
+            'The shape of growth is not just theory. It shows up in real data. '
+            'T.A. Standish ran Selection Sort on two different computers as the '
+            'input grew and recorded the running times in seconds.',
+          ),
+          CodeBlock(
+            'Array size n  |  Home Computer  |  Desktop Computer\n'
+            '--------------------------------------------------\n'
+            '     125       |      12.5        |       2.8\n'
+            '     250       |      49.3        |      11.0\n'
+            '     500       |     195.8        |      43.4\n'
+            '    1000       |     780.3        |     172.9\n'
+            '    2000       |    3114.9        |     690.5',
+            language: 'text',
+          ),
+          TextBlock(
+            'Different machines, different speeds, different compilers. But when '
+            'you fit curves to this data you get the same shape both times: '
+            'quadratic, roughly an n squared term dominates. The home computer '
+            'curve might be 0.00078 n squared and the desktop might be 0.00017 '
+            'n squared — different coefficients, same shape. This is why we study '
+            'growth patterns instead of stopwatch times. The shape is the signal; '
+            'the coefficients are noise.',
+          ),
+          TextBlock(
+            'Two algorithms can solve the same problem but behave very differently '
+            'as the input grows. One algorithm might take n + 2 steps. Another '
+            'might take 5n + 1 steps. Surprisingly, that difference of a few extra '
+            'steps per item is often irrelevant. What matters is the shape of the '
+            'growth — whether the work grows linearly with the input, or faster, '
+            'or slower. This lens is called the rate of growth, and it is the core '
+            'idea that ties together everything in algorithm analysis.',
+          ),
+          TextBlock(
+            'Sequential search grows linearly: double the list, double the work. '
+            'Selection Sort grows quadratically: double the list, four times the '
+            'work. Classifying algorithms by how they grow tells us which ones '
+            'stay useful when problems get large.',
           ),
           DefinitionBlock(
             term: 'Input size',
@@ -666,10 +698,9 @@ const List<LessonContent> lessons = [
                 'A of n equals the sum over inputs I of probability of I times running time of I',
           ),
           TextBlock(
-            'Linear search is the perfect tiny goblin for this. We check items '
-            'from left to right until the target appears. If it is first, we '
-            'throw confetti. If it is last or missing, we inspect the whole list '
-            'while the confetti gets embarrassed.',
+            'Linear search is a clean case study here. We check items from left '
+            'to right until the target appears. If it is first, we find it right '
+            'away. If it is last or missing, we check every item in the list.',
           ),
           CodeBlock(
             'linear search on n items:\n'
@@ -686,8 +717,8 @@ const List<LessonContent> lessons = [
           TextBlock(
             'That fraction assumes the target is equally likely to be in any '
             'position. Change the assumption and the average changes too. This '
-            'is why worst case analysis is popular. It does not need a crystal '
-            'ball. It just prepares for the gremlin input.',
+            'is why worst case analysis is popular. It does not need a probability '
+            'model — it only requires thinking about the hardest input.',
           ),
           QuizBlock(
             question: 'For linear search, what is the worst case?',
@@ -704,8 +735,8 @@ const List<LessonContent> lessons = [
           ),
           KeyTakeawayBlock(
             'Best case is lucky. Worst case is safe. Average case is useful only '
-            'when the probability model is honest. Linear search shows all three '
-            'without needing a circus permit.',
+            'when the probability model is honest. Linear search demonstrates all three '
+            'without needing any special assumptions.',
           ),
         ],
       ),
