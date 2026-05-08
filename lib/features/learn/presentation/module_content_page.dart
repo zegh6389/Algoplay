@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -209,6 +210,10 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
         code: code,
         language: language,
       ),
+      MathBlock(:final tex, :final semanticsLabel) => _MathBlockWidget(
+        tex: tex,
+        semanticsLabel: semanticsLabel,
+      ),
       DefinitionBlock(:final term, :final definition) => _DefinitionBlockWidget(
         term: term,
         definition: definition,
@@ -290,6 +295,40 @@ class _CodeBlockWidget extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+/// Math block — TeX formula rendered in a readable scientific notation card.
+// ═══════════════════════════════════════════════════════════════════════════════
+class _MathBlockWidget extends StatelessWidget {
+  const _MathBlockWidget({required this.tex, required this.semanticsLabel});
+
+  final String tex;
+  final String semanticsLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: semanticsLabel,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        decoration: BoxDecoration(
+          color: AppColors.primary50,
+          borderRadius: AppRadius.mdBorder,
+          border: Border.all(color: AppColors.primary300),
+        ),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Math.tex(
+            tex,
+            textStyle: AppTypography.h3.copyWith(color: AppColors.textPrimary),
+            mathStyle: MathStyle.display,
+          ),
+        ),
       ),
     );
   }

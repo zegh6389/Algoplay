@@ -85,6 +85,7 @@ void main() {
       final blocks = module.contentBlocks;
       expect(blocks.whereType<TextBlock>().length, greaterThanOrEqualTo(4));
       expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(7));
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(7));
       expect(blocks.any((b) => b is QuizBlock), isTrue);
       expect(blocks.last, isA<KeyTakeawayBlock>());
 
@@ -96,15 +97,18 @@ void main() {
           QuizBlock(:final question, :final options, :final explanation) =>
             '$question ${options.join(' ')} $explanation',
           CodeBlock(:final code, :final language) => '$language $code',
+          MathBlock(:final tex, :final semanticsLabel) => '$semanticsLabel $tex',
         };
       }).join(' ');
 
       expect(combined, contains('Levitin'));
-      expect(combined, contains('log_b x'));
+      expect(combined, contains(r'\log_b x'));
       expect(combined, contains('strictly increasing'));
-      expect(combined, contains('log_b(b^a) = a'));
-      expect(combined, contains('log_b(xy) = log_b x + log_b y'));
-      expect(combined, contains('log_b(x^a) = a log_b x'));
+      expect(combined, contains(r'\log_b(b^a) = a'));
+      expect(combined, contains(r'\log_b(xy) = \log_b x + \log_b y'));
+      expect(combined, contains(r'\log_b(x^a) = a\log_b x'));
+      expect(combined, contains(r'\log_c x = \frac{\log_b x}{\log_b c}'));
+      expect(combined, isNot(contains(r'\log_b 2')));
       expect(combined, contains('change of base'));
       expect(combined, contains('lg'));
       expect(combined, contains('base 2'));
@@ -130,6 +134,7 @@ void main() {
           QuizBlock(:final question, :final options, :final explanation) =>
             '$question ${options.join(' ')} $explanation',
           CodeBlock(:final code, :final language) => '$language $code',
+          MathBlock(:final tex, :final semanticsLabel) => '$semanticsLabel $tex',
         };
       }).join(' ');
 
@@ -163,6 +168,7 @@ void main() {
           QuizBlock(:final question, :final options, :final explanation) =>
             '$question ${options.join(' ')} $explanation',
           CodeBlock(:final code, :final language) => '$language $code',
+          MathBlock(:final tex, :final semanticsLabel) => '$semanticsLabel $tex',
         };
       }).join(' ');
 
@@ -233,6 +239,15 @@ void main() {
       expect(block.options.length, 3);
       expect(block.correctIndex, 1);
       expect(block.explanation, 'Because.');
+    });
+
+    test('MathBlock holds TeX and accessibility label', () {
+      const block = MathBlock(
+        r'\log_c x = \frac{\log_b x}{\log_b c}',
+        semanticsLabel: 'change of base formula',
+      );
+      expect(block.tex, r'\log_c x = \frac{\log_b x}{\log_b c}');
+      expect(block.semanticsLabel, 'change of base formula');
     });
   });
 }

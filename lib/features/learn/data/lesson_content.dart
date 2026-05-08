@@ -27,6 +27,13 @@ class CodeBlock extends ContentBlock {
   const CodeBlock(this.code, {this.language = 'dart'});
 }
 
+/// A TeX math formula rendered with flutter_math_fork.
+class MathBlock extends ContentBlock {
+  final String tex;
+  final String semanticsLabel;
+  const MathBlock(this.tex, {required this.semanticsLabel});
+}
+
 /// A highlighted term / definition card (lightbulb style).
 class DefinitionBlock extends ContentBlock {
   final String term;
@@ -247,58 +254,93 @@ const List<LessonContent> lessons = [
             'wearing a fake mustache.',
           ),
           DefinitionBlock(
-            term: 'log_b x',
+            term: 'Logarithm definition',
             definition:
-                'The real number a such that b^a = x. In plain English: '
-                '"what power do we raise b to so we get x?"',
+                'The logarithm asks which exponent makes the base produce the target. '
+                'In plain English: what power do we raise the base to so we get x?',
+          ),
+          MathBlock(
+            r'\log_b x = a \iff b^a = x',
+            semanticsLabel: 'log base b of x equals a if and only if b to the a equals x',
           ),
           TextBlock(
-            'Example: log_2 8 = 3 because 2^3 = 8. The log asks the question; '
-            'the exponent answers while looking smug.',
+            'Example: base 2 asks how many times the number 2 must multiply by '
+            'itself to reach 8. The log asks the question; the exponent answers '
+            'while looking smug.',
+          ),
+          MathBlock(
+            r'\log_2 8 = 3 \text{ because } 2^3 = 8',
+            semanticsLabel: 'log base 2 of 8 equals 3 because 2 cubed equals 8',
           ),
           DefinitionBlock(
             term: 'Rule 1: strictly increasing',
             definition:
-                'For b > 1, log_b is a strictly increasing function. Bigger '
-                'input means bigger log output. No plot twist, just math behaving.',
+                'For bases greater than 1, bigger input means bigger logarithm output. '
+                'No plot twist, just math behaving.',
+          ),
+          MathBlock(
+            r'b > 1 \text{ and } x < y \implies \log_b x < \log_b y',
+            semanticsLabel: 'for b greater than 1 and x less than y, log base b of x is less than log base b of y',
           ),
           DefinitionBlock(
             term: 'Rule 2: inverse rule',
             definition:
-                'log_b(b^a) = a. The log and exponent cancel like two rival '
-                'wizards agreeing to stop yelling.',
+                'A logarithm and its matching exponential undo each other, like two '
+                'rival wizards agreeing to stop yelling.',
+          ),
+          MathBlock(
+            r'\log_b(b^a) = a',
+            semanticsLabel: 'log base b of b to the a equals a',
           ),
           DefinitionBlock(
             term: 'Rule 3: product rule',
             definition:
-                'log_b(xy) = log_b x + log_b y. Multiplication inside the log '
-                'turns into addition outside.',
+                'Multiplication inside a logarithm turns into addition outside. '
+                'The log is basically a math translator with a clipboard.',
+          ),
+          MathBlock(
+            r'\log_b(xy) = \log_b x + \log_b y',
+            semanticsLabel: 'log base b of x times y equals log base b of x plus log base b of y',
           ),
           DefinitionBlock(
             term: 'Rule 4: power rule',
             definition:
-                'log_b(x^a) = a log_b x. Powers can be pulled down in front, '
-                'like a bouncer escorting the exponent out of the club.',
+                'Powers can be pulled down in front, like a bouncer escorting the '
+                'exponent out of the club.',
+          ),
+          MathBlock(
+            r'\log_b(x^a) = a\log_b x',
+            semanticsLabel: 'log base b of x to the a equals a times log base b of x',
           ),
           DefinitionBlock(
             term: 'Rule 5: change of base',
             definition:
-                'log_c x = log_b x / log_b c. This lets us convert between '
-                'bases. In algorithm analysis, changing the base only multiplies '
-                'by a constant.',
+                'This lets us convert between bases. In algorithm analysis, changing '
+                'the base only multiplies by a constant.',
+          ),
+          MathBlock(
+            r'\log_c x = \frac{\log_b x}{\log_b c}',
+            semanticsLabel: 'log base c of x equals log base b of x divided by log base b of c',
           ),
           TextBlock(
             'That last rule is why algorithm books often write just log n '
-            'without naming the base. If log_c x = (1 / log_b c) log_b x, then '
-            'log_c x = k log_b x for some constant k. The base changes the '
-            'scale, not the growth-family drama.',
+            'without naming the base. The base changes the scale by a constant, '
+            'not the growth-family drama.',
+          ),
+          MathBlock(
+            r'\log_c x = \frac{1}{\log_b c}\log_b x = k\log_b x',
+            semanticsLabel: 'log base c of x equals one over log base b of c times log base b of x equals k times log base b of x',
           ),
           DefinitionBlock(
-            term: 'lg x',
+            term: 'Binary logarithm',
             definition:
-                'Shorthand for log_2 x. Computer science loves base 2 because '
-                'computers speak in bits, powers of two, and the occasional '
-                'screaming fan noise.',
+                'The notation lg is shorthand for base 2 logarithm. Computer science '
+                'loves base 2 because computers speak in bits, powers of two, and '
+                'the occasional screaming fan noise.',
+          ),
+          MathBlock(
+            r'\lg x = \log_2 x',
+            semanticsLabel: 'lg x equals log base 2 of x',
           ),
           TextBlock(
             'Why do we care? Because logs appear whenever a problem keeps '
@@ -308,8 +350,12 @@ const List<LessonContent> lessons = [
           ),
           CodeBlock(
             'binary search on 16 items: 16 -> 8 -> 4 -> 2 -> 1\n'
-            'that is 4 cuts, and log_2 16 = 4',
+            'that is 4 cuts',
             language: 'text',
+          ),
+          MathBlock(
+            r'\log_2 16 = 4',
+            semanticsLabel: 'log base 2 of 16 equals 4',
           ),
           QuizBlock(
             question: 'Why can algorithm analysis usually write log n without specifying the base?',
@@ -321,7 +367,7 @@ const List<LessonContent> lessons = [
             ],
             correctIndex: 1,
             explanation:
-                'Change of base gives log_c n = k log_b n for a constant k. '
+                'Change of base gives a constant multiple between logarithm bases. '
                 'Asymptotic analysis usually ignores constant multipliers, so '
                 'the base does not change the growth class.',
           ),
