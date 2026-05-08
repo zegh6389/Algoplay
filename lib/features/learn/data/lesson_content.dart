@@ -563,7 +563,7 @@ const List<LessonContent> lessons = [
             'quadratic, roughly an n squared term dominates. The home computer '
             'curve might be 0.00078 n squared and the desktop might be 0.00017 '
             'n squared - different coefficients, same shape. This is why we study '
-            'growth patterns instead of stopwatch times. The shape is the signal; '
+            'growth patterns instead of stopwatch times. The shape is the signal: '
             'the coefficients are noise.',
           ),
           TextBlock(
