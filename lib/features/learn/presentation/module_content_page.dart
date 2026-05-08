@@ -653,10 +653,7 @@ class _GraphBlockWidgetState extends State<_GraphBlockWidget>
       vsync: this,
       duration: const Duration(seconds: 3),
     );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    );
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
     _controller.repeat(reverse: false);
   }
 
@@ -687,9 +684,7 @@ class _GraphBlockWidgetState extends State<_GraphBlockWidget>
               horizontal: AppSpacing.lg,
               vertical: AppSpacing.sm,
             ),
-            decoration: BoxDecoration(
-              color: _headerColor(widget.type),
-            ),
+            decoration: BoxDecoration(color: _headerColor(widget.type)),
             child: Text(
               _headerLabel(widget.type),
               style: AppTypography.caption.copyWith(
@@ -728,7 +723,10 @@ class _GraphBlockWidgetState extends State<_GraphBlockWidget>
                   _legendItem(const Color(0xFF22C55E), config.boundLabel),
                 if (config.boundType == _BoundType.tight) ...[
                   _legendItem(const Color(0xFF22C55E), config.boundLabel),
-                  _legendItem(const Color(0xFFA855F7), config.boundLowerLabel ?? ''),
+                  _legendItem(
+                    const Color(0xFFA855F7),
+                    config.boundLowerLabel ?? '',
+                  ),
                 ],
               ],
             ),
@@ -776,7 +774,8 @@ class _GraphBlockWidgetState extends State<_GraphBlockWidget>
     return switch (type) {
       'bigO' => r'f(n) \le c\u00b7g(n)  for all n \ge n\u2080',
       'bigOmega' => r'f(n) \ge c\u00b7g(n)  for all n \ge n\u2080',
-      'bigTheta' => r'c\u2082\u00b7g(n) \le f(n) \le c\u2081\u00b7g(n)  for all n \ge n\u2080',
+      'bigTheta' =>
+        r'c\u2082\u00b7g(n) \le f(n) \le c\u2081\u00b7g(n)  for all n \ge n\u2080',
       _ => '',
     };
   }
@@ -872,7 +871,9 @@ class _AsymptoticGraphPainter extends CustomPainter {
   }
 
   void _drawGrid(Canvas canvas, double w, double h, double n0X) {
-    final gridPaint = Paint()..color = const Color(0xFFE2E8F0)..strokeWidth = 0.75;
+    final gridPaint = Paint()
+      ..color = const Color(0xFFE2E8F0)
+      ..strokeWidth = 0.75;
     for (int i = 0; i <= 10; i++) {
       final x = _padX + (i / 10) * (w - 2 * _padX);
       canvas.drawLine(Offset(x, 0), Offset(x, h - _padY), gridPaint);
@@ -884,16 +885,36 @@ class _AsymptoticGraphPainter extends CustomPainter {
 
     if (n0X > _padX && n0X < w - 4) {
       _drawDashedV(canvas, n0X, h - _padY);
-      _drawText(canvas, config.n0Display, Offset(n0X + 4, 4), const Color(0xFF64748B), 10);
+      _drawText(
+        canvas,
+        config.n0Display,
+        Offset(n0X + 4, 4),
+        const Color(0xFF64748B),
+        10,
+      );
     }
   }
 
   void _drawAxes(Canvas canvas, double w, double h) {
-    final p = Paint()..color = const Color(0xFF94A3B8)..strokeWidth = 1.0;
+    final p = Paint()
+      ..color = const Color(0xFF94A3B8)
+      ..strokeWidth = 1.0;
     canvas.drawLine(Offset(_padX, 0), Offset(_padX, h - _padY), p);
     canvas.drawLine(Offset(_padX, h - _padY), Offset(w, h - _padY), p);
-    _drawText(canvas, 'n', Offset(w - 12, h - _padY - 14), const Color(0xFF94A3B8), 10);
-    _drawText(canvas, 'T(n)', Offset(_padX + 2, 2), const Color(0xFF94A3B8), 10);
+    _drawText(
+      canvas,
+      'n',
+      Offset(w - 12, h - _padY - 14),
+      const Color(0xFF94A3B8),
+      10,
+    );
+    _drawText(
+      canvas,
+      'T(n)',
+      Offset(_padX + 2, 2),
+      const Color(0xFF94A3B8),
+      10,
+    );
   }
 
   void _drawSingleBound(Canvas canvas, double w, double h, double n0X) {
@@ -901,12 +922,41 @@ class _AsymptoticGraphPainter extends CustomPainter {
     final cVis = _c((progress - 0.35) / 0.3);
     final fVis = _c(progress / 0.6);
 
-    if (gVis > 0) _curve(canvas, w, h, _gLinear, const Color(0xFFF97316), 1.5, [5, 4], opacity: gVis);
+    if (gVis > 0)
+      _curve(canvas, w, h, _gLinear, const Color(0xFFF97316), 1.5, [
+        5,
+        4,
+      ], opacity: gVis);
     if (cVis > 0) {
-      _curve(canvas, w, h, config.cFn, const Color(0xFF22C55E), 2.0, null, opacity: cVis);
-      canvas.drawCircle(Offset(n0X, _mapY(config.cFn(config.n0), h)), 3, Paint()..color = const Color(0xFF22C55E));
+      _curve(
+        canvas,
+        w,
+        h,
+        config.cFn,
+        const Color(0xFF22C55E),
+        2.0,
+        null,
+        opacity: cVis,
+      );
+      canvas.drawCircle(
+        Offset(n0X, _mapY(config.cFn(config.n0), h)),
+        3,
+        Paint()..color = const Color(0xFF22C55E),
+      );
     }
-    if (fVis > 0) _curve(canvas, w, h, config.fFn, const Color(0xFF3B82F6), 2.5, null, opacity: fVis, shadow: true, fraction: fVis);
+    if (fVis > 0)
+      _curve(
+        canvas,
+        w,
+        h,
+        config.fFn,
+        const Color(0xFF3B82F6),
+        2.5,
+        null,
+        opacity: fVis,
+        shadow: true,
+        fraction: fVis,
+      );
   }
 
   void _drawTightBound(Canvas canvas, double w, double h, double n0X) {
@@ -925,21 +975,56 @@ class _AsymptoticGraphPainter extends CustomPainter {
         for (final p in pts1) band.lineTo(p.dx, p.dy);
         for (final p in pts2.reversed) band.lineTo(p.dx, p.dy);
         band.close();
-        canvas.drawPath(band, Paint()..color = const Color(0xFFA855F7).withValues(alpha: bandVis * 0.10));
+        canvas.drawPath(
+          band,
+          Paint()
+            ..color = const Color(0xFFA855F7).withValues(alpha: bandVis * 0.10),
+        );
       }
     }
 
-    if (gVis > 0) _curve(canvas, w, h, _gLinear, const Color(0xFFF97316), 1.5, [5, 4], opacity: gVis);
-    if (c1Vis > 0) _curve(canvas, w, h, config.cFn, const Color(0xFF22C55E), 1.5, [6, 4], opacity: c1Vis);
-    if (c2Vis > 0 && config.c2Fn != null) _curve(canvas, w, h, config.c2Fn!, const Color(0xFFA855F7), 1.5, [6, 4], opacity: c2Vis);
-    if (fVis > 0) _curve(canvas, w, h, config.fFn, const Color(0xFF3B82F6), 2.5, null, opacity: fVis, shadow: true, fraction: fVis);
+    if (gVis > 0)
+      _curve(canvas, w, h, _gLinear, const Color(0xFFF97316), 1.5, [
+        5,
+        4,
+      ], opacity: gVis);
+    if (c1Vis > 0)
+      _curve(canvas, w, h, config.cFn, const Color(0xFF22C55E), 1.5, [
+        6,
+        4,
+      ], opacity: c1Vis);
+    if (c2Vis > 0 && config.c2Fn != null)
+      _curve(canvas, w, h, config.c2Fn!, const Color(0xFFA855F7), 1.5, [
+        6,
+        4,
+      ], opacity: c2Vis);
+    if (fVis > 0)
+      _curve(
+        canvas,
+        w,
+        h,
+        config.fFn,
+        const Color(0xFF3B82F6),
+        2.5,
+        null,
+        opacity: fVis,
+        shadow: true,
+        fraction: fVis,
+      );
   }
 
   void _curve(
-    Canvas canvas, double w, double h,
-    double Function(double) fn, Color color, double strokeWidth, List<double>? dash,
-    {double opacity = 1.0, bool shadow = false, double fraction = 1.0}
-  ) {
+    Canvas canvas,
+    double w,
+    double h,
+    double Function(double) fn,
+    Color color,
+    double strokeWidth,
+    List<double>? dash, {
+    double opacity = 1.0,
+    bool shadow = false,
+    double fraction = 1.0,
+  }) {
     final pts = _pts(w, h, fn, 200);
     final count = (pts.length * fraction).round().clamp(0, pts.length);
     if (count == 0) return;
@@ -963,44 +1048,65 @@ class _AsymptoticGraphPainter extends CustomPainter {
           ..strokeCap = StrokeCap.round
           ..strokeJoin = StrokeJoin.round
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
-        _drawDashedLine(canvas, pts, count, [strokeWidth + 3, strokeWidth + 3], sp);
+        _drawDashedLine(canvas, pts, count, [
+          strokeWidth + 3,
+          strokeWidth + 3,
+        ], sp);
       }
       _drawDashedLine(canvas, pts, count, dash, paint);
     } else {
       if (shadow) {
-        canvas.drawPath(path, Paint()
-          ..color = color.withValues(alpha: opacity * 0.25)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = strokeWidth + 3
-          ..strokeCap = StrokeCap.round
-          ..strokeJoin = StrokeJoin.round
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4));
+        canvas.drawPath(
+          path,
+          Paint()
+            ..color = color.withValues(alpha: opacity * 0.25)
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = strokeWidth + 3
+            ..strokeCap = StrokeCap.round
+            ..strokeJoin = StrokeJoin.round
+            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4),
+        );
       }
       canvas.drawPath(path, paint);
     }
   }
 
   void _drawDashedLine(
-    Canvas canvas, List<Offset> pts, int count,
-    List<double> dash, Paint paint,
+    Canvas canvas,
+    List<Offset> pts,
+    int count,
+    List<double> dash,
+    Paint paint,
   ) {
-    final dashLen = dash[0], gapLen = dash.length > 1 ? dash[1] : dash[0];
-    var drawn = 0.0, skipping = false;
+    final dashLen = dash[0];
+    final gapLen = dash.length > 1 ? dash[1] : dash[0];
+    final patternLen = dashLen + gapLen;
+    var distanceInPattern = 0.0;
+
     for (int i = 0; i < count - 1; i++) {
-      final segLen = (pts[i + 1] - pts[i]).distance;
+      final start = pts[i];
+      final end = pts[i + 1];
+      final segment = end - start;
+      final segLen = segment.distance;
       if (segLen == 0) continue;
+
       var pos = 0.0;
       while (pos < segLen) {
-        final remaining = dashLen - (drawn % (dashLen + gapLen));
-        final step = (!skipping ? dashLen : gapLen).clamp(0, remaining);
-        if (!skipping && step > 0) {
-          canvas.drawLine(pts[i], Offset(
-            pts[i].dx + (pts[i + 1].dx - pts[i].dx) * (step / segLen),
-            pts[i].dy + (pts[i + 1].dy - pts[i].dy) * (step / segLen),
-          ), paint);
+        final isDash = distanceInPattern < dashLen;
+        final remainingInPart = isDash
+            ? dashLen - distanceInPattern
+            : patternLen - distanceInPattern;
+        final step = math.min(remainingInPart, segLen - pos);
+        if (step <= 0) break;
+
+        if (isDash) {
+          final from = start + segment * (pos / segLen);
+          final to = start + segment * ((pos + step) / segLen);
+          canvas.drawLine(from, to, paint);
         }
-        pos += step; drawn += step;
-        skipping = !skipping;
+
+        pos += step;
+        distanceInPattern = (distanceInPattern + step) % patternLen;
       }
     }
   }
@@ -1017,19 +1123,37 @@ class _AsymptoticGraphPainter extends CustomPainter {
   }
 
   void _drawDashedV(Canvas canvas, double x, double y2) {
-    final paint = Paint()..color = const Color(0xFF94A3B8)..strokeWidth = 1.0..style = PaintingStyle.stroke;
+    final paint = Paint()
+      ..color = const Color(0xFF94A3B8)
+      ..strokeWidth = 1.0
+      ..style = PaintingStyle.stroke;
     const dl = 4.0, gl = 4.0;
     var d = 0.0, draw = true;
     while (d < y2) {
       final n = draw ? dl : gl;
       final e = (d + n).clamp(0.0, y2);
       if (draw) canvas.drawLine(Offset(x, d), Offset(x, e), paint);
-      d = e; draw = !draw;
+      d = e;
+      draw = !draw;
     }
   }
 
-  void _drawText(Canvas canvas, String text, Offset pos, Color color, double size) {
-    TextPainter(text: TextSpan(text: text, style: TextStyle(color: color, fontSize: size)), textDirection: TextDirection.ltr)..layout()..paint(canvas, pos);
+  void _drawText(
+    Canvas canvas,
+    String text,
+    Offset pos,
+    Color color,
+    double size,
+  ) {
+    TextPainter(
+        text: TextSpan(
+          text: text,
+          style: TextStyle(color: color, fontSize: size),
+        ),
+        textDirection: TextDirection.ltr,
+      )
+      ..layout()
+      ..paint(canvas, pos);
   }
 
   double _c(double x) => x.clamp(0.0, 1.0);
