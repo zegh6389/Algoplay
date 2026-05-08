@@ -333,6 +333,163 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+
+      // Module 4: "The 6-Step Recipe to Solve Any Problem"
+      ModuleContent(
+        id: 'lesson1_module4',
+        title: 'The 6-Step Recipe to Solve Any Problem',
+        order: 3,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'Before anyone touches the keyboard, we need the algorithmic '
+            'equivalent of reading the recipe. Levitin gives us six steps for '
+            'solving problems without accidentally building a spaghetti cannon.',
+          ),
+          DefinitionBlock(
+            term: 'Step 1: Understand the Problem',
+            definition:
+                'Ask what we have, what we need, and what weird edge cases are '
+                'lurking in the bushes. Solving the wrong problem beautifully is '
+                'still wrong — like delivering a peanut-butter sandwich to someone '
+                'with a peanut allergy.',
+          ),
+          DefinitionBlock(
+            term: 'Step 2: Pick the Right Techniques',
+            definition:
+                'Choose the tools: list, tree, graph, sorting idea, divide and '
+                'conquer, or something else. We do not bring a rocket launcher to '
+                'swat a mosquito, even if the rocket launcher has nice branding.',
+          ),
+          DefinitionBlock(
+            term: 'Step 3: Design the Algorithm',
+            definition:
+                'Sketch the plan in words, boxes, arrows, or tiny battle maps. '
+                'No code yet. Paper is cheap; debugging 200 lines at 2 AM is not.',
+          ),
+          DefinitionBlock(
+            term: 'Step 4: Prove It Works',
+            definition:
+                'Run the plan through your brain before letting the computer '
+                'suffer. Try small inputs, empty inputs, and suspicious goblin '
+                'cases. If the idea fails here, fix it while the mistake is cheap.',
+          ),
+          DefinitionBlock(
+            term: 'Step 5: Analyze the Algorithm',
+            definition:
+                'Ask how much work it does and how much memory it eats. If the '
+                'design is too slow or too hungry, loop back and redesign. That '
+                'backward arrow is not failure; it is professional wizardry.',
+          ),
+          DefinitionBlock(
+            term: 'Step 6: Code the Algorithm',
+            definition:
+                'Finally, the keyboard gets invited to the party. Because we '
+                'already understand, designed, proved, and analyzed the plan, '
+                'coding becomes translation instead of panic typing.',
+          ),
+          TextBlock(
+            'Feedback Loops matter. Real problem solving is not a straight '
+            'slide; it is GPS yelling "recalculating" after every bad turn. '
+            'We may jump from analysis back to design, or from proof back to '
+            'understanding. Smart builders loop. Chaos builders just commit bugs.',
+          ),
+          QuizBlock(
+            question: 'In Levitin\'s six-step problem-solving process, when should we write the code?',
+            options: [
+              'Immediately, before thinking, for maximum keyboard thunder.',
+              'After understanding, choosing techniques, designing, proving, and analyzing.',
+              'Only after the algorithm has been posted on social media.',
+              'Before defining the input and output.',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Code is Step 6. The first five steps make sure we are solving '
+                'the right problem with a plan that works and is worth implementing.',
+          ),
+          KeyTakeawayBlock(
+            'The keyboard is the final tool, not the starting pistol. Understand, '
+            'choose techniques, design, prove, analyze, then code. Plan first; '
+            'your future self gets fewer 2 AM emergencies.',
+          ),
+        ],
+      ),
+
+      // Module 5: "What Makes a Good Algorithm?"
+      ModuleContent(
+        id: 'lesson1_module5',
+        title: 'What Makes a Good Algorithm?',
+        order: 4,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'Not every algorithm deserves a trophy. Some are chocolate cake: '
+            'fast, clean, correct, and suspiciously delicious. Others are burnt '
+            'cake that took five hours and still tastes like printer toner. '
+            'Baase and Van Gelder give us five ways to judge the recipe.',
+          ),
+          DefinitionBlock(
+            term: 'Correctness',
+            definition:
+                'The algorithm must do exactly what it promises. Preconditions '
+                'say what must be true before we start; Postconditions say what '
+                'must be true when we finish. One counterexample can prove a '
+                'recipe is broken. Proving it always works takes real evidence.',
+          ),
+          DefinitionBlock(
+            term: 'Efficiency',
+            definition:
+                'Also called the amount of work done. We do not trust wall-clock '
+                'time because different machines are different kitchens. Instead '
+                'we count basic operations and ask how the work grows as input '
+                'gets bigger. Yes, Big-O is waiting in the hallway.',
+          ),
+          DefinitionBlock(
+            term: 'Space Usage',
+            definition:
+                'Algorithms need room for input, instructions, and temporary '
+                'scratch work. An array is like neat containers in a row; a linked '
+                'list is a scavenger hunt of pointers. Storage choices matter.',
+          ),
+          DefinitionBlock(
+            term: 'Simplicity',
+            definition:
+                'A simple algorithm is easier to understand, code, test, and fix. '
+                'If the plan needs 47 timers and a ceremonial hat, bugs will find '
+                'rent-free apartments inside it.',
+          ),
+          DefinitionBlock(
+            term: 'Optimality',
+            definition:
+                'An optimal algorithm is not merely good; it matches the best '
+                'possible performance. To prove that, we show a lower bound — the '
+                'minimum work any algorithm must do — and then match it.',
+          ),
+          TextBlock(
+            'Our main focus will be efficiency because it is measurable and '
+            'useful for comparing algorithms. But here is the giant neon warning: '
+            'a fast wrong answer is still wrong. Correctness always comes first.',
+          ),
+          QuizBlock(
+            question: 'Which criterion asks whether an algorithm is the best possible, not just pretty good?',
+            options: [
+              'Simplicity',
+              'Space Usage',
+              'Optimality',
+              'Postconditions',
+            ],
+            correctIndex: 2,
+            explanation:
+                'Optimality means the algorithm matches a proven lower bound, so '
+                'no algorithm can asymptotically beat it for that problem model.',
+          ),
+          KeyTakeawayBlock(
+            'Judge algorithms by correctness, efficiency, space usage, simplicity, '
+            'and optimality. We will obsess over efficiency soon, but never crown '
+            'a fast algorithm if it answers the wrong question.',
+          ),
+        ],
+      ),
     ],
   ),
 

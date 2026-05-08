@@ -32,8 +32,8 @@ void main() {
       lesson1 = lessons.firstWhere((l) => l.id == 1);
     });
 
-    test('has 3 modules', () {
-      expect(lesson1.modules.length, 3);
+    test('has 5 modules', () {
+      expect(lesson1.modules.length, 5);
     });
 
     test('modules have titles', () {
@@ -108,6 +108,74 @@ void main() {
       expect(combined, contains('change of base'));
       expect(combined, contains('lg'));
       expect(combined, contains('base 2'));
+    });
+
+    test('Module 4 has the six-step problem-solving recipe', () {
+      final module = lesson1.modules[3];
+      expect(module.id, 'lesson1_module4');
+      expect(module.title, 'The 6-Step Recipe to Solve Any Problem');
+      expect(module.order, 3);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(blocks.whereType<DefinitionBlock>().length, 6);
+      expect(blocks.any((b) => b is QuizBlock), isTrue);
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = blocks.map((block) {
+        return switch (block) {
+          TextBlock(:final text) => text,
+          DefinitionBlock(:final term, :final definition) => '$term $definition',
+          KeyTakeawayBlock(:final text) => text,
+          QuizBlock(:final question, :final options, :final explanation) =>
+            '$question ${options.join(' ')} $explanation',
+          CodeBlock(:final code, :final language) => '$language $code',
+        };
+      }).join(' ');
+
+      expect(combined, contains('Understand the Problem'));
+      expect(combined, contains('Pick the Right Techniques'));
+      expect(combined, contains('Design the Algorithm'));
+      expect(combined, contains('Prove It Works'));
+      expect(combined, contains('Analyze the Algorithm'));
+      expect(combined, contains('Code the Algorithm'));
+      expect(combined, contains('Feedback Loops'));
+      expect(combined, contains('keyboard'));
+    });
+
+    test('Module 5 has the five criteria for judging algorithms', () {
+      final module = lesson1.modules[4];
+      expect(module.id, 'lesson1_module5');
+      expect(module.title, 'What Makes a Good Algorithm?');
+      expect(module.order, 4);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(5));
+      expect(blocks.any((b) => b is QuizBlock), isTrue);
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = blocks.map((block) {
+        return switch (block) {
+          TextBlock(:final text) => text,
+          DefinitionBlock(:final term, :final definition) => '$term $definition',
+          KeyTakeawayBlock(:final text) => text,
+          QuizBlock(:final question, :final options, :final explanation) =>
+            '$question ${options.join(' ')} $explanation',
+          CodeBlock(:final code, :final language) => '$language $code',
+        };
+      }).join(' ');
+
+      expect(combined, contains('Correctness'));
+      expect(combined, contains('Preconditions'));
+      expect(combined, contains('Postconditions'));
+      expect(combined, contains('Efficiency'));
+      expect(combined, contains('Space Usage'));
+      expect(combined, contains('Simplicity'));
+      expect(combined, contains('Optimality'));
+      expect(combined, contains('lower bound'));
+      expect(combined, contains('Big-O'));
+      expect(combined, contains('Correctness always comes first'));
     });
 
     test('Module 1 contains mixed content block types', () {
