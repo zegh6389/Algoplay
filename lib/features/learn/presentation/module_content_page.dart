@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui' show PathEffect;
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -672,9 +673,9 @@ class _GraphBlockWidgetState extends State<_GraphBlockWidget>
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: AppColors.card,
         borderRadius: AppRadius.mdBorder,
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: AppColors.sunken),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
@@ -739,7 +740,7 @@ class _GraphBlockWidgetState extends State<_GraphBlockWidget>
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: AppColors.primary50.withValues(alpha: 0.4),
-              border: Border(top: BorderSide(color: AppColors.border)),
+              border: Border(top: BorderSide(color: AppColors.sunken)),
             ),
             child: Text(
               _formulaText(widget.type),

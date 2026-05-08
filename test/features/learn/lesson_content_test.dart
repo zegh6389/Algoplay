@@ -98,6 +98,7 @@ void main() {
             '$question ${options.join(' ')} $explanation',
           CodeBlock(:final code, :final language) => '$language $code',
           MathBlock(:final tex, :final semanticsLabel) => '$semanticsLabel $tex',
+          GraphBlock(:final type) => type,
         };
       }).join(' ');
 
@@ -135,6 +136,7 @@ void main() {
             '$question ${options.join(' ')} $explanation',
           CodeBlock(:final code, :final language) => '$language $code',
           MathBlock(:final tex, :final semanticsLabel) => '$semanticsLabel $tex',
+          GraphBlock(:final type) => type,
         };
       }).join(' ');
 
@@ -169,6 +171,7 @@ void main() {
             '$question ${options.join(' ')} $explanation',
           CodeBlock(:final code, :final language) => '$language $code',
           MathBlock(:final tex, :final semanticsLabel) => '$semanticsLabel $tex',
+          GraphBlock(:final type) => type,
         };
       }).join(' ');
 
@@ -290,6 +293,7 @@ void main() {
             '$question ${options.join(' ')} $explanation',
           CodeBlock(:final code, :final language) => '$language $code',
           MathBlock(:final tex, :final semanticsLabel) => '$semanticsLabel $tex',
+          GraphBlock(:final type) => type,
         };
       }).join(' ');
 
@@ -323,6 +327,7 @@ void main() {
             '$question ${options.join(' ')} $explanation',
           CodeBlock(:final code, :final language) => '$language $code',
           MathBlock(:final tex, :final semanticsLabel) => '$semanticsLabel $tex',
+          GraphBlock(:final type) => type,
         };
       }).join(' ');
 
