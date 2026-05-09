@@ -17,6 +17,19 @@ class GraphBlock extends ContentBlock {
   const GraphBlock(this.type);
 }
 
+/// Inline callout that opens a matching algorithm visualization.
+class VisualizerLinkBlock extends ContentBlock {
+  final String algorithmId;
+  final String label;
+  final String? description;
+
+  const VisualizerLinkBlock({
+    required this.algorithmId,
+    required this.label,
+    this.description,
+  });
+}
+
 sealed class ContentBlock {
   const ContentBlock();
 }
@@ -1553,12 +1566,327 @@ const List<LessonContent> lessons = [
     ],
   ),
 
-  // ── Lesson 4 (stub) ───────────────────────────────────────────────────────
+  // ── Lesson 4 ───────────────────────────────────────────────────────────────
   LessonContent(
     id: 4,
     title: 'Brute Force Algorithms',
     categoryColor: '#0EA5E9',
-    modules: [],
+    modules: [
+      ModuleContent(
+        id: 'lesson4_module1',
+        title: 'Introduction to Brute Force',
+        order: 0,
+        algorithmId: 'bubble-sort',
+        contentBlocks: [
+          TextBlock(
+            'Welcome to Lesson 4. Lessons 2 and 3 focused on analysis: how fast an algorithm grows and how recursive work can be measured. Now we shift to design. The new question is not only how fast is this algorithm. It is also how do we invent one in the first place.',
+          ),
+          DefinitionBlock(
+            term: 'Brute force',
+            definition:
+                'The direct design strategy: try the obvious correct method first, then study its cost and improve it if needed.',
+          ),
+          TextBlock(
+            'Brute force is often the first useful answer. It may not be elegant, but it gives a correct baseline. Once we have that baseline, we can compare smarter designs against something concrete.',
+          ),
+          DefinitionBlock(
+            term: 'Baseline algorithm',
+            definition:
+                'A simple correct solution used as a starting point for analysis and later improvement.',
+          ),
+          TextBlock(
+            'Selection Sort is a classic example. It repeatedly scans the remaining array, selects the smallest item, and places it in the next position. It does this even when the array is already sorted.',
+          ),
+          VisualizerLinkBlock(
+            algorithmId: 'selection-sort',
+            label: 'Visualize Selection Sort',
+            description:
+                'Watch the repeated scan for the smallest remaining value.',
+          ),
+          CodeBlock(
+            'for i from 0 to n − 2:\n'
+            '  minIndex = i\n'
+            '  for j from i + 1 to n − 1:\n'
+            '    if A[j] < A[minIndex]:\n'
+            '      minIndex = j\n'
+            '  swap A[i] and A[minIndex]',
+            language: 'text',
+          ),
+          TextBlock(
+            'Because the nested scans still cover the array, Selection Sort uses Θ(n²) comparisons in the usual analysis. A sorted array and a reverse-sorted array do not change that comparison count.',
+          ),
+          MathBlock(r'\Theta(n^2)', semanticsLabel: 'theta of n squared'),
+          TextBlock(
+            'Bubble Sort is another direct method. It compares adjacent items and swaps them when they are out of order. Small improvements can help practice, but the overall class stays O(n²).',
+          ),
+          VisualizerLinkBlock(
+            algorithmId: 'bubble-sort',
+            label: 'Visualize Bubble Sort',
+            description:
+                'Use this when the lesson talks about adjacent swaps, no-swap early stopping, and bubbling large values rightward.',
+          ),
+          TextBlock(
+            'Two practical improvements are common. Stop early if a full pass makes no swaps. Track the last swap position, because everything after that point is already settled. Cocktail Shaker Sort goes left to right, then right to left, moving large and small values in both directions.',
+          ),
+          TextBlock(
+            'Sequential Search is the same design habit applied to searching. Start at the beginning, check each item, and stop when the target is found or the list ends.',
+          ),
+          VisualizerLinkBlock(
+            algorithmId: 'linear-search',
+            label: 'Visualize Sequential Search',
+            description: 'Step through the direct one-by-one search pattern.',
+          ),
+          TextBlock(
+            'The string matching problem also has a brute force version. Align the pattern with the text, compare characters, shift one position, and repeat. With text length n and pattern length m, the worst case can compare m characters at each of n − m + 1 alignments.',
+          ),
+          MathBlock(
+            r'm(n - m + 1) \in O(nm)',
+            semanticsLabel: 'm times n minus m plus one is big O of n m',
+          ),
+          QuizBlock(
+            question:
+                'Why does Bubble Sort remain O(n²) after small improvements?',
+            options: [
+              'The worst case still needs many adjacent comparisons',
+              'It stops after one pass for every input',
+              'It never swaps values',
+              'It becomes a divide-and-conquer algorithm',
+            ],
+            correctIndex: 0,
+            explanation:
+                'Early stopping and last-swap tracking help some inputs, but they do not remove the quadratic worst-case pattern.',
+          ),
+          KeyTakeawayBlock(
+            'Brute force means start with a direct correct method. Then analyze it, visualize its behavior, and ask how to improve it.',
+          ),
+        ],
+      ),
+      ModuleContent(
+        id: 'lesson4_module2',
+        title: 'Exhaustive Search',
+        order: 1,
+        algorithmId: 'knapsack',
+        contentBlocks: [
+          TextBlock(
+            'Exhaustive search is a special form of brute force. Instead of trying one direct scan, it lists all possible solutions, checks each one, and chooses the best valid answer.',
+          ),
+          DefinitionBlock(
+            term: 'Exhaustive search',
+            definition:
+                'A brute force strategy that explores every candidate solution in the search space.',
+          ),
+          TextBlock(
+            'This is simple and reliable. It also becomes expensive quickly, because the number of candidates can grow faster than the input feels like it should.',
+          ),
+          DefinitionBlock(
+            term: 'Travelling Salesman Problem',
+            definition:
+                'Find the cheapest tour that visits every city exactly once and returns to the start.',
+          ),
+          TextBlock(
+            'A brute force travelling salesman algorithm fixes a starting city, tries the possible orders for the remaining cities, computes each tour cost, and keeps the cheapest one. The search is over permutations, so the growth is factorial.',
+          ),
+          MathBlock(r'O(n!)', semanticsLabel: 'big O of n factorial'),
+          DefinitionBlock(
+            term: 'Assignment Problem',
+            definition:
+                'Assign n people to n jobs so that each person gets one job and the total cost is as small as possible.',
+          ),
+          TextBlock(
+            'The brute force assignment method also tries permutations. Each complete assignment is one ordering of choices, so this direct method also grows like O(n!).',
+          ),
+          DefinitionBlock(
+            term: 'Knapsack Problem',
+            definition:
+                'Choose a subset of items that satisfies a target or optimizes value under a capacity limit.',
+          ),
+          TextBlock(
+            'Knapsack is different because the search is over subsets. Each item creates a yes or no decision: include it or skip it. With n items, that creates up to 2ⁿ possible choices, so the brute force class is O(2ⁿ).',
+          ),
+          MathBlock(r'O(2^n)', semanticsLabel: 'big O of two to the n'),
+          VisualizerLinkBlock(
+            algorithmId: 'knapsack',
+            label: 'Visualize Knapsack',
+            description:
+                'Connect the include-or-skip search idea to the app visualizer.',
+          ),
+          CodeBlock(
+            'search(i, target):\n'
+            '  if target = 0: return true\n'
+            '  if target < 0: return false\n'
+            '  if i = n: return false\n'
+            '  if search(i + 1, target − weight[i]): return true\n'
+            '  return search(i + 1, target)',
+            language: 'text',
+          ),
+          TextBlock(
+            'This recursion is organized, but it does not magically change the worst case. If the algorithm must explore almost every subset, the cost remains exponential.',
+          ),
+          QuizBlock(
+            question: 'Why does brute force knapsack have exponential growth?',
+            options: [
+              'Each item creates an include-or-skip choice',
+              'Each city must be visited in every possible order',
+              'The input is always sorted first',
+              'The algorithm only checks adjacent pairs',
+            ],
+            correctIndex: 0,
+            explanation:
+                'With n yes-or-no choices, the subset search space can contain 2ⁿ paths.',
+          ),
+          KeyTakeawayBlock(
+            'TSP and Assignment search permutations, giving factorial growth. Knapsack searches subsets, giving exponential growth. The shape of the search space matters.',
+          ),
+        ],
+      ),
+      ModuleContent(
+        id: 'lesson4_module3',
+        title: 'Interval Scheduling',
+        order: 2,
+        algorithmId: 'activity-selection',
+        contentBlocks: [
+          TextBlock(
+            'Interval Scheduling asks which time requests can share one resource as non-overlapping requests. Imagine one classroom and many rental requests. If two intervals overlap, you cannot accept both.',
+          ),
+          DefinitionBlock(
+            term: 'Compatible intervals',
+            definition:
+                'Intervals that do not overlap, so they can all be accepted for the same resource.',
+          ),
+          MathBlock(
+            r's(i) \text{ is the start time, and } f(i) \text{ is the finish time}',
+            semanticsLabel: 's of i is start time and f of i is finish time',
+          ),
+          TextBlock(
+            'Pure brute force would list all subsets of requests, reject the conflicting subsets, and choose the best compatible one. That works in theory, but it is expensive.',
+          ),
+          DefinitionBlock(
+            term: 'Greedy rule',
+            definition:
+                'A local choice rule that commits immediately and then continues with what remains.',
+          ),
+          TextBlock(
+            'The smart rule for this problem is simple: always choose the request that finishes first. Finishing early leaves as much room as possible for future requests. During the scan, a request is safe when its start time is ≥ the last accepted finish time. In short, we need s(j) ≥ f before accepting request j.',
+          ),
+          VisualizerLinkBlock(
+            algorithmId: 'activity-selection',
+            label: 'Visualize Activity Selection',
+            description:
+                'This is the app visualizer that matches interval scheduling by earliest finish time.',
+          ),
+          CodeBlock(
+            'sort requests by finish time\n'
+            'A = empty accepted set\n'
+            'lastFinish = −∞\n'
+            'for each request j in sorted order:\n'
+            '  if s(j) ≥ lastFinish:\n'
+            '    add j to A\n'
+            '    lastFinish = f(j)\n'
+            'return A',
+            language: 'text',
+          ),
+          MathBlock(
+            r's(j) \ge f',
+            semanticsLabel: 'start time of j is at least f',
+          ),
+          TextBlock(
+            'Sorting the n requests by finish time costs O(n log n). After sorting, the scan is one pass. Each request needs only a constant amount of work, so the scan costs O(n).',
+          ),
+          MathBlock(
+            r'O(n \log n) + O(n) = O(n \log n)',
+            semanticsLabel: 'n log n plus n equals n log n',
+          ),
+          DefinitionBlock(
+            term: 'Priority queue note',
+            definition:
+                'A priority queue can repeatedly give the earliest finish time, but it does not improve the overall O(n log n) efficiency class here.',
+          ),
+          TextBlock(
+            'This module is a bridge. It starts from brute force thinking, then uses one clear design insight to reach a cleaner greedy method.',
+          ),
+          QuizBlock(
+            question:
+                'Why does choosing the request that finishes first make sense?',
+            options: [
+              'It leaves the most room for later compatible intervals',
+              'It accepts every request automatically',
+              'It avoids sorting entirely',
+              'It changes the scan into O(2ⁿ)',
+            ],
+            correctIndex: 0,
+            explanation:
+                'An early finish gives future requests the best chance to fit without overlap.',
+          ),
+          KeyTakeawayBlock(
+            'A small design insight can turn a messy subset search into a clean O(n log n) scheduling algorithm.',
+          ),
+        ],
+      ),
+      ModuleContent(
+        id: 'lesson4_module4',
+        title: 'Lesson 4 Conclusion',
+        order: 3,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'Nice work. Lesson 4 began the design half of the course with the most basic technique: brute force.',
+          ),
+          DefinitionBlock(
+            term: 'Main lesson',
+            definition:
+                'A simple correct algorithm is often where good design begins, even when it is not where design ends.',
+          ),
+          TextBlock(
+            'We saw direct algorithms such as Selection Sort, Bubble Sort, Sequential Search, and brute force string matching. We also saw exhaustive search problems such as Travelling Salesman, Assignment, and Knapsack.',
+          ),
+          TextBlock(
+            'The common theme was search. Sometimes we search an array. Sometimes we search possible pattern positions. Sometimes we search a huge solution space for the best answer.',
+          ),
+          VisualizerLinkBlock(
+            algorithmId: 'linear-search',
+            label: 'Review Sequential Search',
+            description:
+                'Use the visualizer to connect brute force search with a concrete array example.',
+          ),
+          TextBlock(
+            'Brute force is not useless just because it can be slow. It is easy to invent, usually easy to explain, and useful as a baseline for comparing better algorithms.',
+          ),
+          TextBlock(
+            'The warning is growth: factorial algorithms such as O(n!) and exponential algorithms such as O(2ⁿ) become impractical quickly. That is why later lessons introduce more structured design methods.',
+          ),
+          TextBlock(
+            'Lesson 5 continues the search theme with depth-first search and breadth-first search. These are still search techniques, but they organize the search more carefully for graph-like problems.',
+          ),
+          VisualizerLinkBlock(
+            algorithmId: 'dfs',
+            label: 'Preview DFS',
+            description:
+                'Depth-first search is one of the next structured search tools.',
+          ),
+          VisualizerLinkBlock(
+            algorithmId: 'bfs',
+            label: 'Preview BFS',
+            description:
+                'Breadth-first search explores by distance from the start.',
+          ),
+          QuizBlock(
+            question: 'What is the best reason to study brute force?',
+            options: [
+              'It gives a correct baseline and helps reveal the problem structure',
+              'It is always the fastest algorithm',
+              'It avoids the need for analysis',
+              'It only applies to sorting problems',
+            ],
+            correctIndex: 0,
+            explanation:
+                'Brute force is a practical starting point. It helps us understand what a better design must improve.',
+          ),
+          KeyTakeawayBlock(
+            'First make it work. Then understand it. Then improve it. That is the design habit Lesson 4 builds.',
+          ),
+        ],
+      ),
+    ],
   ),
 
   // ── Lesson 5 (stub) ───────────────────────────────────────────────────────

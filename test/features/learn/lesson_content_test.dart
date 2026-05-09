@@ -120,6 +120,12 @@ void main() {
               MathBlock(:final tex, :final semanticsLabel) =>
                 '$semanticsLabel $tex',
               GraphBlock(:final type) => type,
+              VisualizerLinkBlock(
+                :final algorithmId,
+                :final label,
+                :final description,
+              ) =>
+                '$algorithmId $label ${description ?? ''}',
             };
           })
           .join(' ');
@@ -162,6 +168,12 @@ void main() {
               MathBlock(:final tex, :final semanticsLabel) =>
                 '$semanticsLabel $tex',
               GraphBlock(:final type) => type,
+              VisualizerLinkBlock(
+                :final algorithmId,
+                :final label,
+                :final description,
+              ) =>
+                '$algorithmId $label ${description ?? ''}',
             };
           })
           .join(' ');
@@ -204,6 +216,12 @@ void main() {
               MathBlock(:final tex, :final semanticsLabel) =>
                 '$semanticsLabel $tex',
               GraphBlock(:final type) => type,
+              VisualizerLinkBlock(
+                :final algorithmId,
+                :final label,
+                :final description,
+              ) =>
+                '$algorithmId $label ${description ?? ''}',
             };
           })
           .join(' ');
@@ -246,6 +264,7 @@ void main() {
             case CodeBlock():
             case MathBlock():
             case GraphBlock():
+            case VisualizerLinkBlock():
               break;
           }
         }
@@ -337,6 +356,12 @@ void main() {
               MathBlock(:final tex, :final semanticsLabel) =>
                 '$semanticsLabel $tex',
               GraphBlock(:final type) => type,
+              VisualizerLinkBlock(
+                :final algorithmId,
+                :final label,
+                :final description,
+              ) =>
+                '$algorithmId $label ${description ?? ''}',
             };
           })
           .join(' ');
@@ -378,6 +403,12 @@ void main() {
               MathBlock(:final tex, :final semanticsLabel) =>
                 '$semanticsLabel $tex',
               GraphBlock(:final type) => type,
+              VisualizerLinkBlock(
+                :final algorithmId,
+                :final label,
+                :final description,
+              ) =>
+                '$algorithmId $label ${description ?? ''}',
             };
           })
           .join(' ');
@@ -429,6 +460,12 @@ void main() {
               MathBlock(:final tex, :final semanticsLabel) =>
                 '$semanticsLabel $tex',
               GraphBlock(:final type) => type,
+              VisualizerLinkBlock(
+                :final algorithmId,
+                :final label,
+                :final description,
+              ) =>
+                '$algorithmId $label ${description ?? ''}',
             };
           })
           .join(' ');
@@ -472,6 +509,12 @@ void main() {
               MathBlock(:final tex, :final semanticsLabel) =>
                 '$semanticsLabel $tex',
               GraphBlock(:final type) => type,
+              VisualizerLinkBlock(
+                :final algorithmId,
+                :final label,
+                :final description,
+              ) =>
+                '$algorithmId $label ${description ?? ''}',
             };
           })
           .join(' ');
@@ -511,6 +554,12 @@ void main() {
               MathBlock(:final tex, :final semanticsLabel) =>
                 '$semanticsLabel $tex',
               GraphBlock(:final type) => type,
+              VisualizerLinkBlock(
+                :final algorithmId,
+                :final label,
+                :final description,
+              ) =>
+                '$algorithmId $label ${description ?? ''}',
             };
           })
           .join(' ');
@@ -542,6 +591,7 @@ void main() {
             case CodeBlock():
             case MathBlock():
             case GraphBlock():
+            case VisualizerLinkBlock():
               break;
           }
         }
@@ -594,6 +644,12 @@ void main() {
               MathBlock(:final tex, :final semanticsLabel) =>
                 '$semanticsLabel $tex',
               GraphBlock(:final type) => type,
+              VisualizerLinkBlock(
+                :final algorithmId,
+                :final label,
+                :final description,
+              ) =>
+                '$algorithmId $label ${description ?? ''}',
             };
           })
           .join(' ');
@@ -618,6 +674,7 @@ void main() {
             case CodeBlock():
             case MathBlock():
             case GraphBlock():
+            case VisualizerLinkBlock():
               break;
           }
         }
@@ -759,6 +816,218 @@ void main() {
     });
   });
 
+  group('Lesson 4 content', () {
+    late LessonContent lesson4;
+
+    setUp(() {
+      lesson4 = lessons.firstWhere((l) => l.id == 4);
+    });
+
+    String combinedText(Iterable<ContentBlock> blocks) {
+      return blocks
+          .map((block) {
+            return switch (block) {
+              TextBlock(:final text) => text,
+              DefinitionBlock(:final term, :final definition) =>
+                '$term $definition',
+              KeyTakeawayBlock(:final text) => text,
+              QuizBlock(:final question, :final options, :final explanation) =>
+                '$question ${options.join(' ')} $explanation',
+              CodeBlock(:final code, :final language) => '$language $code',
+              MathBlock(:final tex, :final semanticsLabel) =>
+                '$semanticsLabel $tex',
+              GraphBlock(:final type) => type,
+              VisualizerLinkBlock(
+                :final algorithmId,
+                :final label,
+                :final description,
+              ) =>
+                '$algorithmId $label ${description ?? ''}',
+            };
+          })
+          .join(' ');
+    }
+
+    List<String> lesson4Prose() {
+      final prose = <String>[];
+      for (final module in lesson4.modules) {
+        for (final block in module.contentBlocks) {
+          switch (block) {
+            case TextBlock(:final text):
+              prose.add(text);
+            case DefinitionBlock(:final term, :final definition):
+              prose.add(term);
+              prose.add(definition);
+            case KeyTakeawayBlock(:final text):
+              prose.add(text);
+            case QuizBlock(:final question, :final options, :final explanation):
+              prose.add(question);
+              prose.addAll(options);
+              prose.add(explanation);
+            case VisualizerLinkBlock(:final label, :final description):
+              prose.add(label);
+              if (description != null) prose.add(description);
+            case CodeBlock():
+            case MathBlock():
+            case GraphBlock():
+              break;
+          }
+        }
+      }
+      return prose;
+    }
+
+    test('has 4 modules', () {
+      expect(lesson4.modules.length, 4);
+    });
+
+    test(
+      'Module 1 introduces brute force with sorting and search visualizers',
+      () {
+        final module = lesson4.modules[0];
+        expect(module.id, 'lesson4_module1');
+        expect(module.title, 'Introduction to Brute Force');
+        expect(module.order, 0);
+        expect(module.algorithmId, 'bubble-sort');
+
+        final blocks = module.contentBlocks;
+        expect(
+          blocks.whereType<DefinitionBlock>().length,
+          greaterThanOrEqualTo(2),
+        );
+        expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(1));
+        expect(blocks.any((b) => b is CodeBlock), isTrue);
+        expect(blocks.any((b) => b is QuizBlock), isTrue);
+        expect(blocks.last, isA<KeyTakeawayBlock>());
+
+        final visualizers = blocks.whereType<VisualizerLinkBlock>().toList();
+        expect(
+          visualizers.map((v) => v.algorithmId),
+          containsAll(['selection-sort', 'bubble-sort', 'linear-search']),
+        );
+
+        final combined = combinedText(blocks);
+        expect(combined, contains('brute force'));
+        expect(combined, contains('Selection Sort'));
+        expect(combined, contains('Bubble Sort'));
+        expect(combined, contains('Cocktail Shaker Sort'));
+        expect(combined, contains('Sequential Search'));
+        expect(combined, contains('string matching'));
+        expect(combined, contains('O(n²)'));
+        expect(combined, contains('O(nm)'));
+      },
+    );
+
+    test('Module 2 explains exhaustive search and knapsack visualization', () {
+      final module = lesson4.modules[1];
+      expect(module.id, 'lesson4_module2');
+      expect(module.title, 'Exhaustive Search');
+      expect(module.order, 1);
+      expect(module.algorithmId, 'knapsack');
+
+      final blocks = module.contentBlocks;
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(4),
+      );
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(2));
+      expect(blocks.any((b) => b is CodeBlock), isTrue);
+      expect(blocks.any((b) => b is QuizBlock), isTrue);
+      expect(
+        blocks.whereType<VisualizerLinkBlock>().single.algorithmId,
+        'knapsack',
+      );
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = combinedText(blocks);
+      expect(combined, contains('Travelling Salesman'));
+      expect(combined, contains('Assignment Problem'));
+      expect(combined, contains('Knapsack'));
+      expect(combined, contains('O(n!)'));
+      expect(combined, contains('O(2ⁿ)'));
+      expect(combined, contains('include it'));
+      expect(combined, contains('skip it'));
+    });
+
+    test('Module 3 bridges to greedy interval scheduling visualization', () {
+      final module = lesson4.modules[2];
+      expect(module.id, 'lesson4_module3');
+      expect(module.title, 'Interval Scheduling');
+      expect(module.order, 2);
+      expect(module.algorithmId, 'activity-selection');
+
+      final blocks = module.contentBlocks;
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(3),
+      );
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(2));
+      expect(blocks.any((b) => b is CodeBlock), isTrue);
+      expect(blocks.any((b) => b is QuizBlock), isTrue);
+      expect(
+        blocks.whereType<VisualizerLinkBlock>().single.algorithmId,
+        'activity-selection',
+      );
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = combinedText(blocks);
+      expect(combined, contains('non-overlapping'));
+      expect(combined, contains('finishes first'));
+      expect(combined, contains('s(j) ≥ f'));
+      expect(combined, contains('O(n log n)'));
+      expect(combined, contains('priority queue'));
+    });
+
+    test('Module 4 concludes brute force and points to graph search', () {
+      final module = lesson4.modules[3];
+      expect(module.id, 'lesson4_module4');
+      expect(module.title, 'Lesson 4 Conclusion');
+      expect(module.order, 3);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(1),
+      );
+      expect(blocks.any((b) => b is QuizBlock), isTrue);
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final visualizers = blocks.whereType<VisualizerLinkBlock>().toList();
+      expect(
+        visualizers.map((v) => v.algorithmId),
+        containsAll(['linear-search', 'bfs', 'dfs']),
+      );
+
+      final combined = combinedText(blocks);
+      expect(combined, contains('baseline'));
+      expect(combined, contains('factorial'));
+      expect(combined, contains('exponential'));
+      expect(combined, contains('depth-first search'));
+      expect(combined, contains('breadth-first search'));
+    });
+
+    test('Lesson 4 prose avoids AI punctuation tells', () {
+      final combined = lesson4Prose().join('\n');
+      expect(combined, isNot(contains('—')));
+      expect(combined, isNot(contains(';')));
+      expect(combined, isNot(contains(' - ')));
+    });
+
+    test('Lesson 4 prose uses readable math notation', () {
+      final combined = lesson4Prose().join('\n');
+      expect(combined, isNot(contains('n squared')));
+      expect(combined, isNot(contains('2 to the n')));
+      expect(combined, isNot(contains('n0')));
+      expect(combined, isNot(contains('<=')));
+      expect(combined, isNot(contains('>=')));
+
+      expect(combined, contains('n²'));
+      expect(combined, contains('2ⁿ'));
+      expect(combined, contains('≥'));
+    });
+  });
+
   group('ContentBlock subclasses', () {
     test('TextBlock holds text', () {
       const block = TextBlock('hello');
@@ -802,11 +1071,22 @@ void main() {
 
     test('MathBlock holds TeX and accessibility label', () {
       const block = MathBlock(
-        r'\log_c x = \frac{\log_b x}{\log_b c}',
+        r'\\log_c x = \\frac{\\log_b x}{\\log_b c}',
         semanticsLabel: 'change of base formula',
       );
-      expect(block.tex, r'\log_c x = \frac{\log_b x}{\log_b c}');
+      expect(block.tex, r'\\log_c x = \\frac{\\log_b x}{\\log_b c}');
       expect(block.semanticsLabel, 'change of base formula');
+    });
+
+    test('VisualizerLinkBlock holds visualizer link metadata', () {
+      const block = VisualizerLinkBlock(
+        algorithmId: 'bubble-sort',
+        label: 'Visualize Bubble Sort',
+        description: 'Watch adjacent swaps.',
+      );
+      expect(block.algorithmId, 'bubble-sort');
+      expect(block.label, 'Visualize Bubble Sort');
+      expect(block.description, 'Watch adjacent swaps.');
     });
   });
 }

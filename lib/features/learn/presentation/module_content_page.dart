@@ -247,6 +247,21 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
         },
       ),
       GraphBlock(:final type) => _GraphBlockWidget(type: type),
+      VisualizerLinkBlock(
+        :final algorithmId,
+        :final label,
+        :final description,
+      ) =>
+        _VisualizerLinkBlockWidget(
+          algorithmId: algorithmId,
+          label: label,
+          description: description,
+          onOpen: () async {
+            await _saveReaderState();
+            if (!mounted) return;
+            context.push('/visualizer/$algorithmId');
+          },
+        ),
     };
   }
 }
@@ -611,6 +626,78 @@ class _QuizBlockWidget extends StatelessWidget {
             fontWeight: isSelected ? FontWeight.w600 : null,
           ),
         ),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+/// Visualizer link block, opens a matching algorithm animation from inside a module.
+// ═══════════════════════════════════════════════════════════════════════════════
+class _VisualizerLinkBlockWidget extends StatelessWidget {
+  const _VisualizerLinkBlockWidget({
+    required this.algorithmId,
+    required this.label,
+    required this.onOpen,
+    this.description,
+  });
+
+  final String algorithmId;
+  final String label;
+  final String? description;
+  final VoidCallback onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: AppColors.primary50,
+        borderRadius: AppRadius.mdBorder,
+        border: Border.all(color: AppColors.primary100),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(
+                Icons.play_circle_fill_rounded,
+                color: AppColors.primary500,
+                size: 26,
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Text(
+                  label,
+                  style: AppTypography.bodyBold.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          if (description != null) ...[
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              description!,
+              style: AppTypography.caption.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+          const SizedBox(height: AppSpacing.md),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: FilledButton.tonalIcon(
+              onPressed: onOpen,
+              icon: const Icon(Icons.auto_awesome, size: 18),
+              label: const Text('Open visualizer'),
+            ),
+          ),
+        ],
       ),
     );
   }
