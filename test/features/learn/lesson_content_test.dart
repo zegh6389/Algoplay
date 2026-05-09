@@ -1525,7 +1525,7 @@ void main() {
 
       final combined = combinedText(blocks);
       expect(combined, contains('O(log n)'));
-      expect(combined, contains('log₂'));
+      expect(combined, contains('log_2'));
       expect(combined, contains('n / 2'));
       expect(combined, contains('duplicate'));
     });

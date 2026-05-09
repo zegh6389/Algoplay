@@ -2495,9 +2495,9 @@ const List<LessonContent> lessons = [
           ),
           CodeBlock(
             'Common decrease patterns:\n'
-            'constant decrease: n → n − 1\n'
-            'constant-factor decrease: n → n / 2\n'
-            'variable-size decrease: n → n − k, where k changes',
+            'constant decrease: n \u2192 n \u2212 1\n'
+            'constant-factor decrease: n \u2192 n / 2\n'
+            'variable-size decrease: n \u2192 n \u2212 k, where k changes',
             language: 'text',
           ),
           TextBlock(
@@ -2686,7 +2686,7 @@ const List<LessonContent> lessons = [
             'This makes Shell Sort a decrease-and-conquer method with fixed but changing decreases. Each pass uses a different gap, and the gaps shrink over time.',
           ),
           DefinitionBlock(
-            term: 'Delta (δ)',
+            term: 'Delta (\u03B4)',
             definition:
                 'The gap between compared elements in a Shell Sort pass. Also called the increment.',
           ),
@@ -2694,25 +2694,25 @@ const List<LessonContent> lessons = [
             'The problem with ordinary Insertion Sort is that a small element near the far right of the array may need many shifts before it reaches the front. Shell Sort tries to fix this by moving elements across larger gaps early.',
           ),
           CodeBlock(
-            'Shell Sort idea:\\n'
-            'choose a gap sequence δ₁, δ₂, ..., δₖ where δₖ = 1\\n'
-            'for each gap δ in the sequence:\\n'
-            '  perform insertion sort on elements δ apart\\n'
-            'when δ = 1, the array is fully sorted',
+            'Shell Sort idea:\n'
+            'choose a gap sequence \u03B4\u2081, \u03B4\u2082, ..., \u03B4\u2096 where \u03B4\u2096 = 1\n'
+            'for each gap \u03B4 in the sequence:\n'
+            '    perform insertion sort on elements \u03B4 apart\n'
+            'when \u03B4 = 1, the array is fully sorted',
             language: 'text',
           ),
           TextBlock(
-            'If δ = 5, the groups being sorted are:\\n'
-            'positions 0, 5, 10, 15, ...\\n'
-            'positions 1, 6, 11, 16, ...\\n'
-            'positions 2, 7, 12, 17, ...\\n'
+            'If \u03B4 = 5, the groups being sorted are:\n'
+            'positions 0, 5, 10, 15, ...\n'
+            'positions 1, 6, 11, 16, ...\n'
+            'positions 2, 7, 12, 17, ...\n'
             'and so on.',
           ),
           TextBlock(
-            'A common gap sequence starts with δ ≈ n / 3 and divides by 3 each time until δ = 1.',
+            'A common gap sequence starts with \u03B4 \u2248 n / 3 and divides by 3 each time until \u03B4 = 1.',
           ),
           TextBlock(
-            'As the gap shrinks, the disorder left in the array gets smaller. By the time δ = 1 runs, the array is close to sorted and the final insertion pass does very little work.',
+            'As the gap shrinks, the disorder left in the array gets smaller. By the time \u03B4 = 1 runs, the array is close to sorted and the final insertion pass does very little work.',
           ),
           TextBlock(
             'Shell Sort is not one fixed algorithm. It is a family of algorithms whose behavior depends heavily on the chosen gap sequence. That is why its analysis is notoriously difficult.',
@@ -2739,7 +2739,7 @@ const List<LessonContent> lessons = [
           QuizBlock(
             question: 'Why does Shell Sort run faster than Insertion Sort on many inputs?',
             options: [
-              'It moves elements over larger gaps early, reducing disorder before the final δ = 1 pass.',
+              'It moves elements over larger gaps early, reducing disorder before the final \u03B4 = 1 pass.',
               'It divides the array into multiple independent subarrays and sorts them separately.',
               'It uses binary search to find correct positions.',
               'It is not actually faster than Insertion Sort.',
@@ -2761,7 +2761,7 @@ const List<LessonContent> lessons = [
                 'Different gap sequences produce different shapes of disorder reduction, leading to different worst-case behaviors.',
           ),
           KeyTakeawayBlock(
-            'Shell Sort extends Insertion Sort with a sequence of decreasing gaps. Each pass reduces disorder at a fixed interval, and the final δ = 1 pass finishes the sort. Its empirical performance is roughly n^1.25 for good gap sequences, but the exact bound depends on the sequence chosen.',
+            'Shell Sort extends Insertion Sort with a sequence of decreasing gaps. Each pass reduces disorder at a fixed interval, and the final δ = 1 pass finishes the sort. Its empirical performance is roughly Θ(n^1.25) for good gap sequences, but the exact bound depends on the sequence chosen.',
           ),
         ],
       ),
@@ -2775,7 +2775,7 @@ const List<LessonContent> lessons = [
             'Binary Search solves the same problem as Sequential Search: finding whether a key exists in an array and at what index. The critical difference is that Binary Search requires a sorted array.',
           ),
           TextBlock(
-            'At each step it compares the key to the middle element and discards the half of the array that cannot contain the key. This is decrease by a constant factor: n → n / 2.',
+            'At each step it compares the key to the middle element and discards the half of the array that cannot contain the key. This is decrease by a constant factor: n \u2192 n / 2.',
           ),
           DefinitionBlock(
             term: 'Decrease by a constant factor',
@@ -2783,12 +2783,13 @@ const List<LessonContent> lessons = [
                 'Each step reduces the problem size by a fixed fraction, such as halving the remaining elements.',
           ),
           CodeBlock(
-            'Binary Search on sorted array A[low..high]:\\n'
-            'while low ≤ high:\\n'
-            '  mid = ⌊(low + high) / 2⌋\\n'
-            '  if A[mid] == key: return mid\\n'
-            '  if A[mid] < key:  low  = mid + 1\\n'
-            '  else:             high = mid − 1\\n'
+            'Binary Search on sorted array A[low..high]:\n'
+            'while true:\n'
+            '    if low > high: break   // search space empty\n'
+            '    mid = floor((low + high) / 2)\n'
+            '    if A[mid] == key: return mid\n'
+            '    if A[mid] < key:  low  = mid + 1\n'
+            '    else:             high = mid - 1\n'
             'return not found',
             language: 'text',
           ),
@@ -2801,7 +2802,7 @@ const List<LessonContent> lessons = [
             description: 'Watch the search range halve at every step.',
           ),
           TextBlock(
-            'After k steps, the remaining search space has size n / 2ᵏ. The search ends when the range is size 1 or when the key is found. The number of steps needed in the worst case satisfies 2ᵏ ≥ n, giving k = ⌈log₂ n⌉.',
+            'After k steps, the remaining search space has size n / 2^k. The search ends when the range is size 1 or when the key is found. The number of steps needed in the worst case satisfies 2^k \u2265 n, giving k = ceil(log_2 n).',
           ),
           MathBlock(
             r'T(n) = T(n/2) + O(1) \Rightarrow T(n) = O(\log n)',
@@ -2812,7 +2813,7 @@ const List<LessonContent> lessons = [
             semanticsLabel: 'binary search worst case comparisons',
           ),
           TextBlock(
-            'With 1024 elements, Binary Search needs at most log₂(1024) = 10 comparisons in the worst case. Sequential Search would need up to 1024.',
+            'With 1024 elements, Binary Search needs at most log_2(1024) = 10 comparisons in the worst case. Sequential Search would need up to 1024.',
           ),
           DefinitionBlock(
             term: 'Duplicate elements in Binary Search',
@@ -2847,7 +2848,7 @@ const List<LessonContent> lessons = [
             ],
             correctIndex: 0,
             explanation:
-                'Each step halves the range. 1024 = 2¹⁰, so after 10 halvings the range is size 1.',
+                'Each step halves the range. 1024 = 2^10, so after 10 halvings the range is size 1.',
           ),
           QuizBlock(
             question: 'If a sorted array [1, 3, 5, 5, 5, 7, 9] contains three copies of 5, which one does standard Binary Search find?',
