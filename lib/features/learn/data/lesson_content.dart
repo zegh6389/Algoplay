@@ -3026,6 +3026,123 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+
+      // ── Module 6: The Fake Coin Problem ─────────────────────────────────
+      ModuleContent(
+        id: 'lesson6_module6',
+        title: 'The Fake Coin Problem',
+        order: 5,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'In this module we look at a classic puzzle known as the fake coin problem. It is another nice example of decrease and conquer, and it is closely related in spirit to Binary Search.',
+          ),
+          DefinitionBlock(
+            term: 'The problem',
+            definition:
+                'You have 70 coins that are all supposed to be gold coins of the same weight, but one coin is fake and weighs less than the others. You have a balance scale. You can put any number of coins on each side at one time. The scale tells you if the two sides weigh the same, or which side is lighter. How do you find the fake coin, and how many weighings do you need?',
+          ),
+          TextBlock(
+            'A brute force approach would test all possible pairs of coins and weigh them. But this would be extremely expensive. Instead, we use a smarter decrease-and-conquer strategy.',
+          ),
+          DefinitionBlock(
+            term: 'Two-way splitting strategy',
+            definition:
+                'Divide the coins into two groups that are as equal in size as possible. Weigh one group against the other.',
+          ),
+          TextBlock(
+            'If the two sides balance, then none of the coins on the scale are fake, so the fake must be among the remaining coins. If they do not balance, the lighter side contains the fake coin. This is like Binary Search, but using weights instead of sorted numbers.',
+          ),
+          TextBlock(
+            'We assume we know in advance that the fake coin is lighter than the others. If n is odd, we leave out one coin. In each step the problem size is reduced from n to roughly ⌊n/2⌋.',
+          ),
+          MathBlock(
+            r'W(n) = W(\lfloor n/2 \rfloor) + 1, \quad W(1) = 0',
+            semanticsLabel: 'recurrence for two-way fake coin strategy',
+          ),
+          TextBlock(
+            'Solving this recurrence gives W(n) = ⌊log₂ n⌋. For 70 coins, that means about 6 weighings with this two-way strategy.',
+          ),
+          TextBlock(
+            'However, the problem description says that with 70 coins it is possible to find the fake coin in only 4 weighings. That means there must be a more efficient strategy.',
+          ),
+          DefinitionBlock(
+            term: 'Three-way splitting strategy',
+            definition:
+                'Divide the coins into three groups that are as equal in size as possible. Weigh two of these groups against each other.',
+          ),
+          TextBlock(
+            'If the two groups balance, the fake is in the third group. If they do not balance, the fake is in the lighter group. Each step reduces the problem from n to roughly n/3, which is faster than halving.',
+          ),
+          TextBlock(
+            'For 70 coins, one possible breakdown across rounds is: 23, 23, 24 then 8, 8, 8 then 3, 3, 2 then 1, 1, 1. After four rounds, only one suspect coin remains. That means only 4 weighings are needed.',
+          ),
+          MathBlock(
+            r'\text{Round 1: } 23 + 23 + 24 = 70 \quad \Rightarrow \quad 1 \text{ weighing}',
+            semanticsLabel: 'round 1 coin distribution',
+          ),
+          MathBlock(
+            r'\text{Round 2: } 8 + 8 + 8 = 24 \quad \Rightarrow \quad 1 \text{ weighing}',
+            semanticsLabel: 'round 2 coin distribution',
+          ),
+          MathBlock(
+            r'\text{Round 3: } 3 + 3 + 2 = 8 \quad \Rightarrow \quad 1 \text{ weighing}',
+            semanticsLabel: 'round 3 coin distribution',
+          ),
+          MathBlock(
+            r'\text{Round 4: } 1 + 1 + 1 = 3 \quad \Rightarrow \quad 1 \text{ weighing}',
+            semanticsLabel: 'round 4 coin distribution',
+          ),
+          TextBlock(
+            'Both strategies are examples of decrease and conquer. In the two-way version, the problem size goes from n to about n/2 each time. In the three-way version, it goes from n to about n/3. By shrinking the problem faster, we reduce the number of rounds needed.',
+          ),
+          TextBlock(
+            'This shows how powerful it can be to think carefully about how a problem is decreased at each step.',
+          ),
+          QuizBlock(
+            question:
+                'Why does the two-way splitting strategy lead to W(n) = ⌊log₂ n⌋ weighings?',
+            options: [
+              'Because each weighing eliminates half the coins.',
+              'Because each weighing eliminates one coin.',
+              'Because each weighing doubles the number of suspects.',
+              'Because the fake coin always lands on the lighter side.',
+            ],
+            correctIndex: 0,
+            explanation:
+                'Each weighing discards about half the coins, so the problem size drops from n to n/2 each step. That recurrence solves to log₂ n.',
+          ),
+          QuizBlock(
+            question:
+                'Why is the three-way splitting strategy more efficient than two-way for the fake coin problem?',
+            options: [
+              'It eliminates two-thirds of the coins per weighing instead of half.',
+              'It uses a smarter scale.',
+              'It requires fewer coins on each side.',
+              'It always finds the fake coin in one weighing.',
+            ],
+            correctIndex: 0,
+            explanation:
+                'Three-way splitting reduces the problem from n to n/3 each step instead of n/2, so the same 70 coins are resolved in 4 weighings instead of 6.',
+          ),
+          QuizBlock(
+            question:
+                'What assumption do we make about the fake coin in these strategies?',
+            options: [
+              'It is lighter than the genuine coins.',
+              'It is heavier than the genuine coins.',
+              'Its weight is completely unknown.',
+              'It is exactly half the weight of genuine coins.',
+            ],
+            correctIndex: 0,
+            explanation:
+                'Both strategies assume the fake coin is lighter. That is what lets us determine which group contains the fake when the scale does not balance.',
+          ),
+          KeyTakeawayBlock(
+            'The fake coin problem shows how the choice of how to decrease a problem matters. Two-way splitting gives ⌊log₂ n⌋ weighings. Three-way splitting gives ⌈log₃ n⌉ weighings. For 70 coins, that means 6 versus 4 weighings.',
+          ),
+        ],
+      ),
     ],
   ),
 

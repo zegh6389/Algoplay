@@ -1425,8 +1425,8 @@ void main() {
       return prose;
     }
 
-    test('has 5 modules', () {
-      expect(lesson6.modules.length, 5);
+    test('has 6 modules', () {
+      expect(lesson6.modules.length, 6);
     });
 
     test('Module 1 introduces decrease-and-conquer categories', () {
@@ -1544,13 +1544,11 @@ void main() {
       expect(module.title, 'Analysis of Binary Search');
       expect(module.order, 4);
       expect(module.algorithmId, 'binary-search');
-
       final blocks = module.contentBlocks;
       expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(6));
       expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
       expect(blocks.last, isA<KeyTakeawayBlock>());
       expect(blocks.whereType<VisualizerLinkBlock>().isEmpty, isTrue);
-
       final combined = combinedText(blocks);
       expect(combined, contains(r'C_{worst}'));
       expect(combined, contains(r'\Theta(\log n)'));
@@ -1560,10 +1558,30 @@ void main() {
       expect(combined, contains(r'2^{k-1}'));
     });
 
+    test('Module 6 covers The Fake Coin Problem', () {
+      final module = lesson6.modules[5];
+      expect(module.id, 'lesson6_module6');
+      expect(module.title, 'The Fake Coin Problem');
+      expect(module.order, 5);
+      expect(module.algorithmId, isNull);
+      final blocks = module.contentBlocks;
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(2),
+      );
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(4));
+      expect(blocks.whereType<QuizBlock>().length, 3);
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+      final combined = combinedText(blocks);
+      expect(combined, contains('decrease and conquer'));
+      expect(combined, contains('⌊log₂ n⌋'));
+      expect(combined, contains('⌈log₃ n⌉'));
+    });
+
     test('Lesson 6 modules 3, 4, and 5 keep formulas out of visible prose', () {
       final visibleProse = lesson6.modules
           .skip(2)
-          .take(3)
+          .take(4)
           .expand((module) => module.contentBlocks)
           .where((block) => block is! MathBlock && block is! CodeBlock)
           .map((block) {
