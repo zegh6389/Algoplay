@@ -86,12 +86,12 @@ void main() {
     expect(source, contains('softWrap: false'));
   });
 
-  testWidgets('Lesson 2 Module 3 renders without freezing', (tester) async {
+  testWidgets('Lesson 2 Module 4 renders without freezing', (tester) async {
     await tester.binding.setSurfaceSize(const Size(430, 932));
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
     await tester.pumpWidget(
-      _wrap(const ModuleContentPage(lessonId: 2, moduleId: 'lesson2_module3')),
+      _wrap(const ModuleContentPage(lessonId: 2, moduleId: 'lesson2_module4')),
     );
     await tester.pump(const Duration(milliseconds: 100));
 

@@ -679,8 +679,98 @@ const List<LessonContent> lessons = [
       ),
       ModuleContent(
         id: 'lesson2_module2',
-        title: 'Best, Worst, and Average Case Mischief',
+        title: 'Intuitive Explanation of Order of Growth',
         order: 1,
+        algorithmId: 'selection-sort',
+        contentBlocks: [
+          TextBlock(
+            'Before formal Big-O, Big-Omega, and Big-Theta feel natural, it helps to look at the idea through data. Selection Sort gives a clean example because the same algorithm can run on different machines while keeping the same growth shape.',
+          ),
+          DefinitionBlock(
+            term: 'Order of growth',
+            definition:
+                'The long-run trend of T(n) as input size grows. It asks whether the work behaves roughly like n, n log n, n², 2ⁿ, or another growth pattern.',
+          ),
+          TextBlock(
+            'Exact seconds change with hardware, language, compiler, and runtime details. A faster machine may finish earlier, but the curve can still bend in the same way. That curve shape is the part algorithm analysis tries to capture.',
+          ),
+          CodeBlock(
+            'n    | Home PC | Desktop PC\n'
+            '-----+---------+-----------\n'
+            '125  |   12.5  |     2.8\n'
+            '250  |   49.3  |    11.0\n'
+            '500  |  195.8  |    43.4\n'
+            '1000 |  780.3  |   172.9\n'
+            '2000 | 3114.9  |   690.5',
+            language: 'text',
+          ),
+          TextBlock(
+            'Look at what happens when n doubles from 125 to 250, then 250 to 500, then 500 to 1000. The running time becomes about four times larger on both computers. That is the fingerprint of quadratic growth.',
+          ),
+          MathBlock(
+            r'(2n)^2 = 4n^2',
+            semanticsLabel:
+                'doubling n in a quadratic expression multiplies the value by four',
+          ),
+          TextBlock(
+            'Curve fitting tells the same story. One computer may fit a formula close to 0.0007772n² + 0.00305n + 0.001. Another may fit 0.0001724n² + 0.00040n + 0.100. The coefficients differ, but both formulas are quadratic.',
+          ),
+          DefinitionBlock(
+            term: 'Dominant term',
+            definition:
+                'The part of a running-time formula that controls growth for large n. In a quadratic formula, the n² term eventually dominates the linear and constant terms.',
+          ),
+          MathBlock(
+            r'f(n) = an^2 + bn + c',
+            semanticsLabel: 'f of n equals a n squared plus b n plus c',
+          ),
+          TextBlock(
+            'This is why constants and lower-order terms matter less as inputs grow. They can affect small cases, and they explain why one machine is faster, but they do not change the main shape once n is large.',
+          ),
+          TextBlock(
+            'Imagine two cars driving up the same mountain. Paint color, engine noise, and seat comfort are details like coefficients. The steepness of the mountain is the order of growth. In the long run, the mountain shape decides the trip.',
+          ),
+          VisualizerLinkBlock(
+            algorithmId: 'selection-sort',
+            label: 'Visualize Selection Sort',
+            description:
+                'Watch why repeated scans create the quadratic growth pattern.',
+          ),
+          QuizBlock(
+            question:
+                'If an algorithm behaves like n², what happens approximately when n doubles?',
+            options: [
+              'The running time stays the same.',
+              'The running time doubles.',
+              'The running time becomes about four times larger.',
+              'The running time becomes about n times larger.',
+            ],
+            correctIndex: 2,
+            explanation:
+                'For quadratic growth, replacing n with 2n gives (2n)² = 4n², so the work becomes about four times larger.',
+          ),
+          QuizBlock(
+            question:
+                'Why do we care more about curve shape than exact coefficients?',
+            options: [
+              'The coefficients are always zero.',
+              'The shape describes how the algorithm scales across machines.',
+              'The exact seconds are easier to memorize.',
+              'The shape only matters for tiny inputs.',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Machine details change the constants. The growth shape describes the algorithm behavior as inputs become large.',
+          ),
+          KeyTakeawayBlock(
+            'Order-of-growth analysis is not trying to predict one stopwatch time. It asks how the algorithm scales. For Selection Sort, different machines give different seconds, but the shared shape is quadratic.',
+          ),
+        ],
+      ),
+      ModuleContent(
+        id: 'lesson2_module3',
+        title: 'Best, Worst, and Average Case Mischief',
+        order: 2,
         algorithmId: 'linear-search',
         contentBlocks: [
           TextBlock(
@@ -769,9 +859,9 @@ const List<LessonContent> lessons = [
         ],
       ),
       ModuleContent(
-        id: 'lesson2_module3',
+        id: 'lesson2_module4',
         title: 'The Formal Framework for Growth',
-        order: 2,
+        order: 3,
         algorithmId: null,
         contentBlocks: [
           TextBlock(
@@ -883,9 +973,9 @@ const List<LessonContent> lessons = [
         ],
       ),
       ModuleContent(
-        id: 'lesson2_module4',
+        id: 'lesson2_module5',
         title: 'Worked Example of Time Analysis',
-        order: 3,
+        order: 4,
         algorithmId: null,
         contentBlocks: [
           TextBlock(
@@ -965,9 +1055,9 @@ const List<LessonContent> lessons = [
         ],
       ),
       ModuleContent(
-        id: 'lesson2_module5',
+        id: 'lesson2_module6',
         title: 'Caveats: Fast Is Not Always Best',
-        order: 4,
+        order: 5,
         algorithmId: null,
         contentBlocks: [
           TextBlock(
@@ -1043,7 +1133,7 @@ const List<LessonContent> lessons = [
       ModuleContent(
         id: 'lesson2_conclusion',
         title: 'Lesson 2 Wrap-Up',
-        order: 5,
+        order: 6,
         algorithmId: null,
         contentBlocks: [
           TextBlock(
