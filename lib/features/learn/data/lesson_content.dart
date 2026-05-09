@@ -2673,6 +2673,199 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+      ModuleContent(
+        id: 'lesson6_module3',
+        title: 'Shell Sort',
+        order: 2,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'Shell Sort is a variation of Insertion Sort that moves elements over larger distances earlier in the algorithm, instead of only one position at a time.',
+          ),
+          TextBlock(
+            'This makes Shell Sort a decrease-and-conquer method with fixed but changing decreases. Each pass uses a different gap, and the gaps shrink over time.',
+          ),
+          DefinitionBlock(
+            term: 'Delta (δ)',
+            definition:
+                'The gap between compared elements in a Shell Sort pass. Also called the increment.',
+          ),
+          TextBlock(
+            'The problem with ordinary Insertion Sort is that a small element near the far right of the array may need many shifts before it reaches the front. Shell Sort tries to fix this by moving elements across larger gaps early.',
+          ),
+          CodeBlock(
+            'Shell Sort idea:\\n'
+            'choose a gap sequence δ₁, δ₂, ..., δₖ where δₖ = 1\\n'
+            'for each gap δ in the sequence:\\n'
+            '  perform insertion sort on elements δ apart\\n'
+            'when δ = 1, the array is fully sorted',
+            language: 'text',
+          ),
+          TextBlock(
+            'If δ = 5, the groups being sorted are:\\n'
+            'positions 0, 5, 10, 15, ...\\n'
+            'positions 1, 6, 11, 16, ...\\n'
+            'positions 2, 7, 12, 17, ...\\n'
+            'and so on.',
+          ),
+          TextBlock(
+            'A common gap sequence starts with δ ≈ n / 3 and divides by 3 each time until δ = 1.',
+          ),
+          TextBlock(
+            'As the gap shrinks, the disorder left in the array gets smaller. By the time δ = 1 runs, the array is close to sorted and the final insertion pass does very little work.',
+          ),
+          TextBlock(
+            'Shell Sort is not one fixed algorithm. It is a family of algorithms whose behavior depends heavily on the chosen gap sequence. That is why its analysis is notoriously difficult.',
+          ),
+          DefinitionBlock(
+            term: 'Gap sequence',
+            definition:
+                'The series of delta values used in a Shell Sort run. Different sequences lead to very different performance characteristics.',
+          ),
+          TextBlock(
+            'A common empirical estimate for Shell Sort with reasonable gap sequences is Θ(n^1.25), but this is not a universal bound. Some sequences give Θ(n²) worst case while others give better proven bounds.',
+          ),
+          TextBlock(
+            'Unlike Insertion Sort where reverse order is clearly the worst case, Shell Sort\'s worst case depends on both the input arrangement and the chosen gap sequence. To answer "what is the worst case?" you must first specify the gap sequence.',
+          ),
+          DefinitionBlock(
+            term: 'Shell Sort worst case',
+            definition:
+                'There is no single universal answer. The worst case depends on the gap sequence and the input together.',
+          ),
+          TextBlock(
+            'Shell Sort sits between simple quadratic sorts and more advanced algorithms. It moves elements farther earlier, which often makes it noticeably faster than plain Insertion Sort on random inputs, even though its exact asymptotic behavior is hard to pin down.',
+          ),
+          QuizBlock(
+            question: 'Why does Shell Sort run faster than Insertion Sort on many inputs?',
+            options: [
+              'It moves elements over larger gaps early, reducing disorder before the final δ = 1 pass.',
+              'It divides the array into multiple independent subarrays and sorts them separately.',
+              'It uses binary search to find correct positions.',
+              'It is not actually faster than Insertion Sort.',
+            ],
+            correctIndex: 0,
+            explanation:
+                'Large-gap passes move elements across long distances quickly, so the final small-gap passes do less work.',
+          ),
+          QuizBlock(
+            question: 'Why is there no single worst-case bound for Shell Sort?',
+            options: [
+              'The performance depends on the gap sequence chosen, not just the input.',
+              'Shell Sort is always O(n log n).',
+              'Shell Sort is non-deterministic.',
+              'The worst case is always the same as Insertion Sort.',
+            ],
+            correctIndex: 0,
+            explanation:
+                'Different gap sequences produce different shapes of disorder reduction, leading to different worst-case behaviors.',
+          ),
+          KeyTakeawayBlock(
+            'Shell Sort extends Insertion Sort with a sequence of decreasing gaps. Each pass reduces disorder at a fixed interval, and the final δ = 1 pass finishes the sort. Its empirical performance is roughly n^1.25 for good gap sequences, but the exact bound depends on the sequence chosen.',
+          ),
+        ],
+      ),
+      ModuleContent(
+        id: 'lesson6_module4',
+        title: 'Binary Search: Decrease by a Constant Factor',
+        order: 3,
+        algorithmId: 'binary-search',
+        contentBlocks: [
+          TextBlock(
+            'Binary Search solves the same problem as Sequential Search: finding whether a key exists in an array and at what index. The critical difference is that Binary Search requires a sorted array.',
+          ),
+          TextBlock(
+            'At each step it compares the key to the middle element and discards the half of the array that cannot contain the key. This is decrease by a constant factor: n → n / 2.',
+          ),
+          DefinitionBlock(
+            term: 'Decrease by a constant factor',
+            definition:
+                'Each step reduces the problem size by a fixed fraction, such as halving the remaining elements.',
+          ),
+          CodeBlock(
+            'Binary Search on sorted array A[low..high]:\\n'
+            'while low ≤ high:\\n'
+            '  mid = ⌊(low + high) / 2⌋\\n'
+            '  if A[mid] == key: return mid\\n'
+            '  if A[mid] < key:  low  = mid + 1\\n'
+            '  else:             high = mid − 1\\n'
+            'return not found',
+            language: 'text',
+          ),
+          TextBlock(
+            'If the middle element is less than the key, everything left of mid is also less than the key, so the left half is discarded. If it is greater, the right half is discarded.',
+          ),
+          VisualizerLinkBlock(
+            algorithmId: 'binary-search',
+            label: 'Visualize Binary Search',
+            description: 'Watch the search range halve at every step.',
+          ),
+          TextBlock(
+            'After k steps, the remaining search space has size n / 2ᵏ. The search ends when the range is size 1 or when the key is found. The number of steps needed in the worst case satisfies 2ᵏ ≥ n, giving k = ⌈log₂ n⌉.',
+          ),
+          MathBlock(
+            r'T(n) = T(n/2) + O(1) \Rightarrow T(n) = O(\log n)',
+            semanticsLabel: 'binary search recurrence and time complexity',
+          ),
+          MathBlock(
+            r'\text{Worst case comparisons} = \lceil \log_2 n \rceil + 1',
+            semanticsLabel: 'binary search worst case comparisons',
+          ),
+          TextBlock(
+            'With 1024 elements, Binary Search needs at most log₂(1024) = 10 comparisons in the worst case. Sequential Search would need up to 1024.',
+          ),
+          DefinitionBlock(
+            term: 'Duplicate elements in Binary Search',
+            definition:
+                'Standard Binary Search finds whichever occurrence it lands on first. It does not guarantee finding the lowest-indexed or highest-indexed copy of a key.',
+          ),
+          TextBlock(
+            'Sequential Search, by contrast, always finds the first occurrence (lowest index) because it scans left to right. Binary Search jumps straight to a middle element, so with duplicates it may hit any copy.',
+          ),
+          TextBlock(
+            'If you need the first occurrence of a duplicate, you can modify Binary Search to continue searching the left half after finding a match, narrowing until the true first position is found.',
+          ),
+          QuizBlock(
+            question: 'Why does Binary Search require a sorted array?',
+            options: [
+              'Because discarding half of the array is only safe when the sorted property guarantees that half contains no valid answers.',
+              'Because it uses the middle element as a pivot.',
+              'Because it compares adjacent elements.',
+              'It does not actually require a sorted array.',
+            ],
+            correctIndex: 0,
+            explanation:
+                'The halving step is only valid when the array is sorted, since that is what guarantees the discarded half is provably impossible to contain the key.',
+          ),
+          QuizBlock(
+            question: 'How many steps does Binary Search need in the worst case for n = 1024?',
+            options: [
+              '10',
+              '1024',
+              '512',
+              '32',
+            ],
+            correctIndex: 0,
+            explanation:
+                'Each step halves the range. 1024 = 2¹⁰, so after 10 halvings the range is size 1.',
+          ),
+          QuizBlock(
+            question: 'If a sorted array [1, 3, 5, 5, 5, 7, 9] contains three copies of 5, which one does standard Binary Search find?',
+            options: [
+              'Whichever copy it lands on first during the splitting process.',
+              'The first (leftmost) occurrence.',
+              'The last (rightmost) occurrence.',
+              'None of them.',
+            ],
+            correctIndex: 0,
+            explanation:
+                'Binary Search stops as soon as it lands on any matching element. It makes no guarantee about which duplicate is found.',
+          ),
+          KeyTakeawayBlock(
+            'Binary Search is the classic decrease-by-a-constant-factor algorithm. It halves the search range each step, giving O(log n) worst-case time. It requires a sorted array, and standard Binary Search makes no guarantee about which duplicate it finds.',
+          ),
+        ],
+      ),
     ],
   ),
 

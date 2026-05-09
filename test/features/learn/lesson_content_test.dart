@@ -1425,8 +1425,8 @@ void main() {
       return prose;
     }
 
-    test('has 2 modules', () {
-      expect(lesson6.modules.length, 2);
+    test('has 4 modules', () {
+      expect(lesson6.modules.length, 4);
     });
 
     test('Module 1 introduces decrease-and-conquer categories', () {
@@ -1486,6 +1486,48 @@ void main() {
       expect(combined, contains('T_{average}(n)'));
       expect(combined, contains('Stable sort'));
       expect(combined, contains('nearly sorted'));
+    });
+
+    test('Module 3 covers Shell Sort', () {
+      final module = lesson6.modules[2];
+      expect(module.id, 'lesson6_module3');
+      expect(module.title, 'Shell Sort');
+      expect(module.order, 2);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(2));
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = combinedText(blocks);
+      expect(combined, contains('delta'));
+      expect(combined, contains('gap sequence'));
+      expect(combined, contains('n^1.25'));
+      expect(combined, contains('decrease'));
+    });
+
+    test('Module 4 covers Binary Search as decrease by a constant factor', () {
+      final module = lesson6.modules[3];
+      expect(module.id, 'lesson6_module4');
+      expect(module.title, 'Binary Search: Decrease by a Constant Factor');
+      expect(module.order, 3);
+      expect(module.algorithmId, 'binary-search');
+
+      final blocks = module.contentBlocks;
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(2));
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+      expect(
+        blocks.whereType<VisualizerLinkBlock>().single.algorithmId,
+        'binary-search',
+      );
+
+      final combined = combinedText(blocks);
+      expect(combined, contains('O(log n)'));
+      expect(combined, contains('log₂'));
+      expect(combined, contains('n / 2'));
+      expect(combined, contains('duplicate'));
     });
 
     test('Lesson 6 prose avoids AI punctuation tells', () {
