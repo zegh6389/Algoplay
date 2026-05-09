@@ -1496,15 +1496,22 @@ void main() {
       expect(module.algorithmId, isNull);
 
       final blocks = module.contentBlocks;
-      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(3));
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(3),
+      );
       expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(2));
       expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(5));
 
       final combined = combinedText(blocks);
       expect(combined, contains('delta'));
       expect(combined, contains('gap sequence'));
-      expect(combined, contains('n^1.25'));
+      expect(combined, contains(r'\delta_1'));
+      expect(combined, contains(r'\Theta(n^{1.25})'));
       expect(combined, contains('decrease'));
+      expect(combined, isNot(contains('n^1.25')));
     });
 
     test('Module 4 covers Binary Search as decrease by a constant factor', () {
@@ -1515,7 +1522,7 @@ void main() {
       expect(module.algorithmId, 'binary-search');
 
       final blocks = module.contentBlocks;
-      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(2));
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(6));
       expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
       expect(blocks.last, isA<KeyTakeawayBlock>());
       expect(
@@ -1524,10 +1531,39 @@ void main() {
       );
 
       final combined = combinedText(blocks);
-      expect(combined, contains('O(log n)'));
-      expect(combined, contains('log_2'));
-      expect(combined, contains('n / 2'));
+      expect(combined, contains(r'O(\log n)'));
+      expect(combined, contains(r'\log_2'));
+      expect(combined, contains(r'\frac{n}{2^k}'));
+      expect(combined, contains(r'2^k \ge n'));
       expect(combined, contains('duplicate'));
+    });
+
+    test('Lesson 6 modules 3 and 4 keep formulas out of visible prose', () {
+      final visibleProse = lesson6.modules
+          .skip(2)
+          .expand((module) => module.contentBlocks)
+          .where((block) => block is! MathBlock && block is! CodeBlock)
+          .map((block) {
+            return switch (block) {
+              TextBlock(:final text) => text,
+              DefinitionBlock(:final term, :final definition) =>
+                '$term $definition',
+              KeyTakeawayBlock(:final text) => text,
+              QuizBlock(:final question, :final options, :final explanation) =>
+                '$question ${options.join(' ')} $explanation',
+              VisualizerLinkBlock(:final label, :final description) =>
+                '$label ${description ?? ''}',
+              CodeBlock() || MathBlock() || GraphBlock() => '',
+            };
+          })
+          .join('\n');
+
+      expect(visibleProse, isNot(contains('n^1.25')));
+      expect(visibleProse, isNot(contains('2^k')));
+      expect(visibleProse, isNot(contains('log_2')));
+      expect(visibleProse, isNot(contains('ceil(')));
+      expect(visibleProse, isNot(contains('Θ(')));
+      expect(visibleProse, isNot(contains('δ')));
     });
 
     test('Lesson 6 prose avoids AI punctuation tells', () {

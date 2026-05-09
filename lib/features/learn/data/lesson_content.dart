@@ -2686,33 +2686,49 @@ const List<LessonContent> lessons = [
             'This makes Shell Sort a decrease-and-conquer method with fixed but changing decreases. Each pass uses a different gap, and the gaps shrink over time.',
           ),
           DefinitionBlock(
-            term: 'Delta (\u03B4)',
+            term: 'Gap symbol',
             definition:
-                'The gap between compared elements in a Shell Sort pass. Also called the increment.',
+                'The gap between compared elements in a Shell Sort pass. It is often written with the Greek letter delta.',
+          ),
+          MathBlock(
+            r'\delta',
+            semanticsLabel: 'delta, the Shell Sort gap symbol',
           ),
           TextBlock(
             'The problem with ordinary Insertion Sort is that a small element near the far right of the array may need many shifts before it reaches the front. Shell Sort tries to fix this by moving elements across larger gaps early.',
           ),
+          TextBlock(
+            'Shell Sort uses a decreasing gap sequence. In standard notation:',
+          ),
+          MathBlock(
+            r'\delta_1, \delta_2, \ldots, \delta_k \quad \text{where} \quad \delta_k = 1',
+            semanticsLabel:
+                'gap sequence delta one through delta k, where delta k equals one',
+          ),
           CodeBlock(
             'Shell Sort idea:\n'
-            'choose a gap sequence \u03B4\u2081, \u03B4\u2082, ..., \u03B4\u2096 where \u03B4\u2096 = 1\n'
-            'for each gap \u03B4 in the sequence:\n'
-            '    perform insertion sort on elements \u03B4 apart\n'
-            'when \u03B4 = 1, the array is fully sorted',
+            'choose gaps from largest to smallest\n'
+            'for each gap in the sequence:\n'
+            '    perform insertion sort on elements gap positions apart\n'
+            'when the gap is 1, the array is fully sorted',
             language: 'text',
           ),
           TextBlock(
-            'If \u03B4 = 5, the groups being sorted are:\n'
+            'If the gap is 5, the groups being sorted are:\n'
             'positions 0, 5, 10, 15, ...\n'
             'positions 1, 6, 11, 16, ...\n'
             'positions 2, 7, 12, 17, ...\n'
             'and so on.',
           ),
           TextBlock(
-            'A common gap sequence starts with \u03B4 \u2248 n / 3 and divides by 3 each time until \u03B4 = 1.',
+            'A common gap sequence starts near one third of the array length, then divides the gap by 3 until the final gap is 1.',
+          ),
+          MathBlock(
+            r'\delta \approx \frac{n}{3}',
+            semanticsLabel: 'delta is approximately n divided by three',
           ),
           TextBlock(
-            'As the gap shrinks, the disorder left in the array gets smaller. By the time \u03B4 = 1 runs, the array is close to sorted and the final insertion pass does very little work.',
+            'As the gap shrinks, the disorder left in the array gets smaller. By the time the final gap of 1 runs, the array is close to sorted and the final insertion pass does very little work.',
           ),
           TextBlock(
             'Shell Sort is not one fixed algorithm. It is a family of algorithms whose behavior depends heavily on the chosen gap sequence. That is why its analysis is notoriously difficult.',
@@ -2723,8 +2739,16 @@ const List<LessonContent> lessons = [
                 'The series of delta values used in a Shell Sort run. Different sequences lead to very different performance characteristics.',
           ),
           TextBlock(
-            'A common empirical estimate for Shell Sort with reasonable gap sequences is Θ(n^1.25), but this is not a universal bound. Some sequences give Θ(n²) worst case while others give better proven bounds.',
+            'A common empirical estimate for Shell Sort with reasonable gap sequences is:',
           ),
+          MathBlock(
+            r'\Theta(n^{1.25})',
+            semanticsLabel: 'theta of n to the one point two five',
+          ),
+          TextBlock(
+            'That estimate is not a universal bound. Some gap sequences have quadratic worst-case behavior, while others have better proven bounds.',
+          ),
+          MathBlock(r'\Theta(n^2)', semanticsLabel: 'theta of n squared'),
           TextBlock(
             'Unlike Insertion Sort where reverse order is clearly the worst case, Shell Sort\'s worst case depends on both the input arrangement and the chosen gap sequence. To answer "what is the worst case?" you must first specify the gap sequence.',
           ),
@@ -2737,9 +2761,10 @@ const List<LessonContent> lessons = [
             'Shell Sort sits between simple quadratic sorts and more advanced algorithms. It moves elements farther earlier, which often makes it noticeably faster than plain Insertion Sort on random inputs, even though its exact asymptotic behavior is hard to pin down.',
           ),
           QuizBlock(
-            question: 'Why does Shell Sort run faster than Insertion Sort on many inputs?',
+            question:
+                'Why does Shell Sort run faster than Insertion Sort on many inputs?',
             options: [
-              'It moves elements over larger gaps early, reducing disorder before the final \u03B4 = 1 pass.',
+              'It moves elements over larger gaps early, reducing disorder before the final gap of 1 pass.',
               'It divides the array into multiple independent subarrays and sorts them separately.',
               'It uses binary search to find correct positions.',
               'It is not actually faster than Insertion Sort.',
@@ -2752,7 +2777,7 @@ const List<LessonContent> lessons = [
             question: 'Why is there no single worst-case bound for Shell Sort?',
             options: [
               'The performance depends on the gap sequence chosen, not just the input.',
-              'Shell Sort is always O(n log n).',
+              'Shell Sort is always logarithmic.',
               'Shell Sort is non-deterministic.',
               'The worst case is always the same as Insertion Sort.',
             ],
@@ -2760,8 +2785,15 @@ const List<LessonContent> lessons = [
             explanation:
                 'Different gap sequences produce different shapes of disorder reduction, leading to different worst-case behaviors.',
           ),
+          TextBlock(
+            'For many practical gap sequences, the commonly cited empirical shape is:',
+          ),
+          MathBlock(
+            r'\Theta(n^{1.25})',
+            semanticsLabel: 'theta of n to the one point two five',
+          ),
           KeyTakeawayBlock(
-            'Shell Sort extends Insertion Sort with a sequence of decreasing gaps. Each pass reduces disorder at a fixed interval, and the final δ = 1 pass finishes the sort. Its empirical performance is roughly Θ(n^1.25) for good gap sequences, but the exact bound depends on the sequence chosen.',
+            'Shell Sort extends Insertion Sort with a sequence of decreasing gaps. Each pass reduces disorder at a fixed interval, and the final gap of 1 pass finishes the sort. Its exact bound depends on the gap sequence chosen.',
           ),
         ],
       ),
@@ -2775,7 +2807,11 @@ const List<LessonContent> lessons = [
             'Binary Search solves the same problem as Sequential Search: finding whether a key exists in an array and at what index. The critical difference is that Binary Search requires a sorted array.',
           ),
           TextBlock(
-            'At each step it compares the key to the middle element and discards the half of the array that cannot contain the key. This is decrease by a constant factor: n \u2192 n / 2.',
+            'At each step it compares the key to the middle element and discards the half of the array that cannot contain the key. This is decrease by a constant factor:',
+          ),
+          MathBlock(
+            r'n \to \frac{n}{2}',
+            semanticsLabel: 'n becomes n divided by two',
           ),
           DefinitionBlock(
             term: 'Decrease by a constant factor',
@@ -2802,7 +2838,19 @@ const List<LessonContent> lessons = [
             description: 'Watch the search range halve at every step.',
           ),
           TextBlock(
-            'After k steps, the remaining search space has size n / 2^k. The search ends when the range is size 1 or when the key is found. The number of steps needed in the worst case satisfies 2^k \u2265 n, giving k = ceil(log_2 n).',
+            'After k steps, the remaining search space follows this formula:',
+          ),
+          MathBlock(
+            r'\frac{n}{2^k}',
+            semanticsLabel: 'n divided by two to the k',
+          ),
+          TextBlock(
+            'The worst case stops when the range has size 1 or when the key is found. The number of steps is determined by:',
+          ),
+          MathBlock(
+            r'2^k \ge n \Rightarrow k \ge \lceil \log_2 n \rceil',
+            semanticsLabel:
+                'two to the k is at least n, so k is at least ceiling log base two of n',
           ),
           MathBlock(
             r'T(n) = T(n/2) + O(1) \Rightarrow T(n) = O(\log n)',
@@ -2813,7 +2861,12 @@ const List<LessonContent> lessons = [
             semanticsLabel: 'binary search worst case comparisons',
           ),
           TextBlock(
-            'With 1024 elements, Binary Search needs at most log_2(1024) = 10 comparisons in the worst case. Sequential Search would need up to 1024.',
+            'With 1024 elements, Binary Search needs at most 10 comparisons in the worst case. Sequential Search would need up to 1024.',
+          ),
+          MathBlock(
+            r'\log_2(1024) = 10',
+            semanticsLabel:
+                'log base two of one thousand twenty four equals ten',
           ),
           DefinitionBlock(
             term: 'Duplicate elements in Binary Search',
@@ -2839,19 +2892,16 @@ const List<LessonContent> lessons = [
                 'The halving step is only valid when the array is sorted, since that is what guarantees the discarded half is provably impossible to contain the key.',
           ),
           QuizBlock(
-            question: 'How many steps does Binary Search need in the worst case for n = 1024?',
-            options: [
-              '10',
-              '1024',
-              '512',
-              '32',
-            ],
+            question:
+                'How many steps does Binary Search need in the worst case for an array of 1024 items?',
+            options: ['10', '1024', '512', '32'],
             correctIndex: 0,
             explanation:
-                'Each step halves the range. 1024 = 2^10, so after 10 halvings the range is size 1.',
+                'Each step halves the range. After 10 halvings, a range of 1024 elements is reduced to size 1.',
           ),
           QuizBlock(
-            question: 'If a sorted array [1, 3, 5, 5, 5, 7, 9] contains three copies of 5, which one does standard Binary Search find?',
+            question:
+                'If a sorted array [1, 3, 5, 5, 5, 7, 9] contains three copies of 5, which one does standard Binary Search find?',
             options: [
               'Whichever copy it lands on first during the splitting process.',
               'The first (leftmost) occurrence.',
@@ -2862,8 +2912,9 @@ const List<LessonContent> lessons = [
             explanation:
                 'Binary Search stops as soon as it lands on any matching element. It makes no guarantee about which duplicate is found.',
           ),
+          MathBlock(r'O(\log n)', semanticsLabel: 'big O of log n'),
           KeyTakeawayBlock(
-            'Binary Search is the classic decrease-by-a-constant-factor algorithm. It halves the search range each step, giving O(log n) worst-case time. It requires a sorted array, and standard Binary Search makes no guarantee about which duplicate it finds.',
+            'Binary Search is the classic decrease-by-a-constant-factor algorithm. It halves the search range each step, giving logarithmic worst-case time. It requires a sorted array, and standard Binary Search makes no guarantee about which duplicate it finds.',
           ),
         ],
       ),
