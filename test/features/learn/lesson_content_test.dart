@@ -1028,6 +1028,269 @@ void main() {
     });
   });
 
+  group('Lesson 5 content', () {
+    late LessonContent lesson5;
+
+    setUp(() {
+      lesson5 = lessons.firstWhere((l) => l.id == 5);
+    });
+
+    String combinedText(Iterable<ContentBlock> blocks) {
+      return blocks
+          .map((block) {
+            return switch (block) {
+              TextBlock(:final text) => text,
+              DefinitionBlock(:final term, :final definition) =>
+                '$term $definition',
+              KeyTakeawayBlock(:final text) => text,
+              QuizBlock(:final question, :final options, :final explanation) =>
+                '$question ${options.join(' ')} $explanation',
+              CodeBlock(:final code, :final language) => '$language $code',
+              MathBlock(:final tex, :final semanticsLabel) =>
+                '$semanticsLabel $tex',
+              GraphBlock(:final type) => type,
+              VisualizerLinkBlock(
+                :final algorithmId,
+                :final label,
+                :final description,
+              ) =>
+                '$algorithmId $label ${description ?? ''}',
+            };
+          })
+          .join(' ');
+    }
+
+    List<String> lesson5Prose() {
+      final prose = <String>[];
+      for (final module in lesson5.modules) {
+        for (final block in module.contentBlocks) {
+          switch (block) {
+            case TextBlock(:final text):
+              prose.add(text);
+            case DefinitionBlock(:final term, :final definition):
+              prose.add(term);
+              prose.add(definition);
+            case KeyTakeawayBlock(:final text):
+              prose.add(text);
+            case QuizBlock(:final question, :final options, :final explanation):
+              prose.add(question);
+              prose.addAll(options);
+              prose.add(explanation);
+            case VisualizerLinkBlock(:final label, :final description):
+              prose.add(label);
+              if (description != null) prose.add(description);
+            case CodeBlock():
+            case MathBlock():
+            case GraphBlock():
+              break;
+          }
+        }
+      }
+      return prose;
+    }
+
+    test('has 6 modules', () {
+      expect(lesson5.modules.length, 6);
+    });
+
+    test('Module 1 introduces DFS and BFS with visualizer links', () {
+      final module = lesson5.modules[0];
+      expect(module.id, 'lesson5_module1');
+      expect(module.title, 'Introduction to DFS and BFS');
+      expect(module.order, 0);
+      expect(module.algorithmId, 'dfs');
+
+      final blocks = module.contentBlocks;
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(4),
+      );
+      expect(blocks.any((b) => b is QuizBlock), isFalse);
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final visualizers = blocks.whereType<VisualizerLinkBlock>().toList();
+      expect(
+        visualizers.map((v) => v.algorithmId),
+        containsAll(['dfs', 'bfs']),
+      );
+
+      final combined = combinedText(blocks);
+      expect(combined, contains('Depth-First Search'));
+      expect(combined, contains('Breadth-First Search'));
+      expect(combined, contains('stack'));
+      expect(combined, contains('queue'));
+      expect(combined, contains('maze'));
+      expect(combined, contains('Vertex'));
+      expect(combined, contains('Edge'));
+    });
+
+    test('Module 2 covers DFS depth, stack, tree edges, and back edges', () {
+      final module = lesson5.modules[1];
+      expect(module.id, 'lesson5_module2');
+      expect(module.title, 'Depth-First Search');
+      expect(module.order, 1);
+      expect(module.algorithmId, 'dfs');
+
+      final blocks = module.contentBlocks;
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(3),
+      );
+      expect(blocks.whereType<MathBlock>().length, 0);
+      expect(blocks.any((b) => b is CodeBlock), isTrue);
+      expect(blocks.any((b) => b is QuizBlock), isFalse);
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+      expect(blocks.whereType<VisualizerLinkBlock>().single.algorithmId, 'dfs');
+
+      final combined = combinedText(blocks);
+      expect(combined, contains('alphabetically'));
+      expect(combined, contains('stack'));
+      expect(combined, contains('backtrack'));
+      expect(combined, contains('DFS forest'));
+      expect(combined, contains('Tree edge'));
+      expect(combined, contains('Back edge'));
+      expect(combined, contains('cycle'));
+    });
+
+    test(
+      'Module 3 covers BFS level-by-level, queue, tree edges, cross edges',
+      () {
+        final module = lesson5.modules[2];
+        expect(module.id, 'lesson5_module3');
+        expect(module.title, 'Breadth-First Search');
+        expect(module.order, 2);
+        expect(module.algorithmId, 'bfs');
+
+        final blocks = module.contentBlocks;
+        expect(
+          blocks.whereType<DefinitionBlock>().length,
+          greaterThanOrEqualTo(3),
+        );
+        expect(blocks.any((b) => b is CodeBlock), isTrue);
+        expect(blocks.any((b) => b is QuizBlock), isFalse);
+        expect(blocks.last, isA<KeyTakeawayBlock>());
+        expect(
+          blocks.whereType<VisualizerLinkBlock>().single.algorithmId,
+          'bfs',
+        );
+
+        final combined = combinedText(blocks);
+        expect(combined, contains('level by level'));
+        expect(combined, contains('queue'));
+        expect(combined, contains('wave'));
+        expect(combined, contains('BFS forest'));
+        expect(combined, contains('Cross edge'));
+        expect(combined, contains('layer'));
+      },
+    );
+
+    test('Module 4 covers adjacency matrix and adjacency linked list', () {
+      final module = lesson5.modules[3];
+      expect(module.id, 'lesson5_module4');
+      expect(module.title, 'Graph Representations');
+      expect(module.order, 3);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(2),
+      );
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(2));
+      expect(blocks.any((b) => b is QuizBlock), isFalse);
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = combinedText(blocks);
+      expect(combined, contains('adjacency matrix'));
+      expect(combined, contains('adjacency linked list'));
+      expect(combined, contains('Theta'));
+      expect(combined, contains('|V|'));
+      expect(combined, contains('|E|'));
+      expect(combined, contains('sparse'));
+    });
+
+    test(
+      'Module 5 covers efficiency and when to use each with quiz questions',
+      () {
+        final module = lesson5.modules[4];
+        expect(module.id, 'lesson5_module5');
+        expect(module.title, 'Efficiency and When to Use Each');
+        expect(module.order, 4);
+        expect(module.algorithmId, isNull);
+
+        final blocks = module.contentBlocks;
+        expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(2));
+        expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(4));
+        expect(blocks.last, isA<KeyTakeawayBlock>());
+
+        final combined = combinedText(blocks);
+        expect(combined, contains('Theta(|V|'));
+        expect(combined, contains('shortest path'));
+        expect(combined, contains('edge count'));
+        expect(combined, contains('cycle detection'));
+        expect(combined, contains('sparse'));
+      },
+    );
+
+    test('Module 6 concludes with DFS and BFS visualizer links', () {
+      final module = lesson5.modules[5];
+      expect(module.id, 'lesson5_module6');
+      expect(module.title, 'Conclusion');
+      expect(module.order, 5);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(blocks.any((b) => b is QuizBlock), isFalse);
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final visualizers = blocks.whereType<VisualizerLinkBlock>().toList();
+      expect(
+        visualizers.map((v) => v.algorithmId),
+        containsAll(['dfs', 'bfs']),
+      );
+
+      final combined = combinedText(blocks);
+      expect(combined, contains('stack'));
+      expect(combined, contains('queue'));
+      expect(combined, contains('Theta(|V| + |E|)'));
+      expect(combined, contains('backtracking'));
+      expect(combined, contains('foundation'));
+    });
+
+    test('Lesson 5 prose avoids AI punctuation tells', () {
+      final combined = lesson5Prose().join('\n');
+      expect(combined, isNot(contains('—')));
+      expect(combined, isNot(contains(';')));
+      expect(combined, isNot(contains(' - ')));
+    });
+
+    test('Lesson 5 prose uses readable math notation', () {
+      final combined = lesson5Prose().join('\n');
+      expect(combined, isNot(contains('n squared')));
+      expect(combined, isNot(contains('<=')));
+      expect(combined, isNot(contains('>=')));
+      expect(combined, isNot(contains('c * g(n)')));
+      expect(combined, isNot(contains('\\u')));
+    });
+
+    test('Lesson 5 contains DFS and BFS visualizers in module 1', () {
+      final m1Blocks = lesson5.modules[0].contentBlocks;
+      final visualizers = m1Blocks.whereType<VisualizerLinkBlock>().toList();
+      expect(visualizers.length, 2);
+      expect(visualizers[0].algorithmId, 'dfs');
+      expect(visualizers[1].algorithmId, 'bfs');
+    });
+
+    test('Lesson 5 quiz blocks have single correct answer per question', () {
+      final module5 = lesson5.modules[4];
+      final quizzes = module5.contentBlocks.whereType<QuizBlock>().toList();
+      expect(quizzes.length, greaterThanOrEqualTo(4));
+      for (final q in quizzes) {
+        expect(q.correctIndex, inInclusiveRange(0, q.options.length - 1));
+      }
+    });
+  });
+
   group('ContentBlock subclasses', () {
     test('TextBlock holds text', () {
       const block = TextBlock('hello');

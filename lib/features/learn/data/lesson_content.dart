@@ -10,7 +10,6 @@ import 'package:flutter/foundation.dart' show immutable;
 ///
 /// Subclasses represent different content types: plain text, code snippets,
 /// term definitions, key takeaway callouts, and interactive quizzes.
-/// An animated asymptotic bound graph (O, Ω, Θ) rendered with CustomPaint.
 class GraphBlock extends ContentBlock {
   /// 'bigO' | 'bigOmega' | 'bigTheta'
   final String type;
@@ -1889,12 +1888,321 @@ const List<LessonContent> lessons = [
     ],
   ),
 
-  // ── Lesson 5 (stub) ───────────────────────────────────────────────────────
+  // ── Lesson 5 ───────────────────────────────────────────────────────────────
   LessonContent(
     id: 5,
     title: 'DFS and BFS',
     categoryColor: '#10B981',
-    modules: [],
+    modules: [
+      ModuleContent(
+        id: 'lesson5_module1',
+        title: 'Introduction to DFS and BFS',
+        order: 0,
+        algorithmId: 'dfs',
+        contentBlocks: [
+          TextBlock(
+            'In earlier lessons we looked at brute force, exhaustive search, and interval scheduling. Now we move into two very important graph-search techniques: Depth-First Search and Breadth-First Search.',
+          ),
+          TextBlock(
+            'These two algorithms solve the same core problems in very different ways:\n\n1. Visit every vertex in a graph.\n2. Find a particular key in a graph.',
+          ),
+          TextBlock(
+            'This is the first graph-focused lesson, so if graph vocabulary feels rusty it is worth reviewing the basics before going deeper.',
+          ),
+          DefinitionBlock(
+            term: 'Vertex',
+            definition:
+                'A point in a graph where edges meet. Sometimes called a node.',
+          ),
+          DefinitionBlock(
+            term: 'Edge',
+            definition:
+                'A connection between two vertices. Edges can be directed or undirected.',
+          ),
+          TextBlock(
+            'Graphs show up everywhere: mazes, road networks, social connections, webpage links, task dependencies. Once a problem is modeled as a graph, the first question is: how do we move through it systematically without getting lost, repeating work, or missing something important? DFS and BFS are the answer.',
+          ),
+          DefinitionBlock(
+            term: 'Depth-First Search (DFS)',
+            definition:
+                'Explores as far as possible down one path before backing up. Uses a stack to track the current path.',
+          ),
+          DefinitionBlock(
+            term: 'Breadth-First Search (BFS)',
+            definition:
+                'Explores level by level, visiting all neighbors before moving deeper. Uses a queue to track discovered vertices.',
+          ),
+          TextBlock(
+            'A good way to picture both is a maze. Every decision point is a vertex, every hallway between two points is an edge. Then finding a way through the maze is exactly a graph-search problem.',
+          ),
+          TextBlock(
+            'In a maze you usually care about one of two things: visiting all reachable places, or finding a specific goal such as the exit. You also want to avoid walking in circles or repeating the same work unnecessarily. DFS and BFS both solve this, but they do it in very different styles.',
+          ),
+          VisualizerLinkBlock(
+            algorithmId: 'dfs',
+            label: 'See DFS in action',
+            description: 'Watch depth-first search explore a graph',
+          ),
+          VisualizerLinkBlock(
+            algorithmId: 'bfs',
+            label: 'See BFS in action',
+            description: 'Watch breadth-first search explore a graph',
+          ),
+          KeyTakeawayBlock(
+            'DFS goes deep first using a stack. BFS spreads outward level by level using a queue. Both visit every vertex, but the order and the paths they produce are very different.',
+          ),
+        ],
+      ),
+      ModuleContent(
+        id: 'lesson5_module2',
+        title: 'Depth-First Search',
+        order: 1,
+        algorithmId: 'dfs',
+        contentBlocks: [
+          TextBlock(
+            'In DFS we start at one vertex and go as far as possible down one path before backing up. The strategy is simple: keep moving forward, keep choosing one next child, and only backtrack when you hit a dead end or run out of new choices.',
+          ),
+          TextBlock(
+            'In maze language, DFS says: pick one corridor and follow it as deeply as you can. If it fails, back up and try another one.',
+          ),
+          TextBlock(
+            'If there are several choices at a step, this lesson assumes we break ties by choosing the alphabetically smaller vertex first. That tie-breaking rule matters more than it might seem. Different tie-breaking can produce different search trees and affect how quickly a target is found.',
+          ),
+          DefinitionBlock(
+            term: 'DFS forest',
+            definition:
+                'The collection of depth-first search trees produced by DFS, especially important when the graph is disconnected and one tree is not enough.',
+          ),
+          DefinitionBlock(
+            term: 'Tree edge',
+            definition:
+                'An edge that is actually used to discover a new vertex in the DFS tree.',
+          ),
+          DefinitionBlock(
+            term: 'Back edge',
+            definition:
+                'An edge that points from a vertex to one of its ancestors in the DFS tree. This indicates a cycle in a directed graph.',
+          ),
+          TextBlock(
+            'A stack is the natural data structure for DFS. When a vertex is first visited, push it onto the stack. When it becomes finished or reaches a dead end, pop it off. This keeps track of the current path and makes backtracking systematic.',
+          ),
+          VisualizerLinkBlock(
+            algorithmId: 'dfs',
+            label: 'Visualize DFS step by step',
+            description: 'See how the stack grows and shrinks as DFS explores',
+          ),
+          TextBlock(
+            'Suppose we start at A in a directed graph and always prefer the alphabetically smaller available next vertex. A DFS path might look like:\n\nA → B → D → E → F\n\nAt F we hit a dead end, so we backtrack. From E we can still go to G, so:\n\nE → G\n\nFrom G, going back to A would create a cycle, so we do not use that edge. We backtrack again and continue with any remaining unexplored choices. From D we can still go to C. Eventually every vertex gets visited, and the result is a depth-first search tree.',
+          ),
+          CodeBlock(
+            'DFS(G, start):\n  visited = empty set\n  stack = [start]\n\n  while stack is not empty:\n    v = stack.pop()\n    if v not in visited:\n      visit(v)          # process vertex\n      visited.add(v)\n      for each neighbor u of v:\n        if u not in visited:\n          stack.push(u)\n\n  return visited',
+            language: 'text',
+          ),
+          KeyTakeawayBlock(
+            'DFS uses a stack to remember where to backtrack. Tree edges build the DFS tree, and back edges reveal cycles.',
+          ),
+        ],
+      ),
+      ModuleContent(
+        id: 'lesson5_module3',
+        title: 'Breadth-First Search',
+        order: 2,
+        algorithmId: 'bfs',
+        contentBlocks: [
+          TextBlock(
+            'In BFS we do not dive deeply down one path first. Instead we explore level by level: visit the start vertex, then all of its children, then all of their children, then the next layer, and so on.',
+          ),
+          TextBlock(
+            'In maze language, BFS is like a wave spreading outward from the starting point. Instead of chasing one path far away, BFS explores all nearby options first.',
+          ),
+          TextBlock(
+            'A queue is the ideal data structure for BFS because BFS follows a "first discovered, first processed" pattern. Insert the starting vertex into the queue, remove vertices from the front, add newly discovered children to the back, and repeat until the queue is empty.',
+          ),
+          DefinitionBlock(
+            term: 'BFS forest',
+            definition:
+                'The collection of breadth-first trees produced by BFS, especially when the graph is disconnected.',
+          ),
+          DefinitionBlock(
+            term: 'Tree edge',
+            definition:
+                'An edge used to discover a new vertex in the BFS tree.',
+          ),
+          DefinitionBlock(
+            term: 'Cross edge',
+            definition:
+                'An edge that connects vertices in a way that is not a tree-discovery edge, often connecting vertices in the same or nearby levels of the BFS structure.',
+          ),
+          VisualizerLinkBlock(
+            algorithmId: 'bfs',
+            label: 'Visualize BFS step by step',
+            description: 'See how the queue expands layer by layer',
+          ),
+          TextBlock(
+            'Again start at A. Think of BFS as people fanning out from A.\n\nFirst layer: visit A.\n\nSecond layer: visit B and C.\n\nThird layer: from B and C, continue outward to new reachable vertices such as D.\n\nLater layers continue outward through E, then F and G, depending on the allowed directed edges and already visited vertices. The result is a breadth-first spanning tree.',
+          ),
+          CodeBlock(
+            'BFS(G, start):\n  visited = empty set\n  queue = [start]\n\n  while queue is not empty:\n    v = queue.pop(0)    # front of queue\n    if v not in visited:\n      visit(v)          # process vertex\n      visited.add(v)\n      for each neighbor u of v:\n        if u not in visited:\n          queue.append(u)   # add to back\n\n  return visited',
+            language: 'text',
+          ),
+          KeyTakeawayBlock(
+            'BFS uses a queue to process vertices in layers. The first time BFS reaches a vertex it has found the shortest path measured by edge count.',
+          ),
+        ],
+      ),
+      ModuleContent(
+        id: 'lesson5_module4',
+        title: 'Graph Representations',
+        order: 3,
+        contentBlocks: [
+          TextBlock(
+            'To analyze DFS or BFS properly we need to understand how the graph is stored in memory. Two common representations are adjacency matrix and adjacency linked list.',
+          ),
+          DefinitionBlock(
+            term: 'Adjacency matrix',
+            definition:
+                'A 2D table where entry (i, j) tells us whether there is an edge from vertex i to vertex j. Often stores 1 for an edge and 0 for no edge.',
+          ),
+          TextBlock(
+            'The matrix has one entry for every possible ordered pair of vertices. With |V| vertices, the matrix has |V|² entries. This representation is easy to check but uses space for every possible pair, even when no edge exists.',
+          ),
+          MathBlock(
+            r'Memory\ adjacency\ matrix = \Theta(|V|^2)',
+            semanticsLabel: 'adjacency matrix memory',
+          ),
+          DefinitionBlock(
+            term: 'Adjacency linked list',
+            definition:
+                'For each vertex, store a list of the vertices it points to. Only the edges that actually exist are stored.',
+          ),
+          TextBlock(
+            'With |V| vertices and |E| edges, this uses space for |V| list heads plus |E| list entries. This is often much better for sparse graphs where |E| is much smaller than |V|².',
+          ),
+          MathBlock(
+            r'Memory\ adjacency\ list = \Theta(|V| + |E|)',
+            semanticsLabel: 'adjacency list memory',
+          ),
+          TextBlock(
+            'The right representation depends on the graph. If the graph is dense, |E| can be close to |V|² and the two representations have similar order of growth. If the graph is sparse, adjacency linked lists are usually better because |V| + |E| is much smaller than |V|².',
+          ),
+          KeyTakeawayBlock(
+            'Adjacency matrix is simple but costs Theta(|V|²) space. Adjacency linked list costs Theta(|V| + |E|) and works well for sparse graphs.',
+          ),
+        ],
+      ),
+      ModuleContent(
+        id: 'lesson5_module5',
+        title: 'Efficiency and When to Use Each',
+        order: 4,
+        contentBlocks: [
+          TextBlock(
+            'DFS and BFS have the same asymptotic cost because both examine the graph structure once in a systematic way. With an adjacency matrix the running time is Theta(|V|²). With an adjacency linked list the running time is Theta(|V| + |E|).',
+          ),
+          MathBlock(
+            r'T(n)_{matrix} = \Theta(|V|^2)',
+            semanticsLabel: 'matrix-based search efficiency',
+          ),
+          MathBlock(
+            r'T(n)_{list} = \Theta(|V| + |E|)',
+            semanticsLabel: 'list-based search efficiency',
+          ),
+          TextBlock(
+            'The big difference between DFS and BFS is not asymptotic cost. The real difference is how they explore the graph and what each is better suited for.',
+          ),
+          DefinitionBlock(
+            term: 'When to choose DFS',
+            definition:
+                'DFS is good for tasks that need to explore all possible paths, detecting cycles, or finding connected components. The stack-based nature makes it natural for recursive-style exploration.',
+          ),
+          DefinitionBlock(
+            term: 'When to choose BFS',
+            definition:
+                'BFS is especially useful for finding the shortest path in terms of number of edges. Because BFS explores in layers, the first time it reaches a vertex it has found the shortest path to that vertex. This is one of the biggest practical strengths of BFS.',
+          ),
+          TextBlock('Answer these questions to check your understanding.'),
+          QuizBlock(
+            question: 'Why is a stack the natural ADT for DFS?',
+            options: [
+              'Because DFS processes vertices in alphabetical order',
+              'Because the most recently discovered vertex is the one we may need to backtrack to first',
+              'Because a stack can store the full graph adjacency list',
+              'Because DFS always needs to find the shortest path',
+            ],
+            explanation:
+                'A stack follows LIFO order, which matches DFS backtracking behavior: the last vertex we visited is the first one we may need to return to when the current path ends.',
+            correctIndex: 1,
+          ),
+          QuizBlock(
+            question:
+                'Why is BFS especially good for shortest-path-by-edges problems?',
+            options: [
+              'Because BFS uses less memory than DFS',
+              'Because BFS explores vertices in the order they were discovered',
+              'Because BFS explores in layers, so the first time it reaches a vertex it has used the fewest edges',
+              'Because BFS can detect cycles more efficiently than DFS',
+            ],
+            explanation:
+                'BFS visits vertices in layers by distance from the start. The first time any vertex is reached, it is via the smallest possible number of edges.',
+            correctIndex: 2,
+          ),
+          QuizBlock(
+            question:
+                'A graph has many vertices but very few edges. Which representation is usually better?',
+            options: [
+              'Adjacency matrix, because it is easier to access',
+              'Adjacency matrix, because the graph is small',
+              'Adjacency linked list, because it only stores the edges that exist',
+              'Both are identical for this type of graph',
+            ],
+            explanation:
+                'When the graph is sparse, |E| is much smaller than |V|². Adjacency linked list stores only existing edges, so it uses Theta(|V| + |E|) instead of Theta(|V|²).',
+            correctIndex: 2,
+          ),
+          QuizBlock(
+            question:
+                'DFS and BFS can have the same asymptotic efficiency but still behave very differently. Why?',
+            options: [
+              'They use different programming languages',
+              'Asymptotic notation only measures worst-case input size, not the order of vertex visits',
+              'They both run on the same hardware',
+              'Efficiency and behavior are always the same thing',
+            ],
+            explanation:
+                'Asymptotic efficiency measures the growth rate of cost with input size, not the actual visiting order or the paths produced. Theta(|V| + |E|) is the same for both, but DFS produces deep narrow trees while BFS produces wide shallow trees.',
+            correctIndex: 1,
+          ),
+          KeyTakeawayBlock(
+            'DFS and BFS are both Theta(|V| + |E|) on linked-list graphs, but they explore in very different orders. Use DFS for exhaustive exploration and cycle detection. Use BFS for shortest-path by edge count.',
+          ),
+        ],
+      ),
+      ModuleContent(
+        id: 'lesson5_module6',
+        title: 'Conclusion',
+        order: 5,
+        contentBlocks: [
+          TextBlock(
+            'DFS and BFS are classic search tools because they give order to what could otherwise become chaos. Without them, graph exploration can become repetitive, wasteful, or confusing.',
+          ),
+          TextBlock(
+            'With them we get a clear strategy, a useful data structure, and a strong foundation for more advanced graph algorithms. The next lessons build on these ideas, so make sure the core difference between stack-based deep-first exploration and queue-based level-by-level spreading is solid.',
+          ),
+          VisualizerLinkBlock(
+            algorithmId: 'dfs',
+            label: 'Explore DFS visualizer',
+            description: 'Interactive animation of depth-first search',
+          ),
+          VisualizerLinkBlock(
+            algorithmId: 'bfs',
+            label: 'Explore BFS visualizer',
+            description: 'Interactive animation of breadth-first search',
+          ),
+          KeyTakeawayBlock(
+            'DFS uses a stack and goes deep before backtracking. BFS uses a queue and spreads outward layer by layer. Both are Theta(|V| + |E|) on adjacency lists, but BFS finds shortest paths by edge count while DFS is natural for cycle detection and exhaustive path exploration.',
+          ),
+        ],
+      ),
+    ],
   ),
 
   // ── Lesson 6 (stub) ───────────────────────────────────────────────────────
