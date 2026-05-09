@@ -1,15 +1,46 @@
 import 'dart:io';
 
 import 'package:algoplay/core/theme/app_theme.dart';
+import 'package:algoplay/features/learn/data/lesson_content.dart';
+import 'package:algoplay/features/learn/data/lesson_progress_repository.dart';
+import 'package:algoplay/features/learn/presentation/lesson_detail_page.dart';
 import 'package:algoplay/features/learn/presentation/module_content_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Widget _wrap(Widget child) {
   return ProviderScope(
     child: MaterialApp(theme: AppTheme.light, home: child),
+  );
+}
+
+Widget _wrapRouter(GoRouter router) {
+  return ProviderScope(
+    child: MaterialApp.router(theme: AppTheme.light, routerConfig: router),
+  );
+}
+
+GoRouter _lessonRouter({required int lessonId}) {
+  return GoRouter(
+    initialLocation: '/lesson/$lessonId',
+    routes: [
+      GoRoute(
+        path: '/lesson/:lessonId',
+        builder: (context, state) => LessonDetailPage(
+          lessonId: int.parse(state.pathParameters['lessonId']!),
+        ),
+      ),
+      GoRoute(
+        path: '/lesson/:lessonId/module/:moduleId',
+        builder: (context, state) => ModuleContentPage(
+          lessonId: int.parse(state.pathParameters['lessonId']!),
+          moduleId: state.pathParameters['moduleId']!,
+        ),
+      ),
+    ],
   );
 }
 
@@ -82,4 +113,36 @@ void main() {
     expect(find.textContaining('n    | Home PC | Desktop PC'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets(
+    'completing the final module updates lesson completion without restart',
+    (tester) async {
+      final lesson = lessons.firstWhere((l) => l.id == 1);
+      final repo = LessonProgressRepository();
+      for (final module in lesson.modules.take(lesson.modules.length - 1)) {
+        await repo.markModuleComplete(lesson.id, module.id);
+      }
+
+      await tester.pumpWidget(_wrapRouter(_lessonRouter(lessonId: lesson.id)));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byIcon(Icons.check_rounded),
+        findsNWidgets(lesson.modules.length - 1),
+      );
+
+      await tester.tap(find.text(lesson.modules.last.title));
+      await tester.pumpAndSettle();
+      expect(find.text(lesson.modules.last.title), findsOneWidget);
+
+      await tester.tap(find.text('Mark Complete & Continue'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(LessonDetailPage), findsOneWidget);
+      expect(
+        find.byIcon(Icons.check_rounded),
+        findsNWidgets(lesson.modules.length),
+      );
+    },
+  );
 }

@@ -100,6 +100,16 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
     await repo.markModuleComplete(widget.lessonId, widget.moduleId);
     await repo.setCurrentModule(widget.lessonId, widget.moduleId);
 
+    ref.invalidate(
+      moduleCompleteProvider((
+        lessonId: widget.lessonId,
+        moduleId: widget.moduleId,
+      )),
+    );
+    ref.invalidate(lessonProgressValueProvider(widget.lessonId));
+    ref.invalidate(currentModuleProvider(widget.lessonId));
+    ref.invalidate(lessonUnlockedProvider(widget.lessonId + 1));
+
     if (!mounted) return;
 
     // Try to navigate to next module.
