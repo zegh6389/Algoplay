@@ -2449,12 +2449,231 @@ const List<LessonContent> lessons = [
     ],
   ),
 
-  // ── Lesson 6 (stub) ───────────────────────────────────────────────────────
+  // ── Lesson 6 ───────────────────────────────────────────────────────────────
   LessonContent(
     id: 6,
     title: 'Decrease and Conquer',
     categoryColor: '#0EA5E9',
-    modules: [],
+    modules: [
+      ModuleContent(
+        id: 'lesson6_module1',
+        title: 'Introduction to Decrease and Conquer',
+        order: 0,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'Welcome to Lesson 6. We now study a major algorithm design technique called decrease and conquer.',
+          ),
+          TextBlock(
+            'The core idea is simple: make the problem smaller, solve the smaller version, then use that solution to finish the original problem.',
+          ),
+          DefinitionBlock(
+            term: 'Decrease and conquer',
+            definition:
+                'An algorithm design strategy that reduces a problem to one smaller version of the same problem, solves that smaller problem, and extends the answer.',
+          ),
+          TextBlock(
+            'This question drives the whole lesson: how can we turn the current problem into a smaller version of itself?',
+          ),
+          TextBlock(
+            'The technique matters because many hard problems become manageable once we find the right way to shrink them. Insertion Sort and Binary Search are classic examples.',
+          ),
+          DefinitionBlock(
+            term: 'Decrease by a constant',
+            definition:
+                'Each step reduces the input size by a fixed amount, such as n to n − 1 or n to n − 2.',
+          ),
+          DefinitionBlock(
+            term: 'Decrease by a constant factor',
+            definition:
+                'Each step reduces the input size by a fixed fraction, such as n to n / 2 or n to n / 3.',
+          ),
+          DefinitionBlock(
+            term: 'Variable-size decrease',
+            definition:
+                'Each step reduces the problem, but the amount removed can change from one step to another.',
+          ),
+          CodeBlock(
+            'Common decrease patterns:\n'
+            'constant decrease: n → n − 1\n'
+            'constant-factor decrease: n → n / 2\n'
+            'variable-size decrease: n → n − k, where k changes',
+            language: 'text',
+          ),
+          TextBlock(
+            'A useful picture is carving a sculpture from stone. You do not reveal the whole shape in one hit. You remove one part, then another, until the final answer becomes clear.',
+          ),
+          TextBlock(
+            'Insertion Sort uses the sorted part of size i − 1 to create a sorted part of size i. That is decrease by one, viewed from the smaller solved problem upward.',
+          ),
+          VisualizerLinkBlock(
+            algorithmId: 'insertion-sort',
+            label: 'Preview Insertion Sort',
+            description: 'Watch a sorted prefix grow one element at a time.',
+          ),
+          TextBlock(
+            'Binary Search is different. It discards about half of the remaining search space after each comparison, so the problem size changes from n to n / 2.',
+          ),
+          VisualizerLinkBlock(
+            algorithmId: 'binary-search',
+            label: 'Preview Binary Search',
+            description: 'Watch the search range shrink by a constant factor.',
+          ),
+          TextBlock(
+            'Lesson 5 also connects here. Topological sort by repeatedly removing sources is decrease by a constant because each step removes one vertex and its outgoing edges.',
+          ),
+          DefinitionBlock(
+            term: 'Decrease versus divide',
+            definition:
+                'Decrease and conquer keeps one main smaller subproblem. Divide and conquer splits the input into several subproblems and combines their answers.',
+          ),
+          TextBlock(
+            'To recognize this strategy, ask whether the algorithm creates one smaller version of the same problem, then whether the decrease is by a fixed amount, a fixed factor, or a changing amount.',
+          ),
+          QuizBlock(
+            question: 'Which pattern best describes Binary Search?',
+            options: [
+              'Decrease by a constant factor',
+              'Decrease by one',
+              'Divide into many independent subproblems',
+              'Exhaustive search over every ordering',
+            ],
+            correctIndex: 0,
+            explanation:
+                'Binary Search discards about half the remaining range each step, so the problem shrinks from n to n / 2.',
+          ),
+          QuizBlock(
+            question:
+                'What is the main difference between decrease and conquer and divide and conquer?',
+            options: [
+              'Decrease and conquer usually keeps one main smaller subproblem, while divide and conquer solves several.',
+              'Decrease and conquer never uses recursion.',
+              'Divide and conquer only applies to graphs.',
+              'They are two names for exactly the same strategy.',
+            ],
+            correctIndex: 0,
+            explanation:
+                'The key distinction is one smaller subproblem versus several smaller subproblems that must be combined.',
+          ),
+          KeyTakeawayBlock(
+            'Decrease and conquer solves a problem by shrinking it to one smaller version. The decrease can be by a constant, by a constant factor, or by a variable amount.',
+          ),
+        ],
+      ),
+      ModuleContent(
+        id: 'lesson6_module2',
+        title: 'Insertion Sort: Decrease by One',
+        order: 1,
+        algorithmId: 'insertion-sort',
+        contentBlocks: [
+          TextBlock(
+            'Insertion Sort is a classic decrease-by-one algorithm. It keeps a sorted prefix on the left and inserts one new element into that prefix at each step.',
+          ),
+          TextBlock(
+            'The everyday picture is a card player building a hand. Each new card is placed where it belongs among the cards already sorted in the hand.',
+          ),
+          DefinitionBlock(
+            term: 'Sorted prefix',
+            definition:
+                'The left part of the array that is already in sorted order before the next element is inserted.',
+          ),
+          CodeBlock(
+            'Insertion Sort idea:\n'
+            'start with the first element sorted\n'
+            'for each next element x:\n'
+            '  compare x with items before it\n'
+            '  shift larger items one position right\n'
+            '  place x in the open position',
+            language: 'text',
+          ),
+          TextBlock(
+            'At step i, the algorithm assumes the first i − 1 elements are already sorted. It then inserts the ith element into its correct position among them.',
+          ),
+          TextBlock(
+            'That is exactly the decrease-and-conquer pattern. A sorted problem of size i − 1 helps solve the slightly larger problem of size i.',
+          ),
+          VisualizerLinkBlock(
+            algorithmId: 'insertion-sort',
+            label: 'Visualize Insertion Sort',
+            description:
+                'See the sorted prefix expand as each new item is inserted.',
+          ),
+          TextBlock(
+            'The basic operation is comparison. In the worst case, the input is reverse sorted, so every new element must move across the entire sorted prefix before it reaches the correct position.',
+          ),
+          CodeBlock(
+            'Worst-case comparisons:\n'
+            'i = 2 gives 1 comparison\n'
+            'i = 3 gives 2 comparisons\n'
+            'i = 4 gives 3 comparisons\n'
+            '...\n'
+            'i = n gives n − 1 comparisons',
+            language: 'text',
+          ),
+          MathBlock(
+            r'1 + 2 + 3 + \cdots + (n - 1) = \frac{n(n - 1)}{2}',
+            semanticsLabel: 'sum of insertion sort worst case comparisons',
+          ),
+          MathBlock(
+            r'T_{worst}(n) = \Theta(n^2)',
+            semanticsLabel: 'insertion sort worst case is theta n squared',
+          ),
+          TextBlock(
+            'The best case happens when the array is already sorted. Each new element needs only one comparison to confirm that it is already in the right place.',
+          ),
+          MathBlock(
+            r'T_{best}(n) = \Theta(n)',
+            semanticsLabel: 'insertion sort best case is theta n',
+          ),
+          TextBlock(
+            'The average case is still quadratic. Across all input arrangements, an inserted item usually travels about halfway through the sorted prefix, and those costs still add up like n².',
+          ),
+          MathBlock(
+            r'T_{average}(n) = \Theta(n^2)',
+            semanticsLabel: 'insertion sort average case is theta n squared',
+          ),
+          DefinitionBlock(
+            term: 'Stable sort',
+            definition:
+                'A sort that keeps equal items in their original relative order. Insertion Sort is stable when implemented by shifting instead of swapping past equal items.',
+          ),
+          TextBlock(
+            'Insertion Sort is still useful because it is simple, has low overhead, works well on small arrays, and can be very fast when the data is nearly sorted.',
+          ),
+          TextBlock(
+            'Many practical sorting systems use Insertion Sort as a finishing step for tiny or nearly sorted sections after another algorithm has done most of the work.',
+          ),
+          QuizBlock(
+            question:
+                'Why is a reverse-sorted array a worst case for Insertion Sort?',
+            options: [
+              'Each new element must move past every item in the sorted prefix.',
+              'The array is already sorted.',
+              'Binary Search must be used first.',
+              'There are no comparisons in reverse order.',
+            ],
+            correctIndex: 0,
+            explanation:
+                'When the input is reversed, every inserted item belongs at the beginning of the prefix, so it must be compared across the prefix.',
+          ),
+          QuizBlock(
+            question: 'Why can Insertion Sort be good for nearly sorted data?',
+            options: [
+              'Most elements are already close to their final positions.',
+              'It always runs in Θ(log n).',
+              'It ignores the sorted prefix.',
+              'It splits the input into several independent halves.',
+            ],
+            correctIndex: 0,
+            explanation:
+                'If elements are close to the right place, the inner loop does little shifting, so the practical cost can be low.',
+          ),
+          KeyTakeawayBlock(
+            'Insertion Sort is decrease by one: use the sorted prefix of size i − 1 to build the sorted prefix of size i. Its worst and average cases are Θ(n²), while its best case is Θ(n).',
+          ),
+        ],
+      ),
+    ],
   ),
 
   // ── Lesson 7 (stub) ───────────────────────────────────────────────────────

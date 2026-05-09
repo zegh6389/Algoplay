@@ -1364,6 +1364,150 @@ void main() {
     });
   });
 
+  group('Lesson 6 content', () {
+    late LessonContent lesson6;
+
+    setUp(() {
+      lesson6 = lessons.firstWhere((l) => l.id == 6);
+    });
+
+    String combinedText(Iterable<ContentBlock> blocks) {
+      return blocks
+          .map((block) {
+            return switch (block) {
+              TextBlock(:final text) => text,
+              DefinitionBlock(:final term, :final definition) =>
+                '$term $definition',
+              KeyTakeawayBlock(:final text) => text,
+              QuizBlock(:final question, :final options, :final explanation) =>
+                '$question ${options.join(' ')} $explanation',
+              CodeBlock(:final code, :final language) => '$language $code',
+              MathBlock(:final tex, :final semanticsLabel) =>
+                '$semanticsLabel $tex',
+              GraphBlock(:final type) => type,
+              VisualizerLinkBlock(
+                :final algorithmId,
+                :final label,
+                :final description,
+              ) =>
+                '$algorithmId $label ${description ?? ''}',
+            };
+          })
+          .join(' ');
+    }
+
+    List<String> lesson6Prose() {
+      final prose = <String>[];
+      for (final module in lesson6.modules) {
+        for (final block in module.contentBlocks) {
+          switch (block) {
+            case TextBlock(:final text):
+              prose.add(text);
+            case DefinitionBlock(:final term, :final definition):
+              prose.add(term);
+              prose.add(definition);
+            case KeyTakeawayBlock(:final text):
+              prose.add(text);
+            case QuizBlock(:final question, :final options, :final explanation):
+              prose.add(question);
+              prose.addAll(options);
+              prose.add(explanation);
+            case VisualizerLinkBlock(:final label, :final description):
+              prose.add(label);
+              if (description != null) prose.add(description);
+            case CodeBlock():
+            case MathBlock():
+            case GraphBlock():
+              break;
+          }
+        }
+      }
+      return prose;
+    }
+
+    test('has 2 modules', () {
+      expect(lesson6.modules.length, 2);
+    });
+
+    test('Module 1 introduces decrease-and-conquer categories', () {
+      final module = lesson6.modules[0];
+      expect(module.id, 'lesson6_module1');
+      expect(module.title, 'Introduction to Decrease and Conquer');
+      expect(module.order, 0);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(4),
+      );
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(2));
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final visualizers = blocks.whereType<VisualizerLinkBlock>().toList();
+      expect(
+        visualizers.map((v) => v.algorithmId),
+        containsAll(['insertion-sort', 'binary-search']),
+      );
+
+      final combined = combinedText(blocks);
+      expect(combined, contains('Decrease and conquer'));
+      expect(combined, contains('Decrease by a constant'));
+      expect(combined, contains('Decrease by a constant factor'));
+      expect(combined, contains('Variable-size decrease'));
+      expect(combined, contains('n − 1'));
+      expect(combined, contains('n / 2'));
+      expect(combined, contains('Topological sort'));
+      expect(combined, contains('Divide and conquer'));
+    });
+
+    test('Module 2 covers insertion sort as decrease by one', () {
+      final module = lesson6.modules[1];
+      expect(module.id, 'lesson6_module2');
+      expect(module.title, 'Insertion Sort: Decrease by One');
+      expect(module.order, 1);
+      expect(module.algorithmId, 'insertion-sort');
+
+      final blocks = module.contentBlocks;
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(4));
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(2));
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+      expect(
+        blocks.whereType<VisualizerLinkBlock>().single.algorithmId,
+        'insertion-sort',
+      );
+
+      final combined = combinedText(blocks);
+      expect(combined, contains('sorted prefix'));
+      expect(combined, contains('i − 1'));
+      expect(combined, contains('reverse sorted'));
+      expect(combined, contains('T_{worst}(n)'));
+      expect(combined, contains('T_{best}(n)'));
+      expect(combined, contains('T_{average}(n)'));
+      expect(combined, contains('Stable sort'));
+      expect(combined, contains('nearly sorted'));
+    });
+
+    test('Lesson 6 prose avoids AI punctuation tells', () {
+      final combined = lesson6Prose().join('\n');
+      expect(combined, isNot(contains('—')));
+      expect(combined, isNot(contains(';')));
+      expect(combined, isNot(contains(' - ')));
+    });
+
+    test('Lesson 6 prose uses readable math notation', () {
+      final combined = lesson6Prose().join('\n');
+      expect(combined, isNot(contains('n squared')));
+      expect(combined, isNot(contains('n0')));
+      expect(combined, isNot(contains('<=')));
+      expect(combined, isNot(contains('>=')));
+      expect(combined, contains('n²'));
+      expect(combined, contains('Θ(n²)'));
+      expect(combined, contains('Θ(n)'));
+      expect(combined, contains('i − 1'));
+    });
+  });
+
   group('ContentBlock subclasses', () {
     test('TextBlock holds text', () {
       const block = TextBlock('hello');
