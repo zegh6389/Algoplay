@@ -2045,51 +2045,196 @@ const List<LessonContent> lessons = [
       ),
       ModuleContent(
         id: 'lesson5_module2',
-        title: 'Depth-First Search',
+        title: 'Finding Keys with DFS, BFS, and Best-First Search',
         order: 1,
         algorithmId: 'dfs',
         contentBlocks: [
           TextBlock(
-            'In DFS we start at one vertex and go as far as possible down one path before backing up. The strategy is simple: keep moving forward, keep choosing one next child, and only backtrack when you hit a dead end or run out of new choices.',
+            'Module 1 introduced DFS and BFS as systematic ways to explore a graph. Now we use them for a more specific job: finding a key, also called a goal state, inside a state space.',
           ),
           TextBlock(
-            'In maze language, DFS says: pick one corridor and follow it as deeply as you can. If it fails, back up and try another one.',
+            'The algorithms here use an iterative open and closed list style. The names are simple. Open stores states we have discovered but not fully processed. Closed stores states we have already explored.',
+          ),
+          DefinitionBlock(
+            term: 'Open list',
+            definition:
+                'The collection of discovered states waiting to be expanded. DFS, BFS, and Best-First Search differ mainly in how they choose the next state from open.',
+          ),
+          DefinitionBlock(
+            term: 'Closed list',
+            definition:
+                'The collection of states that have already been expanded. It prevents the search from revisiting the same state forever.',
           ),
           TextBlock(
-            'If there are several choices at a step, this lesson assumes we break ties by choosing the alphabetically smaller vertex first. That tie-breaking rule matters more than it might seem. Different tie-breaking can produce different search trees and affect how quickly a target is found.',
+            'In iterative DFS, open behaves like a stack. Remove the leftmost state, test whether it is the key, generate its children, discard children already on open or closed, then place the remaining children on the left end of open.',
           ),
-          DefinitionBlock(
-            term: 'DFS forest',
-            definition:
-                'The collection of depth-first search trees produced by DFS, especially important when the graph is disconnected and one tree is not enough.',
-          ),
-          DefinitionBlock(
-            term: 'Tree edge',
-            definition:
-                'An edge that is actually used to discover a new vertex in the DFS tree.',
-          ),
-          DefinitionBlock(
-            term: 'Back edge',
-            definition:
-                'An edge that points from a vertex to one of its ancestors in the DFS tree. This indicates a cycle in a directed graph.',
+          CodeBlock(
+            'DFS key search:\n'
+            'open = [Start]\n'
+            'closed = []\n\n'
+            'while open is not empty:\n'
+            '  X = remove leftmost state from open\n'
+            '  if X is the key: return SUCCESS\n'
+            '  children = generate children of X\n'
+            '  discard children already on open or closed\n'
+            '  add remaining children to the left end of open\n'
+            '  add X to closed\n\n'
+            'return FAILURE',
+            language: 'text',
           ),
           TextBlock(
-            'A stack is the natural data structure for DFS. When a vertex is first visited, push it onto the stack. When it becomes finished or reaches a dead end, pop it off. This keeps track of the current path and makes backtracking systematic.',
+            'That left-end insertion is the stack-like move. It makes DFS chase the most recently discovered child first, so the search tends to go deep before it spreads out.',
           ),
           VisualizerLinkBlock(
             algorithmId: 'dfs',
-            label: 'Visualize DFS step by step',
-            description: 'See how the stack grows and shrinks as DFS explores',
+            label: 'Visualize DFS key search',
+            description: 'Watch the stack-like search order go deep first.',
           ),
           TextBlock(
-            'Suppose we start at A in a directed graph and always prefer the alphabetically smaller available next vertex. A DFS path might look like:\n\nA → B → D → E → F\n\nAt F we hit a dead end, so we backtrack. From E we can still go to G, so:\n\nE → G\n\nFrom G, going back to A would create a cycle, so we do not use that edge. We backtrack again and continue with any remaining unexplored choices. From D we can still go to C. Eventually every vertex gets visited, and the result is a depth-first search tree.',
+            'BFS uses nearly the same structure, but open behaves like a queue. Remove from the left, generate children, discard repeats, then add the remaining children to the right end of open.',
           ),
           CodeBlock(
-            'DFS(G, start):\n  visited = empty set\n  stack = [start]\n\n  while stack is not empty:\n    v = stack.pop()\n    if v not in visited:\n      visit(v)          # process vertex\n      visited.add(v)\n      for each neighbor u of v:\n        if u not in visited:\n          stack.push(u)\n\n  return visited',
+            'BFS key search:\n'
+            'open = [Start]\n'
+            'closed = []\n\n'
+            'while open is not empty:\n'
+            '  X = remove leftmost state from open\n'
+            '  if X is the key: return SUCCESS\n'
+            '  children = generate children of X\n'
+            '  discard children already on open or closed\n'
+            '  add remaining children to the right end of open\n'
+            '  add X to closed\n\n'
+            'return FAILURE',
             language: 'text',
           ),
+          TextBlock(
+            'That single left-end versus right-end change switches the behavior. DFS goes deep first. BFS explores all states at distance 1, then distance 2, and so on. If the search space is finite, the key is reachable, and repeated states are blocked, both can find the key.',
+          ),
+          TextBlock(
+            'BFS has an extra guarantee in an unweighted state space. Because it explores by distance from the start, the first key it finds is on a shortest path by number of steps. DFS may find a key sooner in lucky cases, but it does not guarantee a shortest path.',
+          ),
+          VisualizerLinkBlock(
+            algorithmId: 'bfs',
+            label: 'Visualize BFS key search',
+            description: 'Watch the queue-like search order expand by layers.',
+          ),
+          DefinitionBlock(
+            term: 'Best-First Search',
+            definition:
+                'A heuristic search strategy that chooses the open state that appears most promising, usually the state with the smallest heuristic value h(X).',
+          ),
+          DefinitionBlock(
+            term: 'Heuristic',
+            definition:
+                'Extra guidance that estimates which state looks closer to the goal. It can help the search, but it can also be wrong.',
+          ),
+          TextBlock(
+            'Best-First Search keeps open and closed, but each state in open has a heuristic value h(X). Instead of treating open as only a stack or queue, it keeps open ordered by heuristic merit and removes the state that currently looks best.',
+          ),
+          CodeBlock(
+            'Best-First key search:\n'
+            'open = [Start with h(Start)]\n'
+            'closed = []\n\n'
+            'while open is not empty:\n'
+            '  X = remove state with best h value\n'
+            '  if X is the key: return path from Start to X\n'
+            '  children = generate children of X\n'
+            '  for each child Y:\n'
+            '    if Y is new, compute h(Y) and add Y to open\n'
+            '    if Y was seen before, keep the better path when needed\n'
+            '  add X to closed\n'
+            '  reorder open by heuristic merit\n\n'
+            'return FAILURE',
+            language: 'text',
+          ),
+          TextBlock(
+            'The 8-puzzle is a classic example. Each board arrangement is a state, and each move slides one tile into the blank square. DFS or BFS can solve it, but the state space is large, so a useful heuristic can save a lot of work.',
+          ),
+          DefinitionBlock(
+            term: '8-puzzle state',
+            definition:
+                'One arrangement of the eight numbered tiles and the blank square on a 3 by 3 board.',
+          ),
+          TextBlock(
+            'Two common 8-puzzle heuristics are the number of tiles out of place and the sum of tile distances from their correct positions. The distance-sum version is usually more informative because it cares about how far each tile must move, not only whether it is wrong.',
+          ),
+          CodeBlock(
+            '8-puzzle heuristic examples:\n'
+            'h1 = number of tiles out of place\n'
+            'h2 = sum of tile distances from goal positions',
+            language: 'text',
+          ),
+          TextBlock(
+            'Heuristics are powerful, but they are not magic. A misleading heuristic can send the search toward states that look close to the goal while the real solution is elsewhere.',
+          ),
+          DefinitionBlock(
+            term: 'Topological sort',
+            definition:
+                'A linear ordering of vertices in a directed graph such that every directed edge U to V places U before V.',
+          ),
+          TextBlock(
+            'DFS also supports topological sorting. This matters for dependency problems: factory assembly steps, prerequisite courses, and tasks where one job must happen before another.',
+          ),
+          DefinitionBlock(
+            term: 'Directed acyclic graph (DAG)',
+            definition:
+                'A directed graph with no directed cycles. A graph has a topological sort exactly when its dependency structure has no directed cycle.',
+          ),
+          TextBlock(
+            'The DFS method is: run DFS, record vertices when they finish, and watch for back edges. If a back edge appears, the graph has a directed cycle and no topological sort exists. Otherwise, reverse the finish-time order to get a topological ordering.',
+          ),
+          CodeBlock(
+            'Topological sort with DFS:\n'
+            'run DFS on the directed graph\n'
+            'if a back edge is found: report no topological sort\n'
+            'record each vertex when it finishes\n'
+            'reverse the finish-time order\n'
+            'return that order',
+            language: 'text',
+          ),
+          TextBlock(
+            'There is another topological sorting method that repeatedly removes vertices with no incoming edges. That version is a decrease-by-one idea, so it connects naturally to the next lesson on decrease-and-conquer.',
+          ),
+          QuizBlock(
+            question:
+                'What single open-list change switches the iterative version from DFS to BFS?',
+            options: [
+              'DFS adds children to the left end, while BFS adds them to the right end.',
+              'DFS never uses a closed list.',
+              'BFS ignores goal states.',
+              'BFS sorts all states by heuristic value.',
+            ],
+            correctIndex: 0,
+            explanation:
+                'Both versions remove from the left. DFS adds new children to the left like a stack. BFS adds them to the right like a queue.',
+          ),
+          QuizBlock(
+            question:
+                'Why can Best-First Search be faster than blind DFS or BFS?',
+            options: [
+              'It always proves the shortest path.',
+              'It uses a heuristic to expand states that look closer to the goal.',
+              'It never needs open or closed lists.',
+              'It only works on trees with no repeated states.',
+            ],
+            correctIndex: 1,
+            explanation:
+                'A heuristic gives extra guidance. Good guidance can focus the search on promising states before exploring less useful ones.',
+          ),
+          QuizBlock(
+            question: 'When does a directed graph have a topological sort?',
+            options: [
+              'When it is a DAG with no directed cycles.',
+              'When every vertex has exactly two outgoing edges.',
+              'When DFS finds a back edge.',
+              'When BFS visits vertices alphabetically.',
+            ],
+            correctIndex: 0,
+            explanation:
+                'A directed cycle creates circular dependency, so no valid topological order exists. A DAG avoids that problem.',
+          ),
           KeyTakeawayBlock(
-            'DFS uses a stack to remember where to backtrack. Tree edges build the DFS tree, and back edges reveal cycles.',
+            'DFS, BFS, and Best-First Search all manage discovered states with open and closed lists. DFS goes deep, BFS goes broad and finds shortest paths by step count, and Best-First uses a heuristic to guess which state looks most promising. DFS also powers topological sorting for DAGs.',
           ),
         ],
       ),
@@ -2272,10 +2417,19 @@ const List<LessonContent> lessons = [
         order: 5,
         contentBlocks: [
           TextBlock(
-            'DFS and BFS are classic search tools because they give order to what could otherwise become chaos. Without them, graph exploration can become repetitive, wasteful, or confusing.',
+            'In Lesson 5 we introduced problems on graphs and explored three search styles: depth-first search, breadth-first search, and heuristic search.',
           ),
           TextBlock(
-            'With them we get a clear strategy, a useful data structure, and a strong foundation for more advanced graph algorithms. The next lessons build on these ideas, so make sure the core difference between stack-based deep-first exploration and queue-based level-by-level spreading is solid.',
+            'We saw how many problems can be modeled with a graph. Once the model is a graph, DFS and BFS give us disciplined ways to visit states, find keys, avoid repeated work, and reason about paths.',
+          ),
+          TextBlock(
+            'DFS goes deep first. BFS goes broad first and finds shortest paths by edge count in unweighted state spaces. Best-First Search adds a heuristic so the search can focus on states that appear closer to the goal.',
+          ),
+          TextBlock(
+            'We also saw an important DFS application: topological sort. It orders tasks in a directed acyclic graph so that every prerequisite appears before the task that depends on it.',
+          ),
+          TextBlock(
+            'Topological sort is also a bridge to Lesson 6. The version that repeatedly removes a vertex with no incoming edges is a decrease-and-conquer algorithm because the problem shrinks one vertex at a time.',
           ),
           VisualizerLinkBlock(
             algorithmId: 'dfs',
@@ -2288,7 +2442,7 @@ const List<LessonContent> lessons = [
             description: 'Interactive animation of breadth-first search',
           ),
           KeyTakeawayBlock(
-            'DFS uses a stack and goes deep before backtracking. BFS uses a queue and spreads outward layer by layer. Both are Theta(|V| + |E|) on adjacency lists, but BFS finds shortest paths by edge count while DFS is natural for cycle detection and exhaustive path exploration.',
+            'Lesson 5 turns graph search into a toolkit: DFS for deep exploration and topological sorting, BFS for layer-by-layer shortest paths, and heuristic search for goal-directed exploration. Lesson 6 continues with decrease-and-conquer strategy.',
           ),
         ],
       ),
