@@ -1425,8 +1425,8 @@ void main() {
       return prose;
     }
 
-    test('has 4 modules', () {
-      expect(lesson6.modules.length, 4);
+    test('has 5 modules', () {
+      expect(lesson6.modules.length, 5);
     });
 
     test('Module 1 introduces decrease-and-conquer categories', () {
@@ -1538,9 +1538,32 @@ void main() {
       expect(combined, contains('duplicate'));
     });
 
-    test('Lesson 6 modules 3 and 4 keep formulas out of visible prose', () {
+    test('Module 5 covers Analysis of Binary Search', () {
+      final module = lesson6.modules[4];
+      expect(module.id, 'lesson6_module5');
+      expect(module.title, 'Analysis of Binary Search');
+      expect(module.order, 4);
+      expect(module.algorithmId, 'binary-search');
+
+      final blocks = module.contentBlocks;
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(6));
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+      expect(blocks.whereType<VisualizerLinkBlock>().isEmpty, isTrue);
+
+      final combined = combinedText(blocks);
+      expect(combined, contains(r'C_{worst}'));
+      expect(combined, contains(r'\Theta(\log n)'));
+      expect(combined, contains(r'\lfloor'));
+      expect(combined, contains(r'\lceil'));
+      expect(combined, contains(r'\log_2'));
+      expect(combined, contains(r'2^{k-1}'));
+    });
+
+    test('Lesson 6 modules 3, 4, and 5 keep formulas out of visible prose', () {
       final visibleProse = lesson6.modules
           .skip(2)
+          .take(3)
           .expand((module) => module.contentBlocks)
           .where((block) => block is! MathBlock && block is! CodeBlock)
           .map((block) {
@@ -1564,6 +1587,8 @@ void main() {
       expect(visibleProse, isNot(contains('ceil(')));
       expect(visibleProse, isNot(contains('Θ(')));
       expect(visibleProse, isNot(contains('δ')));
+      expect(visibleProse, isNot(contains(r'\lfloor')));
+      expect(visibleProse, isNot(contains(r'\lceil')));
     });
 
     test('Lesson 6 prose avoids AI punctuation tells', () {

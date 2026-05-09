@@ -2918,6 +2918,114 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+
+      // ── Module 5: Analysis of Binary Search ──────────────────────────────
+      ModuleContent(
+        id: 'lesson6_module5',
+        title: 'Analysis of Binary Search',
+        order: 4,
+        algorithmId: 'binary-search',
+        contentBlocks: [
+          TextBlock(
+            'In the previous module we described the idea of Binary Search. Now we analyze its running time more carefully.',
+          ),
+          DefinitionBlock(
+            term: 'Basic operation',
+            definition:
+                'For Binary Search, the basic operation is a comparison between the key we are looking for and an array element.',
+          ),
+          TextBlock(
+            'We are interested in how many comparisons happen in the worst case.',
+          ),
+          TextBlock(
+            'There are two natural worst-case situations: the element is not in the array at all, or the element is in the array but the search only finds that out after examining the maximum possible number of positions.',
+          ),
+          TextBlock(
+            'In both cases, the algorithm keeps splitting the array until the remaining part becomes size 1. The worst case always corresponds to the maximum number of splitting steps.',
+          ),
+          DefinitionBlock(
+            term: 'Recurrence for the worst case',
+            definition:
+                'Let C_worst(n) be the worst-case number of comparisons needed to search an array of size n.',
+          ),
+          MathBlock(
+            r'C_{worst}(n) = C_{worst}(\lfloor n/2 \rfloor) + 1, \quad C_{worst}(1) = 1',
+            semanticsLabel: 'worst case recurrence for binary search',
+          ),
+          TextBlock(
+            'The "+ 1" is the comparison with the middle element at each step. The base case C_worst(1) = 1 means that with only one element left, we perform exactly one comparison.',
+          ),
+          TextBlock(
+            'To solve the recurrence, first imagine that n is an exact power of 2. That means n equals 2 raised to some integer power k.',
+          ),
+          MathBlock(
+            r'C_{worst}(2^k) = C_{worst}(2^{k-1}) + 1',
+            semanticsLabel: 'worst case recurrence for power of two',
+          ),
+          TextBlock('Applying this repeatedly:'),
+          MathBlock(
+            r'C_{worst}(2^k) = C_{worst}(2^{k-1}) + 1 = C_{worst}(2^{k-2}) + 2 = \cdots = C_{worst}(2^0) + k = 1 + k',
+            semanticsLabel: 'unrolling the worst case recurrence',
+          ),
+          MathBlock(
+            r'C_{worst}(n) = k + 1 = \log_2(n) + 1 \quad \text{for } n = 2^k',
+            semanticsLabel: 'worst case for exact powers of two',
+          ),
+          TextBlock(
+            'For general n, there exists an integer k such that 2 to the power k is less than or equal to n, which is less than the next power of two. This means floor(log base 2 of n) equals k.',
+          ),
+          MathBlock(
+            r'C_{worst}(n) = \lfloor \log_2 n \rfloor + 1 = \lceil \log_2(n + 1) \rceil',
+            semanticsLabel: 'worst case for general n',
+          ),
+          MathBlock(
+            r'C_{worst}(n) \in \Theta(\log n)',
+            semanticsLabel: 'asymptotic complexity of binary search',
+          ),
+          TextBlock(
+            'Every time Binary Search makes a comparison, the size of the remaining search space is cut roughly in half. So the question "How many steps until we are down to a single element?" is basically "How many times can we divide n by 2?" The answer is log₂(n), which is why the running time is logarithmic.',
+          ),
+          TextBlock(
+            'Logarithmic time scales very nicely. If you double the input size, Binary Search increases its work by just one extra comparison in the worst case.',
+          ),
+          TextBlock(
+            'For example, if n = 1024 then log₂(1024) = 10. If n = 1,048,576 (one million), then log₂(n) is about 20. So going from one thousand to one million elements only doubles the number of worst-case comparisons.',
+          ),
+          TextBlock('That is the power of a logarithmic algorithm.'),
+          QuizBlock(
+            question:
+                'If n = 16, what is C_worst(16) step by step using the recurrence?',
+            options: ['4', '5', '16', '8'],
+            correctIndex: 1,
+            explanation:
+                '16 = 2^4, so C_worst(16) = 4 + 1 = 5. Each halving adds one more comparison.',
+          ),
+          QuizBlock(
+            question:
+                'What is the asymptotic complexity of Binary Search in the worst case?',
+            options: ['linear', 'logarithmic', 'n log n', 'constant'],
+            correctIndex: 1,
+            explanation:
+                'Binary Search halves the search range each step, giving logarithmic worst-case time.',
+          ),
+          QuizBlock(
+            question:
+                'Why does doubling the input size only add one comparison to Binary Search?',
+            options: [
+              'Because the algorithm skips every other element.',
+              'Because halving the range each step means one more split is needed.',
+              'Because Binary Search caches previous results.',
+              'Because the constant factor changes.',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Each step cuts the range in half. Doubling n adds exactly one more halving step, so only one extra comparison is needed.',
+          ),
+          KeyTakeawayBlock(
+            'Binary Search has worst-case logarithmic complexity. The recurrence C_worst(n) = C_worst(⌊n/2⌋) + 1 solves to ⌊log₂ n⌋ + 1, or equivalently ⌈log₂(n+1)⌉. Doubling the input adds just one comparison.',
+          ),
+        ],
+      ),
     ],
   ),
 
