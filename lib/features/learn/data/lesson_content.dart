@@ -3537,7 +3537,7 @@ const List<LessonContent> lessons = [
           // ── Cost of Merge ────────────────────────────────────────────────
           TextBlock(
             'Suppose we are merging two subarrays whose total length is n. '
-            'In the worst case, we perform n - 1 comparisons. '
+            'In the worst case, we perform at most n comparisons. '
             'This happens when neither subarray runs out before the very end.',
           ),
           MathBlock(
@@ -3561,14 +3561,14 @@ const List<LessonContent> lessons = [
           ),
           TextBlock(
             'Using the worst-case cost of Merge, this becomes: '
-            'C(n) = 2C(n/2) + n - 1, C(1) = 0.',
+            'C(n) = 2C(n/2) + Theta(n), C(1) = 0.',
           ),
 
           // ── Master Theorem ───────────────────────────────────────────────
           TextBlock(
-            'We compare C(n) = 2C(n/2) + n - 1 '
+            'We compare C(n) = 2C(n/2) + Theta(n) '
             'with the standard form aT(n/b) + f(n). '
-            'Here a = 2, b = 2, f(n) = n - 1 in Theta(n).',
+            'Here a = 2, b = 2, f(n) in Theta(n).',
           ),
           MathBlock(
             r'd = \log_b a = \log_2 2 = 1',
@@ -3598,7 +3598,7 @@ const List<LessonContent> lessons = [
           KeyTakeawayBlock(
             'Mergesort summary: '
             'Strategy: divide-and-conquer. '
-            'Recurrence: C(n) = 2C(n/2) + n - 1. '
+            'Recurrence: C(n) = 2C(n/2) + Theta(n). '
             'Solution: C(n) in Theta(n log n). '
             'Extra space: auxiliary array of size n during merge. '
             'Pros: predictable Theta(n log n) worst case, stable sort. '
@@ -3609,8 +3609,8 @@ const List<LessonContent> lessons = [
           TextBlock(
             'Stop and Think: '
             '1. Why do we assume n is a power of 2 in the analysis? '
-            '2. Why is the worst-case cost of Merge equal to n - 1 comparisons? '
-            '3. In the recurrence C(n) = 2C(n/2) + n - 1, '
+            '2. Why is the worst-case cost of Merge proportional to n comparisons? '
+            '3. In the recurrence C(n) = 2C(n/2) + Theta(n), '
             'what do the three terms represent? '
             '4. Why does Mergesort have the same order of growth '
             'for best, average, and worst case? '
@@ -4411,7 +4411,7 @@ const List<LessonContent> lessons = [
             explanation:
                 '45 = 4 times 10 + 5, 28 = 2 times 10 + 8. '
                 'c2 = 4 times 2 = 8, c0 = 5 times 8 = 40, '
-                'c1 = (4+5)(2+8) - 8 - 40 = 9 times 10 - 48 = 90 - 48 = 42. '
+                'c1 = (4+5)(2+8) minus 8 minus 40 = 9 times 10 minus 48 = 42. '
                 'c = 8 times 100 + 42 times 10 + 40 = 800 + 420 + 40 = 1260. '
                 'Verified: 45 times 28 = 1260.',
           ),
