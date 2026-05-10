@@ -1686,8 +1686,8 @@ void main() {
       return prose;
     }
 
-    test('has 3 modules', () {
-      expect(lesson7.modules.length, 3);
+    test('has 4 modules', () {
+      expect(lesson7.modules.length, 4);
     });
 
     test('Module 1 covers divide and conquer introduction', () {
@@ -1748,6 +1748,22 @@ void main() {
       expect(combined, contains('inversion'));
       expect(combined, contains('merge'));
       expect(combined, contains('divide'));
+    });
+
+    test('Module 4 covers Quicksort', () {
+      final module = lesson7.modules[3];
+      expect(module.id, 'lesson7_module4');
+      expect(module.title, 'Quicksort');
+      expect(module.order, 3);
+      expect(module.algorithmId, isNull);
+      final blocks = module.contentBlocks;
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(2));
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+      final combined = combinedText(blocks);
+      expect(combined, contains('pivot'));
+      expect(combined, contains('partition'));
+      expect(combined, contains('quicksort'));
     });
 
     test('Lesson 7 visible prose keeps formulas out of prose blocks', () {

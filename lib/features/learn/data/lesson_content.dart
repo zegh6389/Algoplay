@@ -3913,6 +3913,184 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+      ModuleContent(
+        id: 'lesson7_module4',
+        title: 'Quicksort',
+        order: 3,
+        contentBlocks: [
+          TextBlock(
+            'In this module we review Quicksort, another classic '
+            'divide-and-conquer sorting algorithm, and look at both its '
+            'worst-case and average-case behaviour.',
+          ),
+          TextBlock('High-Level Idea of Quicksort'),
+          TextBlock(
+            'Quicksort follows the divide, conquer, combine pattern:',
+          ),
+          TextBlock(
+            '1. Divide: Choose a pivot element from the array and partition '
+            'the remaining elements into two groups: those less than the pivot '
+            'and those greater than the pivot.',
+          ),
+          TextBlock(
+            '2. Conquer: Recursively apply Quicksort to the left and right '
+            'subarrays.',
+          ),
+          TextBlock(
+            '3. Combine: In the array implementation there is no heavy combine '
+            'step. Once the subarrays are sorted and the pivot is in the correct '
+            'place, the whole array is sorted.',
+          ),
+          TextBlock(
+            'This is different from Mergesort, where combining (merging) is '
+            'the main extra work. In Quicksort, the hard work is in the '
+            'partitioning step.',
+          ),
+          TextBlock('Quicksort and Partition'),
+          TextBlock(
+            'Pick the first element in the array as the pivot. Temporarily '
+            'remove the pivot from the array. Use a Partition procedure to '
+            'rearrange the remaining elements: all elements less than the pivot '
+            'go to the left side, all elements greater than the pivot go to the '
+            'right side. Finally, reinsert the pivot between these two groups.',
+          ),
+          TextBlock(
+            'After partitioning, the pivot is in its final sorted position, '
+            'everything to the left is smaller, everything to the right is '
+            'larger. We then recursively sort the left and right subarrays.',
+          ),
+          TextBlock('Worst-Case Analysis'),
+          TextBlock(
+            'The basic operation is comparison of two keys.',
+          ),
+          TextBlock(
+            'The worst case for Quicksort occurs when the pivot is always the '
+            'smallest element (or always the largest element) in the current '
+            'subarray.',
+          ),
+          TextBlock(
+            'In that situation, Partition essentially accomplishes nothing '
+            'useful. One side of the partition is always empty. We end up doing '
+            'nearly as many comparisons as a naive algorithm.',
+          ),
+          TextBlock(
+            'If the array has size n, the worst case comparisons look like:',
+          ),
+          MathBlock(
+            r'C_{\text{worst}}(n) = (n+1) + n + (n-1) + \dots + 3',
+            semanticsLabel: 'quicksort worst case comparisons',
+          ),
+          TextBlock(
+            'Using the summation formula, this can be rewritten as:',
+          ),
+          MathBlock(
+            r'C_{\text{worst}}(n) = \frac{(n+1)(n+2)}{2} - 3 \in \Theta(n^2)',
+            semanticsLabel: 'quicksort worst case quadratic',
+          ),
+          TextBlock(
+            'So Quicksort has quadratic time in the worst case, the same order '
+            'as simple algorithms like Insertion Sort.',
+          ),
+          TextBlock('Average-Case Analysis'),
+          TextBlock(
+            'In practice, Quicksort is usually fast because the pivot is rarely '
+            'always the smallest or largest element.',
+          ),
+          TextBlock(
+            'To analyze the average case, we assume all permutations of the '
+            'keys are equally likely, all keys are distinct, and the pivot '
+            'position is equally likely to be any of the positions in the array.',
+          ),
+          TextBlock(
+            'Let A(n) be the average number of comparisons used by Quicksort on '
+            'an array of size n. The recurrence is:',
+          ),
+          MathBlock(
+            r'A(n) = n + 1 + \frac{2}{n} \sum_{i=1}^{n-1} A(i)',
+            semanticsLabel: 'quicksort average case recurrence',
+          ),
+          TextBlock(
+            'This recurrence is somewhat hard to solve directly. Instead, one '
+            'common approach is to guess a simpler comparison function Q(n) '
+            'that behaves like the solution, and then prove by induction that '
+            'the guess works.',
+          ),
+          TextBlock(
+            'The helpful guess is:',
+          ),
+          MathBlock(
+            r'Q(n) \equiv n + 2Q(n/2)',
+            semanticsLabel: 'quicksort guessed recurrence',
+          ),
+          TextBlock(
+            'This recurrence fits the standard divide-and-conquer form with a '
+            'equal to 2, b equal to 2, and f(n) equal to n. By the Master '
+            'Theorem, this implies:',
+          ),
+          MathBlock(
+            r'Q(n) \in \Theta(n \log n)',
+            semanticsLabel: 'quicksort average case complexity',
+          ),
+          TextBlock(
+            'Under reasonable assumptions, and with more careful analysis, the '
+            'actual average-case behaviour of Quicksort matches this order of '
+            'growth.',
+          ),
+          QuizBlock(
+            question:
+                'Why does Quicksort have no heavy combine step compared to '
+                'Mergesort?',
+            options: [
+              'Because after partitioning, each subarray is already in its '
+              'correct region of the array',
+              'Because Quicksort does not use recursion',
+              'Because the pivot is always the median',
+              'Because Quicksort uses extra memory',
+            ],
+            correctIndex: 0,
+            explanation:
+                'After partitioning, the pivot is in its final sorted position '
+                'and all elements are already in their correct halves. No '
+                'merging is needed.',
+          ),
+          QuizBlock(
+            question:
+                'What pivot choices make the worst case happen for Quicksort?',
+            options: [
+              'Always picking the smallest or largest element',
+              'Always picking the middle element',
+              'Always picking a random element',
+              'Always picking the median of three',
+            ],
+            correctIndex: 0,
+            explanation:
+                'When the pivot is always the smallest or largest, one side of '
+                'the partition is always empty, leading to quadratic time.',
+          ),
+          QuizBlock(
+            question:
+                'What is the average-case time complexity of Quicksort under '
+                'standard assumptions?',
+            options: [
+              'n log n',
+              'n squared',
+              'n',
+              'log n',
+            ],
+            correctIndex: 0,
+            explanation:
+                'Although the worst case is quadratic, the average case is '
+                'n log n, which is why Quicksort is fast in practice.',
+          ),
+          KeyTakeawayBlock(
+            'Quicksort ties together many ideas in this lesson: '
+            'divide-and-conquer structure, detailed recurrence analysis, and '
+            'the difference between worst-case and average-case efficiency. It '
+            'remains one of the most widely used sorting algorithms in real '
+            'systems today.',
+          ),
+        ],
+      ),
     ],
   ),
 
