@@ -4217,87 +4217,68 @@ const List<LessonContent> lessons = [
 
           // ── A Simple Example: 45 x 28 ────────────────────────────────────
           TextBlock(
-            'Write each number in base 10 as: '
-            '45 = 4 times 10 to the power of 1 + 5 times 10 to the power of 0, '
-            '28 = 2 times 10 to the power of 1 + 8 times 10 to the power of 0.',
+            'Write each number in base 10 by splitting into high and low digits. '
+            'For 45, the high digit is 4 and the low digit is 5. '
+            'For 28, the high digit is 2 and the low digit is 8.',
+          ),
+          MathBlock(
+            r'45 = 4 \cdot 10 + 5, \quad 28 = 2 \cdot 10 + 8',
+            semanticsLabel: 'splitting 45 and 28 into digits',
           ),
           TextBlock(
-            'Multiplying gives: '
-            '(4 times 10 + 5) times (2 times 10 + 8). '
-            'If we expand this directly we see four products: '
-            '4 times 2, 4 times 8, 5 times 2, 5 times 8.',
-          ),
-          TextBlock(
-            'But with a clever rearrangement we can express the result '
-            'using only three distinct multiplications instead of four. '
+            'Multiplying these out directly uses four small products. '
+            'But with a clever rearrangement we can get the same answer '
+            'using only three distinct multiplications. '
             'This idea generalizes to large numbers.',
           ),
 
           // ── General Setup ────────────────────────────────────────────────
           TextBlock(
             'Let a and b be n-digit positive integers that we wish to multiply. '
-            'Split each into a high half and a low half: '
-            'a = a sub 1 times 10 to the power of n over 2 + a sub 0, '
-            'b = b sub 1 times 10 to the power of n over 2 + b sub 0.',
-          ),
-          TextBlock(
-            'Here: '
-            'a sub 1 is the high half of the digits of a, '
-            'a sub 0 is the low half of the digits of a, '
-            'b sub 1 is the high half of b, '
-            'b sub 0 is the low half of b.',
+            'Split each into a high half and a low half.',
           ),
           MathBlock(
-            r'a = a_1 10^{n/2} + a_0, \quad b = b_1 10^{n/2} + b_0',
+            r'a = a_1 \cdot 10^{n/2} + a_0, \quad b = b_1 \cdot 10^{n/2} + b_0',
             semanticsLabel: 'splitting large integers',
           ),
           TextBlock(
+            'Here a sub 1 and b sub 1 are the high halves, '
+            'while a sub 0 and b sub 0 are the low halves.',
+          ),
+          TextBlock(
             'Consider the product c = a times b. '
-            'We can rewrite it as: '
-            'c = (a sub 1 times b sub 1) times 10 to the power of n '
-            '+ (a sub 1 times b sub 0 + a sub 0 times b sub 1) times 10 to the power of n over 2 '
-            '+ a sub 0 times b sub 0.',
+            'Expanding the product gives four terms.',
           ),
           MathBlock(
-            r'c = (a_1 b_1)10^n + (a_1 b_0 + a_0 b_1)10^{n/2} + a_0 b_0',
+            r'c = (a_1 b_1) \cdot 10^n + (a_1 b_0 + a_0 b_1) \cdot 10^{n/2} + a_0 b_0',
             semanticsLabel: 'large integer product expansion',
           ),
           TextBlock(
-            'Naively, this expression uses four multiplications: '
-            'a sub 1 times b sub 1, a sub 1 times b sub 0, '
-            'a sub 0 times b sub 1, a sub 0 times b sub 0. '
+            'Naively this needs four multiplications of the half-size parts. '
             'However, we can reduce this to three multiplications.',
           ),
 
           // ── Reducing to Three Multiplications ───────────────────────────
           TextBlock(
-            'Define three quantities: '
-            'c sub 2 = a sub 1 times b sub 1, '
-            'c sub 0 = a sub 0 times b sub 0, '
-            'c sub 1 = (a sub 1 + a sub 0) times (b sub 1 + b sub 0) '
-            'minus c sub 2 minus c sub 0.',
+            'Define three quantities: c sub 2, c sub 0, and c sub 1. '
+            'The first two are direct products of the halves. '
+            'The third uses a clever product of sums.',
           ),
           MathBlock(
-            r'c_2 = a_1 b_1,\quad c_0 = a_0 b_0,\quad c_1 = (a_1+a_0)(b_1+b_0) - c_2 - c_0',
+            r'c_2 = a_1 b_1, \quad c_0 = a_0 b_0, \quad c_1 = (a_1+a_0)(b_1+b_0) - c_2 - c_0',
             semanticsLabel: 'three multiplication trick',
           ),
           TextBlock(
             'Notice that (a sub 1 + a sub 0) times (b sub 1 + b sub 0) expands to '
-            'a sub 1 b sub 1 + a sub 1 b sub 0 + a sub 0 b sub 1 + a sub 0 b sub 0 '
-            '= c sub 2 + (a sub 1 b sub 0 + a sub 0 b sub 1) + c sub 0.',
+            'all four products we need. Subtracting c sub 2 and c sub 0 '
+            'leaves exactly the middle term.',
           ),
           TextBlock(
-            'Therefore: a sub 1 b sub 0 + a sub 0 b sub 1 = '
-            '(a sub 1 + a sub 0) times (b sub 1 + b sub 0) minus c sub 2 minus c sub 0.',
-          ),
-          TextBlock(
-            'So we can compute c sub 2, c sub 0, and c sub 1 '
-            'using only three multiplications of about half-size numbers: '
-            'a sub 1 times b sub 1, a sub 0 times b sub 0, '
-            'and (a sub 1 + a sub 0) times (b sub 1 + b sub 0).',
+            'So we can compute the result using only three multiplications '
+            'of about half-size numbers.',
           ),
           MathBlock(
-            r'c = c_2 10^n + c_1 10^{n/2} + c_0',
+            r'c = c_2 \cdot 10^n + c_1 \cdot 10^{n/2} + c_0',
             semanticsLabel: 'final product from three multiplications',
           ),
           TextBlock(
@@ -4320,17 +4301,15 @@ const List<LessonContent> lessons = [
             semanticsLabel: 'large integer multiplication recurrence',
           ),
           TextBlock(
-            'Assuming n = 2 to the power of k, we solve by repeated substitution: '
-            'M(2 to the power of k) = 3M(2 to the power of k-1) '
-            '= 3 squared M(2 to the power of k-2) = ... '
-            '= 3 to the power of k M(1) = 3 to the power of k.',
+            'Assuming n is a power of 2, we solve by repeated substitution. '
+            'Each substitution multiplies the coefficient by 3 and halves the argument.',
           ),
           MathBlock(
             r'M(2^k) = 3^k',
             semanticsLabel: 'solving the recurrence',
           ),
           TextBlock(
-            'Since n = 2 to the power of k, we have k = log base 2 of n, hence:',
+            'Since n = 2 to the power of k, we have k = log base 2 of n.',
           ),
           MathBlock(
             r'M(n) = 3^{\log_2 n}',
@@ -4346,29 +4325,27 @@ const List<LessonContent> lessons = [
           TextBlock(
             'The exponent log base 2 of 3 is approximately 1.585. '
             'So the multiplication complexity is '
-            'Theta(n to the power of log base 2 of 3), approximately '
-            'Theta(n to the power of 1.585). '
-            'This is asymptotically faster than the straightforward '
+            'Theta(n to the power of 1.585), '
+            'asymptotically faster than the straightforward '
             'Theta(n squared) grade-school algorithm.',
           ),
 
           // ── Why the Exponent Identity Works ──────────────────────────────
           TextBlock(
             'The step from 3 to the power of log base 2 of n '
-            'to n to the power of log base 2 of 3 uses a general exponent identity: '
-            'a to the power of log base b of c = c to the power of log base b of a.',
+            'to n to the power of log base 2 of 3 uses a general exponent identity.',
+          ),
+          MathBlock(
+            r'a^{\log_b c} = c^{\log_b a}',
+            semanticsLabel: 'exponent identity',
           ),
           TextBlock(
-            'You can see this by letting u = log base b of c, '
-            'so c = b to the power of u. '
-            'Then a to the power of log base b of c = a to the power of u '
-            '= (b to the power of log base b of a) to the power of u '
-            '= c to the power of log base b of a.',
+            'You can verify this by letting u = log base b of c, '
+            'so c = b to the power of u. Then both sides equal a to the power of u.',
           ),
           TextBlock(
-            'This identity is handy whenever you have terms like '
-            'k to the power of log n or n to the power of log k '
-            'and want to rewrite them.',
+            'This identity is handy whenever you need to swap '
+            'the base and argument of an exponentiated logarithm.',
           ),
 
           // ── Summary ──────────────────────────────────────────────────────
@@ -4377,8 +4354,7 @@ const List<LessonContent> lessons = [
             'Technique: divide-and-conquer on digits of large numbers. '
             'Key trick: use algebra to reduce four half-size multiplications to three. '
             'Recurrence: M(n) = 3M(n over 2). '
-            'Solution: M(n) in Theta(n to the power of log base 2 of 3) '
-            'with exponent about 1.585. '
+            'Solution: M(n) in Theta(n to the power of 1.585). '
             'This algorithm is a special case of Karatsuba multiplication.',
           ),
 
@@ -4541,9 +4517,7 @@ const List<LessonContent> lessons = [
             'n times n matrices where n is a power of 2.',
           ),
           TextBlock(
-            'We partition each matrix into four n over 2 times n over 2 blocks: '
-            'A = [[A sub 00, A sub 01], [A sub 10, A sub 11]], '
-            'B = [[B sub 00, B sub 01], [B sub 10, B sub 11]].',
+            'We partition each matrix into four blocks of size n over 2.',
           ),
           MathBlock(
             r'A = \begin{bmatrix} A_{00} & A_{01} \\ A_{10} & A_{11} \end{bmatrix},\quad'
@@ -4552,12 +4526,13 @@ const List<LessonContent> lessons = [
           ),
           TextBlock(
             'Then we treat these blocks like the entries of 2 times 2 matrices, '
-            'and apply the same Strassen formulas, but now the multiplications '
-            'of blocks are themselves matrix multiplications of size n over 2 times n over 2.',
+            'and apply the same Strassen formulas. '
+            'The multiplications of blocks are themselves matrix multiplications '
+            'of size n over 2.',
           ),
           TextBlock(
-            'At each level of recursion: '
-            'we perform 7 matrix multiplications on submatrices of size n over 2, '
+            'At each level of recursion we perform 7 matrix multiplications '
+            'on submatrices of size n over 2, '
             'plus additional matrix additions and subtractions.',
           ),
 
@@ -4567,8 +4542,8 @@ const List<LessonContent> lessons = [
             'multiply two n times n matrices using Strassen algorithm.',
           ),
           TextBlock(
-            'Each recursive step: '
-            'makes 7 recursive matrix multiplications on size n over 2, '
+            'Each recursive step makes 7 recursive matrix multiplications '
+            'on size n over 2, '
             'plus some amount of work for additions and subtractions '
             '(which we ignore in this first recurrence).',
           ),
@@ -4577,18 +4552,15 @@ const List<LessonContent> lessons = [
             semanticsLabel: 'Strassen recurrence',
           ),
           TextBlock(
-            'Assuming n = 2 to the power of k, we can solve this recurrence '
-            'by substitution: '
-            'M(2 to the power of k) = 7M(2 to the power of k-1) '
-            '= 7 squared M(2 to the power of k-2) = ... '
-            '= 7 to the power of k M(1) = 7 to the power of k.',
+            'Assuming n is a power of 2, we solve by substitution. '
+            'Each step multiplies the coefficient by 7 and halves the argument.',
           ),
           MathBlock(
             r'M(2^k) = 7^k',
             semanticsLabel: 'solving Strassen recurrence',
           ),
           TextBlock(
-            'Since n = 2 to the power of k, we have k = log base 2 of n, so:',
+            'Since n = 2 to the power of k, we have k = log base 2 of n.',
           ),
           MathBlock(
             r'M(n) = 7^{\log_2 n} = n^{\log_2 7}',
@@ -4596,10 +4568,9 @@ const List<LessonContent> lessons = [
           ),
           TextBlock(
             'The exponent log base 2 of 7 is approximately 2.807. '
-            'Thus Strassen algorithm has multiplication complexity: '
-            'M(n) in Theta(n to the power of log base 2 of 7), '
-            'approximately Theta(n to the power of 2.807). '
-            'This is asymptotically faster than the classical '
+            'Thus Strassen algorithm has multiplication complexity '
+            'Theta(n to the power of 2.807), '
+            'asymptotically faster than the classical '
             'Theta(n cubed) algorithm.',
           ),
 
@@ -4611,8 +4582,7 @@ const List<LessonContent> lessons = [
           TextBlock(
             'Let A(n) be the number of additions and subtractions. '
             'There are 7 recursive calls on matrices of size n over 2, '
-            'and an additional nonrecursive cost corresponding to '
-            'around 18 times (n over 2) squared additions at each level.',
+            'plus around 18 times (n over 2) squared additions at each level.',
           ),
           MathBlock(
             r'A(n) = 7A(n/2) + 18\left(\frac{n}{2}\right)^2, \quad A(1) = 0',
@@ -4620,13 +4590,12 @@ const List<LessonContent> lessons = [
           ),
           TextBlock(
             'Using the Master Theorem, this recurrence has the same order '
-            'of growth as M(n), namely: '
-            'A(n) in O(n to the power of log base 2 of 7).',
+            'of growth as M(n), namely A(n) in O(n to the power of 2.807).',
           ),
           TextBlock(
             'So even when we add in the cost of additions and subtractions, '
             'the total work of Strassen algorithm is on the order of '
-            'n to the power of log base 2 of 7.',
+            'n to the power of 2.807.',
           ),
 
           // ── Summary ──────────────────────────────────────────────────────
@@ -4634,11 +4603,10 @@ const List<LessonContent> lessons = [
             'Strassen algorithm summary: '
             'Technique: divide-and-conquer on matrix blocks. '
             'Multiplication recurrence: M(n) = 7M(n over 2). '
-            'Solution: M(n) in Theta(n to the power of log base 2 of 7), '
-            'approximately Theta(n to the power of 2.807). '
+            'Solution: M(n) in Theta(n to the power of 2.807). '
             'Addition recurrence: A(n) = 7A(n over 2) + 18(n over 2) squared, '
-            'also O(n to the power of log base 2 of 7). '
-            'Hence Strassen achieves O(n to the power of log base 2 of 7) time, '
+            'also O(n to the power of 2.807). '
+            'Hence Strassen achieves O(n to the power of 2.807) time, '
             'faster than normal O(n cubed). '
             'In practice, Strassen is often useful only for sufficiently large '
             'matrices, because the constant factors and extra additions can '
@@ -4650,10 +4618,10 @@ const List<LessonContent> lessons = [
             'Stop and Think: '
             '1. Why does reducing from 8 to 7 multiplications for the 2 times 2 '
             'case matter for large n? '
-            '2. How does the partitioning of n times n matrices into four '
-            'n over 2 times n over 2 blocks fit the divide-and-conquer pattern? '
+            '2. How does partitioning an n times n matrix into four blocks '
+            'fit the divide-and-conquer pattern? '
             '3. Why does M(n) = 7M(n over 2) lead to M(n) in Theta(n to the power '
-            'of log base 2 of 7)? '
+            'of 2.807)? '
             '4. What trade-off does Strassen make between multiplications '
             'and additions? '
             '5. Why might Strassen not always be used in practical libraries '
