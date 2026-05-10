@@ -3371,14 +3371,15 @@ const List<LessonContent> lessons = [
             explanation:
                 'Each recursive call splits into smaller subproblems '
                 'of equal size. The relationship between problem size and '
-                'subproblem size directly gives a recurrence like T(n) = '
-                'a T(n/b) + f(n).',
+                'subproblem size directly gives a recurrence in the standard '
+                'divide and conquer form.',
           ),
           KeyTakeawayBlock(
             'Divide and conquer splits the problem into multiple equal-sized '
             'subproblems, solves each recursively, then combines the results. '
-            'This naturally yields recurrences of the form T(n) = a T(n/b) + '
-            'f(n) that can be analyzed with the Master Theorem.',
+            'This naturally yields recurrences of the general form '
+            'T(n) = aT(n/b) + f(n) that can be analyzed with the Master '
+            'Theorem.',
           ),
         ],
       ),
