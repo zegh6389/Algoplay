@@ -3380,6 +3380,75 @@ const List<LessonContent> lessons = [
             'This naturally yields recurrences in the standard form that can '
             'be analyzed with the Master Theorem.',
           ),
+          TextBlock(
+            'To analyze recurrences of the form T(n) = aT(n/b) + f(n), we '
+            'compare f(n) with n to the power of log base b of a. Roughly '
+            'speaking, three cases arise.',
+          ),
+          MathBlock(
+            r'Case 1: f(n) = O(n^{d - \epsilon}) \Rightarrow T(n) = \Theta(n^d)',
+            semanticsLabel: 'Master Theorem case 1 subproblems dominate',
+          ),
+          MathBlock(
+            r'Case 2: f(n) = \Theta(n^d \log^k n) \Rightarrow T(n) = \Theta(n^d \log^{k+1} n)',
+            semanticsLabel: 'Master Theorem case 2 balanced',
+          ),
+          MathBlock(
+            r'Case 3: f(n) = \Omega(n^{d + \epsilon}) \Rightarrow T(n) = \Theta(f(n))',
+            semanticsLabel: 'Master Theorem case 3 combine dominates',
+          ),
+          TextBlock('Stop and Think'),
+          QuizBlock(
+            question:
+                'For Merge Sort the recurrence is T(n) = 2T(n/2) + Theta(n). '
+                'Which Master Theorem case applies?',
+            options: [
+              'Case 1 — the subproblems dominate',
+              'Case 2 — balanced growth',
+              'Case 3 — the combine step dominates',
+              'None — it does not fit the Master Theorem',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Here a = 2, b = 2, so d = log₂ 2 = 1. Since f(n) = Theta(n) '
+                'grows on the same order as n to the power of d, this is '
+                'Case 2, giving T(n) = Theta(n log n).',
+          ),
+          QuizBlock(
+            question:
+                'An algorithm has recurrence T(n) = 3T(n/2) + n. '
+                'What is its asymptotic order of growth?',
+            options: [
+              'linearithmic',
+              'cubic',
+              'quadratic',
+              'exponential',
+            ],
+            correctIndex: 0,
+            explanation:
+                'Here a = 3, b = 2, so d = log₂ 3 approximately equals 1.585. '
+                'Since f(n) = n grows more slowly than n to the power of d, '
+                'Case 1 applies and T(n) = Theta(n to the power of d), '
+                'which is linearithmic.',
+          ),
+          TextBlock('Mini Practice'),
+          QuizBlock(
+            question:
+                'Why do many divide and conquer algorithms end up with '
+                'quadratic running time?',
+            options: [
+              'The combine step grows faster than the subproblem work',
+              'The number of subproblems doubles each level',
+              'The subproblem work and the number of levels both grow '
+                  'proportionally with n',
+              'Divide and conquer always produces quadratic algorithms',
+            ],
+            correctIndex: 2,
+            explanation:
+                'When f(n) = Theta(n) and d = 1, the recurrence T(n) = 2T(n/2) '
+                '+ Theta(n) solves to Theta(n log n). The work per level and '
+                'the number of levels both scale with n, giving a log n factor.',
+          ),
         ],
       ),
     ],

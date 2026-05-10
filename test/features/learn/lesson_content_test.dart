@@ -1702,9 +1702,9 @@ void main() {
         blocks.whereType<DefinitionBlock>().length,
         greaterThanOrEqualTo(3),
       );
-      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(2));
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(4));
       expect(blocks.last, isA<KeyTakeawayBlock>());
-      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(1));
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(4));
 
       final combined = combinedText(blocks);
       expect(combined, contains('Divide and Conquer'));
@@ -1712,6 +1712,10 @@ void main() {
       expect(combined, contains('recursively'));
       expect(combined, contains('Merge Sort'));
       expect(combined, contains('T(n)'));
+      expect(combined, contains('Master Theorem'));
+      expect(combined, contains('Case 1'));
+      expect(combined, contains('Case 2'));
+      expect(combined, contains('Case 3'));
     });
 
     test('Lesson 7 visible prose keeps formulas out of prose blocks', () {
