@@ -3323,11 +3323,15 @@ const List<LessonContent> lessons = [
             definition:
                 'Because each level splits into a subproblems and each '
                 'subproblem handles a size reduced by factor b, the running '
-                'time is modeled as T(n) = a T(n/b) + f(n), where f(n) is the '
-                'cost of splitting and combining.',
+                'time follows this form, where f(n) is the cost of '
+                'splitting and combining.',
+          ),
+          MathBlock(
+            r'T(n) = aT\!\left(\frac{n}{b}\right) + f(n)',
+            semanticsLabel: 'divide and conquer recurrence relation',
           ),
           TextBlock(
-            'A classical example is merge sort: at each level we split the '
+            'A classical example is Merge Sort: at each level we split the '
             'array into two halves (a = 2, b = 2), sort each half recursively, '
             'then merge the two sorted halves. The merge step is the f(n) cost.',
           ),
