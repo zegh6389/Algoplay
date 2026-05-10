@@ -1632,6 +1632,31 @@ void main() {
   group('lesson7', () {
     final lesson7 = lessons.firstWhere((l) => l.id == 7);
 
+    String combinedText(Iterable<ContentBlock> blocks) {
+      return blocks
+          .map((block) {
+            return switch (block) {
+              TextBlock(:final text) => text,
+              DefinitionBlock(:final term, :final definition) =>
+                '$term $definition',
+              KeyTakeawayBlock(:final text) => text,
+              QuizBlock(:final question, :final options, :final explanation) =>
+                '$question ${options.join(' ')} $explanation',
+              CodeBlock(:final code, :final language) => '$language $code',
+              MathBlock(:final tex, :final semanticsLabel) =>
+                '$semanticsLabel $tex',
+              GraphBlock(:final type) => type,
+              VisualizerLinkBlock(
+                :final algorithmId,
+                :final label,
+                :final description,
+              ) =>
+                '$algorithmId $label ${description ?? ''}',
+            };
+          })
+          .join(' ');
+    }
+
     List<String> lesson7Prose() {
       final prose = <String>[];
       for (final module in lesson7.modules) {
