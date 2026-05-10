@@ -3676,6 +3676,243 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+      ModuleContent(
+        id: 'lesson7_module3',
+        title: 'Counting Inversions',
+        order: 2,
+        contentBlocks: [
+          TextBlock(
+            'In this module we introduce the problem of counting inversions and '
+            'show how a divide-and-conquer strategy, similar to Mergesort, can '
+            'solve it efficiently.',
+          ),
+          TextBlock('What Is an Inversion?'),
+          TextBlock(
+            'Suppose we have an array of positive integers:',
+          ),
+          MathBlock(
+            r'A = [a_1, a_2, \dots, a_n]',
+            semanticsLabel: 'array of positive integers',
+          ),
+          TextBlock(
+            'An inversion is a pair of indices (i, j) such that i is less than j, '
+            'and the element at position i is greater than the element at position j.',
+          ),
+          TextBlock(
+            'Intuitively, an inversion is a pair that is out of order with respect '
+            'to sorted ascending order. The number of inversions measures how far '
+            'the array is from being sorted.',
+          ),
+          TextBlock(
+            'For the array:',
+          ),
+          MathBlock(
+            r'[4, 2, 7, 1, 3, 5, 8, 6]',
+            semanticsLabel: 'example array with inversions',
+          ),
+          TextBlock(
+            'there are several inversions, such as (4, 2), (4, 1), (7, 1), and '
+            'many more.',
+          ),
+          TextBlock('Brute Force Approach'),
+          TextBlock(
+            'A straightforward algorithm to count inversions is to look at every '
+            'pair of positions (i, j) with i less than j, check whether the '
+            'element at i is greater than the element at j, and increment a counter '
+            'when we find an inversion.',
+          ),
+          TextBlock(
+            'There are n choose 2 such pairs, and so this algorithm runs in '
+            'quadratic time.',
+          ),
+          MathBlock(
+            r'\Theta(n^2)',
+            semanticsLabel: 'brute force time complexity',
+          ),
+          TextBlock(
+            'We would like something faster.',
+          ),
+          TextBlock('Divide-and-Conquer Strategy'),
+          TextBlock(
+            'We can adapt the idea of Mergesort to count inversions more efficiently.',
+          ),
+          TextBlock(
+            'Recall Mergesort: divide the array into two halves, recursively sort '
+            'each half, merge the two sorted halves. We will do something similar, '
+            'but we also keep track of how many inversions we see.',
+          ),
+          TextBlock(
+            'High-level steps:',
+          ),
+          TextBlock(
+            '1. Divide the array into two halves: left and right.',
+          ),
+          TextBlock(
+            '2. Recursively count inversions in each half.',
+          ),
+          TextBlock(
+            '3. Count the between-half inversions, where one element is in the '
+            'left half and the other is in the right half.',
+          ),
+          TextBlock(
+            '4. Add these three counts together.',
+          ),
+          TextBlock(
+            'The tricky part is step 3.',
+          ),
+          TextBlock('Counting Between-Half Inversions While Merging'),
+          TextBlock(
+            'We use a modified Merge procedure that works like Mergesort but also '
+            'counts cross inversions.',
+          ),
+          TextBlock(
+            'During Merge, we have two sorted subarrays: left half A and right '
+            'half B. We use pointers into both halves and into a temporary output '
+            'array, just like in normal Merge.',
+          ),
+          TextBlock(
+            'The key insight is that when we copy an element from the right '
+            'subarray B before one or more remaining elements in the left subarray '
+            'A, then each of those remaining elements in A forms an inversion with '
+            'that element from B.',
+          ),
+          TextBlock(
+            'Every time we place an element from the right half into the new array '
+            'before the remaining elements in the left half, we increase the '
+            'inversion count by the number of elements still left in the left half.',
+          ),
+          TextBlock('Algorithm Trace Example'),
+          TextBlock(
+            'Consider the array:',
+          ),
+          MathBlock(
+            r'[4, 2, 7, 1, 3, 5, 8, 6]',
+            semanticsLabel: 'example array for counting inversions',
+          ),
+          TextBlock(
+            'We first divide it into smaller subarrays, similar to Mergesort. At '
+            'various merge steps we count how many elements in the left half are '
+            'greater than the next element in the right half and add that to the '
+            'inversion total. By the end of the process, the total inversion count '
+            'for the original array is obtained.',
+          ),
+          TextBlock('Recurrence and Complexity'),
+          TextBlock(
+            'Let D(n) be the time to count inversions in an array of size n using '
+            'this method.',
+          ),
+          TextBlock(
+            'The recursion has the same structure as Mergesort: two recursive calls '
+            'on arrays of size',
+          ),
+          MathBlock(
+            r'\frac{n}{2}',
+            semanticsLabel: 'n over 2 fraction',
+          ),
+          TextBlock(
+            'and one modified Merge step that still runs in linear time. So the '
+            'recurrence is:',
+          ),
+          MathBlock(
+            r'D(n) = 2D\!\left(\frac{n}{2}\right) + O(n)',
+            semanticsLabel: 'counting inversions recurrence',
+          ),
+          TextBlock(
+            'By the same reasoning as for Mergesort, or by the Master Theorem, '
+            'this solves to:',
+          ),
+          MathBlock(
+            r'D(n) \in \Theta(n \log n)',
+            semanticsLabel: 'counting inversions complexity',
+          ),
+          TextBlock(
+            'So counting inversions can be done in n log n time, much faster than '
+            'the naive quadratic algorithm.',
+          ),
+          TextBlock('Why This Works Conceptually'),
+          TextBlock(
+            'The key idea is that once the left and right halves are individually '
+            'sorted, all inversions that remain must be cross inversions: one '
+            'element from the left half, one element from the right half.',
+          ),
+          TextBlock(
+            'Because both halves are sorted, we can detect and count all such cross '
+            'inversions efficiently during a single linear-time merge.',
+          ),
+          TextBlock(
+            'This is a classic example of using divide and conquer plus sorted '
+            'structure to answer a more complex question than just sorting.',
+          ),
+          TextBlock('Stop and Think'),
+          QuizBlock(
+            question:
+                'Why can all cross inversions be found during the merge step?',
+            options: [
+              'Because both halves are sorted, any remaining inversion must span '
+              'the two halves',
+              'Because the merge step compares every pair of elements',
+              'Because cross inversions are always fewer than in-half inversions',
+              'Because the merge step sorts the array',
+            ],
+            correctIndex: 0,
+            explanation:
+                'Once each half is sorted, every element in the left half is '
+                'correctly ordered relative to other elements in the same half, '
+                'and similarly for the right half. The only inversions left are '
+                'those that cross the boundary.',
+          ),
+          QuizBlock(
+            question:
+                'How does the modified Merge know how many inversions to add '
+                'when it takes an element from the right half?',
+            options: [
+              'It counts all remaining elements in the left half',
+              'It counts all remaining elements in the right half',
+              'It compares the element with every other element',
+              'It adds one for each comparison',
+            ],
+            correctIndex: 0,
+            explanation:
+                'When an element from the right half is placed before remaining '
+                'elements in the left half, each of those remaining elements forms '
+                'an inversion with it. The count of remaining left elements is '
+                'added to the total.',
+          ),
+          QuizBlock(
+            question:
+                'For an array that is already sorted, how many inversions are '
+                'there?',
+            options: [
+              'Zero',
+              'n',
+              'n log n',
+              'n squared',
+            ],
+            correctIndex: 0,
+            explanation:
+                'A sorted array has no pairs (i, j) with i less than j and the '
+                'element at i greater than the element at j. There are zero '
+                'inversions.',
+          ),
+          TextBlock('Mini Practice'),
+          TextBlock(
+            'Manually count the inversions in the array [3, 1, 2] using the brute '
+            'force method. Then sketch how the divide-and-conquer method would '
+            'discover the same count.',
+          ),
+          TextBlock(
+            'Explain in your own words why the between-half inversions dominate '
+            'the interesting part of the algorithm.',
+          ),
+          KeyTakeawayBlock(
+            'Counting inversions is a powerful example of how divide and conquer '
+            'can transform a seemingly quadratic problem into an n log n one. By '
+            'reusing the structure of Mergesort and adding a small twist during '
+            'merge, we obtain both a sorted array and a meaningful measure of how '
+            'unsorted the original array was.',
+          ),
+        ],
+      ),
     ],
   ),
 
