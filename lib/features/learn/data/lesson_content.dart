@@ -3274,12 +3274,111 @@ const List<LessonContent> lessons = [
     ],
   ),
 
-  // ── Lesson 7 (stub) ───────────────────────────────────────────────────────
+  // ── Lesson 7 ─────────────────────────────────────────────────────────────────
   LessonContent(
     id: 7,
     title: 'Divide and Conquer',
     categoryColor: '#F43F5E',
-    modules: [],
+    modules: [
+      ModuleContent(
+        id: 'lesson7_module1',
+        title: 'Introduction to Divide and Conquer',
+        order: 0,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'In the previous lesson on decrease and conquer, we reduced the '
+            'problem to one smaller subproblem at each step. Now we take a '
+            'broader view and split the problem into several subproblems '
+            'simultaneously.',
+          ),
+          TextBlock(
+            'This strategy is called divide and conquer, and it is one of the '
+            'most important algorithm design techniques in computer science.',
+          ),
+          DefinitionBlock(
+            term: 'Divide and Conquer',
+            definition:
+                'A strategy that splits the problem into multiple '
+                'subproblems of roughly equal size, solves each recursively, '
+                'then combines the results to form the solution to the original '
+                'problem.',
+          ),
+          TextBlock('The strategy follows three clear steps:'),
+          CodeBlock(
+            '1. Divide: split the problem into smaller subproblems\n'
+            '2. Conquer: solve each subproblem recursively\n'
+            '3. Combine: merge the subproblem solutions',
+            language: 'text',
+          ),
+          DefinitionBlock(
+            term: 'Decrease and Conquer',
+            definition:
+                'Reduces the problem to one smaller subproblem at '
+                'each step, then extends the solution. Divide and conquer '
+                'reduces to multiple subproblems and combines all of them.',
+          ),
+          DefinitionBlock(
+            term: 'Recurrence Relation for Divide and Conquer',
+            definition:
+                'Because each level splits into a subproblems and each '
+                'subproblem handles a size reduced by factor b, the running '
+                'time is modeled as T(n) = a T(n/b) + f(n), where f(n) is the '
+                'cost of splitting and combining.',
+          ),
+          TextBlock(
+            'A classical example is merge sort: at each level we split the '
+            'array into two halves (a = 2, b = 2), sort each half recursively, '
+            'then merge the two sorted halves. The merge step is the f(n) cost.',
+          ),
+          MathBlock(
+            r'T(n) = 2T\!\left(\frac{n}{2}\right) + \Theta(n)',
+            semanticsLabel: 'Merge sort recurrence',
+          ),
+          TextBlock(
+            'Many divide and conquer algorithms end up with a running time of '
+            '\u0398(n log n) because the work done per level (f(n)) and the '
+            'number of levels (log n) both contribute meaningfully. We will '
+            'see exactly why using the Master Theorem.',
+          ),
+          QuizBlock(
+            question:
+                'What is the divide and conquer step missing from '
+                'this list: "Divide, Conquer, ?"',
+            options: ['Divide again', 'Sort', 'Combine', 'Recurse'],
+            correctIndex: 2,
+            explanation:
+                'The three-part pattern is divide, conquer, then '
+                'combine. "Combine" merges the solved subproblems into the '
+                'overall solution.',
+          ),
+          QuizBlock(
+            question:
+                'Why does divide and conquer naturally lead to '
+                'recurrence relations for running time analysis?',
+            options: [
+              'Because it uses loops',
+              'Because each recursive call solves a smaller problem of a '
+                  'similar size',
+              'Because it always runs in constant time',
+              'Because there is no combining step',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Each recursive call splits into smaller subproblems '
+                'of equal size. The relationship between problem size and '
+                'subproblem size directly gives a recurrence like T(n) = '
+                'a T(n/b) + f(n).',
+          ),
+          KeyTakeawayBlock(
+            'Divide and conquer splits the problem into multiple equal-sized '
+            'subproblems, solves each recursively, then combines the results. '
+            'This naturally yields recurrences of the form T(n) = a T(n/b) + '
+            'f(n) that can be analyzed with the Master Theorem.',
+          ),
+        ],
+      ),
+    ],
   ),
 
   // ── Lesson 8 (stub) ───────────────────────────────────────────────────────

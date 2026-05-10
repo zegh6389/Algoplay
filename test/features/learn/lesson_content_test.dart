@@ -1629,6 +1629,114 @@ void main() {
     });
   });
 
+  group('lesson7', () {
+    final lesson7 = lessons.firstWhere((l) => l.id == 7);
+
+    List<String> lesson7Prose() {
+      final prose = <String>[];
+      for (final module in lesson7.modules) {
+        for (final block in module.contentBlocks) {
+          switch (block) {
+            case TextBlock(:final text):
+              prose.add(text);
+            case DefinitionBlock(:final term, :final definition):
+              prose.add(term);
+              prose.add(definition);
+            case KeyTakeawayBlock(:final text):
+              prose.add(text);
+            case QuizBlock(:final question, :final options, :final explanation):
+              prose.add(question);
+              prose.addAll(options);
+              prose.add(explanation);
+            case VisualizerLinkBlock(:final label, :final description):
+              prose.add(label);
+              if (description != null) prose.add(description);
+            case CodeBlock():
+            case MathBlock():
+            case GraphBlock():
+              break;
+          }
+        }
+      }
+      return prose;
+    }
+
+    test('has 1 module', () {
+      expect(lesson7.modules.length, 1);
+    });
+
+    test('Module 1 covers divide and conquer introduction', () {
+      final module = lesson7.modules[0];
+      expect(module.id, 'lesson7_module1');
+      expect(module.title, 'Introduction to Divide and Conquer');
+      expect(module.order, 0);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(3),
+      );
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(2));
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(1));
+
+      final combined = combinedText(blocks);
+      expect(combined, contains('Divide and Conquer'));
+      expect(combined, contains('subproblems'));
+      expect(combined, contains('recursively'));
+      expect(combined, contains('Merge Sort'));
+      expect(combined, contains('T(n)'));
+    });
+
+    test('Lesson 7 visible prose keeps formulas out of prose blocks', () {
+      final visibleProse = lesson7.modules
+          .skip(0)
+          .take(1)
+          .expand((module) => module.contentBlocks)
+          .where((block) => block is! MathBlock && block is! CodeBlock)
+          .map((block) {
+            switch (block) {
+              case TextBlock(:final text):
+                return text;
+              case DefinitionBlock(:final term, :final definition):
+                return '$term $definition';
+              case KeyTakeawayBlock(:final text):
+                return text;
+              case QuizBlock(
+                :final question,
+                :final options,
+                :final explanation,
+              ):
+                return '$question ${options.join(' ')} $explanation';
+              case VisualizerLinkBlock(:final label, :final description):
+                return '$label ${description ?? ''}';
+              default:
+                return '';
+            }
+          })
+          .join('\n');
+
+      expect(visibleProse, isNot(contains('T(n) =')));
+      expect(visibleProse, isNot(contains(r'\frac')));
+      expect(visibleProse, isNot(contains(r'\Theta')));
+    });
+
+    test('Lesson 7 prose uses readable math notation', () {
+      final combined = lesson7Prose().join('\n');
+      expect(combined, contains('Θ'));
+      expect(combined, isNot(contains('n^2')));
+      expect(combined, isNot(contains('n^1')));
+    });
+
+    test('Lesson 7 prose avoids AI punctuation tells', () {
+      final combined = lesson7Prose().join('\n');
+      expect(combined, isNot(contains('\u2014')));
+      expect(combined, isNot(contains(';')));
+      expect(combined, isNot(contains(' - ')));
+    });
+  });
+
   group('ContentBlock subclasses', () {
     test('TextBlock holds text', () {
       const block = TextBlock('hello');
