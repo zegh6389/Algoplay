@@ -3400,23 +3400,23 @@ const List<LessonContent> lessons = [
           TextBlock('Stop and Think'),
           QuizBlock(
             question:
-                'For Merge Sort the recurrence is T(n) = 2T(n/2) + Theta(n). '
+                'Merge Sort has recurrence aT(n/b) + f(n) with a = 2, b = 2, f(n) = Theta(n). '
                 'Which Master Theorem case applies?',
             options: [
-              'Case 1 — the subproblems dominate',
-              'Case 2 — balanced growth',
-              'Case 3 — the combine step dominates',
-              'None — it does not fit the Master Theorem',
+              'Case 1: the subproblems dominate',
+              'Case 2: balanced growth',
+              'Case 3: the combine step dominates',
+              'None: it does not fit the Master Theorem',
             ],
             correctIndex: 1,
             explanation:
-                'Here a = 2, b = 2, so d = log₂ 2 = 1. Since f(n) = Theta(n) '
-                'grows on the same order as n to the power of d, this is '
-                'Case 2, giving T(n) = Theta(n log n).',
+                'Here a = 2, b = 2, so d = log base 2 of 2 = 1. '
+                'Since f(n) = Theta(n) grows on the same order as n to the power of d, '
+                'Case 2 applies, giving Theta(n log n).',
           ),
           QuizBlock(
             question:
-                'An algorithm has recurrence T(n) = 3T(n/2) + n. '
+                'An algorithm has recurrence aT(n/b) + f(n) with a = 3, b = 2, f(n) = n. '
                 'What is its asymptotic order of growth?',
             options: [
               'linearithmic',
@@ -3426,9 +3426,9 @@ const List<LessonContent> lessons = [
             ],
             correctIndex: 0,
             explanation:
-                'Here a = 3, b = 2, so d = log₂ 3 approximately equals 1.585. '
+                'Here a = 3, b = 2, so d = log base 2 of 3 approximately equals 1.585. '
                 'Since f(n) = n grows more slowly than n to the power of d, '
-                'Case 1 applies and T(n) = Theta(n to the power of d), '
+                'Case 1 applies and the running time is Theta(n to the power of d), '
                 'which is linearithmic.',
           ),
           TextBlock('Mini Practice'),
@@ -3448,6 +3448,11 @@ const List<LessonContent> lessons = [
                 'When f(n) = Theta(n) and d = 1, the recurrence T(n) = 2T(n/2) '
                 '+ Theta(n) solves to Theta(n log n). The work per level and '
                 'the number of levels both scale with n, giving a log n factor.',
+          ),
+          KeyTakeawayBlock(
+            'The Master Theorem makes it easy to read off the solution of a '
+            'recurrence once you identify a, b, and the exponent d = log base b of a. '
+            'Compare f(n) to n to the power of d to pick the right case.',
           ),
         ],
       ),
@@ -3572,7 +3577,7 @@ const List<LessonContent> lessons = [
           TextBlock(
             'So n to the power of d equals n. '
             'Since f(n) is in Theta(n to the power of d), '
-            'this is the balanced case — Case 2 of the Master Theorem.',
+            'this is the balanced case: Case 2 of the Master Theorem.',
           ),
           MathBlock(
             r'C(n) \in \Theta(n \log n)',
@@ -3625,9 +3630,9 @@ const List<LessonContent> lessons = [
                 'took 3n work instead of n work. '
                 'What would the Master Theorem say about the complexity?',
             options: [
-              'Theta(n) — the extra work is still linear',
-              'Theta(n log n) — still Case 2',
-              'Theta(n squared) — merge cost becomes dominant',
+              'Theta(n): the extra work is still linear',
+              'Theta(n log n): still Case 2',
+              'Theta(n squared): merge cost becomes dominant',
               'Theta(n squared log n)',
             ],
             correctIndex: 2,
@@ -3635,7 +3640,7 @@ const List<LessonContent> lessons = [
                 'With 3n merge work, the recurrence becomes '
                 'C(n) = 2C(n/2) + 3n. Here a = 2, b = 2, d = 1, '
                 'and f(n) = 3n is in Omega(n to the power of d plus epsilon) '
-                'with the regularity condition satisfied — this is Case 3. '
+                'with the regularity condition satisfied: this is Case 3. '
                 'The solution is Theta(n to the power of d+1) = Theta(n squared).',
           ),
           QuizBlock(
@@ -3644,9 +3649,9 @@ const List<LessonContent> lessons = [
                 'showing the size of the subarray at each node. '
                 'What does this tell us about the complexity?',
             options: [
-              'Shows O(n) — the tree is small',
-              'Shows O(n log n) — log levels each doing O(n) work',
-              'Shows O(n squared) — there are many nodes',
+              'Shows O(n): the tree is small',
+              'Shows O(n log n): log levels each doing O(n) work',
+              'Shows O(n squared): there are many nodes',
               'Shows constant time per level',
             ],
             correctIndex: 1,
@@ -3755,7 +3760,7 @@ const List<LessonContent> lessons = [
             'High-level steps: '
             '1. Divide the array into two halves: left and right. '
             '2. Recursively count inversions in each half. '
-            '3. Count the between-half inversions — where one element is in '
+            '3. Count the between-half inversions: where one element is in '
             'the left half and the other is in the right half. '
             '4. Add these three counts together.',
           ),
@@ -3769,7 +3774,7 @@ const List<LessonContent> lessons = [
             'but also counts cross inversions.',
           ),
           TextBlock(
-            'During Merge: we have two sorted subarrays — left half A and '
+            'During Merge: we have two sorted subarrays: left half A and '
             'right half B. We use pointers into both halves and into a '
             'temporary output array, just like in normal Merge.',
           ),
@@ -3808,8 +3813,7 @@ const List<LessonContent> lessons = [
             semanticsLabel: 'inversions recurrence',
           ),
           TextBlock(
-            'The extra work in the combined step — the modified Merge plus '
-            'counting logic — is still proportional to n.',
+            'The extra work in the combined step: the modified Merge plus counting logic. This is still proportional to n.',
           ),
           MathBlock(
             r'D(n) = 2D\!\left(\frac{n}{2}\right) + O(n)',
@@ -3831,7 +3835,7 @@ const List<LessonContent> lessons = [
           TextBlock(
             'The key idea is that once the left and right halves are '
             'individually sorted, all inversions that remain must be cross '
-            'inversions — one element from the left half and one from the right.',
+            'cross inversions: one element from the left half and one from the right.',
           ),
           TextBlock(
             'Because both halves are sorted, we can detect and count all such '
@@ -3953,12 +3957,12 @@ const List<LessonContent> lessons = [
           TextBlock(
             'Quicksort follows the divide–conquer–combine pattern: '
             '1. Divide: Choose a pivot element and partition the remaining '
-            'elements into two groups — those less than the pivot and those '
+            'elements into two groups: those less than the pivot and those '
             'greater than the pivot. '
             '2. Conquer: Recursively apply Quicksort to the left and right '
             'subarrays. '
             '3. Combine: In the array implementation there is no heavy combine '
-            'step — once the subarrays are sorted and the pivot is in its '
+            'step: once the subarrays are sorted and the pivot is in its '
             'correct place, the whole array is sorted.',
           ),
           TextBlock(
@@ -3973,7 +3977,7 @@ const List<LessonContent> lessons = [
             'Here is an informal review: '
             'Pick the first element in the array as the pivot. '
             'Temporarily remove the pivot from the array. '
-            'Use a Partition procedure to rearrange the remaining elements — '
+            'Use a Partition procedure to rearrange the remaining elements around the pivot:',
             'all elements less than the pivot go to the left side, '
             'all elements greater than the pivot go to the right side. '
             'Finally, reinsert the pivot between these two groups.',
@@ -4002,7 +4006,7 @@ const List<LessonContent> lessons = [
             'subarray.',
           ),
           TextBlock(
-            'In that situation, Partition accomplishes nothing useful — one side '
+            'In that situation, Partition accomplishes nothing useful: one side '
             'of the partition is always empty. '
             'We end up doing nearly as many comparisons as a naive algorithm.',
           ),
@@ -4118,8 +4122,8 @@ const List<LessonContent> lessons = [
                 'For an already sorted array, what happens if Quicksort '
                 'always picks the first element as the pivot?',
             options: [
-              'Quicksort runs in O(n log n) time — best case',
-              'Quicksort degenerates to O(n squared) — worst case',
+              'Quicksort runs in O(n log n) time: best case',
+              'Quicksort degenerates to O(n squared): worst case',
               'Quicksort runs in O(n) linear time',
               'Quicksort cannot sort a sorted array',
             ],
@@ -4136,9 +4140,9 @@ const List<LessonContent> lessons = [
                 'Assume Q(n) = n + 2Q(n/2). Use the Master Theorem to find '
                 'the order of growth.',
             options: [
-              'Linear — Theta(n)',
-              'Linearithmic — Theta(n log n)',
-              'Quadratic — Theta(n squared)',
+              'Linear: Theta(n)',
+              'Linearithmic: Theta(n log n)',
+              'Quadratic: Theta(n squared)',
               'Exponential',
             ],
             correctIndex: 1,
@@ -4154,7 +4158,7 @@ const List<LessonContent> lessons = [
                 'average case, extra memory usage, and typical practical performance.',
             options: [
               'Both are always Theta(n log n)',
-              'Quicksort: worse case O(n^2), avg O(n log n), in-place; Mergesort: always O(n log n), needs extra memory',
+              'Quicksort: worse case O(n squared), avg O(n log n), in-place; Mergesort: always O(n log n), needs extra memory',
               'Quicksort always outperforms Mergesort',
               'Mergesort requires no extra memory',
             ],
@@ -4202,7 +4206,7 @@ const List<LessonContent> lessons = [
           ),
           TextBlock(
             'Many cryptographic algorithms (including RSA) require multiplying '
-            'large integers — numbers too big for simple school-style '
+            'large integers: numbers too big for simple school-style '
             'multiplication to be efficient.',
           ),
           TextBlock(
@@ -4483,7 +4487,7 @@ const List<LessonContent> lessons = [
             'multiplication of large integers. '
             'Now we ask: can divide and conquer also help us multiply '
             'matrices more quickly? '
-            'The answer is yes — Strassen algorithm is a divide-and-conquer '
+            'The answer is yes: Strassen algorithm is a divide-and-conquer '
             'method that reduces the number of scalar multiplications needed.',
           ),
 
