@@ -3977,7 +3977,7 @@ const List<LessonContent> lessons = [
             'Here is an informal review: '
             'Pick the first element in the array as the pivot. '
             'Temporarily remove the pivot from the array. '
-            'Use a Partition procedure to rearrange the remaining elements around the pivot:',
+            'Use a Partition procedure to rearrange the remaining elements around the pivot: '
             'all elements less than the pivot go to the left side, '
             'all elements greater than the pivot go to the right side. '
             'Finally, reinsert the pivot between these two groups.',
