@@ -1425,8 +1425,8 @@ void main() {
       return prose;
     }
 
-    test('has 6 modules', () {
-      expect(lesson6.modules.length, 6);
+    test('has 9 modules', () {
+      expect(lesson6.modules.length, 9);
     });
 
     test('Module 1 introduces decrease-and-conquer categories', () {
@@ -1578,10 +1578,10 @@ void main() {
       expect(combined, contains('⌈log₃ n⌉'));
     });
 
-    test('Lesson 6 modules 3, 4, and 5 keep formulas out of visible prose', () {
+    test('Lesson 6 modules 3 through 9 keep formulas out of visible prose', () {
       final visibleProse = lesson6.modules
           .skip(2)
-          .take(4)
+          .take(7)
           .expand((module) => module.contentBlocks)
           .where((block) => block is! MathBlock && block is! CodeBlock)
           .map((block) {

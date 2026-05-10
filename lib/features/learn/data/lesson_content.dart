@@ -3143,6 +3143,134 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+
+      // ── Module 7: Josephus Problem ─────────────────────────────────────────
+      ModuleContent(
+        id: 'lesson6_module7',
+        title: 'Josephus Problem',
+        order: 6,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'In this final module for Lesson 6 we look at the Josephus Problem, a classic puzzle that naturally leads to recurrence relations.',
+          ),
+          DefinitionBlock(
+            term: 'The problem',
+            definition:
+                'Let n people stand in a circle, labeled 1 through n. Starting at person 1, every second person is eliminated from the circle. After each elimination, we continue around the smaller circle, again eliminating every second remaining person until only one person remains. That last remaining person is the winner J(n).',
+          ),
+          TextBlock(
+            'For n equals 7, the elimination order is 2, 4, 6, 1, 5, 3, leaving position 7 as the winner. For n equals 8, the winner is position 1.',
+          ),
+          TextBlock(
+            'When n is even, all even-numbered positions are eliminated in the first pass. The survivors are the odd positions 1, 3, 5, ..., 2k minus 1 for n equals 2k. The mapping from old to new position is old equals 2j minus 1.',
+          ),
+          MathBlock(
+            r'J(2k) = 2J(k) - 1',
+            semanticsLabel: 'Josephus recurrence for even n',
+          ),
+          TextBlock(
+            'When n is odd, the even positions and position 1 are eliminated, leaving survivors 3, 5, 7, ..., 2k plus 1 for n equals 2k plus 1. The mapping is old equals 2j plus 1.',
+          ),
+          MathBlock(
+            r'J(2k + 1) = 2J(k) + 1',
+            semanticsLabel: 'Josephus recurrence for odd n',
+          ),
+          TextBlock(
+            'Both recurrences reduce n to roughly half at each step, making this a decrease-and-conquer algorithm.',
+          ),
+          QuizBlock(
+            question: 'What is J(8) using the recurrence relations?',
+            options: ['1', '3', '5', '7'],
+            correctIndex: 0,
+            explanation:
+                'For n equals 8 (which is 2 times 4), J(8) equals 2 times J(4) minus 1. J(4) equals 1 (since 4 is 2 times 2 and J(2) equals 1), so J(8) equals 2 times 1 minus 1 equals 1.',
+          ),
+          KeyTakeawayBlock(
+            'The Josephus Problem is a decrease-and-conquer algorithm whose recurrence relations involve halving the problem size while transforming the solution through linear formulas. It is a clean example of how recurrence analysis captures the structure of an algorithmic process.',
+          ),
+        ],
+      ),
+
+      // ── Module 8: Variable-Size-Decrease Algorithms ─────────────────────────
+      ModuleContent(
+        id: 'lesson6_module8',
+        title: 'Variable-Size-Decrease Algorithms',
+        order: 7,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'In this module we look at the third type of decrease-and-conquer: variable-size decrease. In these problems, the amount by which the problem shrinks is not a fixed constant and not a strict constant factor. The problem still shrinks at every step, but the amount depends on the data itself.',
+          ),
+          DefinitionBlock(
+            term: 'Euclidean Algorithm',
+            definition:
+                'The Euclidean Algorithm finds the greatest common divisor of two numbers m and n where m is greater than or equal to n. It repeatedly replaces the larger number with the remainder of dividing the two numbers. Since the remainder can be anything from 0 to n minus 1, the problem size shrinks by a variable amount at each step.',
+          ),
+          DefinitionBlock(
+            term: 'Selection Problem',
+            definition:
+                'Find the k-th smallest element in an unsorted list of n numbers.',
+          ),
+          TextBlock(
+            'The median problem is a special case of the selection problem where k equals ceiling of n divided by 2. The obvious solution sorts the whole list in O(n log n) time and picks the element at index k, but this does more work than necessary.',
+          ),
+          DefinitionBlock(
+            term: 'Lomuto Partition',
+            definition:
+                'A partitioning method that picks a pivot element and rearranges the array so that everything smaller than the pivot is on its left and everything larger is on its right. The pivot ends up in its final sorted position. If that position equals k, we are done. Otherwise, we recurse on one side only.',
+          ),
+          TextBlock(
+            'This algorithm (called Quickselect) is decrease-and-conquer because we only recurse on one side of the partition. The size of the discarded chunk is variable because it depends on where the pivot ends up.',
+          ),
+          QuizBlock(
+            question:
+                'Why does a bad pivot choice cause Quickselect to run in quadratic time?',
+            options: [
+              'It causes the algorithm to recurse on both sides.',
+              'It causes the problem size to decrease by 1 each time.',
+              'It forces the algorithm to compare every pair of elements.',
+              'It makes the pivot value change during recursion.',
+            ],
+            correctIndex: 1,
+            explanation:
+                'If the pivot is always the largest or smallest element, one side of the partition gets all remaining elements and the other side gets none. The problem size decreases by only 1 each step, giving a sum of n minus 1 plus n minus 2 plus ... plus 1, which is quadratic.',
+          ),
+          KeyTakeawayBlock(
+            'Variable-size decrease covers algorithms like the Euclidean Algorithm and Quickselect. The problem size shrinks at each step, but the exact amount depends on the data. This is why worst-case Quickselect is quadratic while average case is linear.',
+          ),
+        ],
+      ),
+
+      // ── Lesson 6 Conclusion ───────────────────────────────────────────────
+      ModuleContent(
+        id: 'lesson6_conclusion',
+        title: 'Conclusion',
+        order: 8,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'In Lesson 6, we explored the idea of decrease and conquer. This algorithm design technique solves a problem by reducing it to a smaller version of the same problem in a systematic way. The key idea is that instead of solving the full problem all at once, we remove part of the problem from consideration and continue working on what remains.',
+          ),
+          TextBlock(
+            'Throughout the lesson, we saw several examples of this strategy, including decrease by a constant, decrease by a constant factor, and variable-size decrease. This helped show that many familiar algorithms can be understood through the same general design philosophy.',
+          ),
+          TextBlock(
+            'In the next lesson, we move on to divide and conquer. At first, divide and conquer may sound similar to decrease and conquer because both approaches reduce a problem to smaller problems. However, the two strategies are different.',
+          ),
+          DefinitionBlock(
+            term: 'The key distinction',
+            definition:
+                'In decrease and conquer, we reduce the problem to one smaller problem by removing some part of it. In divide and conquer, we split the problem into several smaller subproblems of roughly the same size, solve all of them, and then combine their solutions.',
+          ),
+          TextBlock(
+            'A simple way to remember the difference: decrease and conquer is like eating only part of your dessert so there is less left to deal with. Divide and conquer is like cutting your dessert into smaller pieces, eating all the pieces, and treating the full dessert as the combination of those smaller parts.',
+          ),
+          KeyTakeawayBlock(
+            'Decrease and conquer reduces to one smaller problem. Divide and conquer splits into several subproblems of equal size and combines the results. Recognizing this distinction helps us understand why algorithms work the way they do and choose the right design strategy for a new problem.',
+          ),
+        ],
+      ),
     ],
   ),
 
