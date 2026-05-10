@@ -73,12 +73,12 @@ class GameCard extends StatelessWidget {
               SizedBox(height: AppSpacing.md),
 
               // ── Title ──
-              Text(title, style: AppTypography.h3),
+              Text(title, style: AppTypography.h3, overflow: TextOverflow.ellipsis, maxLines: 1),
 
               SizedBox(height: AppSpacing.xs),
 
               // ── Description ──
-              Text(description, style: AppTypography.caption),
+              Text(description, style: AppTypography.caption, overflow: TextOverflow.ellipsis, maxLines: 2),
             ],
           ),
         ),

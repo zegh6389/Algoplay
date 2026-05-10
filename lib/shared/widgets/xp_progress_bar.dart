@@ -70,9 +70,14 @@ class XpProgressBar extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(
-                      '$currentXP / $nextLevelXP XP',
-                      style: AppTypography.overline,
+                    Flexible(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          '$currentXP / $nextLevelXP XP',
+                          style: AppTypography.overline,
+                        ),
+                      ),
                     ),
                   ],
                 ),

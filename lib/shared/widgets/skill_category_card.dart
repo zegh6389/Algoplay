@@ -42,7 +42,7 @@ class SkillCategoryCard extends StatelessWidget {
                 children: [
                   Icon(icon, size: 28, color: AppColors.textSecondary),
                   SizedBox(height: AppSpacing.md),
-                  Text(name, style: AppTypography.h3),
+                  Text(name, style: AppTypography.h3, overflow: TextOverflow.ellipsis, maxLines: 1),
                   SizedBox(height: AppSpacing.xs),
                   Text(
                     '$algorithmCount algorithms',

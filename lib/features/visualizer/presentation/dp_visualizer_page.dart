@@ -420,9 +420,14 @@ class _DPVisualizerPageState extends ConsumerState<DPVisualizerPage>
           ),
         ),
         const SizedBox(width: AppSpacing.md),
-        Text(
-          'Compute fib($_fibN)',
-          style: AppTypography.caption,
+        Flexible(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              'Compute fib($_fibN)',
+              style: AppTypography.caption,
+            ),
+          ),
         ),
         const Spacer(),
         ElevatedButton(
