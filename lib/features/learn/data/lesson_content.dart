@@ -3377,9 +3377,8 @@ const List<LessonContent> lessons = [
           KeyTakeawayBlock(
             'Divide and conquer splits the problem into multiple equal-sized '
             'subproblems, solves each recursively, then combines the results. '
-            'This naturally yields recurrences of the general form '
-            'T(n) = aT(n/b) + f(n) that can be analyzed with the Master '
-            'Theorem.',
+            'This naturally yields recurrences in the standard form that can '
+            'be analyzed with the Master Theorem.',
           ),
         ],
       ),
