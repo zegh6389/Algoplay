@@ -3381,7 +3381,7 @@ const List<LessonContent> lessons = [
             'be analyzed with the Master Theorem.',
           ),
           TextBlock(
-            'To analyze recurrences of the form T(n) = aT(n/b) + f(n), we '
+            'To analyze recurrences of the standard divide-and-conquer form aT(n/b) + f(n), we '
             'compare f(n) with n to the power of log base b of a. Roughly '
             'speaking, three cases arise.',
           ),
@@ -3445,7 +3445,7 @@ const List<LessonContent> lessons = [
             ],
             correctIndex: 2,
             explanation:
-                'When f(n) = Theta(n) and d = 1, the recurrence T(n) = 2T(n/2) '
+                'When f(n) = Theta(n) and d = 1, the recurrence 2T(n/2) + Theta(n) '
                 '+ Theta(n) solves to Theta(n log n). The work per level and '
                 'the number of levels both scale with n, giving a log n factor.',
           ),
@@ -3567,7 +3567,7 @@ const List<LessonContent> lessons = [
           // ── Master Theorem ───────────────────────────────────────────────
           TextBlock(
             'We compare C(n) = 2C(n/2) + n - 1 '
-            'with the general form T(n) = aT(n/b) + f(n). '
+            'with the standard form aT(n/b) + f(n). '
             'Here a = 2, b = 2, f(n) = n - 1 in Theta(n).',
           ),
           MathBlock(
@@ -3601,7 +3601,7 @@ const List<LessonContent> lessons = [
             'Recurrence: C(n) = 2C(n/2) + n - 1. '
             'Solution: C(n) in Theta(n log n). '
             'Extra space: auxiliary array of size n during merge. '
-            'Pros: predictable Theta(n log n) worst case; stable sort. '
+            'Pros: predictable Theta(n log n) worst case, stable sort. '
             'Cons: needs extra memory for merging in the simple array-based version.',
           ),
 
@@ -3910,10 +3910,10 @@ const List<LessonContent> lessons = [
                 'For an array that is already sorted, how many inversions are there? '
                 'What does the divide-and-conquer algorithm do in this case?',
             options: [
-              'Zero inversions; merge never adds to the count',
-              'Maximum inversions; merge adds everything',
-              'n minus 1 inversions; merge runs normally',
-              'n squared inversions; algorithm fails',
+              'Zero inversions, merge never adds to the count',
+              'Maximum inversions, merge adds everything',
+              'n minus 1 inversions, merge runs normally',
+              'n squared inversions, algorithm fails',
             ],
             correctIndex: 0,
             explanation:
@@ -4076,7 +4076,7 @@ const List<LessonContent> lessons = [
           ),
           TextBlock(
             'This recurrence fits the standard divide-and-conquer form '
-            'T(n) = aT(n/b) + f(n) with a = 2, b = 2, f(n) = n.',
+            'aT(n/b) + f(n) with a = 2, b = 2, f(n) = n.',
           ),
           TextBlock(
             'By the Master Theorem (Case 2 with d = log base 2 of 2 = 1 '
@@ -4150,7 +4150,7 @@ const List<LessonContent> lessons = [
                 'Here a = 2, b = 2, so d = log base 2 of 2 = 1. '
                 'Since f(n) = n is in Theta(n to the power of d), '
                 'this is Case 2 of the Master Theorem: '
-                'T(n) = Theta(n to the power of d times log n) = Theta(n log n).',
+                'the solution is Theta(n to the power of d times log n), which is Theta(n log n).',
           ),
           QuizBlock(
             question:
@@ -4158,7 +4158,7 @@ const List<LessonContent> lessons = [
                 'average case, extra memory usage, and typical practical performance.',
             options: [
               'Both are always Theta(n log n)',
-              'Quicksort: worse case O(n squared), avg O(n log n), in-place; Mergesort: always O(n log n), needs extra memory',
+              'Quicksort: worse case O(n squared), avg O(n log n), in-place. Mergesort: always O(n log n), needs extra memory',
               'Quicksort always outperforms Mergesort',
               'Mergesort requires no extra memory',
             ],
