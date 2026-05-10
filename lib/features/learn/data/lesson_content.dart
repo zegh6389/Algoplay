@@ -3381,7 +3381,7 @@ const List<LessonContent> lessons = [
             'be analyzed with the Master Theorem.',
           ),
           TextBlock(
-            'To analyze recurrences of the form T(n) = aT(n/b) + f(n), we '
+            'To analyze recurrences of the form aT(n/b) + f(n), we '
             'compare f(n) with n to the power of log base b of a. Roughly '
             'speaking, three cases arise.',
           ),
@@ -3400,23 +3400,23 @@ const List<LessonContent> lessons = [
           TextBlock('Stop and Think'),
           QuizBlock(
             question:
-                'For Merge Sort the recurrence is T(n) = 2T(n/2) + Theta(n). '
+                'For Merge Sort the recurrence is 2T(n/2) + Theta(n). '
                 'Which Master Theorem case applies?',
             options: [
-              'Case 1 — the subproblems dominate',
-              'Case 2 — balanced growth',
-              'Case 3 — the combine step dominates',
-              'None — it does not fit the Master Theorem',
+              'Case 1: the subproblems dominate',
+              'Case 2: balanced growth',
+              'Case 3: the combine step dominates',
+              'None: it does not fit the Master Theorem',
             ],
             correctIndex: 1,
             explanation:
                 'Here a = 2, b = 2, so d = log₂ 2 = 1. Since f(n) = Theta(n) '
                 'grows on the same order as n to the power of d, this is '
-                'Case 2, giving T(n) = Theta(n log n).',
+                'Case 2, giving Theta(n log n).',
           ),
           QuizBlock(
             question:
-                'An algorithm has recurrence T(n) = 3T(n/2) + n. '
+                'An algorithm has recurrence 3T(n/2) + n. '
                 'What is its asymptotic order of growth?',
             options: [
               'linearithmic',
@@ -3428,7 +3428,7 @@ const List<LessonContent> lessons = [
             explanation:
                 'Here a = 3, b = 2, so d = log₂ 3 approximately equals 1.585. '
                 'Since f(n) = n grows more slowly than n to the power of d, '
-                'Case 1 applies and T(n) = Theta(n to the power of d), '
+                'Case 1 applies and the running time is Theta(n to the power of d), '
                 'which is linearithmic.',
           ),
           TextBlock('Mini Practice'),
@@ -3445,9 +3445,234 @@ const List<LessonContent> lessons = [
             ],
             correctIndex: 2,
             explanation:
-                'When f(n) = Theta(n) and d = 1, the recurrence T(n) = 2T(n/2) '
+                'When f(n) = Theta(n) and d = 1, the recurrence 2T(n/2) '
                 '+ Theta(n) solves to Theta(n log n). The work per level and '
                 'the number of levels both scale with n, giving a log n factor.',
+          ),
+          KeyTakeawayBlock(
+            'The Master Theorem makes it easy to read off the solution of a '
+            'recurrence once you identify a, b, and the exponent d = log base b of a. '
+            'Compare f(n) to n to the power of d to pick the right case.',
+          ),
+        ],
+      ),
+// ══════════════════════════════════════════════════════════════════════════════
+// Module 2: Mergesort
+// Source: /tmp/algoplay_lessons/M2.txt
+// ══════════════════════════════════════════════════════════════════════════════
+      ModuleContent(
+        id: 'lesson7_module2',
+        title: 'Mergesort',
+        order: 1,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'In this module we study Mergesort, a classic example of a '
+            'divide-and-conquer sorting algorithm.',
+          ),
+          TextBlock('High-Level Idea of Mergesort'),
+          TextBlock(
+            'Mergesort sorts an array by dividing it into two halves, '
+            'recursively sorting each half, then merging the two sorted halves '
+            'into one sorted array.',
+          ),
+          TextBlock(
+            'This matches the divide-and-conquer pattern: divide by splitting '
+            'the array, conquer by recursively sorting the subarrays, combine '
+            'by merging the sorted subarrays.',
+          ),
+          TextBlock(
+            'In its usual form, Mergesort uses an extra array when merging.',
+          ),
+          TextBlock('Worst-Case Analysis Overview'),
+          TextBlock(
+            'To analyze the worst case, assume the array size n is a power of 2. '
+            'This makes the splitting clean: each split divides the current array '
+            'exactly in half until we reach subarrays of size 1.',
+          ),
+          TextBlock(
+            'We think in terms of recursion levels. Level 0 is the full array '
+            'of size n. Level 1 has two arrays of size',
+          ),
+          MathBlock(
+            r'\frac{n}{2}',
+            semanticsLabel: 'n over 2 fraction',
+          ),
+          TextBlock(
+            'Level 2 has four arrays of size',
+          ),
+          MathBlock(
+            r'\frac{n}{4}',
+            semanticsLabel: 'n over 4 fraction',
+          ),
+          TextBlock(
+            'This continues until the last level, which has n arrays of size 1.',
+          ),
+          TextBlock(
+            'Once the subarrays are size 1, they are trivially sorted. Then we '
+            'start merging back up. The cost we care about is the number of basic '
+            'operations done by Merge.',
+          ),
+          TextBlock('How Merge Works (Two Sorted Arrays)'),
+          TextBlock(
+            'The Merge procedure combines two sorted subarrays into one sorted '
+            'array. We use one pointer in the first subarray, another pointer in '
+            'the second subarray, and a third pointer into the new array.',
+          ),
+          TextBlock(
+            'At each step, compare the elements pointed to by the two pointers. '
+            'Copy the smaller one into the new array and advance both the source '
+            'pointer and the destination pointer. If one subarray runs out of '
+            'elements, copy the remaining elements from the other subarray directly.',
+          ),
+          TextBlock(
+            'The basic operation in Merge is comparison.',
+          ),
+          TextBlock('Cost of Merge in the Worst Case'),
+          TextBlock(
+            'Suppose we are merging two subarrays whose total length is n. In '
+            'the worst case, we perform n minus 1 comparisons. This happens when '
+            'neither subarray runs out before the very end.',
+          ),
+          MathBlock(
+            r'C_{merge}(n) = n - 1',
+            semanticsLabel: 'merge cost in worst case',
+          ),
+          TextBlock('Recurrence for Mergesort'),
+          TextBlock(
+            'Let C(n) be the number of comparisons Mergesort does in the worst '
+            'case when sorting an array of size n. Each call makes two recursive '
+            'calls on size',
+          ),
+          MathBlock(
+            r'\frac{n}{2}',
+            semanticsLabel: 'n over 2 fraction',
+          ),
+          TextBlock(
+            'then calls Merge on n elements.',
+          ),
+          MathBlock(
+            r'C(n) = 2C\!\left(\frac{n}{2}\right) + C_{merge}(n), \quad C(1) = 0',
+            semanticsLabel: 'mergesort recurrence general form',
+          ),
+          TextBlock(
+            'Using the worst-case cost of Merge, this becomes:',
+          ),
+          MathBlock(
+            r'C(n) = 2C\!\left(\frac{n}{2}\right) + n - 1, \quad C(1) = 0',
+            semanticsLabel: 'mergesort recurrence with merge cost',
+          ),
+          TextBlock('Applying the Master Theorem'),
+          TextBlock(
+            'We compare the recurrence with the general form aT(n over b) plus '
+            'f(n). Here a equals 2, b equals 2, and f(n) is in Theta(n).',
+          ),
+          MathBlock(
+            r'd = \log_2 2 = 1',
+            semanticsLabel: 'master theorem exponent for mergesort',
+          ),
+          TextBlock(
+            'So n to the power of d equals n. We see that f(n) is in '
+            'Theta(n to the power of d), which is Theta(n). This is the balanced '
+            'case, Case 2 of the Master Theorem, where f(n) matches n to the '
+            'power of d.',
+          ),
+          MathBlock(
+            r'C(n) \in \Theta(n \log n)',
+            semanticsLabel: 'mergesort worst case complexity',
+          ),
+          TextBlock(
+            'So in the worst case, Mergesort runs in time proportional to n log n.',
+          ),
+          TextBlock('Average-Case Remark'),
+          TextBlock(
+            'For comparison-based sorting algorithms, there are more advanced '
+            'arguments that show any such algorithm must use at least on the order '
+            'of n log n comparisons on average. Mergesort actually meets this bound.',
+          ),
+          TextBlock(
+            'A full average-case analysis goes beyond this module, but it is '
+            'discussed in more detail in algorithms texts.',
+          ),
+          TextBlock('Summary of Mergesort'),
+          TextBlock(
+            'Key points: the strategy is divide-and-conquer, the recurrence is',
+          ),
+          MathBlock(
+            r'C(n) = 2C\!\left(\frac{n}{2}\right) + n - 1',
+            semanticsLabel: 'mergesort recurrence',
+          ),
+          TextBlock(
+            'and the solution is Theta(n log n). Mergesort typically needs an '
+            'auxiliary array of size n during merge.',
+          ),
+          TextBlock(
+            'Pros: predictable Theta(n log n) time in the worst case, and it is a '
+            'stable sort that preserves the order of equal elements.',
+          ),
+          TextBlock(
+            'Cons: needs extra memory for merging in the simple array-based version.',
+          ),
+          TextBlock('Stop and Think'),
+          QuizBlock(
+            question:
+                'Why do we assume n is a power of 2 in the Mergesort analysis?',
+            options: [
+              'It makes the array easier to sort',
+              'It makes the splitting clean with exact halves at each level',
+              'It reduces the number of comparisons needed',
+              'It is required for the Master Theorem to apply',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Assuming n is a power of 2 means each recursive split divides '
+                'the array exactly in half until we reach size 1. This simplifies '
+                'the analysis without changing the asymptotic order.',
+          ),
+          QuizBlock(
+            question:
+                'In the recurrence C(n) = 2C(n/2) + n minus 1, what do the three '
+                'terms represent?',
+            options: [
+              'Two subproblems, the merge cost, and the base case',
+              'Two recursive calls on half size, plus the merge cost',
+              'Two passes over the array, plus a constant overhead',
+              'The divide cost, the conquer cost, and the combine cost',
+            ],
+            correctIndex: 1,
+            explanation:
+                'The term 2C(n/2) represents the two recursive calls on subarrays '
+                'of half the size. The term n minus 1 is the worst-case cost of '
+                'merging two sorted subarrays whose total length is n.',
+          ),
+          TextBlock('Mini Practice'),
+          QuizBlock(
+            question:
+                'Write the recurrence for Mergesort if the merge step took 3n '
+                'work instead of n work. What would the Master Theorem say?',
+            options: [
+              'The complexity would become Theta(n squared)',
+              'The complexity would still be Theta(n log n)',
+              'The complexity would become Theta(n)',
+              'The Master Theorem would not apply',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Even with f(n) = 3n, we still have f(n) in Theta(n) and d = 1. '
+                'Case 2 of the Master Theorem still applies, giving Theta(n log n). '
+                'The constant factor in f(n) does not change the asymptotic order.',
+          ),
+          KeyTakeawayBlock(
+            'Mergesort is the textbook example of divide and conquer applied to '
+            'sorting. Its recurrence',
+          ),
+          MathBlock(
+            r'C(n) = 2C\!\left(\frac{n}{2}\right) + n - 1',
+            semanticsLabel: 'mergesort recurrence',
+          ),
+          KeyTakeawayBlock(
+            'solves to Theta(n log n) by the Master Theorem Case 2. It is stable '
+            'and predictable, but requires extra memory for merging.',
           ),
         ],
       ),
