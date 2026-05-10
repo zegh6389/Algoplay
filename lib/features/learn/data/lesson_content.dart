@@ -3445,7 +3445,7 @@ const List<LessonContent> lessons = [
             ],
             correctIndex: 2,
             explanation:
-                'When f(n) = Theta(n) and d = 1, the recurrence 2T(n over 2) + Theta(n) '
+                'When f(n) = Theta(n) and d = 1, the recurrence 2T(n/2) + Theta(n) '
                 '+ Theta(n) solves to Theta(n log n). The work per level and '
                 'the number of levels both scale with n, giving a log n factor.',
           ),
@@ -3503,8 +3503,8 @@ const List<LessonContent> lessons = [
           TextBlock(
             'We think in terms of recursion levels: '
             'Level 0: the full array of size n. '
-            'Level 1: two arrays of size n over 2. '
-            'Level 2: four arrays of size n over 4. '
+            'Level 1: two arrays of size n/2. '
+            'Level 2: four arrays of size n/4. '
             'Last level: n arrays of size 1.',
           ),
           TextBlock(
@@ -3552,7 +3552,7 @@ const List<LessonContent> lessons = [
           ),
           TextBlock(
             'Each call to Mergesort on size n: '
-            'makes two recursive calls on size n over 2, '
+            'makes two recursive calls on size n/2, '
             'then calls Merge on n elements.',
           ),
           MathBlock(
@@ -3561,12 +3561,12 @@ const List<LessonContent> lessons = [
           ),
           TextBlock(
             'Using the worst-case cost of Merge, this becomes: '
-            'C(n) = 2C(n over 2) + Theta(n), C(1) = 0.',
+            'C(n) = 2C(n/2) + Theta(n), C(1) = 0.',
           ),
 
           // ── Master Theorem ───────────────────────────────────────────────
           TextBlock(
-            'We compare C(n) = 2C(n over 2) + Theta(n) '
+            'We compare C(n) = 2C(n/2) + Theta(n) '
             'with the standard form aT(n/b) + f(n). '
             'Here a = 2, b = 2, f(n) in Theta(n).',
           ),
@@ -3598,7 +3598,7 @@ const List<LessonContent> lessons = [
           KeyTakeawayBlock(
             'Mergesort summary: '
             'Strategy: divide-and-conquer. '
-            'Recurrence: C(n) = 2C(n over 2) + Theta(n). '
+            'Recurrence: C(n) = 2C(n/2) + Theta(n). '
             'Solution: C(n) in Theta(n log n). '
             'Extra space: auxiliary array of size n during merge. '
             'Pros: predictable Theta(n log n) worst case, stable sort. '
@@ -3610,7 +3610,7 @@ const List<LessonContent> lessons = [
             'Stop and Think: '
             '1. Why do we assume n is a power of 2 in the analysis? '
             '2. Why is the worst-case cost of Merge proportional to n comparisons? '
-            '3. In the recurrence C(n) = 2C(n over 2) + Theta(n), '
+            '3. In the recurrence C(n) = 2C(n/2) + Theta(n), '
             'what do the three terms represent? '
             '4. Why does Mergesort have the same order of growth '
             'for best, average, and worst case? '
@@ -3638,7 +3638,7 @@ const List<LessonContent> lessons = [
             correctIndex: 2,
             explanation:
                 'With 3n merge work, the recurrence becomes '
-                'C(n) = 2C(n over 2) + 3n. Here a = 2, b = 2, d = 1, '
+                'C(n) = 2C(n/2) + 3n. Here a = 2, b = 2, d = 1, '
                 'and f(n) = 3n is in Omega(n to the power of d plus epsilon) '
                 'with the regularity condition satisfied: this is Case 3. '
                 'The solution is Theta(n to the power of d+1) = Theta(n squared).',
@@ -3677,7 +3677,7 @@ const List<LessonContent> lessons = [
                 '(like binary search or insertion sort). '
                 'Divide and conquer splits into multiple subproblems of equal size '
                 'and combines their results. '
-                'Mergesort does exactly this: two subproblems of size n over 2 each.',
+                'Mergesort does exactly this: two subproblems of size n/2 each.',
           ),
 
           // ── Final Thought ───────────────────────────────────────────────
@@ -3805,7 +3805,7 @@ const List<LessonContent> lessons = [
           ),
           TextBlock(
             'The recursion has the same structure as Mergesort: '
-            'two recursive calls on arrays of size n over 2, '
+            'two recursive calls on arrays of size n/2, '
             'one modified Merge step that still runs in linear time.',
           ),
           MathBlock(
@@ -3850,7 +3850,7 @@ const List<LessonContent> lessons = [
           KeyTakeawayBlock(
             'Counting inversions summary: '
             'Strategy: divide-and-conquer on the array. '
-            'Recurrence: D(n) = 2D(n over 2) + O(n). '
+            'Recurrence: D(n) = 2D(n/2) + O(n). '
             'Solution: D(n) in Theta(n log n). '
             'Key insight: during merge, when we take from the left, '
             'all remaining right elements form inversions with it. '
@@ -4111,7 +4111,7 @@ const List<LessonContent> lessons = [
             '2. What pivot choices make the worst case happen? Why? '
             '3. How does the recurrence for the average case reflect the idea '
             'that the pivot splits the array into many possible sizes? '
-            '4. Why is the guessed recurrence Q(n) = n + 2Q(n over 2) reasonable '
+            '4. Why is the guessed recurrence Q(n) = n + 2Q(n/2) reasonable '
             'as an approximation? '
             '5. In practice, how can we choose pivots to avoid worst-case behaviour?',
           ),
@@ -4137,7 +4137,7 @@ const List<LessonContent> lessons = [
           ),
           QuizBlock(
             question:
-                'Assume Q(n) = n + 2Q(n over 2). Use the Master Theorem to find '
+                'Assume Q(n) = n + 2Q(n/2). Use the Master Theorem to find '
                 'the order of growth.',
             options: [
               'Linear: Theta(n)',
@@ -4237,8 +4237,8 @@ const List<LessonContent> lessons = [
           TextBlock(
             'Let a and b be n-digit positive integers that we wish to multiply. '
             'Split each into a high half and a low half: '
-            'a = a sub 1 times 10 to the power of n over 2 + a sub 0, '
-            'b = b sub 1 times 10 to the power of n over 2 + b sub 0.',
+            'a = a sub 1 times 10 to the power of n/2 + a sub 0, '
+            'b = b sub 1 times 10 to the power of n/2 + b sub 0.',
           ),
           TextBlock(
             'Here: '
@@ -4255,7 +4255,7 @@ const List<LessonContent> lessons = [
             'Consider the product c = a times b. '
             'We can rewrite it as: '
             'c = (a sub 1 times b sub 1) times 10 to the power of n '
-            '+ (a sub 1 times b sub 0 + a sub 0 times b sub 1) times 10 to the power of n over 2 '
+            '+ (a sub 1 times b sub 0 + a sub 0 times b sub 1) times 10 to the power of n/2 '
             '+ a sub 0 times b sub 0.',
           ),
           MathBlock(
@@ -4311,7 +4311,7 @@ const List<LessonContent> lessons = [
           ),
           TextBlock(
             'At each level we perform: '
-            '3 recursive multiplications on numbers of size n over 2, '
+            '3 recursive multiplications on numbers of size n/2, '
             'plus extra work for additions and subtractions '
             '(which we ignore in this recurrence).',
           ),
@@ -4376,7 +4376,7 @@ const List<LessonContent> lessons = [
             'Large integer multiplication summary: '
             'Technique: divide-and-conquer on digits of large numbers. '
             'Key trick: use algebra to reduce four half-size multiplications to three. '
-            'Recurrence: M(n) = 3M(n over 2). '
+            'Recurrence: M(n) = 3M(n/2). '
             'Solution: M(n) in Theta(n to the power of log base 2 of 3) '
             'with exponent about 1.585. '
             'This algorithm is a special case of Karatsuba multiplication.',
@@ -4389,7 +4389,7 @@ const List<LessonContent> lessons = [
             'numbers matter for very large n? '
             '2. What extra operations are introduced when we switch from 4 to 3 '
             'multiplications? Why do they not ruin the asymptotic improvement? '
-            '3. How is the recurrence M(n) = 3M(n over 2) similar to the matrix '
+            '3. How is the recurrence M(n) = 3M(n/2) similar to the matrix '
             'multiplication recurrence for Strassen? '
             '4. What role does the exponent identity play in analyzing the algorithm? '
             '5. Why do we assume n is a power of 2, and how can the result '
@@ -4541,7 +4541,7 @@ const List<LessonContent> lessons = [
             'n times n matrices where n is a power of 2.',
           ),
           TextBlock(
-            'We partition each matrix into four half-size blocks: '
+            'We partition each matrix into four n/2 times n/2 blocks: '
             'A = [[A sub 00, A sub 01], [A sub 10, A sub 11]], '
             'B = [[B sub 00, B sub 01], [B sub 10, B sub 11]].',
           ),
@@ -4553,11 +4553,11 @@ const List<LessonContent> lessons = [
           TextBlock(
             'Then we treat these blocks like the entries of 2 times 2 matrices, '
             'and apply the same Strassen formulas, but now the multiplications '
-            'of blocks are themselves half-size matrix multiplications.',
+            'of blocks are themselves matrix multiplications of size n/2 times n/2.',
           ),
           TextBlock(
             'At each level of recursion: '
-            'we perform 7 matrix multiplications on half-size submatrices, '
+            'we perform 7 matrix multiplications on submatrices of size n/2, '
             'plus additional matrix additions and subtractions.',
           ),
 
@@ -4568,7 +4568,7 @@ const List<LessonContent> lessons = [
           ),
           TextBlock(
             'Each recursive step: '
-            'makes 7 recursive matrix multiplications on size n over 2, '
+            'makes 7 recursive matrix multiplications on size n/2, '
             'plus some amount of work for additions and subtractions '
             '(which we ignore in this first recurrence).',
           ),
@@ -4610,9 +4610,9 @@ const List<LessonContent> lessons = [
           ),
           TextBlock(
             'Let A(n) be the number of additions and subtractions. '
-            'There are 7 recursive calls on half-size matrices, '
+            'There are 7 recursive calls on matrices of size n/2, '
             'and an additional nonrecursive cost corresponding to '
-            'around 18 times (n over 2) squared additions at each level.',
+            'around 18 times (n/2) squared additions at each level.',
           ),
           MathBlock(
             r'A(n) = 7A(n/2) + 18\left(\frac{n}{2}\right)^2, \quad A(1) = 0',
@@ -4633,10 +4633,10 @@ const List<LessonContent> lessons = [
           KeyTakeawayBlock(
             'Strassen algorithm summary: '
             'Technique: divide-and-conquer on matrix blocks. '
-            'Multiplication recurrence: M(n) = 7M(n over 2). '
+            'Multiplication recurrence: M(n) = 7M(n/2). '
             'Solution: M(n) in Theta(n to the power of log base 2 of 7), '
             'approximately Theta(n to the power of 2.807). '
-            'Addition recurrence: A(n) = 7A(n over 2) + 18 times (n over 2) squared, '
+            'Addition recurrence: A(n) = 7A(n/2) + 18(n/2)^2, '
             'also O(n to the power of log base 2 of 7). '
             'Hence Strassen achieves O(n to the power of log base 2 of 7) time, '
             'faster than normal O(n cubed). '
@@ -4651,8 +4651,8 @@ const List<LessonContent> lessons = [
             '1. Why does reducing from 8 to 7 multiplications for the 2 times 2 '
             'case matter for large n? '
             '2. How does the partitioning of n times n matrices into four '
-            'half-size by half-size blocks fit the divide-and-conquer pattern? '
-            '3. Why does M(n) = 7M(n over 2) lead to M(n) in Theta(n to the power '
+            'n/2 times n/2 blocks fit the divide-and-conquer pattern? '
+            '3. Why does M(n) = 7M(n/2) lead to M(n) in Theta(n to the power '
             'of log base 2 of 7)? '
             '4. What trade-off does Strassen make between multiplications '
             'and additions? '
@@ -4664,18 +4664,18 @@ const List<LessonContent> lessons = [
           QuizBlock(
             question:
                 'Assuming n = 2 to the power of k, write out the first four steps '
-                'of expanding the recurrence M(n) = 7M(n over 2) until you reach M(1).',
+                'of expanding the recurrence M(n) = 7M(n/2) until you reach M(1).',
             options: [
-              'M(n) = 7M(n over 2) = 14M(n over 4) = 21M(n over 8) = 28M(n over 16)',
-              'M(n) = 7M(n over 2) = 7 squared M(n over 4) = 7 cubed M(n over 8) = 7 to the power of 4 M(n over 16)',
-              'M(n) = 7M(n over 2) = 7 + M(n over 4) = 7 + M(n over 8) = 7 + M(n over 16)',
-              'M(n) = 7M(n over 2) = 7M(n) = 7M(n) = 7M(n)',
+              'M(n) = 7M(n/2) = 14M(n/4) = 21M(n/8) = 28M(n/16)',
+              'M(n) = 7M(n/2) = 7^2 M(n/4) = 7^3 M(n/8) = 7^4 M(n/16)',
+              'M(n) = 7M(n/2) = 7 + M(n/4) = 7 + M(n/8) = 7 + M(n/16)',
+              'M(n) = 7M(n/2) = 7M(n) = 7M(n) = 7M(n)',
             ],
             correctIndex: 1,
             explanation:
                 'Each step multiplies the coefficient by 7 and halves the argument: '
-                'M(n) = 7M(n over 2) = 7 squared M(n over 4) = 7 cubed M(n over 8) = '
-                '7 to the power of 4 M(n over 16). '
+                'M(n) = 7M(n/2) = 7 squared M(n/4) = 7 cubed M(n/8) = '
+                '7 to the power of 4 M(n/16). '
                 'This shows the exponential growth of the coefficient '
                 'as the problem size decreases.',
           ),
@@ -4701,7 +4701,7 @@ const List<LessonContent> lessons = [
           QuizBlock(
             question:
                 'Explain why the additions recurrence '
-                'A(n) = 7A(n over 2) + 18 times (n over 2) squared '
+                'A(n) = 7A(n/2) + 18(n/2)^2 '
                 'still has solution on the order of n to the power of log base 2 of 7.',
             options: [
               'Because additions dominate multiplications at every level',
@@ -4713,7 +4713,7 @@ const List<LessonContent> lessons = [
             correctIndex: 1,
             explanation:
                 'Here a = 7, b = 2, so d = log base 2 of 7 approximately 2.807. '
-                'The nonrecursive term 18 times (n over 2) squared = 18 times n squared over 4 = 4.5 n squared, '
+                'The nonrecursive term 18(n/2)^2 = 18 times n squared / 4 = 4.5 n squared, '
                 'which is Theta(n squared). '
                 'Since n squared = n to the power of 2, and 2 < 2.807, '
                 'we are in Case 1 of the Master Theorem: the recursive part dominates. '
@@ -4762,7 +4762,7 @@ const List<LessonContent> lessons = [
             'In divide-and-conquer algorithms, the most common strategy is to '
             'repeatedly divide the problem size in half (into 2 roughly equal '
             'subproblems). This is why you constantly see recurrences involving '
-            'T(n over 2) and terms like log base 2 of n.',
+            'T(n/2) and terms like log base 2 of n.',
           ),
 
           // ── Key Takeaways ────────────────────────────────────────────────
