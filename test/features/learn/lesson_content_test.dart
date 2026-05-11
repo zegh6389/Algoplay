@@ -2249,8 +2249,8 @@ void main() {
       return prose;
     }
 
-    test('has 1 module', () {
-      expect(lesson10.modules.length, 1);
+    test('has 2 modules', () {
+      expect(lesson10.modules.length, 2);
     });
 
     test('Module 1 introduces dynamic programming and the Fibonacci example', () {
@@ -2272,6 +2272,27 @@ void main() {
       expect(combined, contains(r'F(n) = F(n-1) + F(n-2)'));
       expect(combined.toLowerCase(), contains('subproblem'));
       expect(combined.toLowerCase(), contains('decision tree'));
+    });
+
+    test('Module 2 covers Binomial Coefficients', () {
+      final module = lesson10.modules[1];
+      expect(module.id, 'lesson10_module2');
+      expect(module.title, 'Binomial Coefficients');
+      expect(module.order, 1);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(1));
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.whereType<CodeBlock>().length, greaterThanOrEqualTo(1));
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = combinedText(blocks);
+      expect(combined.toLowerCase(), contains('binomial'));
+      expect(combined.toLowerCase(), contains('pascal'));
+      expect(combined.toLowerCase(), contains('overlap'));
+      expect(combined, contains(r'\binom{n}{k}'));
     });
 
     test('Lesson 10 visible prose keeps formulas out of prose blocks', () {

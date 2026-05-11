@@ -5941,6 +5941,109 @@ ModuleContent(
           ),
         ],
       ),
+
+ModuleContent(
+        id: 'lesson10_module2',
+        title: 'Binomial Coefficients',
+        order: 1,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'In this module we explore our first very simple example of dynamic programming: computing binomial coefficients. These numbers appear in combinatorics, probability, and binomial expansions.',
+          ),
+          DefinitionBlock(
+            term: 'Binomial Coefficient',
+            definition: 'The binomial coefficient C(n, k) represents the number of ways to choose k elements from a set of n elements. It is read as "n choose k" and written as the notation n choose k.',
+          ),
+          MathBlock(
+            r'C(n, k) = \binom{n}{k} = \frac{n!}{k!(n-k)!}',
+            semanticsLabel: 'binomial coefficient factorial formula',
+          ),
+          TextBlock(
+            'The factorial formula is mathematically correct, but computationally it is problematic. Factorials grow extremely fast, causing integer overflow even for moderate values of n. Therefore we use a recurrence relation instead.',
+          ),
+          MathBlock(
+            r'C(n, k) = C(n-1, k-1) + C(n-1, k), \quad C(n, 0) = C(n, n) = 1',
+            semanticsLabel: 'binomial coefficient recurrence',
+          ),
+          TextBlock(
+            'This recurrence is based on Pascal\'s Triangle: every entry is the sum of the two entries directly above it. The recurrence gives us a clear structure to compute binomial coefficients efficiently.',
+          ),
+          QuizBlock(
+            question: 'Why do we prefer the recurrence relation over the factorial formula for computing binomial coefficients?',
+            options: [
+              'The recurrence is easier to prove correct',
+              'The factorial formula only works for small values of n',
+              'The factorial formula causes integer overflow for moderate n, but the recurrence does not',
+              'The recurrence runs in constant time',
+            ],
+            correctIndex: 2,
+            explanation: 'Factorials grow extremely fast, causing integer overflow even for moderate n. The recurrence avoids computing large factorials and instead builds up results from smaller subproblems.',
+          ),
+          TextBlock(
+            'If we implement the recurrence as a simple recursive function, we face the same problem as the naive recursive Fibonacci: overlapping subproblems. The recursion tree recalculates the same binomial coefficients over and over, giving exponential time complexity.',
+          ),
+          TextBlock(
+            'Dynamic programming solves this by creating a table and filling it systematically from the smallest subproblems up to the final answer.',
+          ),
+          QuizBlock(
+            question: 'What is the key inefficiency in a naive recursive implementation of the binomial coefficient recurrence?',
+            options: [
+              'The base cases are computed too many times',
+              'The factorial values overflow',
+              'Overlapping subproblems are recomputed multiple times',
+              'The recursion depth exceeds stack limits',
+            ],
+            correctIndex: 2,
+            explanation: 'Like the naive Fibonacci algorithm, the naive recursive binomial coefficient implementation recalculates the same subproblems many times across the recursion tree, leading to exponential time.',
+          ),
+          TextBlock(
+            'We construct a 2D table C where C[i, j] holds the value of C(i, j). The table looks like Pascal\'s Triangle shifted to the left. We only need to fill up to column k, because values where j is greater than k are not needed for our final answer.',
+          ),
+          MathBlock(
+            r'\text{Pascal\'s Triangle table: } C[i,j] = C[i-1,j-1] + C[i-1,j]',
+            semanticsLabel: 'Pascal table recurrence',
+          ),
+          TextBlock(
+            'The dynamic programming algorithm fills this table row by row. For each cell, if j equals 0 or j equals i, the value is 1 (base case). Otherwise, the value is the sum of the two cells above it.',
+          ),
+          CodeBlock(
+            'for i from 0 to n do\n'
+            '    for j from 0 to min(i, k) do\n'
+            '        if j = 0 or j = i\n'
+            '            C[i,j] = 1\n'
+            '        else\n'
+            '            C[i,j] = C[i-1,j-1] + C[i-1,j]\n'
+            'return C[n,k]\n',
+            language: 'pseudocode',
+          ),
+          QuizBlock(
+            question: 'What is the time complexity of the dynamic programming algorithm for binomial coefficients?',
+            options: [
+              'Exponential',
+              'Linear in n',
+              'Polynomial in n and k',
+              'Quadratic in n only',
+            ],
+            correctIndex: 2,
+            explanation: 'The algorithm fills a table of size O(nk). Each cell requires at most one addition, giving O(nk) time. The naive recursive approach is exponential due to repeated computation of the same subproblems.',
+          ),
+          TextBlock(
+            'To analyze complexity formally, we count the number of additions. Each non-base-case cell requires exactly one addition. The table shape has a triangle for rows 1 through k, then a rectangle of width k for rows k+1 through n.',
+          ),
+          MathBlock(
+            r'\text{Total additions} = \frac{(k-1)k}{2} + (n-k)k = \Theta(nk)',
+            semanticsLabel: 'binomial coefficient complexity derivation',
+          ),
+          TextBlock(
+            'Both terms are bounded by n times k, so the overall efficiency is Theta(nk). By using dynamic programming, we reduced the exponential cost of naive recursion down to polynomial time, and we avoid the integer overflow problems of the factorial formula.',
+          ),
+          KeyTakeawayBlock(
+            'Dynamic programming converts the exponential recursive binomial coefficient into an O(nk) algorithm by building Pascal\'s Triangle as a table. This same bottom-up table-building pattern applies to many more complex dynamic programming problems.',
+          ),
+        ],
+      ),
+
     ],
   ),
 
