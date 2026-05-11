@@ -5802,6 +5802,63 @@ ModuleContent(
           ),
         ],
       ),
+ModuleContent(
+        id: 'lesson9_module4',
+        title: 'Conclusion',
+        order: 3,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'In this lesson we explored Transform and Conquer through its three main forms: instance simplification, representation change, and problem reduction.',
+          ),
+          TextBlock(
+            'Instance simplification changes the given instance into an easier instance of the same problem — like sorting an array before searching it.',
+          ),
+          TextBlock(
+            'Representation change converts the problem into a different data structure — such as viewing an array as a heap, or encoding a polynomial evaluation as Horner\'s method.',
+          ),
+          TextBlock(
+            'Problem reduction transforms our problem into an instance of a well-known problem with established algorithms — like formulating a scheduling problem as linear programming.',
+          ),
+          QuizBlock(
+            question: 'What is the key difference between instance simplification and representation change?',
+            options: [
+              'Instance simplification changes the problem type; representation change changes the data structure',
+              'Instance simplification finds an easier version of the same problem; representation change encodes the problem in a different form',
+              'Instance simplification is faster than representation change',
+              'There is no difference — both terms mean the same thing',
+            ],
+            correctIndex: 1,
+            explanation: 'Instance simplification works on the same problem but with a nicer input instance. Representation change keeps the same problem but expresses it in a different domain — a tree, graph, matrix, or automaton — to unlock different tools.',
+          ),
+          QuizBlock(
+            question: 'Gaussian Elimination transforms the original system of linear equations into what form that makes solving straightforward?',
+            options: [
+              'A diagonal matrix',
+              'A lower triangular matrix',
+              'An upper triangular matrix',
+              'A sparse matrix',
+            ],
+            correctIndex: 2,
+            explanation: 'Gaussian Elimination converts the coefficient matrix into upper triangular form. Once the system is upper triangular, it can be solved efficiently using backward substitution.',
+          ),
+          QuizBlock(
+            question: 'Why is problem reduction a powerful technique?',
+            options: [
+              'It always makes the problem smaller',
+              'It lets us reuse existing fast algorithms for well-studied problems',
+              'It eliminates the need for algorithmic thinking',
+              'It works for every computational problem',
+            ],
+            correctIndex: 1,
+            explanation: 'Problem reduction leverages the fact that many important problems already have highly optimized algorithms. By transforming our problem to fit one of these known forms, we can apply proven solutions directly.',
+          ),
+          KeyTakeawayBlock(
+            'Lesson 9 completed our exploration of Transform and Conquer. '
+            'In Lesson 10 we turn to dynamic programming — a technique that caches results of overlapping subproblems to dramatically improve efficiency, trading time for space.',
+          ),
+        ],
+      ),
     ],
   ),
 

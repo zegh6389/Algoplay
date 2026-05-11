@@ -2119,7 +2119,7 @@ void main() {
     }
 
     test('has 2 modules', () {
-      expect(lesson9.modules.length, 3);
+      expect(lesson9.modules.length, 4);
     });
 
     test('Module 1 introduces Transform and Conquer Part 2', () {
