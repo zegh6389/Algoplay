@@ -5327,24 +5327,19 @@ const List<LessonContent> lessons = [
     title: 'Transform and Conquer Pt.2',
     categoryColor: '#F97316',
     modules: [
-      ModuleContent(
+            ModuleContent(
         id: 'lesson9_module1',
-        title: 'Transform and Conquer Part 2: Introduction',
+        title: 'Transform and Conquer Part 2: Overview',
         order: 0,
         algorithmId: null,
         contentBlocks: [
           TextBlock(
-            'In Lesson 8 we introduced transform and conquer. This approach '
-            'leverages techniques from other areas of mathematics to solve problems '
-            'and calculate the efficiency of algorithms.',
+            'In this lesson we continue our consideration of the technique of '
+            'Transform and Conquer.',
           ),
           TextBlock(
-            'We saw how to do this with presorting, which is an example of instance '
-            'simplification, and also how to do this by introducing a very different '
-            'kind of structure through representation change.',
-          ),
-          TextBlock(
-            'In Lesson 9 we continue the theme of transform and conquer.',
+            'Recall that Transform and Conquer comes in three flavours: instance '
+            'simplification, representation change, and problem reduction.',
           ),
           DefinitionBlock(
             term: 'Instance Simplification (Review)',
@@ -5359,17 +5354,29 @@ const List<LessonContent> lessons = [
                 'Rule rewrites a polynomial as nested multiply-add steps.',
           ),
           TextBlock(
-            'Lesson 9 expands our toolkit in two directions.',
+            'In the previous lesson we dealt with instance simplification and also '
+            'explored some examples of representation change.',
           ),
           TextBlock(
-            'First, we explore more examples of representation change. New structures '
-            'and encodings can reveal surprising efficiency gains in problems that seem '
-            'difficult in their original form.',
+            'In this lesson we continue our discussion of representation change with '
+            'two more examples.',
+          ),
+          DefinitionBlock(
+            term: 'Binary Exponentiation',
+            definition: 'A representation change that computes x to the power n by '
+                'rewriting the exponent in binary. Instead of multiplying x by itself '
+                'n times, we square repeatedly and multiply only when the current '
+                'binary digit is 1.',
+          ),
+          DefinitionBlock(
+            term: 'Longest Increasing Subsequence',
+            definition: 'The problem of finding the longest subsequence of a given '
+                'sequence whose elements are in strictly increasing order. A clever '
+                'representation change maps this to a patience sorting structure.',
           ),
           TextBlock(
-            'Second, we introduce problem reduction. This is the third type of transform '
-            'and conquer, where we recognize that the given problem can be mapped to a '
-            'well-studied problem with known algorithms.',
+            'Finally, we discuss problem reduction and introduce linear programming '
+            'and the simplex method.',
           ),
           DefinitionBlock(
             term: 'Problem Reduction',
@@ -5379,9 +5386,34 @@ const List<LessonContent> lessons = [
                 'result back.',
           ),
           TextBlock(
-            'Problem reduction is powerful because it lets us stand on the shoulders of '
-            'existing algorithms. Instead of designing a new algorithm from scratch, we '
-            'find a mapping to a problem that has already been solved efficiently.',
+            'Linear programming is a major example of problem reduction. Despite the '
+            'name, it does not mean programming in the coding sense. It refers to '
+            'optimizing a linear objective function subject to linear constraints, '
+            'and the simplex method is the classic algorithm for solving it.',
+          ),
+          QuizBlock(
+            question: 'Which two representation change examples are covered in this lesson?',
+            options: [
+              'Binary exponentiation and longest increasing subsequence',
+              'Heapsort and Horner\'s Rule',
+              'Presorting and problem reduction',
+              'Quicksort and mergesort',
+            ],
+            correctIndex: 0,
+            explanation: 'This lesson continues representation change with binary '
+                'exponentiation and longest increasing subsequence as new examples.',
+          ),
+          QuizBlock(
+            question: 'What does "linear programming" actually refer to in this context?',
+            options: [
+              'Optimizing a linear objective function subject to linear constraints',
+              'Writing code in a linear fashion',
+              'Programming with linear data structures',
+              'Creating linear animations',
+            ],
+            correctIndex: 0,
+            explanation: 'Despite the name, linear programming is a mathematical '
+                'optimization technique, not a coding paradigm.',
           ),
           QuizBlock(
             question: 'Which of the three transform-and-conquer types maps a problem '
@@ -5396,33 +5428,14 @@ const List<LessonContent> lessons = [
             explanation: 'Problem reduction transforms the given problem into an '
                 'instance of a different problem that already has efficient algorithms.',
           ),
-          QuizBlock(
-            question: 'What is the key difference between representation change and '
-                'problem reduction?',
-            options: [
-              'Representation change keeps the same problem, problem reduction changes to a different problem',
-              'Representation change is faster than problem reduction',
-              'Problem reduction only works for sorting problems',
-              'There is no difference',
-            ],
-            correctIndex: 0,
-            explanation: 'Representation change re-encodes the same problem data. '
-                'Problem reduction maps to a different problem entirely.',
-          ),
-          TextBlock(
-            'We will also see an application of Horner\'s algorithm to converting '
-            'between number systems, which is a practical and elegant use of the '
-            'representation change idea.',
-          ),
           KeyTakeawayBlock(
-            'Lesson 9 continues transform and conquer with more representation change '
-            'examples, introduces problem reduction as a third strategy, and applies '
-            'Horner\'s Rule to number base conversion.',
+            'This lesson continues representation change with binary exponentiation '
+            'and longest increasing subsequence, then introduces problem reduction '
+            'through linear programming and the simplex method.',
           ),
         ],
       ),
     ],
-
   ),
 
   // ── Lesson 10 (stub) ──────────────────────────────────────────────────────

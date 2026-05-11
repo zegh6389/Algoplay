@@ -2125,20 +2125,22 @@ void main() {
     test('Module 1 introduces Transform and Conquer Part 2', () {
       final module = lesson9.modules[0];
       expect(module.id, 'lesson9_module1');
-      expect(module.title, 'Transform and Conquer Part 2: Introduction');
+      expect(module.title, 'Transform and Conquer Part 2: Overview');
       expect(module.order, 0);
       expect(module.algorithmId, isNull);
 
       final blocks = module.contentBlocks;
-      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(3));
-      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(2));
+      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(5));
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
       expect(blocks.last, isA<KeyTakeawayBlock>());
 
       final combined = combinedText(blocks);
-      expect(combined, contains('presorting'));
       expect(combined, contains('representation change'));
+      expect(combined, contains('binary exponentiation'));
+      expect(combined, contains('longest increasing subsequence'));
       expect(combined, contains('problem reduction'));
-      expect(combined, contains('Horner'));
+      expect(combined, contains('linear programming'));
+      expect(combined, contains('simplex'));
     });
 
     test('Lesson 9 visible prose keeps formulas out of prose blocks', () {
