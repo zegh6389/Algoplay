@@ -430,18 +430,20 @@ class _DPVisualizerPageState extends ConsumerState<DPVisualizerPage>
           ),
         ),
         const Spacer(),
-        ElevatedButton(
-          onPressed: () => _loadAlgorithm(),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.catDp,
-            foregroundColor: AppColors.textInverse,
-            elevation: 0,
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-            shape: RoundedRectangleBorder(
-              borderRadius: AppRadius.smBorder,
+        Flexible(
+          child: ElevatedButton(
+            onPressed: () => _loadAlgorithm(),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.catDp,
+              foregroundColor: AppColors.textInverse,
+              elevation: 0,
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              shape: RoundedRectangleBorder(
+                borderRadius: AppRadius.smBorder,
+              ),
             ),
+            child: const Text('Run'),
           ),
-          child: const Text('Run'),
         ),
       ],
     );
@@ -523,18 +525,20 @@ class _DPVisualizerPageState extends ConsumerState<DPVisualizerPage>
               ),
             ),
             const SizedBox(width: AppSpacing.md),
-            ElevatedButton(
-              onPressed: () => _loadAlgorithm(),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.catDp,
-                foregroundColor: AppColors.textInverse,
-                elevation: 0,
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                shape: RoundedRectangleBorder(
-                  borderRadius: AppRadius.smBorder,
+            Flexible(
+              child: ElevatedButton(
+                onPressed: () => _loadAlgorithm(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.catDp,
+                  foregroundColor: AppColors.textInverse,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: AppRadius.smBorder,
+                  ),
                 ),
+                child: const Text('Run'),
               ),
-              child: const Text('Run'),
             ),
           ],
         ),
@@ -565,18 +569,20 @@ class _DPVisualizerPageState extends ConsumerState<DPVisualizerPage>
                   color: AppColors.textPrimary,
                 )),
             const Spacer(),
-            ElevatedButton(
-              onPressed: () => _loadAlgorithm(),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.catDp,
-                foregroundColor: AppColors.textInverse,
-                elevation: 0,
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                shape: RoundedRectangleBorder(
-                  borderRadius: AppRadius.smBorder,
+            Flexible(
+              child: ElevatedButton(
+                onPressed: () => _loadAlgorithm(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.catDp,
+                  foregroundColor: AppColors.textInverse,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: AppRadius.smBorder,
+                  ),
                 ),
+                child: const Text('Run'),
               ),
-              child: const Text('Run'),
             ),
           ],
         ),
