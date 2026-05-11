@@ -5435,6 +5435,148 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+      ModuleContent(
+        id: 'lesson9_module2',
+        title: 'Binary Exponentiation',
+        order: 1,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'Computing x to the power n by multiplying x by itself n times '
+            'requires n multiplications. Binary exponentiation is a representation '
+            'change that reduces this to at most 2 times floor of log base 2 of n '
+            'multiplications.',
+          ),
+          DefinitionBlock(
+            term: 'Binary Exponentiation',
+            definition: 'An algorithm that computes x to the power n by rewriting '
+                'the exponent n in binary. Instead of n multiplications, we square '
+                'repeatedly and multiply by the base only when the current binary '
+                'digit is 1.',
+          ),
+          TextBlock(
+            'The key insight is that any positive integer n can be written in binary. '
+            'Each binary digit tells us whether to multiply by the base at that step.',
+          ),
+          TextBlock(
+            'Consider computing 2 to the power 11. The binary representation of 11 '
+            'is 1011. Reading from left to right, each bit determines the action.',
+          ),
+          DefinitionBlock(
+            term: 'Left-to-Right Binary Exponentiation',
+            definition: 'Starting with the result equal to 1, scan the binary '
+                'digits of the exponent from most significant to least significant. '
+                'At each step, square the current result. If the bit is 1, also '
+                'multiply by the base x.',
+          ),
+          CodeBlock(
+            language: 'pseudocode',
+            code: 'function BinaryExp(x, n):\n'
+                '  result = 1\n'
+                '  for each bit b in binary(n) left to right:\n'
+                '    result = result * result\n'
+                '    if b == 1:\n'
+                '      result = result * x\n'
+                '  return result',
+          ),
+          TextBlock(
+            'Trace for 2 to the power 11 (binary 1011):',
+          ),
+          TextBlock(
+            'Start: result = 1. '
+            'Bit 1: square gives 1, multiply by 2 gives 2. '
+            'Bit 0: square gives 4, skip multiply. '
+            'Bit 1: square gives 16, multiply by 2 gives 32. '
+            'Bit 1: square gives 1024, multiply by 2 gives 2048.',
+          ),
+          TextBlock(
+            'The number of multiplications is at most 2 times the number of bits '
+            'in the binary representation of n, which is 2 times floor of log base 2 '
+            'of n plus 1.',
+          ),
+          MathBlock(
+            r'T(n) \in \Theta(\log n)',
+            semanticsLabel: 'T of n is theta of log n',
+          ),
+          TextBlock(
+            'Compared to the brute force approach which needs n multiplications, '
+            'binary exponentiation is exponentially faster for large n.',
+          ),
+          DefinitionBlock(
+            term: 'Connection to Horner\'s Rule',
+            definition: 'Binary exponentiation is fundamentally an application of '
+                'Horner\'s Rule. The binary representation of n can be viewed as a '
+                'polynomial in base 2, and evaluating it with Horner\'s nested form '
+                'gives exactly the left-to-right binary exponentiation algorithm.',
+          ),
+          TextBlock(
+            'The exponent n written in binary as a sequence of bits can be treated '
+            'as a polynomial evaluated at x equals 2. Horner\'s Rule evaluates '
+            'polynomials efficiently, and applying it here yields the same sequence '
+            'of squaring and multiplying operations.',
+          ),
+          QuizBlock(
+            question: 'How many multiplications does binary exponentiation use '
+                'to compute x to the power n?',
+            options: [
+              'At most 2 times floor of log base 2 of n',
+              'Exactly n multiplications',
+              'n squared multiplications',
+              'log base 2 of n squared multiplications',
+            ],
+            correctIndex: 0,
+            explanation: 'Each bit requires one squaring, and each bit equal to 1 '
+                'requires one additional multiplication by the base, giving at most '
+                '2 times log n operations.',
+          ),
+          QuizBlock(
+            question: 'In the left-to-right algorithm, what operation occurs on '
+                'every single bit regardless of whether it is 0 or 1?',
+            options: [
+              'Multiply by the base x',
+              'Add 1 to the result',
+              'Square the current result',
+              'Divide the result by 2',
+            ],
+            correctIndex: 2,
+            explanation: 'You always square the current result. You only multiply '
+                'by the base x when the current bit is 1.',
+          ),
+          QuizBlock(
+            question: 'Binary exponentiation is fundamentally an implementation '
+                'of which mathematical concept?',
+            options: [
+              'Horner\'s Rule applied to the binary polynomial representation',
+              'Euclidean algorithm for greatest common divisor',
+              'Gaussian elimination on the exponent',
+              'Fibonacci recurrence relation',
+            ],
+            correctIndex: 0,
+            explanation: 'The binary representation of n is a polynomial in base 2, '
+                'and Horner\'s Rule evaluates it efficiently, producing exactly the '
+                'binary exponentiation steps.',
+          ),
+          QuizBlock(
+            question: 'What is 2 to the power 11 using binary exponentiation? '
+                'The binary of 11 is 1011.',
+            options: [
+              '2048',
+              '1024',
+              '4096',
+              '2046',
+            ],
+            correctIndex: 0,
+            explanation: 'Starting with result = 1, processing bits 1, 0, 1, 1: '
+                'the squaring and selective multiplication by 2 produces 2048.',
+          ),
+          KeyTakeawayBlock(
+            'Binary exponentiation rewrites the exponent in binary and uses at most '
+            '2 times log n multiplications instead of n. It is a representation '
+            'change that is also an application of Horner\'s Rule to the binary '
+            'polynomial form of the exponent.',
+          ),
+        ],
+      ),
     ],
   ),
 
