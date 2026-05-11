@@ -4155,13 +4155,8 @@ const List<LessonContent> lessons = [
           TextBlock(
             'Let M(n) be the number of single-digit multiplications used to '
             'multiply two n-digit numbers with this method. At each level we '
-            'perform three recursive multiplications on numbers of size',
+            'perform three recursive multiplications on numbers of size n/2.',
           ),
-          MathBlock(
-            r'\frac{n}{2}',
-            semanticsLabel: 'n over 2',
-          ),
-          TextBlock('.'),
           MathBlock(
             r'M(n) = 3M(n/2), \quad M(1) = 1',
             semanticsLabel: 'karatsuba recurrence',
@@ -4174,18 +4169,10 @@ const List<LessonContent> lessons = [
             semanticsLabel: 'karatsuba solution',
           ),
           TextBlock(
-            'The exponent',
-          ),
-          MathBlock(
-            r'\log_2 3',
-            semanticsLabel: 'log base 2 of 3',
+            'The exponent log₂ 3 is approximately 1.585. So the multiplication complexity is',
           ),
           TextBlock(
-            'is approximately 1.585. So the multiplication complexity is',
-          ),
-          MathBlock(
-            r'n^{1.585}',
-            semanticsLabel: 'n to the power of 1.585',
+            'n¹·⁵⁸⁵',
           ),
           TextBlock(
             ', which is asymptotically faster than the straightforward '
