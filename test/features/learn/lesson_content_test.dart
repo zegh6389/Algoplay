@@ -422,7 +422,7 @@ void main() {
       expect(combined, contains('Order of growth'));
       expect(combined, contains('Selection Sort'));
       expect(combined, contains('quadratic'));
-      expect(combined, contains('(2n)^2 = 4n^2'));
+      expect(combined, contains('(2n)^2 = 4n^{2}'));
       expect(combined, contains('four times larger'));
       expect(combined, contains('Dominant term'));
     });
