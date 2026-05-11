@@ -4367,7 +4367,7 @@ const List<LessonContent> lessons = [
             question:
                 'What is the time complexity of Karatsuba multiplication?',
             options: [
-              'Θ(n^(log₂ 3)) ≈ Θ(n^1.585)',
+              'Θ(n^(log₂ 3)) ≈ Θ(n²·⁵⁸⁵)',
               'Θ(n²)',
               'Θ(n log n)',
               'Θ(n)',
@@ -4375,7 +4375,7 @@ const List<LessonContent> lessons = [
             correctIndex: 0,
             explanation:
                 'The recurrence M(n) = 3M(n/2) solves to '
-                'n^(log₂ 3), which is approximately n^1.585.',
+                'n^(log₂ 3), which is approximately n to the power of 1.585.',
           ),
           KeyTakeawayBlock(
             'Multiplication of large integers via divide and conquer is a '
@@ -4573,7 +4573,7 @@ const List<LessonContent> lessons = [
             correctIndex: 0,
             explanation:
                 'The recurrence M(n) = 7M(n/2) solves to '
-                'n^(log₂ 7), which is approximately n^2.807.',
+                'n^(log₂ 7), which is approximately n²·⁸⁰⁷.',
           ),
           QuizBlock(
             question:
