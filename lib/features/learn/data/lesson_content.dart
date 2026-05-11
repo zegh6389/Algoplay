@@ -3689,21 +3689,8 @@ const List<LessonContent> lessons = [
             'when we find an inversion.',
           ),
           TextBlock(
-            'There are',
-          ),
-          MathBlock(
-            r'\binom{n}{2}',
-            semanticsLabel: 'n choose 2',
-          ),
-          TextBlock(
-            'such pairs, and so this algorithm runs in quadratic time.',
-          ),
-          MathBlock(
-            r'\Theta(n^2)',
-            semanticsLabel: 'brute force time complexity',
-          ),
-          TextBlock(
-            'We would like something faster.',
+            'There are n choose 2 such pairs, and so this algorithm runs in '
+            'quadratic time. We would like something faster.',
           ),
           TextBlock('Divide-and-Conquer Strategy'),
           TextBlock(
@@ -3776,15 +3763,8 @@ const List<LessonContent> lessons = [
           ),
           TextBlock(
             'The recursion has the same structure as Mergesort: two recursive calls '
-            'on arrays of size',
-          ),
-          MathBlock(
-            r'\frac{n}{2}',
-            semanticsLabel: 'n over 2 fraction',
-          ),
-          TextBlock(
-            'and one modified Merge step that still runs in linear time. So the '
-            'recurrence is:',
+            'on arrays of size n/2, and one modified Merge step that still runs in '
+            'linear time. So the recurrence is:',
           ),
           MathBlock(
             r'D(n) = 2D\!\left(\frac{n}{2}\right) + O(n)',
@@ -3799,14 +3779,8 @@ const List<LessonContent> lessons = [
             semanticsLabel: 'counting inversions complexity',
           ),
           TextBlock(
-            'So counting inversions can be done in',
-          ),
-          MathBlock(
-            r'\Theta(n \log n)',
-            semanticsLabel: 'Theta n log n',
-          ),
-          TextBlock(
-            'time, much faster than the naive quadratic algorithm.',
+            'So counting inversions can be done in Θ(n log n) time, much faster '
+            'than the naive quadratic algorithm.',
           ),
           TextBlock('Why This Works Conceptually'),
           TextBlock(
@@ -4002,14 +3976,8 @@ const List<LessonContent> lessons = [
             semanticsLabel: 'quicksort guessed recurrence',
           ),
           TextBlock(
-            'This recurrence fits the standard divide-and-conquer form with',
-          ),
-          MathBlock(
-            r'a = 2, \quad b = 2, \quad f(n) = n',
-            semanticsLabel: 'a equals 2, b equals 2, f of n equals n',
-          ),
-          TextBlock(
-            '. By the Master Theorem, this implies:',
+            'This recurrence fits the standard divide-and-conquer form with '
+            'a = 2, b = 2, and f(n) = n. By the Master Theorem, this implies:',
           ),
           MathBlock(
             r'Q(n) \in \Theta(n \log n)',
