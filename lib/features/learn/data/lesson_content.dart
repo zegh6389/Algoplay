@@ -4411,6 +4411,79 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+      ModuleContent(
+        id: 'lesson7_module7',
+        title: 'Conclusion',
+        order: 6,
+        contentBlocks: [
+          TextBlock(
+            'In Lesson 7, we explored the concept of Divide and Conquer and saw '
+            'numerous examples of how these algorithms are modeled using '
+            'recurrence relations.',
+          ),
+          TextBlock('Why 2 Appears So Often'),
+          TextBlock(
+            'This lesson should give you a strong sense of why the number 2 '
+            'shows up so frequently in algorithm analysis.',
+          ),
+          TextBlock(
+            'In divide-and-conquer algorithms, the most common strategy is to '
+            'repeatedly divide the problem size in half, into two roughly equal '
+            'subproblems. This is why you constantly see recurrences involving '
+            'T of n over 2 and terms like log base 2 of n.',
+          ),
+          TextBlock('Key Takeaways'),
+          TextBlock(
+            'We examined several major applications of this technique:',
+          ),
+          TextBlock(
+            'Mergesort: A clean recursive sorting algorithm that hits exactly '
+            'n log n time.',
+          ),
+          TextBlock(
+            'Quicksort: Where we looked at worst-case and touched upon the '
+            'complex details of its average-case performance.',
+          ),
+          TextBlock(
+            'Counting Inversions: How a small modification to Mergesort allows '
+            'us to count out-of-order pairs efficiently.',
+          ),
+          TextBlock(
+            'Karatsuba Multiplication: How algebraic tricks reduce four '
+            'half-size multiplications to three.',
+          ),
+          TextBlock(
+            'Strassen\'s Matrix Multiplication: How algebraic tricks combined '
+            'with dividing matrix blocks can lower the asymptotic bounds from '
+            'cubic to approximately n to the power of 2.807.',
+          ),
+          TextBlock('Looking Ahead: Transform and Conquer'),
+          TextBlock(
+            'In the next lesson, we move on to a completely new technique: '
+            'Transform and Conquer.',
+          ),
+          TextBlock(
+            'Instead of making the problem smaller directly (like in Decrease '
+            'and Conquer or Divide and Conquer), this approach takes a problem '
+            'out of the domain in which it was originally defined and transforms '
+            'it into a new region.',
+          ),
+          TextBlock(
+            'In that new region, different and often more powerful solution '
+            'tools are available. It is a very different way of thinking about '
+            'problem-solving, and it introduces some fun new tools and '
+            'structures along the way!',
+          ),
+          KeyTakeawayBlock(
+            'Divide and Conquer is one of the most fundamental algorithm design '
+            'paradigms. By breaking problems into smaller subproblems, solving '
+            'them recursively, and combining the results, we achieve efficient '
+            'solutions to sorting, counting, multiplication, and more. The '
+            'patterns you learned here will appear throughout your study of '
+            'algorithms.',
+          ),
+        ],
+      ),
     ],
   ),
 

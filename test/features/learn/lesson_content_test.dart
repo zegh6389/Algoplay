@@ -1686,8 +1686,8 @@ void main() {
       return prose;
     }
 
-    test('has 6 modules', () {
-      expect(lesson7.modules.length, 6);
+    test('has 7 modules', () {
+      expect(lesson7.modules.length, 7);
     });
 
     test('Module 1 covers divide and conquer introduction', () {
@@ -1794,6 +1794,19 @@ void main() {
       final combined = combinedText(blocks);
       expect(combined, contains('Strassen'));
       expect(combined, contains('matrix'));
+    });
+
+    test('Module 7 covers Conclusion', () {
+      final module = lesson7.modules[6];
+      expect(module.id, 'lesson7_module7');
+      expect(module.title, 'Conclusion');
+      expect(module.order, 6);
+      expect(module.algorithmId, isNull);
+      final blocks = module.contentBlocks;
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+      final combined = combinedText(blocks);
+      expect(combined, contains('Divide and Conquer'));
+      expect(combined, contains('Transform'));
     });
 
     test('Lesson 7 visible prose keeps formulas out of prose blocks', () {
