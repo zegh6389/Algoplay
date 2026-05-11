@@ -5230,6 +5230,94 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+      ModuleContent(
+        id: 'lesson8_module5',
+        title: 'Conclusion: Transform and Conquer',
+        order: 4,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'In Lesson 8 we introduced transform and conquer. This approach '
+            'leverages techniques from other areas of mathematics to solve problems '
+            'and calculate the efficiency of algorithms.',
+          ),
+          TextBlock(
+            'We saw two ways to apply this idea.',
+          ),
+          DefinitionBlock(
+            term: 'Presorting (Instance Simplification)',
+            definition: 'Sorting the input first to simplify a later computation. '
+                'The problem stays the same, but the sorted instance is easier to '
+                'process. Examples include the element uniqueness problem and '
+                'computing the mode.',
+          ),
+          DefinitionBlock(
+            term: 'Representation Change',
+            definition: 'Encoding the same data in a different structure to expose '
+                'hidden patterns or enable faster algorithms. The data does not '
+                'change, but the representation does.',
+          ),
+          TextBlock(
+            'For representation change, we studied two major examples.',
+          ),
+          TextBlock(
+            'The heap transforms a partially ordered binary tree into a contiguous '
+            'array with no pointers. This yields logarithmic priority queue operations, '
+            'linear-time construction, and Heapsort with guaranteed linearithmic '
+            'worst-case performance in place.',
+          ),
+          TextBlock(
+            "Horner's Rule transforms a polynomial from a sum of monomials into a "
+            'nested multiply-add form. This reduces evaluation from quadratic to '
+            'linear time with exactly n multiplications and n additions.',
+          ),
+          QuizBlock(
+            question: 'Which transform-and-conquer type sorts the input to make a '
+                'later step easier?',
+            options: [
+              'Instance simplification',
+              'Representation change',
+              'Problem reduction',
+              'Divide and conquer',
+            ],
+            correctIndex: 0,
+            explanation: 'Presorting is an example of instance simplification: '
+                'the problem instance is made more regular by sorting, but the '
+                'underlying problem does not change.',
+          ),
+          QuizBlock(
+            question: 'Which example best illustrates representation change?',
+            options: [
+              'Encoding a binary tree as an array for heapsort',
+              'Sorting an array before searching it',
+              'Splitting an array in half for mergesort',
+              'Removing one element to shrink the problem',
+            ],
+            correctIndex: 0,
+            explanation: 'The heap encodes a tree as an array, changing how the data '
+                'is represented. Presorting changes the instance, not the representation.',
+          ),
+          QuizBlock(
+            question: "How does Horner's Rule reduce polynomial evaluation cost?",
+            options: [
+              'By rewriting the polynomial as nested multiply-add steps',
+              'By sorting the coefficients first',
+              'By converting the polynomial to a graph',
+              'By using divide and conquer on the degree',
+            ],
+            correctIndex: 0,
+            explanation: "Horner's Rule factors out x at every level, turning a sum "
+                'of monomials into a nested form that needs only n multiplications.',
+          ),
+          KeyTakeawayBlock(
+            'Transform and conquer expands our toolkit by letting us view problems '
+            'through different lenses. Presorting simplifies instances, heaps replace '
+            'pointers with array arithmetic, and Horner restructures polynomials. In '
+            'Lesson 9 we continue this theme with more representation change examples, '
+            'problem reduction, and an application of Horner to number system conversion.',
+          ),
+        ],
+      ),
     ],
   ),
 
