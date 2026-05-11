@@ -2134,7 +2134,7 @@ void main() {
       expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
       expect(blocks.last, isA<KeyTakeawayBlock>());
 
-      final combined = combinedText(blocks);
+      final combined = combinedText(blocks).join(' ');
       expect(combined, contains('representation change'));
       expect(combined, contains('binary exponentiation'));
       expect(combined, contains('longest increasing subsequence'));
@@ -2155,12 +2155,12 @@ void main() {
     });
 
     test('Lesson 9 prose uses readable math notation', () {
-      final combined = combinedText(lesson9.modules.expand((m) => m.contentBlocks).toList());
+      final combined = combinedText(lesson9.modules.expand((m) => m.contentBlocks).toList()).join(' ');
       expect(combined, isNot(contains('n^2')));
     });
 
     test('Lesson 9 prose avoids AI punctuation tells', () {
-      final combined = combinedText(lesson9.modules.expand((m) => m.contentBlocks).toList());
+      final combined = combinedText(lesson9.modules.expand((m) => m.contentBlocks).toList()).join(' ');
       expect(combined, isNot(contains('\u2014')));
       expect(combined, isNot(contains(';')));
       expect(combined, isNot(contains(' - ')));

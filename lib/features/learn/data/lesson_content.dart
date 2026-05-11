@@ -708,7 +708,7 @@ const List<LessonContent> lessons = [
             'Look at what happens when n doubles from 125 to 250, then 250 to 500, then 500 to 1000. The running time becomes about four times larger on both computers. That is the fingerprint of quadratic growth.',
           ),
           MathBlock(
-            r'(2n)^2 = 4n^2',
+            r'(2n)^2 = 4n^{2}',
             semanticsLabel:
                 'doubling n in a quadratic expression multiplies the value by four',
           ),
@@ -721,7 +721,7 @@ const List<LessonContent> lessons = [
                 'The part of a running-time formula that controls growth for large n. In a quadratic formula, the n² term eventually dominates the linear and constant terms.',
           ),
           MathBlock(
-            r'f(n) = an^2 + bn + c',
+            r'f(n) = an^{2} + bn + c',
             semanticsLabel: 'f of n equals a n squared plus b n plus c',
           ),
           TextBlock(
@@ -1552,14 +1552,14 @@ const List<LessonContent> lessons = [
             semanticsLabel: 'example two theta n log n',
           ),
           MathBlock(
-            r'T(n) = 2T(n / 2) + 5n^2',
+            r'T(n) = 2T(n / 2) + 5n^{2}',
             semanticsLabel: 'Master Theorem example three',
           ),
           TextBlock(
             'Here d = 2, so bᵈ = 4. Since 2 < 4, the outside n² work dominates and the result is Θ(n²).',
           ),
           MathBlock(
-            r'T(n) \in \Theta(n^2)',
+            r'T(n) \in \Theta(n^{2})',
             semanticsLabel: 'example three theta n squared',
           ),
           TextBlock(
@@ -1704,7 +1704,7 @@ const List<LessonContent> lessons = [
           TextBlock(
             'Because the nested scans still cover the array, Selection Sort uses Θ(n²) comparisons in the usual analysis. A sorted array and a reverse-sorted array do not change that comparison count.',
           ),
-          MathBlock(r'\Theta(n^2)', semanticsLabel: 'theta of n squared'),
+          MathBlock(r'\Theta(n^{2})', semanticsLabel: 'theta of n squared'),
           TextBlock(
             'Bubble Sort is another direct method. It compares adjacent items and swaps them when they are out of order. Small improvements can help practice, but the overall class stays O(n²).',
           ),
@@ -2615,7 +2615,7 @@ const List<LessonContent> lessons = [
             semanticsLabel: 'sum of insertion sort worst case comparisons',
           ),
           MathBlock(
-            r'T_{worst}(n) = \Theta(n^2)',
+            r'T_{worst}(n) = \Theta(n^{2})',
             semanticsLabel: 'insertion sort worst case is theta n squared',
           ),
           TextBlock(
@@ -2629,7 +2629,7 @@ const List<LessonContent> lessons = [
             'The average case is still quadratic. Across all input arrangements, an inserted item usually travels about halfway through the sorted prefix, and those costs still add up like n².',
           ),
           MathBlock(
-            r'T_{average}(n) = \Theta(n^2)',
+            r'T_{average}(n) = \Theta(n^{2})',
             semanticsLabel: 'insertion sort average case is theta n squared',
           ),
           DefinitionBlock(
@@ -2748,7 +2748,7 @@ const List<LessonContent> lessons = [
           TextBlock(
             'That estimate is not a universal bound. Some gap sequences have quadratic worst-case behavior, while others have better proven bounds.',
           ),
-          MathBlock(r'\Theta(n^2)', semanticsLabel: 'theta of n squared'),
+          MathBlock(r'\Theta(n^{2})', semanticsLabel: 'theta of n squared'),
           TextBlock(
             'Unlike Insertion Sort where reverse order is clearly the worst case, Shell Sort\'s worst case depends on both the input arrangement and the chosen gap sequence. To answer "what is the worst case?" you must first specify the gap sequence.',
           ),
@@ -3929,7 +3929,7 @@ const List<LessonContent> lessons = [
             'Using the summation formula, this can be rewritten as:',
           ),
           MathBlock(
-            r'C_{\text{worst}}(n) = \frac{(n+1)(n+2)}{2} - 3 \in \Theta(n^2)',
+            r'C_{\text{worst}}(n) = \frac{(n+1)(n+2)}{2} - 3 \in \Theta(n^{2})',
             semanticsLabel: 'quicksort worst case quadratic',
           ),
           TextBlock(
@@ -5089,7 +5089,7 @@ const List<LessonContent> lessons = [
             'quadratically.',
           ),
           MathBlock(
-            r'\text{Brute force multiplications} = \sum_{i=1}^{n} (i + 1) = \frac{n(n+3)}{2} = \Theta(n^2)',
+            r'\text{Brute force multiplications} = \sum_{i=1}^{n} (i + 1) = \frac{n(n+3)}{2} = \Theta(n^{2})',
             semanticsLabel: 'brute force multiplication count',
           ),
           TextBlock(
