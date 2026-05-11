@@ -6044,6 +6044,101 @@ ModuleContent(
         ],
       ),
 
+      ModuleContent(
+        id: 'lesson10_module3',
+        title: 'The Knapsack Problem',
+        order: 2,
+        algorithmId: 'knapsack',
+        contentBlocks: [
+          TextBlock(
+            'In this module we revisit the 0/1 Knapsack Problem, but this time we solve it using dynamic programming. We first saw this problem in Lesson 4 (Brute Force). You are given a knapsack of capacity W, and n items where each item i has a weight wᵢ and a value vᵢ. You want the most valuable subset that fits inside the capacity.',
+          ),
+          DefinitionBlock(
+            term: '0/1 Knapsack Problem',
+            definition: 'Given n items with weights wᵢ and values vᵢ, and a knapsack of capacity W, find the maximum total value of a subset of items that fits inside the knapsack without exceeding its capacity. Each item is either taken completely or not at all.',
+          ),
+          TextBlock(
+            'To use dynamic programming, we define a subproblem function F(i, j): the maximum value we can achieve using only the first i items with a knapsack capacity of j. Our goal is F(n, W): the optimal value using all n items and the full capacity.',
+          ),
+          MathBlock(
+            r'F(i, j) = \text{max value using first i items with capacity } j',
+            semanticsLabel: 'subproblem definition',
+          ),
+          QuizBlock(
+            question: 'What does F(i, j) represent in the dynamic programming formulation of the knapsack problem?',
+            options: [
+              'The total weight of the first i items',
+              'The maximum value achievable using only the first i items with capacity j',
+              'The minimum value of all subsets of i items',
+              'The number of ways to fill the knapsack with i items',
+            ],
+            correctIndex: 1,
+            explanation: 'F(i, j) is defined as the maximum value achievable using only the first i items with a knapsack capacity of j. This subproblem structure lets us build up to the full solution F(n, W).',
+          ),
+          TextBlock(
+            'To build the recurrence, consider the i-th item. There are exactly two choices: exclude it or include it. If we exclude it, our value is just F(i minus 1, j). If we include it, we gain vᵢ but consume wᵢ of capacity, leaving j minus wᵢ for the remaining items.',
+          ),
+          MathBlock(
+            r'F(i, j) = \max\{F(i-1, j), \; v_i + F(i-1, j-w_i)\} \quad \text{if } j \geq w_i',
+            semanticsLabel: 'knapsack recurrence with item included',
+          ),
+          TextBlock(
+            'If the item does not fit (j minus wᵢ is less than 0), we are forced to exclude it, so F(i, j) equals F(i minus 1, j).',
+          ),
+          MathBlock(
+            r'F(i, j) = F(i-1, j) \quad \text{if } j < w_i',
+            semanticsLabel: 'knapsack recurrence when item does not fit',
+          ),
+          QuizBlock(
+            question: 'When does the recurrence for F(i, j) simplify to just F(i minus 1, j)?',
+            options: [
+              'When the item has zero weight',
+              'When the item value is greater than the capacity',
+              'When the item weight exceeds the current capacity',
+              'When this is the last item to consider',
+            ],
+            correctIndex: 2,
+            explanation: 'If the item weight wᵢ exceeds the current capacity j, the item cannot be included. The recurrence simplifies to F(i, j) equals F(i minus 1, j) because we can only exclude it.',
+          ),
+          TextBlock(
+            'We build a 2D table where rows represent items (0 to n) and columns represent capacities (0 to W). Each cell F(i, j) is computed from the row above, so we fill the table row by row. Each cell takes constant time since we only look at one or two cells above it.',
+          ),
+          CodeBlock(
+            'for i from 0 to n do\n'
+            '    for j from 0 to W do\n'
+            '        if j < weight[i]\n'
+            '            F[i,j] = F[i-1, j]\n'
+            '        else\n'
+            '            F[i,j] = max(F[i-1, j], value[i] + F[i-1, j-weight[i]])\n'
+            'return F[n,W]\n',
+            language: 'pseudocode',
+          ),
+          QuizBlock(
+            question: 'What is the time complexity of the dynamic programming algorithm for the 0/1 knapsack problem?',
+            options: [
+              'Exponential in n',
+              'Theta(nW)',
+              'Theta(n squared)',
+              'Theta(n log W)',
+            ],
+            correctIndex: 1,
+            explanation: 'The algorithm builds an n by W table, and each cell takes constant time to compute from the row above. This gives Theta(nW) time.',
+          ),
+          VisualizerLinkBlock(
+            algorithmId: 'knapsack',
+            label: 'See the DP table fill in action',
+            description: 'Watch how the table builds row by row and how each decision leads to the optimal value.',
+          ),
+          TextBlock(
+            'You might wonder: the knapsack problem is NP-hard. How can we have a polynomial-time algorithm? The key is that Theta(nW) is polynomial in the numeric value of W, but not in the input size. W is a number, not a count of bits. The actual input size is the number of bits needed to represent W, which is log₂ W. So Theta(nW) is actually Theta(n times 2 to the power of the input size), which is exponential.',
+          ),
+          TextBlock(
+            'Algorithms whose running time is polynomial in the numeric value of the input but exponential in the input length are called pseudo-polynomial. They work well for moderate W values, but degrade quickly when W is very large (like a 256-bit cryptographic integer).',
+          ),
+          KeyTakeawayBlock(
+            'The knapsack dynamic program builds an n by W table in Theta(nW) time. This is pseudo-polynomial because it is polynomial in the numeric value of W but exponential in the number of bits needed to represent W. The recurrence F(i, j) equals max(F(i minus 1, j), vᵢ plus F(i minus 1, j minus wᵢ)) captures the include/exclude decision for each item.',
+          ),
+
     ],
   ),
 
