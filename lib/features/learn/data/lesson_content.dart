@@ -4494,12 +4494,147 @@ const List<LessonContent> lessons = [
     ],
   ),
 
-  // ── Lesson 8 (stub) ───────────────────────────────────────────────────────
+  // ── Lesson 8 ─────────────────────────────────────────────────────────────────
   LessonContent(
     id: 8,
     title: 'Transform and Conquer Pt.1',
     categoryColor: '#F97316',
-    modules: [],
+    modules: [
+      ModuleContent(
+        id: 'lesson8_module1',
+        title: 'Introduction to Transform and Conquer',
+        order: 0,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'We now begin a new algorithm design technique: Transform and Conquer. '
+            'The core idea is to change the problem into a different but related problem, '
+            'usually in another domain or representation, where it becomes easier to solve.',
+          ),
+          DefinitionBlock(
+            term: 'Transform and Conquer',
+            definition: 'An algorithm design technique that changes a problem into a different '
+                'but related problem, solves it in the new form, and optionally transforms '
+                'the result back.',
+          ),
+          TextBlock(
+            'Transform and conquer can feel more creative than decrease-and-conquer or '
+            'divide-and-conquer because it often depends on seeing the right connection or encoding.',
+          ),
+          KeyTakeawayBlock(
+            'Not every problem can be usefully transformed, but many important ones can. '
+            'As you learn more about algorithms, data structures, and discrete mathematics '
+            '(graphs, trees, matrices, tableaux), you get better at spotting when a transformation is possible.',
+          ),
+          DefinitionBlock(
+            term: 'Gaussian Elimination',
+            definition: 'A classic transform-and-conquer algorithm from linear algebra. '
+                'It transforms a system of n linear equations in n unknowns into an upper triangular '
+                'system, which can then be solved easily using backward substitution.',
+          ),
+          TextBlock(
+            'Gaussian Elimination transforms the original system whose coefficient matrix is '
+            'dense and messy into a new system whose coefficient matrix is upper triangular. '
+            'In this new form, the system can be solved easily using backward substitution.',
+          ),
+          DefinitionBlock(
+            term: 'Instance Simplification',
+            definition: 'A type of transform and conquer where the given instance of a problem '
+                'is changed into an easier instance of the same problem. The underlying problem '
+                'type does not change, only the input becomes more regular.',
+          ),
+          TextBlock(
+            'A common example of instance simplification: before solving a problem on an array, '
+            'we might sort the array first. The original problem may be complicated on an unsorted '
+            'array but becomes much simpler once the array is sorted.',
+          ),
+          DefinitionBlock(
+            term: 'Representation Change',
+            definition: 'A type of transform and conquer where the essence of the problem is kept '
+                'but how the data is represented is changed. For example, mapping an array-based problem '
+                'into a tree or graph structure.',
+          ),
+          TextBlock(
+            'Once the problem is expressed in a new representation, we can apply specialist tools '
+            'for that structure (tree algorithms, graph algorithms, matrix methods) and sometimes '
+            'see hidden patterns that were not visible in the original form.',
+          ),
+          DefinitionBlock(
+            term: 'Problem Reduction',
+            definition: 'A type of transform and conquer where the given problem is transformed into '
+                'an instance of a well-studied problem that already has known algorithms. The strategy '
+                'is to transform, apply the existing algorithm, and optionally transform the result back.',
+          ),
+          TextBlock(
+            'The challenge in problem reduction is mostly in spotting the right reduction. '
+            'Once the mapping is found, the algorithm itself is usually straightforward because it '
+            'is already known.',
+          ),
+          QuizBlock(
+            question: 'Which type of transform and conquer sorts the input to make '
+                'a later step easier?',
+            options: [
+              'Instance simplification',
+              'Representation change',
+              'Problem reduction',
+              'Divide and conquer',
+            ],
+            correctIndex: 0,
+            explanation: 'Instance simplification changes the given instance into an easier '
+                'instance of the same problem, such as sorting an array before processing it.',
+          ),
+          QuizBlock(
+            question: 'What is the key difference between instance simplification and '
+                'representation change?',
+            options: [
+              'Instance simplification keeps the same problem type, representation change changes the data structure',
+              'Instance simplification is faster, representation change is slower',
+              'They are the same technique with different names',
+              'Instance simplification uses graphs, representation change uses arrays',
+            ],
+            correctIndex: 0,
+            explanation: 'Instance simplification produces an easier instance of the same problem, '
+                'while representation change keeps the problem essence but changes how the data is '
+                'represented (e.g., array to tree).',
+          ),
+          QuizBlock(
+            question: 'In Gaussian Elimination, what does the transformation produce?',
+            options: [
+              'An upper triangular system',
+              'A sorted array',
+              'A balanced binary tree',
+              'A directed graph',
+            ],
+            correctIndex: 0,
+            explanation: 'Gaussian Elimination transforms the coefficient matrix into upper '
+                'triangular form, which can then be solved by backward substitution.',
+          ),
+          QuizBlock(
+            question: 'Why does learning about graphs and trees help with transform and conquer?',
+            options: [
+              'They provide new representations where specialist algorithms already exist',
+              'They are always faster than array-based solutions',
+              'They replace all other algorithm design techniques',
+              'They are required for instance simplification',
+            ],
+            correctIndex: 0,
+            explanation: 'Many transform-and-conquer algorithms work by re-expressing a problem '
+                'as a graph or tree, where powerful algorithms and patterns are already available.',
+          ),
+          TextBlock(
+            'Compared to the earlier techniques: decrease and conquer shrinks the problem size '
+            'directly, divide and conquer splits the problem into pieces of the same type, and '
+            'transform and conquer changes how we view the problem or which problem we are trying '
+            'to solve.',
+          ),
+          KeyTakeawayBlock(
+            'Transform and conquer is about seeing the right viewpoint. By learning to map '
+            'problems into new domains with richer tools, you expand your ability to design '
+            'efficient algorithms and to recognize deep connections between different topics.',
+          ),
+        ],
+      ),
+    ],
   ),
 
   // ── Lesson 9 (stub) ───────────────────────────────────────────────────────

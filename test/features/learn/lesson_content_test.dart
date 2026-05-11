@@ -1855,6 +1855,143 @@ void main() {
     });
   });
 
+  group('lesson8', () {
+    final lesson8 = lessons.firstWhere((l) => l.id == 8);
+
+    String combinedText(Iterable<ContentBlock> blocks) {
+      return blocks
+          .map((block) {
+            return switch (block) {
+              TextBlock(:final text) => text,
+              DefinitionBlock(:final term, :final definition) =>
+                '$term $definition',
+              KeyTakeawayBlock(:final text) => text,
+              QuizBlock(:final question, :final options, :final explanation) =>
+                '$question ${options.join(' ')} $explanation',
+              CodeBlock(:final code, :final language) => '$language $code',
+              MathBlock(:final tex, :final semanticsLabel) =>
+                '$semanticsLabel $tex',
+              GraphBlock(:final type) => type,
+              VisualizerLinkBlock(
+                :final algorithmId,
+                :final label,
+                :final description,
+              ) =>
+                '$algorithmId $label ${description ?? ''}',
+            };
+          })
+          .join(' ');
+    }
+
+    List<String> lesson8Prose() {
+      final prose = <String>[];
+      for (final module in lesson8.modules) {
+        for (final block in module.contentBlocks) {
+          switch (block) {
+            case TextBlock(:final text):
+              prose.add(text);
+            case DefinitionBlock(:final term, :final definition):
+              prose.add('$term $definition');
+            case KeyTakeawayBlock(:final text):
+              prose.add(text);
+            case QuizBlock(
+              :final question,
+              :final options,
+              :final explanation,
+            ):
+              prose.add(question);
+              prose.addAll(options);
+              prose.add(explanation);
+            case CodeBlock(:final code, :final language):
+              prose.add('$language $code');
+            case MathBlock(:final tex, :final semanticsLabel):
+              prose.add('$semanticsLabel $tex');
+            case GraphBlock(:final type):
+              prose.add(type);
+            case VisualizerLinkBlock(
+              :final algorithmId,
+              :final label,
+              :final description,
+            ):
+              prose.add('$algorithmId $label ${description ?? ''}');
+          }
+        }
+      }
+      return prose;
+    }
+
+    test('has 1 module', () {
+      expect(lesson8.modules.length, 1);
+    });
+
+    test('Module 1 covers transform and conquer introduction', () {
+      final module = lesson8.modules[0];
+      expect(module.id, 'lesson8_module1');
+      expect(module.title, 'Introduction to Transform and Conquer');
+      expect(module.order, 0);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(4),
+      );
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = combinedText(blocks);
+      expect(combined, contains('Transform and Conquer'));
+      expect(combined, contains('Gaussian'));
+      expect(combined, contains('Instance Simplification'));
+      expect(combined, contains('Representation Change'));
+      expect(combined, contains('Problem Reduction'));
+      expect(combined, contains('upper triangular'));
+      expect(combined, contains('backward substitution'));
+    });
+
+    test('Lesson 8 visible prose keeps formulas out of prose blocks', () {
+      final visibleProse = lesson8.modules
+          .expand((module) => module.contentBlocks)
+          .where((block) => block is! MathBlock && block is! CodeBlock)
+          .map((block) {
+            return switch (block) {
+              TextBlock(:final text) => text,
+              DefinitionBlock(:final term, :final definition) =>
+                '$term $definition',
+              KeyTakeawayBlock(:final text) => text,
+              QuizBlock(:final question, :final options, :final explanation) =>
+                '$question ${options.join(' ')} $explanation',
+              CodeBlock() => '',
+              MathBlock() => '',
+              GraphBlock(:final type) => type,
+              VisualizerLinkBlock(
+                :final algorithmId,
+                :final label,
+                :final description,
+              ) =>
+                '$algorithmId $label ${description ?? ''}',
+            };
+          })
+          .join('\n');
+
+      expect(visibleProse, isNot(contains('Θ(')));
+      expect(visibleProse, isNot(contains('T(n) =')));
+      expect(visibleProse, isNot(contains(r'\Theta')));
+    });
+
+    test('Lesson 8 prose uses readable math notation', () {
+      final combined = lesson8Prose().join('\n');
+      expect(combined, isNot(contains('n^2')));
+    });
+
+    test('Lesson 8 prose avoids AI punctuation tells', () {
+      final combined = lesson8Prose().join('\n');
+      expect(combined, isNot(contains('\u2014')));
+      expect(combined, isNot(contains(';')));
+      expect(combined, isNot(contains(' - ')));
+    });
+  });
+
   group('ContentBlock subclasses', () {
     test('TextBlock holds text', () {
       const block = TextBlock('hello');
