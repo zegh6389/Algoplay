@@ -2249,8 +2249,8 @@ void main() {
       return prose;
     }
 
-    test('has 2 modules', () {
-      expect(lesson10.modules.length, 2);
+    test('has 3 modules', () {
+      expect(lesson10.modules.length, 3);
     });
 
     test('Module 1 introduces dynamic programming and the Fibonacci example', () {
@@ -2293,6 +2293,27 @@ void main() {
       expect(combined.toLowerCase(), contains('pascal'));
       expect(combined.toLowerCase(), contains('overlap'));
       expect(combined, contains(r'\binom{n}{k}'));
+    });
+
+    test('Module 3 covers the Knapsack Problem with DP', () {
+      final module = lesson10.modules[2];
+      expect(module.id, 'lesson10_module3');
+      expect(module.title, 'The Knapsack Problem');
+      expect(module.order, 2);
+      expect(module.algorithmId, 'knapsack');
+
+      final blocks = module.contentBlocks;
+      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(1));
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.whereType<CodeBlock>().length, greaterThanOrEqualTo(1));
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.whereType<VisualizerLinkBlock>().length, 1);
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = combinedText(blocks);
+      expect(combined.toLowerCase(), contains('knapsack'));
+      expect(combined.toLowerCase(), contains('pseudo-polynomial'));
+      expect(combined.toLowerCase(), contains('subproblem'));
     });
 
     test('Lesson 10 visible prose keeps formulas out of prose blocks', () {
