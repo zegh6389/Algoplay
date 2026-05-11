@@ -4800,6 +4800,264 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+      ModuleContent(
+        id: 'lesson8_module3',
+        title: 'Heaps and Heapsort',
+        order: 2,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'The heap is the quintessential example of representation change in action. '
+            'It takes a hierarchical, partially ordered binary tree and maps it into a '
+            'simple contiguous array with no pointers at all.',
+          ),
+          TextBlock(
+            'Before diving into the heap, let us understand why it exists. '
+            'A priority queue is like a regular queue, except every element has a '
+            'priority. The highest-priority element is always served first, regardless '
+            'of insertion order.',
+          ),
+          DefinitionBlock(
+            term: 'Priority Queue',
+            definition: 'An abstract data type where each element has an associated '
+                'priority. The element with the highest priority is always extracted '
+                'first, regardless of insertion order.',
+          ),
+          TextBlock(
+            'If we implement a priority queue with an unsorted array, insertion is '
+            'constant time but finding the maximum requires a linear scan. If we use '
+            'a sorted array, extraction is constant time but insertion is linear. '
+            'Neither is ideal for large-scale use.',
+          ),
+          KeyTakeawayBlock(
+            'The heap provides the "third way": both insertion and maximum extraction '
+            'run in logarithmic time, striking a balance between the two extremes.',
+          ),
+          DefinitionBlock(
+            term: 'Heap (Max-Heap)',
+            definition: 'A complete binary tree where no child has a value greater than '
+                'its parent. The root always contains the global maximum. The ordering '
+                'constraint is called the partial order tree property.',
+          ),
+          DefinitionBlock(
+            term: 'Complete Binary Tree',
+            definition: 'A binary tree where all leaves are on the same level or on two '
+                'adjacent levels, and the leaves on the bottommost level are placed as '
+                'far left as possible.',
+          ),
+          TextBlock(
+            'The partial order property means parents dominate children, so the root '
+            'holds the maximum. Crucially, this is a partial order, not a total order: '
+            'no constraint exists between siblings. This relaxed structure is exactly what '
+            'enables logarithmic time operations.',
+          ),
+          TextBlock(
+            'The complete binary tree shape guarantees the tree is always balanced and '
+            'densely packed. The height h of a heap with n elements is bounded by '
+            'the floor of log base 2 of n.',
+          ),
+          MathBlock(
+            r'h = \lfloor \log_2 n \rfloor',
+            semanticsLabel: 'heap height formula',
+          ),
+          TextBlock(
+            'The array isomorphism is the heap\'s defining triumph. Because the tree is '
+            'complete, its geometry is entirely predictable. Nodes labeled in level order '
+            'map directly to array indices. For a node at index i in a 1-indexed array:',
+          ),
+          MathBlock(
+            r'\text{left child} = 2i, \quad \text{right child} = 2i + 1, \quad \text{parent} = \lfloor i/2 \rfloor',
+            semanticsLabel: 'array to tree index mapping',
+          ),
+          TextBlock(
+            'This implicit mapping replaces pointer dereferencing with elementary arithmetic. '
+            'On modern hardware, multiplications and divisions by 2 compile to single-cycle '
+            'bitwise shifts.',
+          ),
+          TextBlock(
+            'A critical partition follows from this mapping. The internal nodes (parents) '
+            'occupy indices 1 through floor of n/2. The leaf nodes occupy the second half, '
+            'from floor of n/2 plus 1 through n. This partition is exploited during '
+            'bottom-up heap construction.',
+          ),
+          QuizBlock(
+            question: 'In a 1-indexed array, where is the left child of node at index i?',
+            options: [
+              'At index 2i',
+              'At index 2i + 1',
+              'At index i + 1',
+              'At index floor of i/2',
+            ],
+            correctIndex: 0,
+            explanation: 'The left child is at 2i, the right child is at 2i + 1, and the '
+                'parent is at floor of i/2.',
+          ),
+          QuizBlock(
+            question: 'Why is the heap property called a partial order rather than a total order?',
+            options: [
+              'No constraint exists between sibling nodes',
+              'The heap only works for integers',
+              'Some elements may be equal',
+              'The tree is not always balanced',
+            ],
+            correctIndex: 0,
+            explanation: 'The heap only constrains vertical parent-child relationships. '
+                'Left and right siblings can be in any relative order.',
+          ),
+          TextBlock(
+            'When the root is removed, the last element in the array is moved to the root '
+            'position to preserve the complete tree shape. This almost certainly violates '
+            'the partial order property. The fixHeap subroutine (also called sift-down or '
+            'heapify) restores order by letting the displaced element sink downward.',
+          ),
+          DefinitionBlock(
+            term: 'fixHeap (Sift-Down)',
+            definition: 'A subroutine that repairs a heap after the root is replaced by an '
+                'arbitrary key K. It compares K with its larger child and swaps downward '
+                'repeatedly until K is greater than or equal to both children or reaches a leaf.',
+          ),
+          TextBlock(
+            'At each level, fixHeap performs at most two comparisons: one to find the larger '
+            'child, and one to compare that child with the sinking key. Since the path from '
+            'root to leaf has length approximately log base 2 of n, the total cost is '
+            'logarithmic.',
+          ),
+          TextBlock(
+            'Bottom-up heap construction builds a valid heap from an arbitrary unsorted '
+            'array in linear time. It starts by observing that all nodes in the second half '
+            'of the array are leaves, which are trivially valid subheaps.',
+          ),
+          TextBlock(
+            'The algorithm then iterates backwards from the last internal node at index '
+            'floor of n/2 down to the root, calling fixHeap at each node. Because the '
+            'iteration proceeds bottom-up, both subtrees of any node being processed are '
+            'already valid heaps.',
+          ),
+          CodeBlock(
+            'constructHeap(A[1..n])\n'
+            '1. For i = floor(n/2) down to 1:\n'
+            '2.   fixHeap(subtree rooted at A[i])',
+            language: 'text',
+          ),
+          TextBlock(
+            'The linear time proof is one of the most celebrated results in algorithm '
+            'analysis. Although there are n nodes and fixHeap costs logarithmic time, '
+            'most nodes are near the bottom and travel very short distances.',
+          ),
+          TextBlock(
+            'Specifically, n/2 leaves require zero operations, n/4 nodes one level up '
+            'require at most one swap, and only the rare nodes near the root travel the '
+            'full height. The recurrence for the cost W of n elements maps to the Master '
+            'Theorem with parameters a = 2, b = 2, and f(n) logarithmic.',
+          ),
+          MathBlock(
+            r'W(n) = 2\,W\!\left(\frac{n}{2}\right) + \Theta(\log n) \implies W(n) = \Theta(n)',
+            semanticsLabel: 'heap construction recurrence solved to linear time',
+          ),
+          TextBlock(
+            'Because logarithmic overhead is polynomially smaller than linear (the driving '
+            'function), Case 1 of the Master Theorem applies and the total cost is linear.',
+          ),
+          QuizBlock(
+            question: 'Why does bottom-up heap construction run in linear time instead of '
+                'linearithmic?',
+            options: [
+              'Most nodes are near the bottom and travel very short distances',
+              'fixHeap runs in constant time for all nodes',
+              'The algorithm only processes half the array',
+              'Leaves are removed before construction begins',
+            ],
+            correctIndex: 0,
+            explanation: 'Although fixHeap is logarithmic per node, the vast majority of '
+                'nodes sit near the bottom of the tree and require zero or one swap. '
+                'This geometric weighting makes the total linear.',
+          ),
+          TextBlock(
+            'Heapsort operates in two phases. Phase 1 builds a max-heap from the unsorted '
+            'array in linear time. Phase 2 repeatedly extracts the root maximum, swaps it '
+            'to the end of the array, shrinks the heap boundary by one, and calls fixHeap.',
+          ),
+          CodeBlock(
+            'Heapsort(A[1..n])\n'
+            '1. constructHeap(A)          // Phase 1: O(n)\n'
+            '2. For i = n down to 2:      // Phase 2\n'
+            '3.   Swap A[1] and A[i]      // Move max to sorted position\n'
+            '4.   fixHeap(A[1..i-1])      // Restore heap on remaining elements',
+            language: 'text',
+          ),
+          TextBlock(
+            'The total cost of Phase 2 is bounded by the sum of fixHeap costs as the '
+            'heap shrinks from size n minus 1 down to 1.',
+          ),
+          MathBlock(
+            r'\sum_{k=1}^{n-1} 2\lfloor \log_2 k \rfloor = O(n \log n)',
+            semanticsLabel: 'total heapsort phase 2 comparisons',
+          ),
+          TextBlock(
+            'This sum can be bounded using calculus by integrating log base 2 of x '
+            'from 1 to n. The antiderivative of ln x is x ln x minus x. After '
+            'evaluating and converting back to base 2, the dominant term is '
+            'n log base 2 of n.',
+          ),
+          MathBlock(
+            r'\int_{1}^{n} \log_2 x \, dx = \frac{n \log_2 n}{1} - \frac{n}{\ln 2} + 1 = \Theta(n \log n)',
+            semanticsLabel: 'integration bound for heapsort comparisons',
+          ),
+          TextBlock(
+            'Combining both phases: linear time for construction plus linearithmic for '
+            'extraction gives a total of linearithmic. Unlike Quicksort, Heapsort '
+            'guarantees this bound in the worst case. Unlike Mergesort, it sorts in '
+            'place with no auxiliary memory.',
+          ),
+          MathBlock(
+            r'T_{\text{heapsort}}(n) = \underbrace{\Theta(n)}_{\text{build heap}} + \underbrace{\Theta(n \log n)}_{\text{extract all}} = \Theta(n \log n)',
+            semanticsLabel: 'total heapsort complexity',
+          ),
+          QuizBlock(
+            question: 'What is the worst-case time complexity of Heapsort?',
+            options: [
+              'linearithmic',
+              'quadratic',
+              'linear',
+              'n squared',
+            ],
+            correctIndex: 0,
+            explanation: 'Heapsort guarantees linearithmic worst-case time, combining '
+                'linear heap construction with linearithmic extraction.',
+          ),
+          QuizBlock(
+            question: 'What advantage does Heapsort have over Mergesort?',
+            options: [
+              'Heapsort sorts in place with no auxiliary memory',
+              'Heapsort is always faster in practice',
+              'Heapsort has a better worst-case bound',
+              'Heapsort is a stable sort',
+            ],
+            correctIndex: 0,
+            explanation: 'Mergesort requires linear auxiliary space, while Heapsort '
+                'operates entirely in place. Both have the same worst-case bound.',
+          ),
+          QuizBlock(
+            question: 'What practical disadvantage does Heapsort have compared to Quicksort?',
+            options: [
+              'Heapsort has poor cache locality due to non-sequential array access',
+              'Heapsort requires more memory than Quicksort',
+              'Heapsort cannot handle duplicate elements',
+              'Heapsort has a worse worst-case complexity',
+            ],
+            correctIndex: 0,
+            explanation: 'During fixHeap, the algorithm jumps across array indices '
+                '(i to 2i to 4i), causing cache misses on modern hardware. Quicksort\'s '
+                'sequential scans are cache-friendly.',
+          ),
+          KeyTakeawayBlock(
+            'The heap is a masterful example of representation change: a partially ordered '
+            'tree encoded as a pointer-free array. It yields a priority queue with '
+            'logarithmic insert and extract, a linear-time construction algorithm, and '
+            'a sorting algorithm with guaranteed linearithmic worst-case performance in place.',
+          ),
+        ],
+      ),
     ],
   ),
 

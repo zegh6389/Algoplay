@@ -1920,8 +1920,8 @@ void main() {
       return prose;
     }
 
-    test('has 2 modules', () {
-      expect(lesson8.modules.length, 2);
+    test('has 3 modules', () {
+      expect(lesson8.modules.length, 3);
     });
 
     test('Module 1 covers transform and conquer introduction', () {
@@ -1970,6 +1970,31 @@ void main() {
       expect(combined, contains('Element Uniqueness'));
       expect(combined, contains('mode'));
       expect(combined, contains('linear scan'));
+    });
+
+    test('Module 3 covers Heaps and Heapsort', () {
+      final module = lesson8.modules[2];
+      expect(module.id, 'lesson8_module3');
+      expect(module.title, 'Heaps and Heapsort');
+      expect(module.order, 2);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(4),
+      );
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(4));
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(5));
+      expect(blocks.whereType<CodeBlock>().length, greaterThanOrEqualTo(2));
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = combinedText(blocks);
+      expect(combined, contains('priority queue'));
+      expect(combined, contains('partial order'));
+      expect(combined, contains('fixHeap'));
+      expect(combined, contains('Heapsort'));
+      expect(combined, contains('representation change'));
     });
 
     test('Lesson 8 visible prose keeps formulas out of prose blocks', () {
