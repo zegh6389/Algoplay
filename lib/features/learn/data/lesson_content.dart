@@ -4091,6 +4091,154 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+      ModuleContent(
+        id: 'lesson7_module5',
+        title: 'Multiplication of Large Integers',
+        order: 4,
+        contentBlocks: [
+          TextBlock(
+            'In this module we see how divide and conquer can speed up the '
+            'multiplication of large integers. This is closely related to '
+            'ideas used in cryptography, where very large numbers must be '
+            'multiplied efficiently.',
+          ),
+          TextBlock('Motivation'),
+          TextBlock(
+            'Many cryptographic algorithms (including RSA) require multiplying '
+            'large integers, numbers too big for simple school-style '
+            'multiplication to be efficient.',
+          ),
+          TextBlock(
+            'If we can reduce one big multiplication to a few multiplications '
+            'on numbers of about half the size, and do this recursively, we '
+            'get a divide-and-conquer algorithm.',
+          ),
+          TextBlock('A Simple Example: 45 times 28'),
+          TextBlock(
+            'Write each number in base 10. For 45: four times ten plus five. '
+            'For 28: two times ten plus eight. Multiplying gives:',
+          ),
+          MathBlock(
+            r'45 \cdot 28 = (4 \cdot 10^1 + 5 \cdot 10^0)(2 \cdot 10^1 + 8 \cdot 10^0)',
+            semanticsLabel: 'multiply 45 by 28 expanded',
+          ),
+          TextBlock(
+            'If we expand this directly we see four products. But with a clever '
+            'rearrangement we can express the result using only three distinct '
+            'multiplications instead of four. This idea generalizes to large '
+            'numbers.',
+          ),
+          TextBlock('General Setup'),
+          TextBlock(
+            'Let a and b be n-digit positive integers that we wish to multiply. '
+            'Split each into a high half and a low half:',
+          ),
+          MathBlock(
+            r'a = a_1 10^{n/2} + a_0, \quad b = b_1 10^{n/2} + b_0',
+            semanticsLabel: 'split numbers into halves',
+          ),
+          TextBlock(
+            'Now consider the product c equals a times b. We can rewrite it as:',
+          ),
+          MathBlock(
+            r'c = (a_1 b_1)10^n + (a_1 b_0 + a_0 b_1)10^{n/2} + a_0 b_0',
+            semanticsLabel: 'expanded product',
+          ),
+          TextBlock(
+            'Naively, this expression uses four multiplications. However, we can '
+            'reduce this to three.',
+          ),
+          TextBlock('Reducing to Three Multiplications'),
+          TextBlock(
+            'Define three quantities:',
+          ),
+          MathBlock(
+            r'c_2 = a_1 b_1, \quad c_0 = a_0 b_0, \quad c_1 = (a_1 + a_0)(b_1 + b_0) - c_2 - c_0',
+            semanticsLabel: 'three products trick',
+          ),
+          TextBlock(
+            'So we can compute c2, c0, and c1 using only three multiplications '
+            'of about half-size numbers. Then the final product is:',
+          ),
+          MathBlock(
+            r'c = c_2 10^n + c_1 10^{n/2} + c_0',
+            semanticsLabel: 'final product formula',
+          ),
+          TextBlock('Recurrence for Multiplications'),
+          TextBlock(
+            'Let M(n) be the number of single-digit multiplications used to '
+            'multiply two n-digit numbers with this method. At each level we '
+            'perform three recursive multiplications on numbers of size n over 2.',
+          ),
+          MathBlock(
+            r'M(n) = 3M(n/2), \quad M(1) = 1',
+            semanticsLabel: 'karatsuba recurrence',
+          ),
+          TextBlock(
+            'Solving by repeated substitution:',
+          ),
+          MathBlock(
+            r'M(n) = 3^{\log_2 n} = n^{\log_2 3}',
+            semanticsLabel: 'karatsuba solution',
+          ),
+          TextBlock(
+            'The exponent log base 2 of 3 is approximately 1.585. So the '
+            'multiplication complexity is n to the power 1.585, which is '
+            'asymptotically faster than the straightforward quadratic '
+            'grade-school algorithm.',
+          ),
+          TextBlock('Why the Exponent Identity Works'),
+          TextBlock(
+            'The step from 3 to the power of log base 2 of n, to n to the power '
+            'of log base 2 of 3, uses a general exponent identity:',
+          ),
+          MathBlock(
+            r'a^{\log_b c} = c^{\log_b a}',
+            semanticsLabel: 'exponent identity',
+          ),
+          TextBlock(
+            'This identity is handy whenever you have terms like k to the power '
+            'of log n or n to the power of log k and want to rewrite them.',
+          ),
+          QuizBlock(
+            question:
+                'How many half-size multiplications does the Karatsuba trick '
+                'require instead of the naive four?',
+            options: [
+              'Three',
+              'Two',
+              'Four',
+              'Five',
+            ],
+            correctIndex: 0,
+            explanation:
+                'By defining c1 as (a1 plus a0)(b1 plus b0) minus c2 minus c0, '
+                'we reduce the four products to just three multiplications.',
+          ),
+          QuizBlock(
+            question:
+                'What is the time complexity of Karatsuba multiplication?',
+            options: [
+              'n to the power of approximately 1.585',
+              'n squared',
+              'n log n',
+              'n',
+            ],
+            correctIndex: 0,
+            explanation:
+                'The recurrence M(n) equals 3M(n over 2) solves to n to the '
+                'power of log base 2 of 3, which is approximately n to the '
+                'power of 1.585.',
+          ),
+          KeyTakeawayBlock(
+            'Multiplication of large integers via divide and conquer is a '
+            'beautiful example of how algebraic insight and recursion can work '
+            'together to beat the obvious algorithm. It connects directly to '
+            'practical problems in cryptography, where such speedups really '
+            'matter. This algorithm is known as Karatsuba multiplication.',
+          ),
+        ],
+      ),
     ],
   ),
 
