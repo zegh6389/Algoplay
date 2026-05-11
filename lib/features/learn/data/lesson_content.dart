@@ -3492,20 +3492,8 @@ const List<LessonContent> lessons = [
           ),
           TextBlock(
             'We think in terms of recursion levels. Level 0 is the full array '
-            'of size n. Level 1 has two arrays of size',
-          ),
-          MathBlock(
-            r'\frac{n}{2}',
-            semanticsLabel: 'n over 2 fraction',
-          ),
-          TextBlock(
-            'Level 2 has four arrays of size',
-          ),
-          MathBlock(
-            r'\frac{n}{4}',
-            semanticsLabel: 'n over 4 fraction',
-          ),
-          TextBlock(
+            'of size n. Level 1 has two arrays of size n/2. '
+            'Level 2 has four arrays of size n/4. '
             'This continues until the last level, which has n arrays of size 1.',
           ),
           TextBlock(
@@ -3531,32 +3519,14 @@ const List<LessonContent> lessons = [
           TextBlock('Cost of Merge in the Worst Case'),
           TextBlock(
             'Suppose we are merging two subarrays whose total length is n. In '
-            'the worst case, we perform',
-          ),
-          MathBlock(
-            r'n - 1',
-            semanticsLabel: 'n minus 1',
-          ),
-          TextBlock(
-            'comparisons. This happens when neither subarray runs out before '
-            'the very end.',
-          ),
-          MathBlock(
-            r'C_{merge}(n) = n - 1',
-            semanticsLabel: 'merge cost in worst case',
+            'the worst case, we perform n−1 comparisons. This happens when '
+            'neither subarray runs out before the very end.',
           ),
           TextBlock('Recurrence for Mergesort'),
           TextBlock(
             'Let C(n) be the number of comparisons Mergesort does in the worst '
             'case when sorting an array of size n. Each call makes two recursive '
-            'calls on size',
-          ),
-          MathBlock(
-            r'\frac{n}{2}',
-            semanticsLabel: 'n over 2 fraction',
-          ),
-          TextBlock(
-            'then calls Merge on n elements.',
+            'calls on size n/2, then calls Merge on n elements.',
           ),
           MathBlock(
             r'C(n) = 2C\!\left(\frac{n}{2}\right) + C_{merge}(n), \quad C(1) = 0',
@@ -3571,83 +3541,25 @@ const List<LessonContent> lessons = [
           ),
           TextBlock('Applying the Master Theorem'),
           TextBlock(
-            'We compare the recurrence with the general form',
-          ),
-          MathBlock(
-            r'aT\!\left(\frac{n}{b}\right) + f(n)',
-            semanticsLabel: 'aT of n over b plus f of n',
+            'We compare the recurrence with the general form aT(n/b) + f(n).',
           ),
           TextBlock(
-            '. Here',
-          ),
-          MathBlock(
-            r'a = 2',
-            semanticsLabel: 'a equals 2',
-          ),
-          TextBlock(','),
-          MathBlock(
-            r'b = 2',
-            semanticsLabel: 'b equals 2',
+            '. Here a = 2, b = 2, and f(n) is Θ(n).',
           ),
           TextBlock(
-            ', and',
-          ),
-          MathBlock(
-            r'f(n) \in \Theta(n)',
-            semanticsLabel: 'f of n is in Theta of n',
-          ),
-          TextBlock('.'),
-          MathBlock(
-            r'd = \log_2 2 = 1',
-            semanticsLabel: 'master theorem exponent for mergesort',
+            'Since d = log₂ 2 = 1, we have n to the power of d = n. '
+            'We see that f(n) is Θ(n to the power of d). '
+            'This is the balanced case, Case 2 of the Master Theorem, where '
+            'f(n) matches n to the power of d.',
           ),
           TextBlock(
-            'So',
+            'So in the worst case, Mergesort runs in time proportional to n log n.',
           ),
-          MathBlock(
-            r'n^d = n',
-            semanticsLabel: 'n to the power of d equals n',
-          ),
-          TextBlock(
-            '. We see that',
-          ),
-          MathBlock(
-            r'f(n) \in \Theta(n^d) = \Theta(n)',
-            semanticsLabel: 'f of n is in Theta of n to the d',
-          ),
-          TextBlock(
-            '. This is the balanced case, Case 2 of the Master Theorem, where '
-            'f(n) matches',
-          ),
-          MathBlock(
-            r'n^d',
-            semanticsLabel: 'n to the power of d',
-          ),
-          TextBlock('.'),
-          MathBlock(
-            r'C(n) \in \Theta(n \log n)',
-            semanticsLabel: 'mergesort worst case complexity',
-          ),
-          TextBlock(
-            'So in the worst case, Mergesort runs in time proportional to',
-          ),
-          MathBlock(
-            r'n \log n',
-            semanticsLabel: 'n log n',
-          ),
-          TextBlock('.'),
           TextBlock('Average-Case Remark'),
           TextBlock(
             'For comparison-based sorting algorithms, there are more advanced '
             'arguments that show any such algorithm must use at least on the order '
-            'of',
-          ),
-          MathBlock(
-            r'n \log n',
-            semanticsLabel: 'n log n',
-          ),
-          TextBlock(
-            'comparisons on average. Mergesort actually meets this bound.',
+            'of n log n comparisons on average. Mergesort actually meets this bound.',
           ),
           TextBlock(
             'A full average-case analysis goes beyond this module, but it is '
@@ -3655,32 +3567,15 @@ const List<LessonContent> lessons = [
           ),
           TextBlock('Summary of Mergesort'),
           TextBlock(
-            'Key points: the strategy is divide-and-conquer, the recurrence is',
-          ),
-          MathBlock(
-            r'C(n) = 2C\!\left(\frac{n}{2}\right) + n - 1',
-            semanticsLabel: 'mergesort recurrence',
-          ),
-          TextBlock(
-            'and the solution is',
-          ),
-          MathBlock(
-            r'\Theta(n \log n)',
-            semanticsLabel: 'Theta n log n',
+            'Key points: the strategy is divide-and-conquer, the recurrence is '
+            'C(n) = 2C(n/2) + n − 1 and the solution is Θ(n log n).',
           ),
           TextBlock(
             '. Mergesort typically needs an auxiliary array of size n during merge.',
           ),
           TextBlock(
-            'Pros: predictable',
-          ),
-          MathBlock(
-            r'\Theta(n \log n)',
-            semanticsLabel: 'Theta n log n',
-          ),
-          TextBlock(
-            'time in the worst case, and it is a stable sort that preserves the '
-            'order of equal elements.',
+            'Pros: predictable Θ(n log n) time in the worst case, and it is a '
+            'stable sort that preserves the order of equal elements.',
           ),
           TextBlock(
             'Cons: needs extra memory for merging in the simple array-based version.',
