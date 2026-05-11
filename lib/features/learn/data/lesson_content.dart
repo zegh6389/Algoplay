@@ -5867,7 +5867,81 @@ ModuleContent(
     id: 10,
     title: 'Dynamic Programming',
     categoryColor: '#8B5CF6',
-    modules: [],
+    modules: [
+ModuleContent(
+        id: 'lesson10_module1',
+        title: 'Introduction to Dynamic Programming',
+        order: 0,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'In this lesson we introduce a new algorithm design technique: dynamic programming. The name sounds like computer programming, but it actually refers to scheduling or planning, the same way a radio station programs its playlist.',
+          ),
+          TextBlock(
+            'Dynamic programming was invented by Richard Bellman in the 1950s. It is a recursive strategy that, like divide and conquer, builds the solution to a larger problem from solutions to smaller ones. The key difference is that dynamic programming computes solutions to many subproblems, stores them in a table, and reuses them when needed.',
+          ),
+          TextBlock(
+            'A dynamic programming algorithm may even compute subproblems that are not needed in the final answer. This extra storage is a trade-off: it can save massive recomputation, but it uses more memory.',
+          ),
+          TextBlock(
+            'Dynamic programming solutions often begin with recurrence relations. To visualize the problem, consider a decision tree that models recursive calls. Each vertex represents one function call. The root is the original call, children are the recursive calls, and leaves are the base cases.',
+          ),
+          DefinitionBlock(
+            'Dynamic Programming\n'
+            'A recursive algorithm design technique that solves subproblems once, stores their results in a table, and reuses the stored results instead of recomputing them. '
+            'It is particularly useful when subproblems share overlapping results.',
+          ),
+          TextBlock(
+            'As an example, consider the Fibonacci recurrence: F(n) = F(n minus 1) + F(n minus 2), with F(0) = F(1) = 1.',
+          ),
+          MathBlock(
+            r'F(n) = F(n-1) + F(n-2), \quad F(0) = F(1) = 1',
+            semanticsLabel: 'Fibonacci recurrence',
+          ),
+          TextBlock(
+            'A naive recursive implementation computes the same subproblem many times. For instance, F(3) appears twice in the decision tree for F(5), and each time it is recomputed fully. This exponential waste is the core problem dynamic programming solves.',
+          ),
+          QuizBlock(
+            question: 'What is the key characteristic that makes dynamic programming different from divide and conquer?',
+            options: [
+              'Dynamic programming splits the problem into independent subproblems',
+              'Dynamic programming stores and reuses computed subproblem results in a table',
+              'Dynamic programming always uses less memory than divide and conquer',
+              'Dynamic programming does not use recursion',
+            ],
+            correctIndex: 1,
+            explanation: 'Divide and conquer solves each subproblem independently. Dynamic programming solves each subproblem once and stores the results, so overlapping subproblems are computed only once.',
+          ),
+          QuizBlock(
+            question: 'In the naive recursive Fibonacci algorithm, how many times is F(3) computed when evaluating F(5)?',
+            options: [
+              'Once',
+              'Twice',
+              'Three times',
+              'Five times',
+            ],
+            correctIndex: 1,
+            explanation: 'In the decision tree for F(5), the subtree F(3) appears twice: once on the left branch (F(4) → F(3)) and once on the right (F(3)). The naive recursive algorithm recomputes F(3) each time instead of reusing the stored result.',
+          ),
+          QuizBlock(
+            question: 'Why might a dynamic programming algorithm compute subproblems that are not needed in the final answer?',
+            options: [
+              'It is a flaw in the design',
+              'It stores all possible subproblems that could arise during the recursion',
+              'The programmer made a mistake',
+              'It runs faster this way',
+            ],
+            correctIndex: 1,
+            explanation: 'Dynamic programming fills the table by solving every subproblem that could appear in the decision tree, even if some are not strictly needed for the final result. This systematic filling ensures each value is available when needed and is a common trade-off of the approach.',
+          ),
+          KeyTakeawayBlock(
+            'Dynamic programming solves overlapping subproblems once, stores their results, and reuses them. '
+            'This avoids the exponential recomputation of naive recursion. '
+            'In the next module we see how to convert this idea into an efficient bottom-up algorithm using a table.',
+          ),
+        ],
+      ),
+    ],
   ),
 
   // ── Lesson 11 (stub) ──────────────────────────────────────────────────────

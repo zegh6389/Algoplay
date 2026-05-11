@@ -2189,6 +2189,114 @@ void main() {
     });
   });
 
+
+  group('Lesson 10 content', () {
+    late LessonContent lesson10;
+
+    setUp(() {
+      lesson10 = lessons.firstWhere((l) => l.id == 10);
+    });
+
+    String combinedText(Iterable<ContentBlock> blocks) {
+      return blocks
+          .map((block) {
+            return switch (block) {
+              TextBlock(:final text) => text,
+              DefinitionBlock(:final term, :final definition) =>
+                '$term $definition',
+              KeyTakeawayBlock(:final text) => text,
+              QuizBlock(:final question, :final options, :final explanation) =>
+                '$question ${options.join(' ')} $explanation',
+              CodeBlock(:final code, :final language) => '$language $code',
+              MathBlock(:final tex, :final semanticsLabel) =>
+                '$semanticsLabel $tex',
+              GraphBlock(:final type) => type,
+              VisualizerLinkBlock(
+                :final algorithmId,
+                :final label,
+                :final description,
+              ) =>
+                '$algorithmId $label ${description ?? ''}',
+            };
+          })
+          .join(' ');
+    }
+
+    List<String> lesson10Prose() {
+      final prose = <String>[];
+      for (final module in lesson10.modules) {
+        for (final block in module.contentBlocks) {
+          switch (block) {
+            case TextBlock(:final text):
+              prose.add(text);
+            case DefinitionBlock(:final term, :final definition):
+              prose.add(term);
+              prose.add(definition);
+            case KeyTakeawayBlock(:final text):
+              prose.add(text);
+            case QuizBlock(:final question, :final options, :final explanation):
+              prose.add(question);
+              prose.addAll(options);
+              prose.add(explanation);
+            case CodeBlock():
+            case MathBlock():
+            case GraphBlock():
+            case VisualizerLinkBlock():
+              break;
+          }
+        }
+      }
+      return prose;
+    }
+
+    test('has 1 module', () {
+      expect(lesson10.modules.length, 1);
+    });
+
+    test('Module 1 introduces dynamic programming and the Fibonacci example', () {
+      final module = lesson10.modules[0];
+      expect(module.id, 'lesson10_module1');
+      expect(module.title, 'Introduction to Dynamic Programming');
+      expect(module.order, 0);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(1));
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(1));
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = combinedText(blocks).join(' ');
+      expect(combined.toLowerCase(), contains('dynamic programming'));
+      expect(combined.toLowerCase(), contains('fibonacci'));
+      expect(combined, contains(r'F(n) = F(n-1) + F(n-2)'));
+      expect(combined.toLowerCase(), contains('subproblem'));
+      expect(combined.toLowerCase(), contains('decision tree'));
+    });
+
+    test('Lesson 10 visible prose keeps formulas out of prose blocks', () {
+      final visibleProse = lesson10.modules
+          .expand((module) => module.contentBlocks)
+          .whereType<TextBlock>()
+          .map((b) => b.text)
+          .join(' ');
+      expect(visibleProse, isNot(contains('O(n')));
+      expect(visibleProse, isNot(contains(r'$')));
+    });
+
+    test('Lesson 10 prose uses readable math notation', () {
+      final combined = lesson10Prose().join('\n');
+      expect(combined, isNot(contains('n^2')));
+    });
+
+    test('Lesson 10 prose avoids AI punctuation tells', () {
+      final combined = lesson10Prose().join('\n');
+      expect(combined, isNot(contains('\u2014')));
+      expect(combined, isNot(contains(';')));
+      expect(combined, isNot(contains(' - ')));
+    });
+  });
+
   group('ContentBlock subclasses', () {
     test('TextBlock holds text', () {
       const block = TextBlock('hello');
