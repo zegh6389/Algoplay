@@ -2850,7 +2850,7 @@ const List<LessonContent> lessons = [
           MathBlock(
             r'2^k \ge n \Rightarrow k \ge \lceil \log_2 n \rceil',
             semanticsLabel:
-                'two to the k is at least n, so k is at least ceiling log base two of n',
+                'two to the k is at least n, so k is at least ceiling log base 2 of n',
           ),
           MathBlock(
             r'T(n) = T(n/2) + O(1) \Rightarrow T(n) = O(\log n)',
@@ -2866,7 +2866,7 @@ const List<LessonContent> lessons = [
           MathBlock(
             r'\log_2(1024) = 10',
             semanticsLabel:
-                'log base two of one thousand twenty four equals ten',
+                'log base 2 of 1024 equals 10',
           ),
           DefinitionBlock(
             term: 'Duplicate elements in Binary Search',
@@ -3531,8 +3531,15 @@ const List<LessonContent> lessons = [
           TextBlock('Cost of Merge in the Worst Case'),
           TextBlock(
             'Suppose we are merging two subarrays whose total length is n. In '
-            'the worst case, we perform n minus 1 comparisons. This happens when '
-            'neither subarray runs out before the very end.',
+            'the worst case, we perform',
+          ),
+          MathBlock(
+            r'n - 1',
+            semanticsLabel: 'n minus 1',
+          ),
+          TextBlock(
+            'comparisons. This happens when neither subarray runs out before '
+            'the very end.',
           ),
           MathBlock(
             r'C_{merge}(n) = n - 1',
@@ -3564,31 +3571,83 @@ const List<LessonContent> lessons = [
           ),
           TextBlock('Applying the Master Theorem'),
           TextBlock(
-            'We compare the recurrence with the general form aT(n over b) plus '
-            'f(n). Here a equals 2, b equals 2, and f(n) is in Theta(n).',
+            'We compare the recurrence with the general form',
           ),
+          MathBlock(
+            r'aT\!\left(\frac{n}{b}\right) + f(n)',
+            semanticsLabel: 'aT of n over b plus f of n',
+          ),
+          TextBlock(
+            '. Here',
+          ),
+          MathBlock(
+            r'a = 2',
+            semanticsLabel: 'a equals 2',
+          ),
+          TextBlock(','),
+          MathBlock(
+            r'b = 2',
+            semanticsLabel: 'b equals 2',
+          ),
+          TextBlock(
+            ', and',
+          ),
+          MathBlock(
+            r'f(n) \in \Theta(n)',
+            semanticsLabel: 'f of n is in Theta of n',
+          ),
+          TextBlock('.'),
           MathBlock(
             r'd = \log_2 2 = 1',
             semanticsLabel: 'master theorem exponent for mergesort',
           ),
           TextBlock(
-            'So n to the power of d equals n. We see that f(n) is in '
-            'Theta(n to the power of d), which is Theta(n). This is the balanced '
-            'case, Case 2 of the Master Theorem, where f(n) matches n to the '
-            'power of d.',
+            'So',
           ),
+          MathBlock(
+            r'n^d = n',
+            semanticsLabel: 'n to the power of d equals n',
+          ),
+          TextBlock(
+            '. We see that',
+          ),
+          MathBlock(
+            r'f(n) \in \Theta(n^d) = \Theta(n)',
+            semanticsLabel: 'f of n is in Theta of n to the d',
+          ),
+          TextBlock(
+            '. This is the balanced case, Case 2 of the Master Theorem, where '
+            'f(n) matches',
+          ),
+          MathBlock(
+            r'n^d',
+            semanticsLabel: 'n to the power of d',
+          ),
+          TextBlock('.'),
           MathBlock(
             r'C(n) \in \Theta(n \log n)',
             semanticsLabel: 'mergesort worst case complexity',
           ),
           TextBlock(
-            'So in the worst case, Mergesort runs in time proportional to n log n.',
+            'So in the worst case, Mergesort runs in time proportional to',
           ),
+          MathBlock(
+            r'n \log n',
+            semanticsLabel: 'n log n',
+          ),
+          TextBlock('.'),
           TextBlock('Average-Case Remark'),
           TextBlock(
             'For comparison-based sorting algorithms, there are more advanced '
             'arguments that show any such algorithm must use at least on the order '
-            'of n log n comparisons on average. Mergesort actually meets this bound.',
+            'of',
+          ),
+          MathBlock(
+            r'n \log n',
+            semanticsLabel: 'n log n',
+          ),
+          TextBlock(
+            'comparisons on average. Mergesort actually meets this bound.',
           ),
           TextBlock(
             'A full average-case analysis goes beyond this module, but it is '
@@ -3603,12 +3662,25 @@ const List<LessonContent> lessons = [
             semanticsLabel: 'mergesort recurrence',
           ),
           TextBlock(
-            'and the solution is Theta(n log n). Mergesort typically needs an '
-            'auxiliary array of size n during merge.',
+            'and the solution is',
+          ),
+          MathBlock(
+            r'\Theta(n \log n)',
+            semanticsLabel: 'Theta n log n',
           ),
           TextBlock(
-            'Pros: predictable Theta(n log n) time in the worst case, and it is a '
-            'stable sort that preserves the order of equal elements.',
+            '. Mergesort typically needs an auxiliary array of size n during merge.',
+          ),
+          TextBlock(
+            'Pros: predictable',
+          ),
+          MathBlock(
+            r'\Theta(n \log n)',
+            semanticsLabel: 'Theta n log n',
+          ),
+          TextBlock(
+            'time in the worst case, and it is a stable sort that preserves the '
+            'order of equal elements.',
           ),
           TextBlock(
             'Cons: needs extra memory for merging in the simple array-based version.',
@@ -3631,7 +3703,7 @@ const List<LessonContent> lessons = [
           ),
           QuizBlock(
             question:
-                'In the recurrence C(n) = 2C(n/2) + n minus 1, what do the three '
+                'In the recurrence C(n) = 2C(n/2) + n − 1, what do the three '
                 'terms represent?',
             options: [
               'Two subproblems, the merge cost, and the base case',
@@ -3642,7 +3714,7 @@ const List<LessonContent> lessons = [
             correctIndex: 1,
             explanation:
                 'The term 2C(n/2) represents the two recursive calls on subarrays '
-                'of half the size. The term n minus 1 is the worst-case cost of '
+                'of half the size. The term n − 1 is the worst-case cost of '
                 'merging two sorted subarrays whose total length is n.',
           ),
           TextBlock('Mini Practice'),
@@ -3651,15 +3723,15 @@ const List<LessonContent> lessons = [
                 'Write the recurrence for Mergesort if the merge step took 3n '
                 'work instead of n work. What would the Master Theorem say?',
             options: [
-              'The complexity would become Theta(n squared)',
-              'The complexity would still be Theta(n log n)',
-              'The complexity would become Theta(n)',
+              'The complexity would become n²',
+              'The complexity would still be n log n',
+              'The complexity would become n',
               'The Master Theorem would not apply',
             ],
             correctIndex: 1,
             explanation:
-                'Even with f(n) = 3n, we still have f(n) in Theta(n) and d = 1. '
-                'Case 2 of the Master Theorem still applies, giving Theta(n log n). '
+                'Even with f(n) = 3n, we still have f(n) in Θ(n) and d = 1. '
+                'Case 2 of the Master Theorem still applies, giving n log n. '
                 'The constant factor in f(n) does not change the asymptotic order.',
           ),
           KeyTakeawayBlock(
@@ -3671,7 +3743,7 @@ const List<LessonContent> lessons = [
             semanticsLabel: 'mergesort recurrence',
           ),
           KeyTakeawayBlock(
-            'solves to Theta(n log n) by the Master Theorem Case 2. It is stable '
+            'solves to n log n by the Master Theorem Case 2. It is stable '
             'and predictable, but requires extra memory for merging.',
           ),
         ],
@@ -3722,8 +3794,14 @@ const List<LessonContent> lessons = [
             'when we find an inversion.',
           ),
           TextBlock(
-            'There are n choose 2 such pairs, and so this algorithm runs in '
-            'quadratic time.',
+            'There are',
+          ),
+          MathBlock(
+            r'\binom{n}{2}',
+            semanticsLabel: 'n choose 2',
+          ),
+          TextBlock(
+            'such pairs, and so this algorithm runs in quadratic time.',
           ),
           MathBlock(
             r'\Theta(n^2)',
@@ -3826,8 +3904,14 @@ const List<LessonContent> lessons = [
             semanticsLabel: 'counting inversions complexity',
           ),
           TextBlock(
-            'So counting inversions can be done in n log n time, much faster than '
-            'the naive quadratic algorithm.',
+            'So counting inversions can be done in',
+          ),
+          MathBlock(
+            r'\Theta(n \log n)',
+            semanticsLabel: 'Theta n log n',
+          ),
+          TextBlock(
+            'time, much faster than the naive quadratic algorithm.',
           ),
           TextBlock('Why This Works Conceptually'),
           TextBlock(
@@ -3886,7 +3970,7 @@ const List<LessonContent> lessons = [
               'Zero',
               'n',
               'n log n',
-              'n squared',
+              'Θ(n²)',
             ],
             correctIndex: 0,
             explanation:
@@ -3906,7 +3990,7 @@ const List<LessonContent> lessons = [
           ),
           KeyTakeawayBlock(
             'Counting inversions is a powerful example of how divide and conquer '
-            'can transform a seemingly quadratic problem into an n log n one. By '
+            'can transform a seemingly quadratic problem into a n log n one. By '
             'reusing the structure of Mergesort and adding a small twist during '
             'merge, we obtain both a sorted array and a meaningful measure of how '
             'unsorted the original array was.',
@@ -4023,9 +4107,14 @@ const List<LessonContent> lessons = [
             semanticsLabel: 'quicksort guessed recurrence',
           ),
           TextBlock(
-            'This recurrence fits the standard divide-and-conquer form with a '
-            'equal to 2, b equal to 2, and f(n) equal to n. By the Master '
-            'Theorem, this implies:',
+            'This recurrence fits the standard divide-and-conquer form with',
+          ),
+          MathBlock(
+            r'a = 2, \quad b = 2, \quad f(n) = n',
+            semanticsLabel: 'a equals 2, b equals 2, f of n equals n',
+          ),
+          TextBlock(
+            '. By the Master Theorem, this implies:',
           ),
           MathBlock(
             r'Q(n) \in \Theta(n \log n)',
@@ -4065,21 +4154,21 @@ const List<LessonContent> lessons = [
             correctIndex: 0,
             explanation:
                 'When the pivot is always the smallest or largest, one side of '
-                'the partition is always empty, leading to quadratic time.',
+                'the partition is always empty, leading to Θ(n²) time.',
           ),
           QuizBlock(
             question:
                 'What is the average-case time complexity of Quicksort under '
                 'standard assumptions?',
             options: [
-              'n log n',
-              'n squared',
-              'n',
-              'log n',
+              'Θ(n log n)',
+              'Θ(n²)',
+              'Θ(n)',
+              'Θ(log n)',
             ],
             correctIndex: 0,
             explanation:
-                'Although the worst case is quadratic, the average case is '
+                'Although the worst case is Θ(n²), the average case is '
                 'n log n, which is why Quicksort is fast in practice.',
           ),
           KeyTakeawayBlock(
@@ -4113,11 +4202,26 @@ const List<LessonContent> lessons = [
             'on numbers of about half the size, and do this recursively, we '
             'get a divide-and-conquer algorithm.',
           ),
-          TextBlock('A Simple Example: 45 times 28'),
-          TextBlock(
-            'Write each number in base 10. For 45: four times ten plus five. '
-            'For 28: two times ten plus eight. Multiplying gives:',
+          TextBlock('A Simple Example:'),
+          MathBlock(
+            r'45 \times 28',
+            semanticsLabel: '45 times 28',
           ),
+          TextBlock(
+            'Write each number in base 10. For 45:',
+          ),
+          MathBlock(
+            r'4 \times 10 + 5',
+            semanticsLabel: 'four times ten plus five',
+          ),
+          TextBlock(
+            'For 28:',
+          ),
+          MathBlock(
+            r'2 \times 10 + 8',
+            semanticsLabel: 'two times ten plus eight',
+          ),
+          TextBlock('Multiplying gives:'),
           MathBlock(
             r'45 \cdot 28 = (4 \cdot 10^1 + 5 \cdot 10^0)(2 \cdot 10^1 + 8 \cdot 10^0)',
             semanticsLabel: 'multiply 45 by 28 expanded',
@@ -4138,8 +4242,13 @@ const List<LessonContent> lessons = [
             semanticsLabel: 'split numbers into halves',
           ),
           TextBlock(
-            'Now consider the product c equals a times b. We can rewrite it as:',
+            'Now consider the product',
           ),
+          MathBlock(
+            r'c = a \times b',
+            semanticsLabel: 'c equals a times b',
+          ),
+          TextBlock('. We can rewrite it as:'),
           MathBlock(
             r'c = (a_1 b_1)10^n + (a_1 b_0 + a_0 b_1)10^{n/2} + a_0 b_0',
             semanticsLabel: 'expanded product',
@@ -4168,8 +4277,13 @@ const List<LessonContent> lessons = [
           TextBlock(
             'Let M(n) be the number of single-digit multiplications used to '
             'multiply two n-digit numbers with this method. At each level we '
-            'perform three recursive multiplications on numbers of size n over 2.',
+            'perform three recursive multiplications on numbers of size',
           ),
+          MathBlock(
+            r'\frac{n}{2}',
+            semanticsLabel: 'n over 2',
+          ),
+          TextBlock('.'),
           MathBlock(
             r'M(n) = 3M(n/2), \quad M(1) = 1',
             semanticsLabel: 'karatsuba recurrence',
@@ -4182,24 +4296,58 @@ const List<LessonContent> lessons = [
             semanticsLabel: 'karatsuba solution',
           ),
           TextBlock(
-            'The exponent log base 2 of 3 is approximately 1.585. So the '
-            'multiplication complexity is n to the power 1.585, which is '
-            'asymptotically faster than the straightforward quadratic '
-            'grade-school algorithm.',
+            'The exponent',
+          ),
+          MathBlock(
+            r'\log_2 3',
+            semanticsLabel: 'log base 2 of 3',
+          ),
+          TextBlock(
+            'is approximately 1.585. So the multiplication complexity is',
+          ),
+          MathBlock(
+            r'n^{1.585}',
+            semanticsLabel: 'n to the power of 1.585',
+          ),
+          TextBlock(
+            ', which is asymptotically faster than the straightforward '
+            'quadratic grade-school algorithm.',
           ),
           TextBlock('Why the Exponent Identity Works'),
           TextBlock(
-            'The step from 3 to the power of log base 2 of n, to n to the power '
-            'of log base 2 of 3, uses a general exponent identity:',
+            'The step from',
           ),
+          MathBlock(
+            r'3^{\log_2 n}',
+            semanticsLabel: '3 to the power of log base 2 of n',
+          ),
+          TextBlock(
+            'to',
+          ),
+          MathBlock(
+            r'n^{\log_2 3}',
+            semanticsLabel: 'n to the power of log base 2 of 3',
+          ),
+          TextBlock('uses a general exponent identity:'),
           MathBlock(
             r'a^{\log_b c} = c^{\log_b a}',
             semanticsLabel: 'exponent identity',
           ),
           TextBlock(
-            'This identity is handy whenever you have terms like k to the power '
-            'of log n or n to the power of log k and want to rewrite them.',
+            'This identity is handy whenever you have terms like',
           ),
+          MathBlock(
+            r'k^{\log n}',
+            semanticsLabel: 'k to the power of log n',
+          ),
+          TextBlock(
+            'or',
+          ),
+          MathBlock(
+            r'n^{\log k}',
+            semanticsLabel: 'n to the power of log k',
+          ),
+          TextBlock('and want to rewrite them.'),
           QuizBlock(
             question:
                 'How many half-size multiplications does the Karatsuba trick '
@@ -4219,16 +4367,15 @@ const List<LessonContent> lessons = [
             question:
                 'What is the time complexity of Karatsuba multiplication?',
             options: [
-              'n to the power of approximately 1.585',
-              'n squared',
-              'n log n',
-              'n',
+              'Θ(n^(log₂ 3)) ≈ Θ(n^1.585)',
+              'Θ(n²)',
+              'Θ(n log n)',
+              'Θ(n)',
             ],
             correctIndex: 0,
             explanation:
-                'The recurrence M(n) equals 3M(n over 2) solves to n to the '
-                'power of log base 2 of 3, which is approximately n to the '
-                'power of 1.585.',
+                'The recurrence M(n) = 3M(n/2) solves to '
+                'n^(log₂ 3), which is approximately n^1.585.',
           ),
           KeyTakeawayBlock(
             'Multiplication of large integers via divide and conquer is a '
@@ -4248,8 +4395,13 @@ const List<LessonContent> lessons = [
             'In this module we see how divide and conquer can speed up matrix '
             'multiplication. The focus is on Strassen\'s algorithm, which shows '
             'that multiplying large matrices can be done faster than the '
-            'classical cubic approach.',
+            'classical',
           ),
+          MathBlock(
+            r'n^3',
+            semanticsLabel: 'n cubed',
+          ),
+          TextBlock('approach.'),
           TextBlock('From Integer Multiplication to Matrices'),
           TextBlock(
             'Earlier, we saw that divide and conquer can help with multiplication '
@@ -4262,8 +4414,13 @@ const List<LessonContent> lessons = [
           ),
           TextBlock('Classical 2 by 2 Matrix Multiplication'),
           TextBlock(
-            'Consider multiplying two 2 by 2 matrices C equals A times B.',
+            'Consider multiplying two 2 by 2 matrices',
           ),
+          MathBlock(
+            r'C = A \times B',
+            semanticsLabel: 'C equals A times B',
+          ),
+          TextBlock('.'),
           MathBlock(
             r'A = \begin{bmatrix} a_{00} & a_{01} \\ a_{10} & a_{11} \end{bmatrix}, \quad B = \begin{bmatrix} b_{00} & b_{01} \\ b_{10} & b_{11} \end{bmatrix}',
             semanticsLabel: 'two by two matrices A and B',
@@ -4300,10 +4457,15 @@ const List<LessonContent> lessons = [
           ),
           TextBlock('Extending to Larger Matrices'),
           TextBlock(
-            'To apply Strassen\'s idea to larger matrices, suppose A and B are n '
-            'by n matrices where n is a power of 2. We partition each matrix '
-            'into four blocks of size n over 2 by n over 2:',
+            'To apply Strassen\'s idea to larger matrices, suppose A and B are '
+            'n by n matrices where n is a power of 2. We partition each matrix '
+            'into four blocks of size',
           ),
+          MathBlock(
+            r'\frac{n}{2} \times \frac{n}{2}',
+            semanticsLabel: 'n over 2 by n over 2',
+          ),
+          TextBlock(':'),
           MathBlock(
             r'A = \begin{bmatrix} A_{00} & A_{01} \\ A_{10} & A_{11} \end{bmatrix}, \quad B = \begin{bmatrix} B_{00} & B_{01} \\ B_{10} & B_{11} \end{bmatrix}',
             semanticsLabel: 'block matrices',
@@ -4315,8 +4477,14 @@ const List<LessonContent> lessons = [
           ),
           TextBlock(
             'At each level of recursion, we perform seven matrix multiplications '
-            'on submatrices of size n over 2, plus additional matrix additions '
-            'and subtractions.',
+            'on submatrices of size',
+          ),
+          MathBlock(
+            r'\frac{n}{2}',
+            semanticsLabel: 'n over 2',
+          ),
+          TextBlock(
+            ', plus additional matrix additions and subtractions.',
           ),
           TextBlock('Recurrence for Multiplications'),
           TextBlock(
@@ -4335,11 +4503,28 @@ const List<LessonContent> lessons = [
             semanticsLabel: 'strassen solution',
           ),
           TextBlock(
-            'The exponent log base 2 of 7 is approximately 2.807. Thus '
-            'Strassen\'s algorithm has multiplication complexity n to the power '
-            'of approximately 2.807, which is asymptotically faster than the '
-            'classical cubic algorithm.',
+            'The exponent',
           ),
+          MathBlock(
+            r'\log_2 7',
+            semanticsLabel: 'log base 2 of 7',
+          ),
+          TextBlock(
+            'is approximately 2.807. Thus Strassen\'s algorithm has '
+            'multiplication complexity',
+          ),
+          MathBlock(
+            r'n^{\log_2 7}',
+            semanticsLabel: 'n to the power of log base 2 of 7',
+          ),
+          TextBlock(
+            ', which is asymptotically faster than the classical',
+          ),
+          MathBlock(
+            r'n^3',
+            semanticsLabel: 'n cubed',
+          ),
+          TextBlock('algorithm.'),
           TextBlock('Counting Additions'),
           TextBlock(
             'Strassen\'s method reduces multiplications but increases additions '
@@ -4353,8 +4538,13 @@ const List<LessonContent> lessons = [
             'By the Master Theorem, this recurrence has the same order of growth '
             'as M(n). So even when we add in the cost of additions and '
             'subtractions, the total work of Strassen\'s algorithm is on the '
-            'order of n to the power of log base 2 of 7.',
+            'order of',
           ),
+          MathBlock(
+            r'n^{\log_2 7}',
+            semanticsLabel: 'n to the power of log base 2 of 7',
+          ),
+          TextBlock('.'),
           QuizBlock(
             question:
                 'How many scalar multiplications does Strassen use for the 2 by '
@@ -4375,16 +4565,15 @@ const List<LessonContent> lessons = [
                 'What is the time complexity of Strassen\'s matrix '
                 'multiplication algorithm?',
             options: [
-              'n to the power of approximately 2.807',
-              'n cubed',
-              'n squared',
-              'n log n',
+              'Θ(n^(log₂ 7)) ≈ Θ(n²·⁸⁰⁷)',
+              'Θ(n³)',
+              'Θ(n²)',
+              'Θ(n log n)',
             ],
             correctIndex: 0,
             explanation:
-                'The recurrence M(n) equals 7M(n over 2) solves to n to the '
-                'power of log base 2 of 7, which is approximately n to the '
-                'power of 2.807.',
+                'The recurrence M(n) = 7M(n/2) solves to '
+                'n^(log₂ 7), which is approximately n^2.807.',
           ),
           QuizBlock(
             question:
@@ -4429,17 +4618,33 @@ const List<LessonContent> lessons = [
           TextBlock(
             'In divide-and-conquer algorithms, the most common strategy is to '
             'repeatedly divide the problem size in half, into two roughly equal '
-            'subproblems. This is why you constantly see recurrences involving '
-            'T of n over 2 and terms like log base 2 of n.',
+            'subproblems. This is why you constantly see recurrences involving',
           ),
+          MathBlock(
+            r'T\!\left(\frac{n}{2}\right)',
+            semanticsLabel: 'T of n over 2',
+          ),
+          TextBlock(
+            'and terms like',
+          ),
+          MathBlock(
+            r'\log_2 n',
+            semanticsLabel: 'log base 2 of n',
+          ),
+          TextBlock('.'),
+
           TextBlock('Key Takeaways'),
           TextBlock(
             'We examined several major applications of this technique:',
           ),
           TextBlock(
-            'Mergesort: A clean recursive sorting algorithm that hits exactly '
-            'n log n time.',
+            'Mergesort: A clean recursive sorting algorithm that hits exactly',
           ),
+          MathBlock(
+            r'\Theta(n \log n)',
+            semanticsLabel: 'Theta n log n',
+          ),
+          TextBlock('time.'),
           TextBlock(
             'Quicksort: Where we looked at worst-case and touched upon the '
             'complex details of its average-case performance.',
@@ -4454,9 +4659,20 @@ const List<LessonContent> lessons = [
           ),
           TextBlock(
             'Strassen\'s Matrix Multiplication: How algebraic tricks combined '
-            'with dividing matrix blocks can lower the asymptotic bounds from '
-            'cubic to approximately n to the power of 2.807.',
+            'with dividing matrix blocks can lower the asymptotic bounds from',
           ),
+          MathBlock(
+            r'n^3',
+            semanticsLabel: 'n cubed',
+          ),
+          TextBlock(
+            'to approximately',
+          ),
+          MathBlock(
+            r'n^{2.807}',
+            semanticsLabel: 'n to the power of 2.807',
+          ),
+          TextBlock('.'),
           TextBlock('Looking Ahead: Transform and Conquer'),
           TextBlock(
             'In the next lesson, we move on to a completely new technique: '
