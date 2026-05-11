@@ -5812,24 +5812,24 @@ ModuleContent(
             'In this lesson we explored Transform and Conquer through its three main forms: instance simplification, representation change, and problem reduction.',
           ),
           TextBlock(
-            'Instance simplification changes the given instance into an easier instance of the same problem — like sorting an array before searching it.',
+            'Instance simplification changes the given instance into an easier instance of the same problem, like sorting an array before searching it.',
           ),
           TextBlock(
-            'Representation change converts the problem into a different data structure — such as viewing an array as a heap, or encoding a polynomial evaluation as Horner\'s method.',
+            'Representation change converts the problem into a different data structure, such as viewing an array as a heap, or encoding a polynomial evaluation as Horner\'s method.',
           ),
           TextBlock(
-            'Problem reduction transforms our problem into an instance of a well-known problem with established algorithms — like formulating a scheduling problem as linear programming.',
+            'Problem reduction transforms our problem into an instance of a well-known problem with established algorithms, like formulating a scheduling problem as linear programming.',
           ),
           QuizBlock(
             question: 'What is the key difference between instance simplification and representation change?',
             options: [
-              'Instance simplification changes the problem type; representation change changes the data structure',
-              'Instance simplification finds an easier version of the same problem; representation change encodes the problem in a different form',
+              'Instance simplification changes the problem type, while representation change changes the data structure',
+              'Instance simplification finds an easier version of the same problem, while representation change encodes the problem in a different form',
               'Instance simplification is faster than representation change',
-              'There is no difference — both terms mean the same thing',
+              'There is no difference, both terms mean the same thing',
             ],
             correctIndex: 1,
-            explanation: 'Instance simplification works on the same problem but with a nicer input instance. Representation change keeps the same problem but expresses it in a different domain — a tree, graph, matrix, or automaton — to unlock different tools.',
+            explanation: 'Instance simplification works on the same problem but with a nicer input instance. Representation change keeps the same problem but expresses it in a different domain, like a tree, graph, matrix, or automaton, to unlock different tools.',
           ),
           QuizBlock(
             question: 'Gaussian Elimination transforms the original system of linear equations into what form that makes solving straightforward?',
@@ -5855,7 +5855,7 @@ ModuleContent(
           ),
           KeyTakeawayBlock(
             'Lesson 9 completed our exploration of Transform and Conquer. '
-            'In Lesson 10 we turn to dynamic programming — a technique that caches results of overlapping subproblems to dramatically improve efficiency, trading time for space.',
+            'In Lesson 10 we turn to dynamic programming, a technique that caches results of overlapping subproblems to dramatically improve efficiency, trading time for space.',
           ),
         ],
       ),
