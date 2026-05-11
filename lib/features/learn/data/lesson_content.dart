@@ -6001,7 +6001,7 @@ ModuleContent(
             'We construct a 2D table C where C[i, j] holds the value of C(i, j). The table looks like Pascal\'s Triangle shifted to the left. We only need to fill up to column k, because values where j is greater than k are not needed for our final answer.',
           ),
           MathBlock(
-            r'\text{Pascal\'s Triangle table: } C[i,j] = C[i-1,j-1] + C[i-1,j]',
+            r"\text{Pascal's Triangle table: } C[i,j] = C[i-1,j-1] + C[i-1,j]",
             semanticsLabel: 'Pascal table recurrence',
           ),
           TextBlock(
