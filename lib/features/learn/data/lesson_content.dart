@@ -5887,9 +5887,9 @@ ModuleContent(
             'Dynamic programming solutions often begin with recurrence relations. To visualize the problem, consider a decision tree that models recursive calls. Each vertex represents one function call. The root is the original call, children are the recursive calls, and leaves are the base cases.',
           ),
           DefinitionBlock(
-            'Dynamic Programming\n'
-            'A recursive algorithm design technique that solves subproblems once, stores their results in a table, and reuses the stored results instead of recomputing them. '
-            'It is particularly useful when subproblems share overlapping results.',
+            term: 'Dynamic Programming',
+            definition: 'A recursive algorithm design technique that solves subproblems once, stores their results in a table, and reuses the stored results instead of recomputing them. '
+                'It is particularly useful when subproblems share overlapping results.',
           ),
           TextBlock(
             'As an example, consider the Fibonacci recurrence: F(n) = F(n minus 1) + F(n minus 2), with F(0) = F(1) = 1.',

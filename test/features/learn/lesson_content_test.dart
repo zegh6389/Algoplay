@@ -2266,7 +2266,7 @@ void main() {
       expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
       expect(blocks.last, isA<KeyTakeawayBlock>());
 
-      final combined = combinedText(blocks).join(' ');
+      final combined = combinedText(blocks);
       expect(combined.toLowerCase(), contains('dynamic programming'));
       expect(combined.toLowerCase(), contains('fibonacci'));
       expect(combined, contains(r'F(n) = F(n-1) + F(n-2)'));
