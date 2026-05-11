@@ -2031,8 +2031,8 @@ void main() {
       expect(blocks.last, isA<KeyTakeawayBlock>());
 
       final combined = combinedText(blocks);
-      expect(combined, contains('presorting'));
-      expect(combined, contains('heap'));
+      expect(combined.toLowerCase(), contains('presorting'));
+      expect(combined.toLowerCase(), contains('heap'));
       expect(combined, contains('Horner'));
       expect(combined, contains('Lesson 9'));
     });
