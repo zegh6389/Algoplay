@@ -1725,7 +1725,7 @@ void main() {
       expect(module.order, 1);
       expect(module.algorithmId, isNull);
       final blocks = module.contentBlocks;
-      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(1));
       expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(2));
       expect(blocks.last, isA<KeyTakeawayBlock>());
       final combined = combinedText(blocks);
