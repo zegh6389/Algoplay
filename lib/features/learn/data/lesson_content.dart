@@ -3526,18 +3526,12 @@ const List<LessonContent> lessons = [
           TextBlock(
             'Let C(n) be the number of comparisons Mergesort does in the worst '
             'case when sorting an array of size n. Each call makes two recursive '
-            'calls on size n/2, then calls Merge on n elements.',
-          ),
-          MathBlock(
-            r'C(n) = 2C\!\left(\frac{n}{2}\right) + C_{merge}(n), \quad C(1) = 0',
-            semanticsLabel: 'mergesort recurrence general form',
+            'calls on size n/2, then calls Merge on n elements. '
+            'The recurrence is C(n) = 2C(n/2) + C_merge(n), C(1) = 0.',
           ),
           TextBlock(
-            'Using the worst-case cost of Merge, this becomes:',
-          ),
-          MathBlock(
-            r'C(n) = 2C\!\left(\frac{n}{2}\right) + n - 1, \quad C(1) = 0',
-            semanticsLabel: 'mergesort recurrence with merge cost',
+            'Using the worst-case cost of Merge, this becomes '
+            'C(n) = 2C(n/2) + n − 1, C(1) = 0.',
           ),
           TextBlock('Applying the Master Theorem'),
           TextBlock(
@@ -3568,10 +3562,8 @@ const List<LessonContent> lessons = [
           TextBlock('Summary of Mergesort'),
           TextBlock(
             'Key points: the strategy is divide-and-conquer, the recurrence is '
-            'C(n) = 2C(n/2) + n − 1 and the solution is Θ(n log n).',
-          ),
-          TextBlock(
-            '. Mergesort typically needs an auxiliary array of size n during merge.',
+            'C(n) = 2C(n/2) + n − 1 and the solution is Θ(n log n). '
+            'Mergesort typically needs an auxiliary array of size n during merge.',
           ),
           TextBlock(
             'Pros: predictable Θ(n log n) time in the worst case, and it is a '
