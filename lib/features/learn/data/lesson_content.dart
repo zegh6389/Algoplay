@@ -5638,6 +5638,170 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+ModuleContent(
+        id: 'lesson9_module3',
+        title: 'Problem Reduction (Linear Programming)',
+        order: 2,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'With problem reduction, we take a new problem and transform it into an '
+            'instance of a well-known problem for which we already have efficient algorithms. '
+            'We look at one specific example: reducing real-world optimization problems to '
+            'Linear Programming.',
+          ),
+          DefinitionBlock(
+            term: 'Problem Reduction',
+            definition: 'A type of transform and conquer where the given problem is '
+                'transformed into an instance of a well-studied problem. '
+                'We apply the existing algorithm for that known problem and optionally '
+                'convert the result back into the original setting.',
+          ),
+          DefinitionBlock(
+            term: 'Linear Programming',
+            definition: 'The problem of minimizing or maximizing a linear function '
+                'subject to linear constraints. '
+                'Despite the name, programming here means planning or optimizing, '
+                'not writing code. LP is easily solved in practice using the Simplex Method.',
+          ),
+          TextBlock(
+            'LP is in luck because the Simplex Method solves it efficiently in practice. '
+            'Interestingly, Simplex has exponential worst-case time, '
+            'but on real data it is extremely fast. '
+            'There are also newer polynomial-time algorithms like Karmarkar\'s algorithm.',
+          ),
+          TextBlock(
+            'Example: The Robot Energy Pack Problem. '
+            'A robot can buy coloured energy packs from an in-game shop. '
+            'Each pack has energy units, cuteness, duration, price, and stock limits.',
+          ),
+          TextBlock(
+            'Red: 110 energy, 4 cuteness, 2 duration, price 3, stock 4. '
+            'Green: 205 energy, 32 cuteness, 12 duration, price 24, stock 3. '
+            'Blue: 160 energy, 13 cuteness, 54 duration, price 13, stock 2. '
+            'Yellow: 160 energy, 8 cuteness, 285 duration, price 9, stock 8. '
+            'Brown: 420 energy, 4 cuteness, 22 duration, price 20, stock 2. '
+            'Purple: 260 energy, 14 cuteness, 80 duration, price 19, stock 2.',
+          ),
+          TextBlock(
+            'Robot requirements: at least 55 cuteness, at least 800 minutes duration, '
+            'at least 2000 energy units. '
+            'Goal: find the cheapest combination of packs that meets these requirements.',
+          ),
+          TextBlock(
+            'A valid guess: 8 yellow packs and 2 brown packs. '
+            'Cuteness: 8 times 8 plus 2 times 4 equals 64 plus 8 equals 72, which is at least 55. '
+            'Duration: 8 times 285 plus 2 times 22 equals 2280 plus 44 equals 2324, '
+            'which is at least 800. '
+            'Cost: 8 times 9 plus 2 times 20 equals 72 plus 40 equals 112. '
+            'But is 112 the absolute cheapest? We reduce the problem to LP to find out.',
+          ),
+          DefinitionBlock(
+            term: 'Reducing to Linear Programming',
+            definition: 'Formulate the problem using variables x1 through x6 representing '
+                'the number of packs bought of each colour. '
+                'Stock constraints give upper bounds. '
+                'Requirement constraints give linear inequalities. '
+                'The cost function gives the objective to minimize.',
+          ),
+          TextBlock(
+            'Stock constraints: '
+            '0 is less than or equal to x1 is less than or equal to 4. '
+            '0 is less than or equal to x2 is less than or equal to 3. '
+            '0 is less than or equal to x3 is less than or equal to 2. '
+            '0 is less than or equal to x4 is less than or equal to 8. '
+            '0 is less than or equal to x5 is less than or equal to 2. '
+            '0 is less than or equal to x6 is less than or equal to 2.',
+          ),
+          TextBlock(
+            'Requirement constraints: '
+            'Cuteness at least 55: 4 x1 plus 32 x2 plus 13 x3 plus 8 x4 plus 4 x5 plus 14 x6 '
+            'is greater than or equal to 55. '
+            'Time at least 800: 2 x1 plus 12 x2 plus 54 x3 plus 285 x4 plus 22 x5 plus 80 x6 '
+            'is greater than or equal to 800. '
+            'Energy at least 2000: 110 x1 plus 205 x2 plus 160 x3 plus 160 x4 plus 420 x5 '
+            'plus 260 x6 is greater than or equal to 2000.',
+          ),
+          TextBlock(
+            'Cost function: minimize 3 x1 plus 24 x2 plus 13 x3 plus 9 x4 plus 20 x5 plus 19 x6. '
+            'The beauty of problem reduction is that we do not have to invent a new algorithm. '
+            'Because the problem is exactly in the form of a linear program, '
+            'we can feed it directly into a standard Simplex Method solver '
+            'and get the optimal answer instantly.',
+          ),
+          QuizBlock(
+            question: 'What does programming mean in the term linear programming?',
+            options: [
+              'Writing code',
+              'Planning or optimizing',
+              'Computer programming',
+              'Scheduling tasks',
+            ],
+            correctIndex: 1,
+            explanation: 'Programming here is an older term meaning planning or optimizing, '
+                'not writing code. Linear programming is about optimizing a linear objective '
+                'function subject to linear constraints.',
+          ),
+          QuizBlock(
+            question: 'Why is problem reduction a powerful technique?',
+            options: [
+              'It makes problems smaller',
+              'It lets us reuse existing efficient algorithms for well-studied problems',
+              'It always reduces complexity to constant time',
+              'It eliminates the need for constraints',
+            ],
+            correctIndex: 1,
+            explanation: 'Problem reduction lets us reuse decades of highly optimized algorithms '
+                'instead of starting from scratch, by showing that a new problem is just '
+                'a disguised version of an old one.',
+          ),
+          QuizBlock(
+            question: 'What is the key trade-off with the Simplex Method for linear programming?',
+            options: [
+              'Fast in practice but exponential worst-case time',
+              'Polynomial always but slow in practice',
+              'Only works for small problems',
+              'Requires special hardware to run',
+            ],
+            correctIndex: 0,
+            explanation: 'The Simplex Method has exponential worst-case time, '
+                'but in practice on real data it is extremely fast. '
+                'Newer polynomial-time algorithms like Karmarkar\'s algorithm also exist.',
+          ),
+          QuizBlock(
+            question: 'In the robot energy pack problem, what do the variables x1 through x6 represent?',
+            options: [
+              'The energy, cuteness, and duration of each pack',
+              'The number of packs bought of each colour',
+              'The price of each pack type',
+              'The stock remaining after purchase',
+            ],
+            correctIndex: 1,
+            explanation: 'The variables x1 through x6 represent the number of packs bought '
+                'of each colour: red, green, blue, yellow, brown, and purple.',
+          ),
+          QuizBlock(
+            question: 'Which type of constraint ensures the shop stock limits are respected?',
+            options: [
+              'Objective constraints',
+              'Requirement constraints',
+              'Stock constraints',
+              'Cost constraints',
+            ],
+            correctIndex: 2,
+            explanation: 'Stock constraints set upper bounds on each variable '
+                'like 0 is less than or equal to x1 is less than or equal to 4, '
+                'ensuring we do not buy more packs than are available.',
+          ),
+          KeyTakeawayBlock(
+            'Problem reduction is a powerful shortcut: if you can prove that your new problem '
+            'is just a disguised version of an old problem like Linear Programming, '
+            'you can reuse decades of highly optimized algorithms instead of starting from scratch. '
+            'The Simplex Method, despite its exponential worst case, efficiently solves '
+            'real-world LP problems.',
+          ),
+        ],
+      ),
     ],
   ),
 
