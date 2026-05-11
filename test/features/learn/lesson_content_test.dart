@@ -2151,8 +2151,8 @@ void main() {
       expect(module.algorithmId, isNull);
 
       final blocks = module.contentBlocks;
-      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(3));
-      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(4));
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(5));
       expect(blocks.last, isA<KeyTakeawayBlock>());
 
       final combined = combinedText(blocks).join(' ');
@@ -2160,7 +2160,9 @@ void main() {
       expect(combined, contains('exponent'));
       expect(combined, contains('square'));
       expect(combined, contains('Horner'));
-      expect(combined, contains('2048'));
+      expect(combined, contains('log'));
+      expect(combined, contains('left-to-right'));
+      expect(combined, contains('right-to-left'));
     });
 
     test('Lesson 9 visible prose keeps formulas out of prose blocks', () {
