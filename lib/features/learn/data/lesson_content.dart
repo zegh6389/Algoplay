@@ -4634,6 +4634,172 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+      ModuleContent(
+        id: 'lesson8_module2',
+        title: 'Presorting',
+        order: 1,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'In this module we look at presorting, a classic example of '
+            'instance simplification in Transform and Conquer.',
+          ),
+          DefinitionBlock(
+            term: 'Presorting',
+            definition: 'An instance simplification technique where the input is sorted first, '
+                'then the original problem is solved on the sorted data. The idea is that an '
+                'ordered instance of the same problem is often easier to solve.',
+          ),
+          TextBlock(
+            'Sometimes presorting is a great idea and sometimes it is too expensive. '
+            'The key is to compare the cost of sorting with the cost of solving the problem directly.',
+          ),
+          TextBlock(
+            'Example: searching for a target value in an array of size n. '
+            'Presorting sorts the array in linearithmic time, then uses binary search in '
+            'logarithmic time. But simple sequential search scans the unsorted array once '
+            'in linear time. For a single search, presorting is not a good idea because '
+            'sorting dominates the cost.',
+          ),
+          KeyTakeawayBlock(
+            'Presorting pays off when you perform many searches on the same array, '
+            'because the one-time cost of sorting is amortized over many fast lookups.',
+          ),
+          DefinitionBlock(
+            term: 'Presorting vs Sorting While Solving',
+            definition: 'In presorting, sorting by itself does not give the final answer. '
+                'It only prepares the input. If you do not yet have the answer immediately '
+                'after sorting, then you are using presorting. By contrast, some algorithms '
+                '(like counting inversions via merge sort) produce the answer as a side effect '
+                'of the sort itself.',
+          ),
+          TextBlock(
+            'Element Uniqueness Problem: determine whether all elements in an array are unique.',
+          ),
+          TextBlock(
+            'The naive brute-force approach compares each element with all later elements. '
+            'In the worst case this does about n minus 1 plus n minus 2 and so on down to 1 '
+            'comparisons, which is quadratic.',
+          ),
+          TextBlock(
+            'The presorting approach sorts the array first, then scans through it once '
+            'comparing each element with its neighbour. If any adjacent pair is equal, the '
+            'elements are not unique. Sorting costs linearithmic time and the single pass '
+            'costs linear time, so the total is linearithmic.',
+          ),
+          QuizBlock(
+            question: 'What is the total worst-case time for element uniqueness via presorting?',
+            options: [
+              'linearithmic',
+              'quadratic',
+              'linear',
+              'logarithmic',
+            ],
+            correctIndex: 0,
+            explanation: 'Sorting costs linearithmic time and the single scan comparing '
+                'neighbours costs linear time, so the total is linearithmic.',
+          ),
+          TextBlock(
+            'The mode of a set of numbers is the value that appears most often.',
+          ),
+          DefinitionBlock(
+            term: 'Mode',
+            definition: 'The value that appears most frequently in a collection of numbers. '
+                'For example, in the list 3, 4, 8, 16, 8, 4, 8, 24, 6, 8 the mode is 8.',
+          ),
+          TextBlock(
+            'Brute-force approach for finding the mode: for each element, count how many '
+            'times it appears in the whole array, store these counts, then find the largest '
+            'count. In the worst case (all elements different), the total comparisons are '
+            'n minus 1 plus n minus 2 down to 1, which is quadratic. There is also an '
+            'extra space cost for storing the counts array.',
+          ),
+          TextBlock(
+            'Presorting approach for the mode: sort the array first, then scan it once '
+            'from left to right keeping track of the current value, its consecutive count, '
+            'and the best count seen so far. Because equal values are grouped together after '
+            'sorting, we only need to look at consecutive elements.',
+          ),
+          QuizBlock(
+            question: 'Why does sorting reduce the mode problem from quadratic to linearithmic?',
+            options: [
+              'Equal values become consecutive, so a single linear pass can count runs',
+              'Sorting removes duplicate elements entirely',
+              'Binary search can find the mode directly in a sorted array',
+              'Sorting is always faster than any other approach',
+            ],
+            correctIndex: 0,
+            explanation: 'After sorting, identical values are grouped together. A single '
+                'left-to-right pass can count consecutive runs, making the post-sort step '
+                'linear instead of quadratic.',
+          ),
+          QuizBlock(
+            question: 'When is presorting NOT a good idea?',
+            options: [
+              'When the best direct algorithm is already linear',
+              'When the input has fewer than 10 elements',
+              'When the array contains only integers',
+              'When you need to do many searches on the same data',
+            ],
+            correctIndex: 0,
+            explanation: 'Presorting always costs at least linearithmic time for '
+                'comparison-based sorting. If a direct algorithm already solves the problem '
+                'in linear time, presorting would only slow things down.',
+          ),
+          QuizBlock(
+            question: 'For element uniqueness, why is it enough to compare only '
+                'neighbouring elements after sorting?',
+            options: [
+              'Equal elements always end up adjacent in a sorted array',
+              'Neighbouring elements are always different in a sorted array',
+              'Sorting removes all duplicates automatically',
+              'Binary search is faster than comparing neighbours',
+            ],
+            correctIndex: 0,
+            explanation: 'In a sorted array, all equal values are placed next to each other. '
+                'So if any two elements are equal, they will be neighbours, and a single pass '
+                'will detect them.',
+          ),
+          CodeBlock(
+            'Element Uniqueness (Presorting)\n'
+            '1. Sort array A[0..n-1]\n'
+            '2. For i = 0 to n-2:\n'
+            '3.   If A[i] == A[i+1]: return FALSE\n'
+            '4. Return TRUE',
+            language: 'text',
+          ),
+          CodeBlock(
+            'Mode via Presorting\n'
+            '1. Sort array A[0..n-1]\n'
+            '2. modeValue = A[0], modeCount = 1\n'
+            '3. current = A[0], count = 1\n'
+            '4. For i = 1 to n-1:\n'
+            '5.   If A[i] == current:\n'
+            '6.     count = count + 1\n'
+            '7.   Else:\n'
+            '8.     If count > modeCount:\n'
+            '9.       modeCount = count, modeValue = current\n'
+            '10.    current = A[i], count = 1\n'
+            '11. If count > modeCount:\n'
+            '12.   modeCount = count, modeValue = current\n'
+            '13. Return modeValue',
+            language: 'text',
+          ),
+          TextBlock(
+            'Presorting always costs at least linearithmic time for comparison-based '
+            'sorting algorithms. Before choosing presorting, ask: does the rest of the '
+            'algorithm take at least linearithmic time anyway? Are we gaining a big '
+            'improvement over the best direct algorithm? Will we reuse the sorted data '
+            'many times?',
+          ),
+          KeyTakeawayBlock(
+            'Presorting is a simple but powerful instance simplification technique. '
+            'By paying a one-time cost of sorting, you can often turn a messy problem '
+            'into a clean linear scan, as long as the linearithmic cost of sorting makes '
+            'sense for your situation.',
+          ),
+        ],
+      ),
     ],
   ),
 

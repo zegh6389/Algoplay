@@ -1920,8 +1920,8 @@ void main() {
       return prose;
     }
 
-    test('has 1 module', () {
-      expect(lesson8.modules.length, 1);
+    test('has 2 modules', () {
+      expect(lesson8.modules.length, 2);
     });
 
     test('Module 1 covers transform and conquer introduction', () {
@@ -1947,6 +1947,29 @@ void main() {
       expect(combined, contains('Problem Reduction'));
       expect(combined, contains('upper triangular'));
       expect(combined, contains('backward substitution'));
+    });
+
+    test('Module 2 covers Presorting', () {
+      final module = lesson8.modules[1];
+      expect(module.id, 'lesson8_module2');
+      expect(module.title, 'Presorting');
+      expect(module.order, 1);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(2),
+      );
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.whereType<CodeBlock>().length, greaterThanOrEqualTo(2));
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = combinedText(blocks);
+      expect(combined, contains('presorting'));
+      expect(combined, contains('Element Uniqueness'));
+      expect(combined, contains('mode'));
+      expect(combined, contains('linear scan'));
     });
 
     test('Lesson 8 visible prose keeps formulas out of prose blocks', () {
