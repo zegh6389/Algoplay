@@ -4097,24 +4097,12 @@ const List<LessonContent> lessons = [
             'on numbers of about half the size, and do this recursively, we '
             'get a divide-and-conquer algorithm.',
           ),
-          TextBlock('A Simple Example:'),
-          MathBlock(
-            r'45 \times 28',
-            semanticsLabel: '45 times 28',
+          TextBlock('A Simple Example: 45 × 28'),
+          TextBlock(
+            'Write each number in base 10. For 45: 4 × 10 + 5',
           ),
           TextBlock(
-            'Write each number in base 10. For 45:',
-          ),
-          MathBlock(
-            r'4 \times 10 + 5',
-            semanticsLabel: 'four times ten plus five',
-          ),
-          TextBlock(
-            'For 28:',
-          ),
-          MathBlock(
-            r'2 \times 10 + 8',
-            semanticsLabel: 'two times ten plus eight',
+            'For 28: 2 × 10 + 8',
           ),
           TextBlock('Multiplying gives:'),
           MathBlock(
@@ -4137,13 +4125,8 @@ const List<LessonContent> lessons = [
             semanticsLabel: 'split numbers into halves',
           ),
           TextBlock(
-            'Now consider the product',
+            'Now consider the product c = a × b. We can rewrite it as:',
           ),
-          MathBlock(
-            r'c = a \times b',
-            semanticsLabel: 'c equals a times b',
-          ),
-          TextBlock('. We can rewrite it as:'),
           MathBlock(
             r'c = (a_1 b_1)10^n + (a_1 b_0 + a_0 b_1)10^{n/2} + a_0 b_0',
             semanticsLabel: 'expanded product',
@@ -4289,14 +4272,9 @@ const List<LessonContent> lessons = [
           TextBlock(
             'In this module we see how divide and conquer can speed up matrix '
             'multiplication. The focus is on Strassen\'s algorithm, which shows '
-            'that multiplying large matrices can be done faster than the '
-            'classical',
+            'that multiplying large matrices can be done faster than the classical '
+            'n³ approach.',
           ),
-          MathBlock(
-            r'n^3',
-            semanticsLabel: 'n cubed',
-          ),
-          TextBlock('approach.'),
           TextBlock('From Integer Multiplication to Matrices'),
           TextBlock(
             'Earlier, we saw that divide and conquer can help with multiplication '
@@ -4354,13 +4332,7 @@ const List<LessonContent> lessons = [
           TextBlock(
             'To apply Strassen\'s idea to larger matrices, suppose A and B are '
             'n by n matrices where n is a power of 2. We partition each matrix '
-            'into four blocks of size',
-          ),
-          MathBlock(
-            r'\frac{n}{2} \times \frac{n}{2}',
-            semanticsLabel: 'n over 2 by n over 2',
-          ),
-          TextBlock(':'),
+            'into four blocks of size n/2 × n/2:'),
           MathBlock(
             r'A = \begin{bmatrix} A_{00} & A_{01} \\ A_{10} & A_{11} \end{bmatrix}, \quad B = \begin{bmatrix} B_{00} & B_{01} \\ B_{10} & B_{11} \end{bmatrix}',
             semanticsLabel: 'block matrices',
@@ -4372,14 +4344,8 @@ const List<LessonContent> lessons = [
           ),
           TextBlock(
             'At each level of recursion, we perform seven matrix multiplications '
-            'on submatrices of size',
-          ),
-          MathBlock(
-            r'\frac{n}{2}',
-            semanticsLabel: 'n over 2',
-          ),
-          TextBlock(
-            ', plus additional matrix additions and subtractions.',
+            'on submatrices of size n/2, plus additional matrix additions and '
+            'subtractions.',
           ),
           TextBlock('Recurrence for Multiplications'),
           TextBlock(
@@ -4397,29 +4363,12 @@ const List<LessonContent> lessons = [
             r'M(n) = 7^{\log_2 n} = n^{\log_2 7}',
             semanticsLabel: 'strassen solution',
           ),
+          TextBlock('The exponent log₂ 7'),
           TextBlock(
-            'The exponent',
+            'is approximately 2.807. Thus Strassen\'s algorithm has multiplication '
+            'complexity n^(log₂ 7), which is asymptotically faster than the '
+            'classical n³ algorithm.',
           ),
-          MathBlock(
-            r'\log_2 7',
-            semanticsLabel: 'log base 2 of 7',
-          ),
-          TextBlock(
-            'is approximately 2.807. Thus Strassen\'s algorithm has '
-            'multiplication complexity',
-          ),
-          MathBlock(
-            r'n^{\log_2 7}',
-            semanticsLabel: 'n to the power of log base 2 of 7',
-          ),
-          TextBlock(
-            ', which is asymptotically faster than the classical',
-          ),
-          MathBlock(
-            r'n^3',
-            semanticsLabel: 'n cubed',
-          ),
-          TextBlock('algorithm.'),
           TextBlock('Counting Additions'),
           TextBlock(
             'Strassen\'s method reduces multiplications but increases additions '
