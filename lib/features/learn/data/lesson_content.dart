@@ -5470,14 +5470,14 @@ const List<LessonContent> lessons = [
                 'multiply by the base x.',
           ),
           CodeBlock(
-            language: 'pseudocode',
-            code: 'function BinaryExp(x, n):\n'
+            'function BinaryExp(x, n):\n'
                 '  result = 1\n'
                 '  for each bit b in binary(n) left to right:\n'
                 '    result = result * result\n'
                 '    if b == 1:\n'
                 '      result = result * x\n'
                 '  return result',
+            language: 'pseudocode',
           ),
           TextBlock(
             'Trace for 2 to the power 11 (binary 1011):',
