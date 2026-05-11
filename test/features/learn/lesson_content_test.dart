@@ -2080,6 +2080,91 @@ void main() {
     });
   });
 
+  group('lesson9', () {
+    final lesson9 = lessons.firstWhere((l) => l.id == 9);
+
+    List<String> combinedText(List<ContentBlock> blocks) {
+      final prose = <String>[];
+      for (final block in blocks) {
+        switch (block) {
+          case TextBlock(:final text):
+            prose.add(text);
+          case DefinitionBlock(:final term, :final definition):
+            prose.add('$term $definition');
+          case KeyTakeawayBlock(:final text):
+            prose.add(text);
+          case QuizBlock(
+            :final question,
+            :final options,
+            :final explanation,
+          ):
+            prose.add(question);
+            prose.addAll(options);
+            prose.add(explanation);
+          case CodeBlock(:final code, :final language):
+            prose.add('$language $code');
+          case MathBlock(:final tex, :final semanticsLabel):
+            prose.add('$semanticsLabel $tex');
+          case GraphBlock(:final type):
+            prose.add(type);
+          case VisualizerLinkBlock(
+            :final algorithmId,
+            :final label,
+            :final description,
+          ):
+            prose.add('$algorithmId $label ${description ?? ''}');
+        }
+      }
+      return prose;
+    }
+
+    test('has 1 module', () {
+      expect(lesson9.modules.length, 1);
+    });
+
+    test('Module 1 introduces Transform and Conquer Part 2', () {
+      final module = lesson9.modules[0];
+      expect(module.id, 'lesson9_module1');
+      expect(module.title, 'Transform and Conquer Part 2: Introduction');
+      expect(module.order, 0);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(2));
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = combinedText(blocks);
+      expect(combined, contains('presorting'));
+      expect(combined, contains('representation change'));
+      expect(combined, contains('problem reduction'));
+      expect(combined, contains('Horner'));
+    });
+
+    test('Lesson 9 visible prose keeps formulas out of prose blocks', () {
+      final visibleProse = lesson9.modules
+          .expand((module) => module.contentBlocks)
+          .whereType<TextBlock>()
+          .map((b) => b.text)
+          .join(' ');
+      // No raw math notation in prose text
+      expect(visibleProse, isNot(contains('O(n')));
+      expect(visibleProse, isNot(contains(r'$')));
+    });
+
+    test('Lesson 9 prose uses readable math notation', () {
+      final combined = combinedText(lesson9.modules.expand((m) => m.contentBlocks).toList());
+      expect(combined, isNot(contains('n^2')));
+    });
+
+    test('Lesson 9 prose avoids AI punctuation tells', () {
+      final combined = combinedText(lesson9.modules.expand((m) => m.contentBlocks).toList());
+      expect(combined, isNot(contains('\u2014')));
+      expect(combined, isNot(contains(';')));
+      expect(combined, isNot(contains(' - ')));
+    });
+  });
+
   group('ContentBlock subclasses', () {
     test('TextBlock holds text', () {
       const block = TextBlock('hello');

@@ -5326,7 +5326,103 @@ const List<LessonContent> lessons = [
     id: 9,
     title: 'Transform and Conquer Pt.2',
     categoryColor: '#F97316',
-    modules: [],
+    modules: [
+      ModuleContent(
+        id: 'lesson9_module1',
+        title: 'Transform and Conquer Part 2: Introduction',
+        order: 0,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'In Lesson 8 we introduced transform and conquer. This approach '
+            'leverages techniques from other areas of mathematics to solve problems '
+            'and calculate the efficiency of algorithms.',
+          ),
+          TextBlock(
+            'We saw how to do this with presorting, which is an example of instance '
+            'simplification, and also how to do this by introducing a very different '
+            'kind of structure through representation change.',
+          ),
+          TextBlock(
+            'In Lesson 9 we continue the theme of transform and conquer.',
+          ),
+          DefinitionBlock(
+            term: 'Instance Simplification (Review)',
+            definition: 'Changing the given instance of a problem into an easier '
+                'instance of the same problem. Presorting is the primary example: '
+                'sort the input first to make later steps simpler.',
+          ),
+          DefinitionBlock(
+            term: 'Representation Change (Review)',
+            definition: 'Keeping the essence of the problem but changing how the data '
+                'is represented. The heap encodes a tree as an array, and Horner\'s '
+                'Rule rewrites a polynomial as nested multiply-add steps.',
+          ),
+          TextBlock(
+            'Lesson 9 expands our toolkit in two directions.',
+          ),
+          TextBlock(
+            'First, we explore more examples of representation change. New structures '
+            'and encodings can reveal surprising efficiency gains in problems that seem '
+            'difficult in their original form.',
+          ),
+          TextBlock(
+            'Second, we introduce problem reduction. This is the third type of transform '
+            'and conquer, where we recognize that the given problem can be mapped to a '
+            'well-studied problem with known algorithms.',
+          ),
+          DefinitionBlock(
+            term: 'Problem Reduction',
+            definition: 'A type of transform and conquer where the given problem is '
+                'transformed into an instance of a well-studied problem. We apply the '
+                'existing algorithm for that known problem and optionally convert the '
+                'result back.',
+          ),
+          TextBlock(
+            'Problem reduction is powerful because it lets us stand on the shoulders of '
+            'existing algorithms. Instead of designing a new algorithm from scratch, we '
+            'find a mapping to a problem that has already been solved efficiently.',
+          ),
+          QuizBlock(
+            question: 'Which of the three transform-and-conquer types maps a problem '
+                'to an entirely different, well-studied problem?',
+            options: [
+              'Problem reduction',
+              'Instance simplification',
+              'Representation change',
+              'Divide and conquer',
+            ],
+            correctIndex: 0,
+            explanation: 'Problem reduction transforms the given problem into an '
+                'instance of a different problem that already has efficient algorithms.',
+          ),
+          QuizBlock(
+            question: 'What is the key difference between representation change and '
+                'problem reduction?',
+            options: [
+              'Representation change keeps the same problem, problem reduction changes to a different problem',
+              'Representation change is faster than problem reduction',
+              'Problem reduction only works for sorting problems',
+              'There is no difference',
+            ],
+            correctIndex: 0,
+            explanation: 'Representation change re-encodes the same problem data. '
+                'Problem reduction maps to a different problem entirely.',
+          ),
+          TextBlock(
+            'We will also see an application of Horner\'s algorithm to converting '
+            'between number systems, which is a practical and elegant use of the '
+            'representation change idea.',
+          ),
+          KeyTakeawayBlock(
+            'Lesson 9 continues transform and conquer with more representation change '
+            'examples, introduces problem reduction as a third strategy, and applies '
+            'Horner\'s Rule to number base conversion.',
+          ),
+        ],
+      ),
+    ],
+
   ),
 
   // ── Lesson 10 (stub) ──────────────────────────────────────────────────────
