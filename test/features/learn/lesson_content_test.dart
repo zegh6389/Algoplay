@@ -2331,7 +2331,7 @@ void main() {
       expect(blocks.whereType<VisualizerLinkBlock>().length, 1);
       expect(blocks.last, isA<KeyTakeawayBlock>());
 
-      final combined = combinedText(blocks).join(' ');
+      final combined = combinedText(blocks);
       expect(combined.toLowerCase(), contains('subsequence'));
       expect(combined.toLowerCase(), contains('quadratic'));
       expect(combined.toLowerCase(), contains('backtrace'));
