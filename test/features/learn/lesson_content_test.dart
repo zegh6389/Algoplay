@@ -1920,8 +1920,8 @@ void main() {
       return prose;
     }
 
-    test('has 3 modules', () {
-      expect(lesson8.modules.length, 3);
+    test('has 4 modules', () {
+      expect(lesson8.modules.length, 4);
     });
 
     test('Module 1 covers transform and conquer introduction', () {
@@ -1994,6 +1994,27 @@ void main() {
       expect(combined, contains('partial order'));
       expect(combined, contains('fixHeap'));
       expect(combined, contains('Heapsort'));
+      expect(combined, contains('representation change'));
+    });
+
+    test("Module 4 covers Horner's Rule", () {
+      final module = lesson8.modules[3];
+      expect(module.id, 'lesson8_module4');
+      expect(module.title, "Horner's Rule for Polynomial Evaluation");
+      expect(module.order, 3);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(2));
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(2));
+      expect(blocks.whereType<CodeBlock>().length, greaterThanOrEqualTo(1));
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = combinedText(blocks);
+      expect(combined, contains('polynomial'));
+      expect(combined, contains('Horner'));
+      expect(combined, contains('nested'));
       expect(combined, contains('representation change'));
     });
 

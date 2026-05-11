@@ -5058,6 +5058,178 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+      ModuleContent(
+        id: 'lesson8_module4',
+        title: "Horner's Rule for Polynomial Evaluation",
+        order: 3,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            "Evaluating a polynomial at a specific value of x is one of the "
+            "most fundamental computations in numerical mathematics. Horner's Rule "
+            "shows how a clever representation change reduces the work dramatically.",
+          ),
+          DefinitionBlock(
+            term: 'Polynomial',
+            definition: 'An expression of the form a sub n times x to the n plus '
+                'a sub n minus 1 times x to the n minus 1 plus dot dot dot plus '
+                'a sub 1 times x plus a sub 0, where the a sub i are coefficients '
+                'and n is the degree.',
+          ),
+          TextBlock(
+            'Consider evaluating the polynomial 7 x cubed minus 5 x squared plus '
+            '3 x plus 1 at x equals 2. The brute force approach computes each power '
+            'of x separately, multiplies by the corresponding coefficient, and sums '
+            'the terms.',
+          ),
+          TextBlock(
+            'For a polynomial of degree n, the brute force method computes x to the '
+            'n by performing n multiplications, then multiplies by the coefficient, '
+            'and repeats for every term. The total number of multiplications grows '
+            'quadratically.',
+          ),
+          MathBlock(
+            r'\text{Brute force multiplications} = \sum_{i=1}^{n} (i + 1) = \frac{n(n+3)}{2} = \Theta(n^2)',
+            semanticsLabel: 'brute force multiplication count',
+          ),
+          TextBlock(
+            "Horner's Rule transforms the polynomial by factoring out x at every level. "
+            'The polynomial 7 x cubed minus 5 x squared plus 3 x plus 1 is rewritten as '
+            'x times (x times (7 x minus 5) plus 3) plus 1.',
+          ),
+          DefinitionBlock(
+            term: "Horner's Rule",
+            definition: 'A method for evaluating polynomials that rewrites the '
+                'polynomial as a nested sequence of multiplications and additions. '
+                'Starting from the leading coefficient, each step multiplies the '
+                'running result by x and adds the next coefficient.',
+          ),
+          TextBlock(
+            'This nested form is a representation change. Instead of treating the '
+            'polynomial as a sum of independent monomials, we view it as a sequence '
+            'of multiply-add steps. The data stays the same, but the way we process '
+            'it changes entirely.',
+          ),
+          CodeBlock(
+            "hornerEvaluate(a[0..n], x)\n"
+            "1. result = a[0]           // leading coefficient\n"
+            "2. For i = 1 to n:\n"
+            "3.   result = result * x + a[i]\n"
+            "4. Return result",
+            language: 'text',
+          ),
+          TextBlock(
+            'Each iteration performs exactly one multiplication and one addition. '
+            'For a polynomial of degree n, there are n iterations, giving exactly '
+            'n multiplications and n additions total.',
+          ),
+          MathBlock(
+            r'\text{Horner cost} = n \text{ multiplications} + n \text{ additions} = \Theta(n)',
+            semanticsLabel: 'Horner Rule total operations',
+          ),
+          QuizBlock(
+            question: "How many multiplications does Horner's Rule use for a "
+                'polynomial of degree n?',
+            options: [
+              'Exactly n',
+              'n squared',
+              '2n',
+              'n plus 1',
+            ],
+            correctIndex: 0,
+            explanation: 'Each of the n iterations performs exactly one '
+                'multiplication (result times x). There are no extra '
+                'exponentiation steps.',
+          ),
+          TextBlock(
+            'Let us trace through the example with coefficients 7, minus 5, 3, 1 '
+            'and x equals 2.',
+          ),
+          TextBlock(
+            'Step 1: result equals 7 (the leading coefficient).',
+          ),
+          TextBlock(
+            'Step 2: result equals 7 times 2 plus (minus 5) equals 9.',
+          ),
+          TextBlock(
+            'Step 3: result equals 9 times 2 plus 3 equals 21.',
+          ),
+          TextBlock(
+            'Step 4: result equals 21 times 2 plus 1 equals 43.',
+          ),
+          TextBlock(
+            'The polynomial value at x equals 2 is 43. Now compare the operation '
+            'counts with brute force.',
+          ),
+          TextBlock(
+            'Brute force for this degree 3 polynomial: computing x cubed takes 2 '
+            'multiplications, then multiplying by 7 adds 1 more. Computing x squared '
+            'takes 1 multiplication, then multiplying by minus 5 adds 1 more. '
+            'Multiplying 3 by x takes 1 multiplication. Three additions to sum the '
+            'terms. Total: 6 multiplications and 3 additions.',
+          ),
+          TextBlock(
+            "Horner's Rule: exactly 3 multiplications and 3 additions. The savings "
+            'grow dramatically as the degree increases. For degree 100, brute force '
+            'needs over 5000 multiplications while Horner needs only 100.',
+          ),
+          QuizBlock(
+            question: 'For a degree 100 polynomial, roughly how many multiplications '
+                'does brute force need compared to Horner?',
+            options: [
+              'About 5000 versus 100',
+              'About 100 versus 100',
+              'About 200 versus 100',
+              'About 10000 versus 100',
+            ],
+            correctIndex: 0,
+            explanation: 'Brute force needs roughly n squared over 2 multiplications, '
+                'which is about 5000 for n equals 100. Horner needs exactly n equals 100.',
+          ),
+          TextBlock(
+            "Horner's Rule is a textbook example of representation change, the second "
+            'type of transform and conquer. The polynomial itself does not change, but '
+            'we rewrite it from a sum of monomials into a nested multiply-add form.',
+          ),
+          TextBlock(
+            'This form is also ideal for computers because it uses only two basic '
+            'operations (multiply and add) in a tight loop, with no need for '
+            'exponentiation or power computations.',
+          ),
+          QuizBlock(
+            question: "Why is Horner's Rule classified as representation change?",
+            options: [
+              'The polynomial is rewritten into a nested form without changing the math',
+              'It changes the polynomial coefficients',
+              'It reduces the degree of the polynomial',
+              'It converts the polynomial into a graph',
+            ],
+            correctIndex: 0,
+            explanation: "Horner's Rule keeps the same polynomial but represents it "
+                'as a nested expression, changing how we compute it without altering '
+                'the mathematical value.',
+          ),
+          QuizBlock(
+            question: 'What hardware advantage does the nested multiply-add form have?',
+            options: [
+              'It uses only multiply and add in a tight loop, avoiding exponentiation',
+              'It uses less memory by storing fewer coefficients',
+              'It allows parallel computation of all terms',
+              'It avoids floating point errors entirely',
+            ],
+            correctIndex: 0,
+            explanation: 'The nested form processes one multiply-add per iteration, '
+                'which maps directly to efficient hardware instructions with no '
+                'need for a separate power function.',
+          ),
+          KeyTakeawayBlock(
+            "Horner's Rule transforms polynomial evaluation from quadratic to linear "
+            'time by rewriting the polynomial as a nested sequence of multiply-add '
+            'steps. It is a clean example of representation change: same polynomial, '
+            'different encoding, dramatically fewer operations.',
+          ),
+        ],
+      ),
     ],
   ),
 
