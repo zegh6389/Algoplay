@@ -4239,6 +4239,178 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+      ModuleContent(
+        id: 'lesson7_module6',
+        title: 'Multiplication of Matrices (Strassen)',
+        order: 5,
+        contentBlocks: [
+          TextBlock(
+            'In this module we see how divide and conquer can speed up matrix '
+            'multiplication. The focus is on Strassen\'s algorithm, which shows '
+            'that multiplying large matrices can be done faster than the '
+            'classical cubic approach.',
+          ),
+          TextBlock('From Integer Multiplication to Matrices'),
+          TextBlock(
+            'Earlier, we saw that divide and conquer can help with multiplication '
+            'of large integers. Now we ask: can divide and conquer also help us '
+            'multiply matrices more quickly?',
+          ),
+          TextBlock(
+            'The answer is yes. Strassen\'s algorithm is a divide-and-conquer '
+            'method that reduces the number of scalar multiplications needed.',
+          ),
+          TextBlock('Classical 2 by 2 Matrix Multiplication'),
+          TextBlock(
+            'Consider multiplying two 2 by 2 matrices C equals A times B.',
+          ),
+          MathBlock(
+            r'A = \begin{bmatrix} a_{00} & a_{01} \\ a_{10} & a_{11} \end{bmatrix}, \quad B = \begin{bmatrix} b_{00} & b_{01} \\ b_{10} & b_{11} \end{bmatrix}',
+            semanticsLabel: 'two by two matrices A and B',
+          ),
+          TextBlock(
+            'The usual formula for C is:',
+          ),
+          MathBlock(
+            r'C = \begin{bmatrix} a_{00}b_{00} + a_{01}b_{10} & a_{00}b_{01} + a_{01}b_{11} \\ a_{10}b_{00} + a_{11}b_{10} & a_{10}b_{01} + a_{11}b_{11} \end{bmatrix}',
+            semanticsLabel: 'classical matrix multiplication result',
+          ),
+          TextBlock(
+            'This requires eight scalar multiplications and four additions. '
+            'Strassen observed that by cleverly rearranging the computations, we '
+            'can get the same result using only seven multiplications instead of '
+            'eight, at the cost of doing more additions and subtractions.',
+          ),
+          TextBlock('Strassen\'s 2 by 2 Construction'),
+          TextBlock(
+            'Strassen defines seven intermediate products m1 through m7 as '
+            'certain combinations of entries from A and B. The product matrix C '
+            'can be written in terms of these values so that all entries of C are '
+            'obtained using only seven scalar multiplications.',
+          ),
+          TextBlock(
+            'You are not required to memorize the exact formulas, but you should '
+            'understand the idea: first compute seven carefully chosen products, '
+            'then combine them with additions and subtractions to get each entry '
+            'of C.',
+          ),
+          TextBlock(
+            'The key takeaway: the structure of 2 by 2 matrix multiplication '
+            'allows one multiplication to be saved.',
+          ),
+          TextBlock('Extending to Larger Matrices'),
+          TextBlock(
+            'To apply Strassen\'s idea to larger matrices, suppose A and B are n '
+            'by n matrices where n is a power of 2. We partition each matrix '
+            'into four blocks of size n over 2 by n over 2:',
+          ),
+          MathBlock(
+            r'A = \begin{bmatrix} A_{00} & A_{01} \\ A_{10} & A_{11} \end{bmatrix}, \quad B = \begin{bmatrix} B_{00} & B_{01} \\ B_{10} & B_{11} \end{bmatrix}',
+            semanticsLabel: 'block matrices',
+          ),
+          TextBlock(
+            'Then we treat these blocks like the entries of 2 by 2 matrices and '
+            'apply the same Strassen formulas. The multiplications of blocks are '
+            'themselves matrix multiplications of smaller size.',
+          ),
+          TextBlock(
+            'At each level of recursion, we perform seven matrix multiplications '
+            'on submatrices of size n over 2, plus additional matrix additions '
+            'and subtractions.',
+          ),
+          TextBlock('Recurrence for Multiplications'),
+          TextBlock(
+            'Let M(n) be the number of scalar multiplications needed to multiply '
+            'two n by n matrices using Strassen\'s algorithm.',
+          ),
+          MathBlock(
+            r'M(n) = 7 M(n/2), \quad M(1) = 1',
+            semanticsLabel: 'strassen recurrence',
+          ),
+          TextBlock(
+            'Solving by substitution:',
+          ),
+          MathBlock(
+            r'M(n) = 7^{\log_2 n} = n^{\log_2 7}',
+            semanticsLabel: 'strassen solution',
+          ),
+          TextBlock(
+            'The exponent log base 2 of 7 is approximately 2.807. Thus '
+            'Strassen\'s algorithm has multiplication complexity n to the power '
+            'of approximately 2.807, which is asymptotically faster than the '
+            'classical cubic algorithm.',
+          ),
+          TextBlock('Counting Additions'),
+          TextBlock(
+            'Strassen\'s method reduces multiplications but increases additions '
+            'and subtractions. The recurrence for additions is:',
+          ),
+          MathBlock(
+            r'A(n) = 7 A(n/2) + 18(n/2)^2, \quad A(1) = 0',
+            semanticsLabel: 'strassen additions recurrence',
+          ),
+          TextBlock(
+            'By the Master Theorem, this recurrence has the same order of growth '
+            'as M(n). So even when we add in the cost of additions and '
+            'subtractions, the total work of Strassen\'s algorithm is on the '
+            'order of n to the power of log base 2 of 7.',
+          ),
+          QuizBlock(
+            question:
+                'How many scalar multiplications does Strassen use for the 2 by '
+                '2 case instead of the classical eight?',
+            options: [
+              'Seven',
+              'Six',
+              'Five',
+              'Four',
+            ],
+            correctIndex: 0,
+            explanation:
+                'Strassen saves one multiplication by using seven carefully '
+                'chosen products and more additions, which pays off recursively.',
+          ),
+          QuizBlock(
+            question:
+                'What is the time complexity of Strassen\'s matrix '
+                'multiplication algorithm?',
+            options: [
+              'n to the power of approximately 2.807',
+              'n cubed',
+              'n squared',
+              'n log n',
+            ],
+            correctIndex: 0,
+            explanation:
+                'The recurrence M(n) equals 7M(n over 2) solves to n to the '
+                'power of log base 2 of 7, which is approximately n to the '
+                'power of 2.807.',
+          ),
+          QuizBlock(
+            question:
+                'Why might Strassen not always be used for small matrices in '
+                'practice?',
+            options: [
+              'The extra additions and constant factors can dominate for small '
+              'sizes',
+              'It only works for odd-sized matrices',
+              'It requires more memory than available',
+              'It produces incorrect results for small sizes',
+            ],
+            correctIndex: 0,
+            explanation:
+                'For small matrices, the overhead of extra additions and '
+                'subtractions outweighs the benefit of saving one multiplication.',
+          ),
+          KeyTakeawayBlock(
+            'Strassen\'s algorithm shows that even a small saving at the base 2 '
+            'by 2 level can have a dramatic effect when applied recursively. It '
+            'is an important example of how creative algebraic manipulation, '
+            'combined with divide and conquer, can lead to asymptotically faster '
+            'algorithms.',
+          ),
+        ],
+      ),
     ],
   ),
 
