@@ -5000,7 +5000,7 @@ const List<LessonContent> lessons = [
             'n log base 2 of n.',
           ),
           MathBlock(
-            r'\int_{1}^{n} \log_2 x \, dx = \frac{n \log_2 n}{1} - \frac{n}{\ln 2} + 1 = \Theta(n \log n)',
+            r'\int_{1}^{n} \log_2 x \, dx = \frac{n \log_2 n}{1} -\frac{n}{\ln 2} + 1 = \Theta(n \log n)',
             semanticsLabel: 'integration bound for heapsort comparisons',
           ),
           TextBlock(
