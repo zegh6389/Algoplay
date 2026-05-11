@@ -6141,6 +6141,83 @@ ModuleContent(
         ],
       ),
 
+      ModuleContent(
+        id: 'lesson10_module4',
+        title: 'Longest Common Subsequence',
+        order: 3,
+        algorithmId: 'lcs',
+        contentBlocks: [
+          TextBlock(
+            'The Longest Common Subsequence problem asks: given two sequences, find the longest sequence that appears as a subsequence in both.',
+          ),
+          DefinitionBlock(
+            term: 'Subsequence',
+            definition: 'A sequence derived from another sequence by deleting zero or more elements without changing the order of the remaining elements.',
+          ),
+          TextBlock(
+            'For example, let X = ACCBDA and Y = CDCBAC. The longest common subsequence is Z = CCBA. We delete D from the first and B, D from the second to reveal this order.',
+          ),
+          MathBlock(
+            r"c[i,j] = \begin{cases} 0 & \text{if } i=0 \text{ or } j=0 \\ c[i-1,j-1]+1 & \text{if } x_i = y_j \\ \max(c[i,j-1],c[i-1,j]) & \text{if } x_i \neq y_j \end{cases}",
+            semanticsLabel: 'LCS recurrence relation',
+          ),
+          TextBlock(
+            'The recurrence works as follows. When either sequence is empty the LCS length is 0. When the last characters match, we extend the LCS of the prefixes by 1. When they differ, we take the better of skipping the last character of X or skipping the last character of Y.',
+          ),
+          CodeBlock(
+            'LCS_Length(X, m, Y, n):\n' +
+            '  create table c[0..m, 0..n]\n' +
+            '  for i from 1 to m: c[i,0] = 0\n' +
+            '  for j from 1 to n: c[0,j] = 0\n' +
+            '  for i from 1 to m:\n' +
+            '    for j from 1 to n:\n' +
+            '      if X[i] == Y[j]:\n' +
+            '        c[i,j] = c[i-1,j-1] + 1\n' +
+            '      else if c[i-1,j] >= c[i,j-1]:\n' +
+            '        c[i,j] = c[i-1,j]\n' +
+            '      else:\n' +
+            '        c[i,j] = c[i,j-1]\n' +
+            '  return c[m,n]\n',
+            language: 'pseudocode',
+          ),
+          QuizBlock(
+            question: 'What does the recurrence do when the last characters x_i and y_j match?',
+            options: [
+              'Skip the last character of X',
+              'Skip the last character of Y',
+              'Add 1 to the LCS length of the prefixes',
+              'Reset the LCS length to 0',
+            ],
+            correctIndex: 2,
+            explanation: 'When x_i equals y_j, the character belongs to the LCS. We take the LCS of the prefixes (c[i-1, j-1]) and add 1 for the matching character.',
+          ),
+          TextBlock(
+            'To reconstruct the actual subsequence string, start at c[m, n] and follow the arrows backwards. Whenever you follow a diagonal arrow, the character x_i equals y_j and belongs to the LCS. Record it, then reverse at the end.',
+          ),
+          QuizBlock(
+            question: 'What is the time complexity to build the LCS table?',
+            options: [
+              'quadratic in the product of the two sequence lengths',
+              'linear in the sum of the two sequence lengths',
+              'cubic in the length of the longer sequence',
+              'logarithmic in the length of the shorter sequence',
+            ],
+            correctIndex: 0,
+            explanation: 'The algorithm fills an m by n table, computing each cell in constant time. This gives quadratic time in the product of the two sequence lengths.',
+          ),
+          TextBlock(
+            'The table itself requires quadratic space. However, if we only need the length of the LCS and not the actual string, we can reduce space to linear by keeping only the last two rows at any time.',
+          ),
+          VisualizerLinkBlock(
+            algorithmId: 'lcs',
+            label: 'See the LCS table fill in action',
+            description: 'Watch how the table is filled row by row and how the backtrace reconstructs the subsequence.',
+          ),
+          KeyTakeawayBlock(
+            'The LCS dynamic program fills an m by n table in quadratic time. The recurrence captures three cases: empty prefix, matching characters, and mismatched characters. The backtrace reconstructs the subsequence by following diagonal arrows from the bottom-right corner.',
+          ),
+        ],
+      ),
     ],
   ),
 

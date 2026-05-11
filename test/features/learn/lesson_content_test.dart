@@ -2249,8 +2249,8 @@ void main() {
       return prose;
     }
 
-    test('has 3 modules', () {
-      expect(lesson10.modules.length, 3);
+    test('has 4 modules', () {
+      expect(lesson10.modules.length, 4);
     });
 
     test('Module 1 introduces dynamic programming and the Fibonacci example', () {
@@ -2314,6 +2314,27 @@ void main() {
       expect(combined.toLowerCase(), contains('knapsack'));
       expect(combined.toLowerCase(), contains('pseudo-polynomial'));
       expect(combined.toLowerCase(), contains('subproblem'));
+    });
+
+    test('Module 4 covers Longest Common Subsequence', () {
+      final module = lesson10.modules[3];
+      expect(module.id, 'lesson10_module4');
+      expect(module.title, 'Longest Common Subsequence');
+      expect(module.order, 3);
+      expect(module.algorithmId, 'lcs');
+
+      final blocks = module.contentBlocks;
+      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(1));
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(1));
+      expect(blocks.whereType<CodeBlock>().length, 1);
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(2));
+      expect(blocks.whereType<VisualizerLinkBlock>().length, 1);
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = combinedText(blocks).join(' ');
+      expect(combined.toLowerCase(), contains('subsequence'));
+      expect(combined.toLowerCase(), contains('quadratic'));
+      expect(combined.toLowerCase(), contains('backtrace'));
     });
 
     test('Lesson 10 visible prose keeps formulas out of prose blocks', () {
