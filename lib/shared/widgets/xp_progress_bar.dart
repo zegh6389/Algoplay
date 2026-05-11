@@ -50,6 +50,7 @@ class XpProgressBar extends StatelessWidget {
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 // Progress track
                 ClipRRect(
