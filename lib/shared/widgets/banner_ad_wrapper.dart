@@ -93,10 +93,13 @@ class _BannerAdWrapperState extends State<BannerAdWrapper> {
     return Column(
       children: [
         Expanded(child: widget.child),
-        SizedBox(
-          width: _bannerAd!.size.width.toDouble(),
-          height: _bannerAd!.size.height.toDouble(),
-          child: AdWidget(ad: _bannerAd!),
+        SafeArea(
+          top: false,
+          child: SizedBox(
+            width: _bannerAd!.size.width.toDouble(),
+            height: _bannerAd!.size.height.toDouble(),
+            child: AdWidget(ad: _bannerAd!),
+          ),
         ),
       ],
     );

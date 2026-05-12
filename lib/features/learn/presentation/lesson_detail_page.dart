@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/inline_banner_ad.dart';
 import '../data/lesson_content.dart';
 import '../providers/lesson_providers.dart';
 
@@ -62,6 +63,16 @@ class LessonDetailPage extends ConsumerWidget {
                 children: [
                   // ── Segmented progress bar ────────────────────────────────
                   _SegmentedProgress(lesson: lesson),
+
+                  // ── Monetization: inline banner away from navigation rows ──
+                  const InlineBannerAd(
+                    margin: EdgeInsets.fromLTRB(
+                      AppSpacing.lg,
+                      0,
+                      AppSpacing.lg,
+                      AppSpacing.md,
+                    ),
+                  ),
 
                   // ── Module list ───────────────────────────────────────────
                   Expanded(

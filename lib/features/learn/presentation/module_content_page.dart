@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../features/stats/data/stats_repository.dart';
+import '../../../shared/widgets/inline_banner_ad.dart';
 import '../data/lesson_content.dart';
 import '../providers/lesson_providers.dart';
 
@@ -34,6 +35,23 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
   final Map<int, bool> _quizChecked = {};
 
   final ScrollController _scrollController = ScrollController();
+
+  static const int _inlineAdAfterBlockIndex = 2;
+
+  bool get _hasInlineLessonAd =>
+      _module.contentBlocks.length > _inlineAdAfterBlockIndex + 2;
+
+  int get _inlineAdListIndex => _inlineAdAfterBlockIndex + 1;
+
+  int get _listItemCount =>
+      _module.contentBlocks.length + 1 + (_hasInlineLessonAd ? 1 : 0);
+
+  int _contentIndexForListIndex(int listIndex) {
+    if (_hasInlineLessonAd && listIndex > _inlineAdListIndex) {
+      return listIndex - 1;
+    }
+    return listIndex;
+  }
 
   @override
   void initState() {
@@ -175,16 +193,23 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
                 horizontal: AppSpacing.lg,
                 vertical: AppSpacing.xl,
               ),
-              itemCount:
-                  _module.contentBlocks.length + 1, // +1 for bottom padding
+              itemCount: _listItemCount,
               itemBuilder: (context, index) {
-                if (index == _module.contentBlocks.length) {
+                if (_hasInlineLessonAd && index == _inlineAdListIndex) {
+                  return const InlineBannerAd();
+                }
+
+                final contentIndex = _contentIndexForListIndex(index);
+                if (contentIndex == _module.contentBlocks.length) {
                   // Bottom spacer so last item isn't hidden behind button.
                   return const SizedBox(height: 80);
                 }
                 return Padding(
                   padding: const EdgeInsets.only(bottom: AppSpacing.lg),
-                  child: _buildBlock(_module.contentBlocks[index], index),
+                  child: _buildBlock(
+                    _module.contentBlocks[contentIndex],
+                    contentIndex,
+                  ),
                 );
               },
             ),

@@ -73,6 +73,13 @@ class AdService {
   ///
   /// Returns `null` for premium users or on load failure.
   Future<BannerAd?> getBannerAd() async {
+    if (!_isInitialized) {
+      if (kDebugMode) {
+        debugPrint('[AdService] banner skipped — MobileAds not initialized');
+      }
+      return null;
+    }
+
     if (PremiumService.instance.isPremium) {
       if (kDebugMode) {
         debugPrint('[AdService] banner skipped — premium user');
@@ -183,7 +190,9 @@ class AdService {
     _rewardedAd!.show(
       onUserEarnedReward: (ad, reward) {
         if (kDebugMode) {
-          debugPrint('[AdService] user earned reward: ${reward.amount} ${reward.type}');
+          debugPrint(
+            '[AdService] user earned reward: ${reward.amount} ${reward.type}',
+          );
         }
         onReward();
       },
