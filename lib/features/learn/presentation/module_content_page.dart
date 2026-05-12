@@ -4,6 +4,8 @@ import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/services/ad_service.dart';
+import '../../../core/services/lesson_completion_ad_gate.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../features/stats/data/stats_repository.dart';
 import '../../../shared/widgets/inline_banner_ad.dart';
@@ -58,6 +60,7 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
     super.initState();
     _loadModule();
     _restoreScrollPosition();
+    AdService.instance.loadInterstitialAd();
   }
 
   void _loadModule() {
@@ -134,9 +137,12 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
     ref.invalidate(currentModuleProvider(widget.lessonId));
     ref.invalidate(lessonUnlockedProvider(widget.lessonId + 1));
 
+    final shouldShowInterstitial = await LessonCompletionAdGate.instance
+        .recordModuleCompletionAndShouldShow();
+
     if (!mounted) return;
 
-    // Try to navigate to next module.
+    // Try to navigate to next module after the natural completion transition.
     final lesson = _allLessons.firstWhere(
       (l) => l.id == widget.lessonId,
       orElse: () => _allLessons.first,
@@ -145,6 +151,23 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
       (m) => m.id == widget.moduleId,
     );
 
+    if (shouldShowInterstitial && AdService.instance.hasCachedInterstitialAd) {
+      await LessonCompletionAdGate.instance.markInterstitialShown();
+      if (!mounted) return;
+      AdService.instance.showInterstitialAd(
+        onDismissed: () {
+          if (!mounted) return;
+          _navigateAfterModuleCompletion(lesson, currentIndex);
+        },
+      );
+      return;
+    }
+
+    AdService.instance.loadInterstitialAd();
+    _navigateAfterModuleCompletion(lesson, currentIndex);
+  }
+
+  void _navigateAfterModuleCompletion(LessonContent lesson, int currentIndex) {
     if (currentIndex >= 0 && currentIndex < lesson.modules.length - 1) {
       final nextModule = lesson.modules[currentIndex + 1];
       // Replace current route with next module.

@@ -63,12 +63,31 @@ void main() {
       );
     });
 
+    test('lesson completion uses frequency-capped interstitial transition', () {
+      final moduleContent = File(
+        'lib/features/learn/presentation/module_content_page.dart',
+      ).readAsStringSync();
+
+      expect(
+        moduleContent,
+        contains('AdService.instance.loadInterstitialAd();'),
+      );
+      expect(moduleContent, contains('recordModuleCompletionAndShouldShow'));
+      expect(moduleContent, contains('hasCachedInterstitialAd'));
+      expect(moduleContent, contains('markInterstitialShown'));
+      expect(moduleContent, contains('onDismissed: ()'));
+      expect(moduleContent, contains('_navigateAfterModuleCompletion'));
+    });
+
     test('ad widgets are premium-aware and test-safe', () {
       final inlineAd = File(
         'lib/shared/widgets/inline_banner_ad.dart',
       ).readAsStringSync();
       final adService = File(
         'lib/core/services/ad_service.dart',
+      ).readAsStringSync();
+      final adGate = File(
+        'lib/core/services/lesson_completion_ad_gate.dart',
       ).readAsStringSync();
       final bannerWrapper = File(
         'lib/shared/widgets/banner_ad_wrapper.dart',
@@ -77,6 +96,13 @@ void main() {
       expect(inlineAd, contains('ref.watch(adFreeProvider)'));
       expect(inlineAd, contains('AdService.instance.getBannerAd()'));
       expect(adService, contains('banner skipped — MobileAds not initialized'));
+      expect(adService, contains('bool get hasCachedInterstitialAd'));
+      expect(
+        adService,
+        contains('bool showInterstitialAd({VoidCallback? onDismissed})'),
+      );
+      expect(adGate, contains('completionsBetweenInterstitials = 3'));
+      expect(adGate, contains('minInterstitialGap = Duration(minutes: 3)'));
       expect(bannerWrapper, contains('SafeArea('));
       expect(bannerWrapper, contains('top: false'));
     });

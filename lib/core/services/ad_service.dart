@@ -47,6 +47,8 @@ class AdService {
   RewardedAd? _rewardedAd;
   bool _isInitialized = false;
 
+  bool get hasCachedInterstitialAd => _interstitialAd != null;
+
   // ── Initialization ───────────────────────────────────────────────────────
 
   /// Initializes the Mobile Ads SDK.  Call once during app startup.
@@ -205,6 +207,15 @@ class AdService {
 
   /// Pre-loads an interstitial ad.  No-op for premium users.
   void loadInterstitialAd() {
+    if (!_isInitialized) {
+      if (kDebugMode) {
+        debugPrint(
+          '[AdService] interstitial load skipped — MobileAds not initialized',
+        );
+      }
+      return;
+    }
+
     if (PremiumService.instance.isPremium) {
       if (kDebugMode) {
         debugPrint('[AdService] interstitial load skipped — premium user');
@@ -232,44 +243,61 @@ class AdService {
     );
   }
 
-  /// Shows the pre-loaded interstitial ad.  No-op for premium users or when
-  /// no ad is cached.
-  void showInterstitialAd() {
+  /// Shows the pre-loaded interstitial ad. Returns whether an ad was shown.
+  ///
+  /// [onDismissed] runs after the ad closes, or immediately when there is no ad
+  /// to show. This lets transition screens continue safely.
+  bool showInterstitialAd({VoidCallback? onDismissed}) {
+    void continueFlow() => onDismissed?.call();
+
+    if (!_isInitialized) {
+      if (kDebugMode) {
+        debugPrint('[AdService] interstitial show skipped — not initialized');
+      }
+      continueFlow();
+      return false;
+    }
+
     if (PremiumService.instance.isPremium) {
       if (kDebugMode) {
         debugPrint('[AdService] interstitial show skipped — premium user');
       }
-      return;
+      continueFlow();
+      return false;
     }
 
-    if (_interstitialAd == null) {
+    final ad = _interstitialAd;
+    if (ad == null) {
       if (kDebugMode) {
         debugPrint('[AdService] no interstitial ad cached — loading now');
       }
       loadInterstitialAd();
-      return;
+      continueFlow();
+      return false;
     }
 
-    _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+    _interstitialAd = null;
+    ad.fullScreenContentCallback = FullScreenContentCallback(
       onAdDismissedFullScreenContent: (ad) {
         if (kDebugMode) {
           debugPrint('[AdService] interstitial ad dismissed');
         }
         ad.dispose();
-        _interstitialAd = null;
         loadInterstitialAd(); // pre-load next
+        continueFlow();
       },
       onAdFailedToShowFullScreenContent: (ad, error) {
         if (kDebugMode) {
           debugPrint('[AdService] interstitial show error: $error');
         }
         ad.dispose();
-        _interstitialAd = null;
         loadInterstitialAd();
+        continueFlow();
       },
     );
 
-    _interstitialAd!.show();
+    ad.show();
+    return true;
   }
 
   // ── Cleanup ──────────────────────────────────────────────────────────────
