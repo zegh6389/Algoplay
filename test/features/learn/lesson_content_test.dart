@@ -2249,8 +2249,8 @@ void main() {
       return prose;
     }
 
-    test('has 5 modules', () {
-      expect(lesson10.modules.length, 5);
+    test('has 6 modules', () {
+      expect(lesson10.modules.length, 6);
     });
 
     test('Module 1 introduces dynamic programming and the Fibonacci example', () {
@@ -2354,6 +2354,22 @@ void main() {
       expect(combined.toLowerCase(), contains('probability'));
       expect(combined.toLowerCase(), contains('base case'));
       expect(combined.toLowerCase(), contains('quadratic'));
+    });
+
+    test('Module 6 is the Lesson 10 conclusion', () {
+      final module = lesson10.modules[5];
+      expect(module.id, 'lesson10_module6');
+      expect(module.title, 'Conclusion');
+      expect(module.order, 5);
+
+      final blocks = module.contentBlocks;
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = combinedText(blocks);
+      expect(combined.toLowerCase(), contains('dynamic programming'));
+      expect(combined.toLowerCase(), contains('greedy'));
+      expect(combined.toLowerCase(), contains('overlapping subproblems'));
     });
 
     test('Lesson 10 visible prose keeps formulas out of prose blocks', () {

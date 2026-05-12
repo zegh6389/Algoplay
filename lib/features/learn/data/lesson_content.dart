@@ -6281,6 +6281,59 @@ ModuleContent(
           ),
         ],
       ),
+
+ModuleContent(
+        id: 'lesson10_module6',
+        title: 'Conclusion',
+        order: 5,
+        contentBlocks: [
+          TextBlock(
+            'In Lesson 10 we explored dynamic programming. This technique builds on recursion but avoids the inefficiencies of naive recursive calls by computing each subproblem once and storing results in a table. The key trade-off is that the table maintenance and storage must remain efficient, otherwise the benefit is lost.',
+          ),
+          TextBlock(
+            'We saw three instances of this pattern. The knapsack problem fills an n by W table to decide which items to include. The longest common subsequence problem fills an m by n table to find matching character sequences. The World Series problem fills a 2D table of probabilities using the outcomes of future games.',
+          ),
+          QuizBlock(
+            question: 'What distinguishes dynamic programming from a naive recursive approach?',
+            options: [
+              'DP always uses more memory but runs faster by avoiding repeated subproblems',
+              'DP splits the problem into independent subproblems before solving them',
+              'DP requires the problem to have a greedy-choice property',
+              'DP only works on problems where the recurrence base case is zero',
+            ],
+            correctIndex: 0,
+            explanation: 'DP avoids recomputing the same subproblems by storing their results in a table. This trades memory for time, turning exponential recursive algorithms into polynomial ones.',
+          ),
+          QuizBlock(
+            question: 'Why might table storage become a bottleneck in dynamic programming?',
+            options: [
+              'Because the table must be rebuilt for each subproblem',
+              'Because some DP tables grow quadratically in the input size',
+              'Because tables can only hold integer values',
+              'Because table access is slower than function calls in most languages',
+            ],
+            correctIndex: 1,
+            explanation: 'The knapsack table is n by W, which can be large when W is a large numeric value rather than a function of n. This is called pseudo-polynomial time.',
+          ),
+          TextBlock(
+            'Dynamic programming is one of two algorithm design techniques that grow naturally from recursive thinking. In Lesson 11 we look at the other: greedy algorithms, which make locally optimal choices at each step hoping to reach a globally optimal solution.',
+          ),
+          QuizBlock(
+            question: 'What is the main difference between dynamic programming and greedy algorithms?',
+            options: [
+              'Greedy algorithms use more memory than dynamic programming',
+              'Greedy algorithms make decisions without solving subproblems first',
+              'Dynamic programming always produces exact answers while greedy does not',
+              'Dynamic programming is only applicable to optimization problems',
+            ],
+            correctIndex: 1,
+            explanation: 'Greedy algorithms commit to a choice at each step based on what looks best right now, without solving subproblems first. DP explores all possibilities before committing. The greedy approach can fail when local optimality does not guarantee global optimality.',
+          ),
+          KeyTakeawayBlock(
+            'Dynamic programming solves overlapping subproblems once in a table, giving polynomial time for problems that are exponential by naive recursion. In Lesson 11 we shift from the table-building of DP to the single-pass decision-making of greedy algorithms.',
+          ),
+        ],
+      ),
     ],
   ),
 
