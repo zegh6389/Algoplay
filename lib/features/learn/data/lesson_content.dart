@@ -6218,6 +6218,69 @@ ModuleContent(
           ),
         ],
       ),
+
+ModuleContent(
+        id: 'lesson10_module5',
+        title: 'World Series Odds',
+        order: 4,
+        contentBlocks: [
+          TextBlock(
+            'Suppose two teams, A and B, play a series. The first team to win n games takes the series. Each team wins any single game with probability p equals 0.5. We want to calculate P(i, j): the probability that team A eventually wins the series, given that A still needs i wins and B still needs j wins.',
+          ),
+          DefinitionBlock(
+            term: 'P(i, j)',
+            definition: 'The probability that team A wins the series when A needs i more victories and B needs j more victories to clinch the title.',
+          ),
+          MathBlock(
+            r"P(i,j) = \frac{1}{2} \cdot P(i-1,j) + \frac{1}{2} \cdot P(i,j-1)",
+            semanticsLabel: 'World Series recurrence',
+          ),
+          TextBlock(
+            'The base cases are straightforward. When i equals 0, A has already won the series so P(0, j) = 1. When j equals 0, B has already won so P(i, 0) = 0. For the general case, the next game goes to A with probability one-half or to B with probability one-half, leading to the recurrence above.',
+          ),
+          TextBlock(
+            'A naive recursive implementation repeats the same subproblems over and over, giving exponential running time roughly proportional to 2 to the power of (i plus j). The dynamic programming solution fills a 2D table instead, computing each entry once and reusing previously computed values.',
+          ),
+          CodeBlock(
+            'odds(i, j):\n' +
+            '  for s from 1 to i + j:\n' +
+            '    P[0, s] = 1.0\n' +
+            '    P[s, 0] = 0.0\n' +
+            '    for k from 1 to s - 1:\n' +
+            '      P[k, s-k] = (P[k-1, s-k] + P[k, s-k-1]) / 2.0\n' +
+            '  return P[i, j]\n',
+            language: 'pseudocode',
+          ),
+          QuizBlock(
+            question: 'What is the time complexity of filling the World Series DP table?',
+            options: [
+              'quadratic in the series length parameter',
+              'exponential in the series length parameter',
+              'linear in the series length parameter',
+              'constant regardless of series length',
+            ],
+            correctIndex: 0,
+            explanation: 'The two nested loops each iterate up to i plus j times, giving Theta((i plus j) squared) which is O(n squared) for series length n.',
+          ),
+          TextBlock(
+            'The polynomial efficiency of the DP approach is a massive improvement over the exponential cost of naive recursion. This is a recurring theme in dynamic programming: identify overlapping subproblems, build a table, and turn an intractable problem into a polynomial-time one.',
+          ),
+          QuizBlock(
+            question: 'Why are base cases set to P(0, j) = 1 and P(i, 0) = 0?',
+            options: [
+              'Because the series has not started yet',
+              'Because A or B has already clinched the series',
+              'Because the probability of winning any game is unknown',
+              'Because the games must be played in a specific order',
+            ],
+            correctIndex: 1,
+            explanation: 'When i equals 0, team A has already won all the games it needs, so the probability of A winning the series is 1. When j equals 0, team B has clinched, so A has no chance left.',
+          ),
+          KeyTakeawayBlock(
+            'The World Series DP fills an i by j table in quadratic time. Base cases capture when one team has already clinched. The recurrence averages the two possible outcomes of the next game, trading exponential naive recursion for polynomial DP.',
+          ),
+        ],
+      ),
     ],
   ),
 
