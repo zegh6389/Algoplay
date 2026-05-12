@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';
-import '../data/avatar_repository.dart';
+import '../../data/avatar_repository.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 /// Avatar display widget.
@@ -111,7 +111,7 @@ class AvatarPickerDialog extends StatelessWidget {
         child: Wrap(
           spacing: 12,
           runSpacing: 12,
-          alignment: WrapAlignment.Center,
+          alignment: WrapAlignment.center,
           children: [
             // Initial option
             _AvatarOption(
