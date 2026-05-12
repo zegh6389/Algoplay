@@ -8,6 +8,8 @@ import '../../../shared/providers/app_providers.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../../shared/widgets/xp_progress_bar.dart';
 import '../../../shared/models/user_progress.dart';
+import '../data/avatar_repository.dart';
+import 'widgets/avatar_widget.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 /// SharedPreferences keys used by ProfilePage.
@@ -38,6 +40,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   // ── Profile fields ────────────────────────────────────────────────────────
   String _username = 'Student';
   String _avatarInitial = 'S';
+  AvatarType _avatarType = AvatarType.initial;
+  String? _avatarKey;
+  late AvatarRepository _avatarRepo;
 
   // ── Settings toggles ──────────────────────────────────────────────────────
   bool _notificationsEnabled = true;
@@ -57,11 +62,15 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
   Future<void> _loadFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
+    _avatarRepo = AvatarRepository(prefs);
     if (!mounted) return;
     setState(() {
       _username = prefs.getString(ProfilePrefs.username) ?? 'Student';
-      _avatarInitial = prefs.getString(ProfilePrefs.avatarInitial) ??
-          (_username.isNotEmpty ? _username[0].toUpperCase() : 'S');
+      _avatarInitial = _avatarRepo.extractInitial(_username);
+      _avatarType = prefs.getString('algoplay_avatar_type') == 'image'
+          ? AvatarType.image
+          : AvatarType.initial;
+      _avatarKey = prefs.getString('algoplay_avatar_key');
       _notificationsEnabled = prefs.getBool(ProfilePrefs.notifications) ?? true;
       _soundEnabled = prefs.getBool(ProfilePrefs.sound) ?? true;
       _hapticEnabled = prefs.getBool(ProfilePrefs.haptic) ?? false;
@@ -72,8 +81,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   // ── Persist helpers ───────────────────────────────────────────────────────
 
   Future<void> _saveUsername(String value) async {
+    final initial = _avatarRepo.extractInitial(value);
     final prefs = await SharedPreferences.getInstance();
-    final initial = value.isNotEmpty ? value[0].toUpperCase() : 'S';
     await prefs.setString(ProfilePrefs.username, value);
     await prefs.setString(ProfilePrefs.avatarInitial, initial);
     if (!mounted) return;
@@ -189,21 +198,14 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   Widget _buildProfileHeader() {
     return Column(
       children: [
-        // Avatar circle
-        Container(
-          width: 80,
-          height: 80,
-          decoration: BoxDecoration(
-            color: AppColors.primary100,
-            shape: BoxShape.circle,
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            _avatarInitial,
-            style: AppTypography.h1.copyWith(
-              color: AppColors.primary500,
-              fontSize: 36,
-            ),
+        // Avatar circle — tappable to change
+        GestureDetector(
+          onTap: () => _showAvatarPicker(),
+          child: AvatarWidget(
+            initial: _avatarInitial,
+            avatarType: _avatarType,
+            avatarKey: _avatarKey,
+            size: 80,
           ),
         ),
         const SizedBox(height: AppSpacing.md),
@@ -358,6 +360,31 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         ],
       ),
     );
+  }
+
+  // ── Avatar Picker ─────────────────────────────────────────────────────────
+
+  Future<void> _showAvatarPicker() async {
+    final result = await AvatarPickerDialog.show(
+      context,
+      initial: _avatarInitial,
+      type: _avatarType,
+      avatarKey: _avatarKey,
+    );
+    if (result == null) return;
+
+    final (type, key) = result;
+    if (type == AvatarType.image && key != null) {
+      await _avatarRepo.selectAvatar(key);
+    } else {
+      await _avatarRepo.selectInitial();
+    }
+
+    if (!mounted) return;
+    setState(() {
+      _avatarType = type;
+      _avatarKey = key;
+    });
   }
 
   // ── Edit Profile Dialog ───────────────────────────────────────────────────
