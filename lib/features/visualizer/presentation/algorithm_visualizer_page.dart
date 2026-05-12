@@ -53,6 +53,11 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
   // Sample data for the algorithm
   late List<int> _sampleArray;
 
+  /// Stable bar IDs that track bar identities through swaps.
+  /// Parallel to the initial array — each element gets a unique ID.
+  List<int> _barUids = [];
+  bool _barUidsInitialized = false;
+
   @override
   void initState() {
     super.initState();
@@ -325,6 +330,7 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
     setState(() {
       _isPlaying = false;
       _currentStepIndex = 0;
+      _barUidsInitialized = false;
     });
   }
 
@@ -737,7 +743,24 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
     final array = step.array;
     final maxValue = array.isEmpty ? 1.0 : array.reduce((a, b) => a > b ? a : b).toDouble();
 
-    // Convert SortStep to SortBarData list
+    // Initialize bar UIDs on first call (maps to initial array positions)
+    if (!_barUidsInitialized || _barUids.length != array.length) {
+      _barUids = List.generate(array.length, (i) => i);
+      _barUidsInitialized = true;
+    }
+
+    // Track swaps: compare current step swapping indices to update uid positions
+    if (step.swapping.length == 2) {
+      final a = step.swapping[0];
+      final b = step.swapping[1];
+      if (a < _barUids.length && b < _barUids.length) {
+        final tmp = _barUids[a];
+        _barUids[a] = _barUids[b];
+        _barUids[b] = tmp;
+      }
+    }
+
+    // Build bar data with stable UIDs
     final bars = List.generate(array.length, (i) {
       String state = 'default';
       if (step.sorted.contains(i)) {
@@ -749,7 +772,7 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
       } else if (step.comparing.contains(i)) {
         state = 'comparing';
       }
-      return SortBarData(value: array[i], state: state);
+      return SortBarData(value: array[i], state: state, uid: _barUids[i]);
     });
 
     return AnimatedSortBar(

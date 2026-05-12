@@ -5,36 +5,39 @@ import '../../../core/theme/app_theme.dart';
 class SortBarData {
   final int value;
   final String state;
+  /// Stable unique ID for tracking bar identity across swaps.
+  final int uid;
 
-  const SortBarData({required this.value, this.state = 'default'});
+  const SortBarData({required this.value, this.state = 'default', this.uid = 0});
 
-  SortBarData copyWith({int? value, String? state}) {
+  SortBarData copyWith({int? value, String? state, int? uid}) {
     return SortBarData(
       value: value ?? this.value,
       state: state ?? this.state,
+      uid: uid ?? this.uid,
     );
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SortBarData && value == other.value && state == other.state;
+      other is SortBarData && value == other.value && state == other.state && uid == other.uid;
 
   @override
-  int get hashCode => Object.hash(value, state);
+  int get hashCode => Object.hash(value, state, uid);
 }
 
 /// Public state palette for sorting bars.
 class SortBarStatePalette {
   SortBarStatePalette._();
 
-  static const Color defaultColor = Color(0xFF2563EB); // vivid blue
-  static const Color comparingColor = Color(0xFFD97706); // amber/orange
-  static const Color swappingColor = Color(0xFFE11D48); // rose/magenta
-  static const Color sortedColor = Color(0xFF059669); // emerald green
-  static const Color pivotColor = Color(0xFF7C3AED); // violet
-  static const Color foundColor = Color(0xFF047857); // deep green
-  static const Color eliminatedColor = Color(0x59999999); // gray 35%
+  static const Color defaultColor = Color(0xFF2563EB);
+  static const Color comparingColor = Color(0xFFD97706);
+  static const Color swappingColor = Color(0xFFE11D48);
+  static const Color sortedColor = Color(0xFF059669);
+  static const Color pivotColor = Color(0xFF7C3AED);
+  static const Color foundColor = Color(0xFF047857);
+  static const Color eliminatedColor = Color(0x59999999);
 
   static bool shouldShowValueLabel(double barWidth, double barHeight) {
     return barWidth >= 14;
@@ -85,23 +88,21 @@ class SortBarStatePalette {
   }
 }
 
-/// Animated sorting bar chart that physically slides bars during swaps.
+/// Animated sorting bar chart — bars physically slide horizontally during swaps.
 ///
-/// Instead of a CustomPaint that just redraws, this uses [AnimatedPositioned]
-/// via [Stack] so bars glide horizontally when their index changes (swap),
-/// and [AnimatedContainer] for smooth height transitions.
+/// Uses [AnimatedPositioned] inside a [Stack] with stable keys per bar (uid),
+/// so Flutter animates position changes when bars swap places.
 class AnimatedSortBar extends StatelessWidget {
   final List<SortBarData> bars;
   final double maxValue;
+  final int? highlightIndex;
 
   const AnimatedSortBar({
     super.key,
     required this.bars,
     required this.maxValue,
-    this.highlightIndex, // kept for API compat, not used in new visual
+    this.highlightIndex,
   });
-
-  final int? highlightIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +134,8 @@ class AnimatedSortBar extends StatelessWidget {
           children: [
             for (int i = 0; i < count; i++)
               _AnimatedBar(
-                key: ValueKey('bar_${bars[i].value}_$i'),
+                // KEY BY uid — stable identity across swaps
+                key: ValueKey(bars[i].uid),
                 index: i,
                 barWidth: barWidth,
                 gap: gap,
@@ -183,15 +185,15 @@ class _AnimatedBar extends StatelessWidget {
     final color = SortBarStatePalette.colorForState(barData.state);
     final blur = SortBarStatePalette.blurForState(barData.state);
 
-    // Determine animation duration: swap steps get a longer slide
+    // Swap steps get a longer, smoother slide
     final isSwapping = barData.state == 'swapping';
     final duration = isSwapping
-        ? const Duration(milliseconds: 300)
+        ? const Duration(milliseconds: 350)
         : const Duration(milliseconds: 150);
 
     return AnimatedPositioned(
       duration: duration,
-      curve: Curves.easeInOut,
+      curve: isSwapping ? Curves.easeInOutCubic : Curves.easeInOut,
       left: left,
       top: top,
       child: AnimatedContainer(
@@ -213,23 +215,20 @@ class _AnimatedBar extends StatelessWidget {
           ],
         ),
         child: SortBarStatePalette.shouldShowValueLabel(barWidth, barHeight)
-            ? _buildLabel(barHeight, color)
+            ? _buildLabel(barHeight)
             : null,
       ),
     );
   }
 
-  Widget _buildLabel(double barHeight, Color barColor) {
+  Widget _buildLabel(double barHeight) {
     final inside = barHeight >= 34;
     final labelColor = inside ? Colors.white : AppColors.textPrimary;
     final fontSize = SortBarStatePalette.valueLabelFontSize(barWidth);
 
     return Center(
       child: Padding(
-        padding: EdgeInsets.only(
-          top: inside ? 4 : 0,
-          bottom: inside ? 0 : 2,
-        ),
+        padding: EdgeInsets.only(top: inside ? 4 : 0, bottom: inside ? 0 : 2),
         child: Text(
           '${barData.value}',
           style: TextStyle(
@@ -246,7 +245,7 @@ class _AnimatedBar extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// Backward compat: SortBarLayout still exposed for tests
+// Backward compat: SortBarLayout for tests
 // ---------------------------------------------------------------------------
 
 class SortBarLayout {
