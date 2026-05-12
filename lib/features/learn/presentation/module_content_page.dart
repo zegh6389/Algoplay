@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../features/stats/data/stats_repository.dart';
 import '../data/lesson_content.dart';
 import '../providers/lesson_providers.dart';
 
@@ -99,6 +100,11 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
     final repo = ref.read(lessonProgressRepoProvider);
     await repo.markModuleComplete(widget.lessonId, widget.moduleId);
     await repo.setCurrentModule(widget.lessonId, widget.moduleId);
+
+    // Track activity in stats
+    final statsRepo = StatsRepository();
+    await statsRepo.recordActivity(5, 'lessons');
+    await statsRepo.incrementCompleted();
 
     ref.invalidate(
       moduleCompleteProvider((

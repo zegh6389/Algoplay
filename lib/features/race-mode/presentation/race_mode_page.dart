@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../algorithms/sorting/sorting_algorithms.dart';
+import '../../../../features/stats/data/stats_repository.dart';
 import '../../../../shared/providers/app_providers.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -254,6 +255,7 @@ class _RaceModePageState extends ConsumerState<RaceModePage> {
       _isGameOver = true;
     });
     ref.read(userProgressProvider.notifier).addXP(_score ~/ 10);
+    StatsRepository().recordActivity(3, 'race-mode');
   }
 
   void _exitGame() {

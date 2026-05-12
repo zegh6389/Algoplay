@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../algorithms/sorting/sorting_algorithms.dart';
+import '../../../../features/stats/data/stats_repository.dart';
 import '../../../../shared/providers/app_providers.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -341,6 +342,7 @@ class _TheSorterPageState extends ConsumerState<TheSorterPage> {
     // Update user progress
     if (won) {
       ref.read(userProgressProvider.notifier).addXP(5);
+      StatsRepository().recordActivity(2, 'sorter');
     }
     // Update game state high score
     ref.read(gameStateProvider.notifier).updateSorterBest(_score);

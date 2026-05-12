@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../features/learn/data/algorithm_data.dart';
+import '../../../../features/stats/data/stats_repository.dart';
 import '../../../../shared/providers/app_providers.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -71,6 +72,7 @@ class _TutorPageState extends ConsumerState<TutorPage> {
       _correctInCategory++;
       _sessionXP += 10;
       ref.read(userProgressProvider.notifier).addXP(10);
+      StatsRepository().recordActivity(2, 'tutor');
     }
   }
 
