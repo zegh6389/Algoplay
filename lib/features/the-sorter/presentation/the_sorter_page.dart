@@ -578,13 +578,19 @@ class _TheSorterPageState extends ConsumerState<TheSorterPage> {
   Widget _buildChoices() {
     return Container(
       color: AppColors.card,
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.xl,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const Text(
             'What should happen next?',
-            style: AppTypography.h3,
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textSecondary,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -594,23 +600,25 @@ class _TheSorterPageState extends ConsumerState<TheSorterPage> {
               crossAxisCount: 2,
               mainAxisSpacing: AppSpacing.md,
               crossAxisSpacing: AppSpacing.md,
-              childAspectRatio: 1.6,
+              childAspectRatio: 1.2,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               children: List.generate(_choices.length, (index) {
                 final choice = _choices[index];
-                final isSelected = index == _correctAnswerIndex;
+                final isCorrect = choice.isCorrect;
 
                 Color borderColor = AppColors.sunken;
                 Color bgColor = AppColors.canvas;
 
-                if (_showCorrectFeedback && isSelected) {
+                if (_showCorrectFeedback && isCorrect) {
                   borderColor = AppColors.success600;
                   bgColor = AppColors.success100;
-                } else if (_showWrongFeedback && isSelected) {
+                } else if (_showWrongFeedback && !isCorrect) {
                   borderColor = AppColors.error600;
                   bgColor = AppColors.error100;
                 }
+
+                final optionLabel = String.fromCharCode(65 + index); // A, B, C, D
 
                 return GestureDetector(
                   onTap: _isRoundActive ? () => _selectChoice(index) : null,
@@ -621,18 +629,51 @@ class _TheSorterPageState extends ConsumerState<TheSorterPage> {
                       borderRadius: AppRadius.mdBorder,
                       border: Border.all(color: borderColor, width: 2),
                     ),
-                    padding: const EdgeInsets.all(AppSpacing.md),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.sm,
+                    ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Mini preview array
+                        // Option label badge
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Container(
+                            width: 24,
+                            height: 24,
+                            decoration: BoxDecoration(
+                              color: borderColor.withValues(alpha: 0.15),
+                              shape: BoxShape.circle,
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              optionLabel,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: borderColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+
+                        // Mini preview array (all elements)
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: choice.previewArray.take(4).map((v) {
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: choice.previewArray.map((v) {
+                            final maxVal = choice.previewArray.reduce(
+                              (a, b) => a > b ? a : b,
+                            );
+                            final barH = maxVal > 0
+                                ? ((v / maxVal) * 28).clamp(4.0, 28.0)
+                                : 4.0;
                             return Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 1),
-                              width: 20,
-                              height: v / 3,
+                              margin: const EdgeInsets.symmetric(horizontal: 1.5),
+                              width: 16,
+                              height: barH,
                               decoration: BoxDecoration(
                                 color: AppColors.catSorting.withValues(alpha: 0.7),
                                 borderRadius: BorderRadius.circular(2),
@@ -640,13 +681,13 @@ class _TheSorterPageState extends ConsumerState<TheSorterPage> {
                             );
                           }).toList(),
                         ),
-                        if (choice.previewArray.length > 4)
-                          Text('...', style: AppTypography.caption),
                         const SizedBox(height: AppSpacing.sm),
+
+                        // Description text
                         Text(
                           choice.description,
                           style: const TextStyle(
-                            fontSize: 11,
+                            fontSize: 12,
                             fontWeight: FontWeight.w600,
                             color: AppColors.textPrimary,
                           ),
