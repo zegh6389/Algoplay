@@ -53,10 +53,37 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
   // Sample data for the algorithm
   late List<int> _sampleArray;
 
-  /// Stable bar IDs that track bar identities through swaps.
-  /// Parallel to the initial array — each element gets a unique ID.
-  List<int> _barUids = [];
-  bool _barUidsInitialized = false;
+  /// Precomputed UID maps: stepIndex → uid at each position.
+  /// Built once in _collectSteps so build() never mutates state.
+  List<List<int>> _stepUids = [];
+
+  /// Build a UID map for each step by replaying swaps from the initial state.
+  List<List<int>> _buildStepUidMaps(List<dynamic> steps) {
+    final maps = <List<int>>[];
+    if (steps.isEmpty) return maps;
+    final firstStep = steps[0];
+    if (firstStep is! SortStep) {
+      for (final _ in steps) {
+        maps.add([]);
+      }
+      return maps;
+    }
+    final n = firstStep.array.length;
+    var current = List<int>.generate(n, (i) => i);
+    for (final step in steps) {
+      if (step is SortStep && step.swapping.length == 2) {
+        final a = step.swapping[0];
+        final b = step.swapping[1];
+        if (a < current.length && b < current.length) {
+          final tmp = current[a];
+          current[a] = current[b];
+          current[b] = tmp;
+        }
+      }
+      maps.add(List<int>.from(current));
+    }
+    return maps;
+  }
 
   @override
   void initState() {
@@ -266,6 +293,7 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
       setState(() {
         _steps = collected;
         _currentStepIndex = 0;
+        _stepUids = _buildStepUidMaps(collected);
       });
     }
   }
@@ -330,7 +358,6 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
     setState(() {
       _isPlaying = false;
       _currentStepIndex = 0;
-      _barUidsInitialized = false;
     });
   }
 
@@ -743,22 +770,10 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
     final array = step.array;
     final maxValue = array.isEmpty ? 1.0 : array.reduce((a, b) => a > b ? a : b).toDouble();
 
-    // Initialize bar UIDs on first call (maps to initial array positions)
-    if (!_barUidsInitialized || _barUids.length != array.length) {
-      _barUids = List.generate(array.length, (i) => i);
-      _barUidsInitialized = true;
-    }
-
-    // Track swaps: compare current step swapping indices to update uid positions
-    if (step.swapping.length == 2) {
-      final a = step.swapping[0];
-      final b = step.swapping[1];
-      if (a < _barUids.length && b < _barUids.length) {
-        final tmp = _barUids[a];
-        _barUids[a] = _barUids[b];
-        _barUids[b] = tmp;
-      }
-    }
+    // Get precomputed UIDs for this step index (no mutation in build!)
+    final uids = _currentStepIndex < _stepUids.length
+        ? _stepUids[_currentStepIndex]
+        : List.generate(array.length, (i) => i);
 
     // Build bar data with stable UIDs
     final bars = List.generate(array.length, (i) {
@@ -772,7 +787,7 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
       } else if (step.comparing.contains(i)) {
         state = 'comparing';
       }
-      return SortBarData(value: array[i], state: state, uid: _barUids[i]);
+      return SortBarData(value: array[i], state: state, uid: i < uids.length ? uids[i] : i);
     });
 
     return AnimatedSortBar(
@@ -795,13 +810,13 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
     return LayoutBuilder(
       builder: (context, constraints) {
         final availableWidth = constraints.maxWidth;
-        final cellWidth = (availableWidth - (array.length - 1) * 4) / array.length;
+        final cellWidth = (availableWidth - array.length * 4) / array.length;
 
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Target badge
-            if (step.target != 0)
+            if (step.target != null)
               Container(
                 margin: const EdgeInsets.only(bottom: AppSpacing.md),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -930,12 +945,15 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
                 children: List.generate(array.length, (i) {
                   return SizedBox(
                     width: cellWidth.clamp(28.0, 60.0),
-                    child: Text(
-                      '[$i]',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 9,
-                        color: AppColors.textMuted.withValues(alpha: 0.6),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2),
+                      child: Text(
+                        '[$i]',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 9,
+                          color: AppColors.textMuted.withValues(alpha: 0.6),
+                        ),
                       ),
                     ),
                   );
@@ -1047,27 +1065,97 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
 
   Widget _buildTreeVisualization(TreeStep step) {
     final root = step.tree;
+    final hasArray = step.array.isNotEmpty;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const _MetricPill(label: 'Tree', value: 'BST'),
+            _MetricPill(label: 'Tree', value: _algorithmInfo?.id == 'avl-tree'
+                ? 'AVL'
+                : _algorithmInfo?.id == 'heap-sort-tree'
+                    ? 'Heap'
+                    : 'BST'),
             _MetricPill(label: 'Visited', value: '${step.visitedNodes.length}'),
             _MetricPill(label: 'Path', value: '${step.pathNodes.length}'),
           ],
         ),
         const SizedBox(height: AppSpacing.md),
         Expanded(
-          child: root == null
+          child: root == null && !hasArray
               ? const Center(child: Text('Tree is empty'))
-              : CustomPaint(
-                  painter: _TreePainter(step),
-                  child: const SizedBox.expand(),
-                ),
+              : root != null
+                  ? CustomPaint(
+                      painter: _TreePainter(step),
+                      child: const SizedBox.expand(),
+                    )
+                  : _buildHeapArrayVisualization(step),
         ),
       ],
+    );
+  }
+
+  /// Renders heap array with highlighted indices.
+  Widget _buildHeapArrayVisualization(TreeStep step) {
+    final arr = step.array;
+    final highlighted = step.highlightedIndices.toSet();
+    return Center(
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 8,
+        runSpacing: 8,
+        children: List.generate(arr.length, (i) {
+          final isHighlighted = highlighted.contains(i);
+          final color = isHighlighted
+              ? const Color(0xFFD97706)
+              : const Color(0xFF2563EB);
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 220),
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isHighlighted ? AppColors.textPrimary : Colors.white,
+                width: isHighlighted ? 2 : 1,
+              ),
+              boxShadow: isHighlighted
+                  ? [
+                      BoxShadow(
+                        color: color.withValues(alpha: 0.3),
+                        blurRadius: 12,
+                        spreadRadius: 2,
+                      ),
+                    ]
+                  : null,
+            ),
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '[$i]',
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.7),
+                    fontSize: 9,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  '${arr[i]}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
+      ),
     );
   }
 
@@ -1076,8 +1164,14 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
   Widget _buildDpVisualization(DPStep step) {
     final cells = step.array;
     final maxValue = cells.isEmpty ? 1 : cells.reduce((a, b) => a > b ? a : b).clamp(1, 9999);
-    final memoEntries = step.memo.entries.take(8).toList();
 
+    // Detect 2D table from memo keys (format: "row,col")
+    final is2D = step.memo.keys.isNotEmpty && step.memo.keys.first.contains(',');
+    if (is2D) {
+      return _buildDp2DTable(step);
+    }
+
+    // 1D table (fibonacci etc.)
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1091,12 +1185,10 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
           ],
         ),
         const SizedBox(height: AppSpacing.md),
-        Text(
-          widget.algorithmId == 'lcs' || widget.algorithmId == 'knapsack'
-              ? 'DP Table'
-              : 'DP Table',
+        const Text(
+          'DP Table',
           textAlign: TextAlign.center,
-          style: const TextStyle(
+          style: TextStyle(
             color: AppColors.textPrimary,
             fontSize: 16,
             fontWeight: FontWeight.w800,
@@ -1110,8 +1202,7 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
               spacing: 8,
               runSpacing: 8,
               children: List.generate(cells.length, (i) {
-                final isCurrent = i == step.currentIndex ||
-                    i == step.currentIndex % cells.length;
+                final isCurrent = i == step.currentIndex;
                 final isComparing = step.comparing.contains(i);
                 final isSorted = step.sorted.contains(i);
                 final intensity = (cells[i] / maxValue).clamp(0.08, 1.0).toDouble();
@@ -1122,69 +1213,145 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
                         : isSorted
                             ? const Color(0xFF16A34A)
                             : AppColors.primary500.withValues(alpha: 0.25 + intensity * 0.45);
-                return AnimatedContainer(
-                  duration: const Duration(milliseconds: 220),
-                  width: 54,
-                  height: 54,
-                  decoration: BoxDecoration(
-                    color: color,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: isCurrent ? AppColors.textPrimary : Colors.white,
-                      width: isCurrent ? 2 : 1,
-                    ),
-                    boxShadow: isCurrent
-                        ? [
-                            BoxShadow(
-                              color: color.withValues(alpha: 0.28),
-                              blurRadius: 14,
-                              spreadRadius: 2,
-                            ),
-                          ]
-                        : null,
-                  ),
-                  alignment: Alignment.center,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '$i',
-                        style: TextStyle(
-                          color: AppColors.textPrimary.withValues(alpha: 0.55),
-                          fontSize: 9,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      Text(
-                        '${cells[i]}',
-                        style: TextStyle(
-                          color: isCurrent || isComparing || isSorted
-                              ? AppColors.textInverse
-                              : AppColors.textPrimary,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
+                return _buildDpCell('$i', '${cells[i]}', color, isCurrent);
               }),
             ),
           ),
         ),
-        if (memoEntries.isNotEmpty) ...[
-          const SizedBox(height: AppSpacing.sm),
-          Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 6,
-            runSpacing: 6,
-            children: memoEntries.map((entry) {
-              return _MetricPill(label: '${entry.key}', value: '${entry.value}');
-            }).toList(),
-          ),
-        ],
       ],
     );
+  }
+
+  /// Render full 2D DP table from memo data (LCS, Knapsack).
+  Widget _buildDp2DTable(DPStep step) {
+    // Parse memo to build 2D grid
+    final rows = <int, Map<int, int>>{};
+    for (final entry in step.memo.entries) {
+      final parts = entry.key.split(',');
+      if (parts.length != 2) continue;
+      final r = int.tryParse(parts[0]) ?? 0;
+      final c = int.tryParse(parts[1]) ?? 0;
+      final v = entry.value is int ? entry.value as int : 0;
+      rows.putIfAbsent(r, () => {})[c] = v;
+    }
+    if (rows.isEmpty) return const SizedBox.shrink();
+
+    final maxRow = rows.keys.reduce((a, b) => a > b ? a : b);
+    final maxCol = rows.values.expand((m) => m.keys).reduce((a, b) => a > b ? a : b);
+    final rowCount = maxRow + 1;
+    final colCount = maxCol + 1;
+
+    // Find max value for intensity coloring
+    var tableMax = 1;
+    for (final rowMap in rows.values) {
+      for (final v in rowMap.values) {
+        if (v > tableMax) tableMax = v;
+      }
+    }
+
+    // Determine current cell from linear index (row-major)
+    final curRow = step.currentIndex ~/ colCount;
+    final curCol = step.currentIndex % colCount;
+
+    // Comparing cells: also convert from linear if needed
+    final comparingSet = <String>{};
+    for (final idx in step.comparing) {
+      comparingSet.add('${idx ~/ colCount},${idx % colCount}');
+    }
+
+    // Sorted rows
+    final sortedSet = step.sorted.toSet();
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final availW = constraints.maxWidth;
+        final availH = constraints.maxHeight - 40; // leave room for header
+        final cellW = (availW / colCount).clamp(28.0, 54.0);
+        final cellH = (availH / rowCount).clamp(28.0, 54.0);
+        final cellSize = cellW < cellH ? cellW : cellH;
+
+        return Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const _MetricPill(label: 'State', value: 'DP'),
+                _MetricPill(label: 'Table', value: '${rowCount}x$colCount'),
+                _MetricPill(label: 'Result', value: step.result?.toString() ?? '...'),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: List.generate(rowCount, (r) {
+                      return Row(
+                        children: List.generate(colCount, (c) {
+                          final val = rows[r]?[c] ?? 0;
+                          final isCurrent = r == curRow && c == curCol;
+                          final isComparing = comparingSet.contains('$r,$c');
+                          final isSortedRow = sortedSet.contains(r);
+                          final intensity = (val / tableMax).clamp(0.08, 1.0).toDouble();
+                          final color = isCurrent
+                              ? const Color(0xFFD97706)
+                              : isComparing
+                                  ? const Color(0xFF7C3AED)
+                                  : isSortedRow
+                                      ? const Color(0xFF16A34A)
+                                      : AppColors.primary500.withValues(alpha: 0.15 + intensity * 0.5);
+                          return _buildDpCell('$r,$c', '$val', color, isCurrent, size: cellSize);
+                        }),
+                      );
+                    }),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// Single DP cell widget.
+  Widget _buildDpCell(String label, String value, Color color, bool isCurrent, {double size = 54}) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 220),
+      width: size,
+      height: size,
+      margin: const EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: isCurrent ? AppColors.textPrimary : Colors.white.withValues(alpha: 0.15),
+          width: isCurrent ? 2 : 1,
+        ),
+        boxShadow: isCurrent
+            ? [
+                BoxShadow(
+                  color: color.withValues(alpha: 0.28),
+                  blurRadius: 10,
+                  spreadRadius: 2,
+                ),
+              ]
+            : null,
+      ),
+      alignment: Alignment.center,
+      child: FittedBox(
+        child: Text(
+          value,
+          style: TextStyle(
+            color: isCurrent ? AppColors.textInverse : AppColors.textPrimary,
+            fontSize: size > 36 ? 13 : 11,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+      ),
+    );
+  }
   }
 
   // ── Greedy visualization ───────────────────────────────────────────────

@@ -570,8 +570,8 @@ Stream<SortStep> _merge(List<int> arr, int left, int mid, int right) async* {
   while (i < leftArr.length && j < rightArr.length) {
     yield SortStep(
       array: List.from(arr),
-      comparing: [left + i, mid + 1 + j],
-      operation: 'Comparing ${leftArr[i]} and ${rightArr[j]}',
+      comparing: [k, left + i, mid + 1 + j],
+      operation: 'Comparing ${leftArr[i]} (pos ${left + i}) and ${rightArr[j]} (pos ${mid + 1 + j})',
       line: 14,
     );
 
@@ -640,8 +640,6 @@ Stream<SortStep> quickSort(List<int> initialArray) async* {
 
 Stream<SortStep> _quickSortHelper(List<int> arr, int low, int high) async* {
   if (low < high) {
-    final partitions = <int>[];
-
     yield SortStep(
       array: List.from(arr),
       comparing: [low, high],
@@ -702,8 +700,6 @@ Stream<SortStep> _quickSortHelper(List<int> arr, int low, int high) async* {
       arr[pivotIdx] = arr[high];
       arr[high] = temp;
     }
-
-    partitions.add(pivotIdx);
 
     yield SortStep(
       array: List.from(arr),

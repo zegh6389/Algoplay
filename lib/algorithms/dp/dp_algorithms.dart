@@ -150,7 +150,7 @@ Stream<DPStep> knapsackDp(List<int> weights, List<int> values, int capacity) asy
           array: dp[i],
           memo: {for (var pi = 0; pi <= n; pi++) for (var pj = 0; pj <= capacity; pj++) '$pi,$pj': dp[pi][pj]},
           currentIndex: i * (capacity + 1) + wgt,
-          operation: 'Item $i: include=$include vs exclude=$exclude → max=${i * (capacity + 1) + wgt}',
+          operation: 'Item $i: include=$include vs exclude=$exclude → max=${dp[i][wgt]}',
           line: 5,
           comparing: [wgt - w, wgt],
           swapping: include > exclude ? [wgt] : [],

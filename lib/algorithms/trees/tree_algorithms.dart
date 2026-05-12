@@ -404,9 +404,14 @@ Stream<TreeStep> avlInsert(TreeNode? root, int value) async* {
 
   final tree = root.clone();
   final visited = <String>[];
+  final path = <String>[];
+
+  // Track rotation steps for yielding
+  final rotationSteps = <(String, TreeNode)>[];
 
   TreeNode _insert(TreeNode node, int val) {
     visited.add(node.id);
+    path.add(node.id);
 
     if (val < node.value) {
       if (node.left == null) {
@@ -433,7 +438,6 @@ Stream<TreeStep> avlInsert(TreeNode? root, int value) async* {
         node.right = _insert(node.right!, val);
       }
     }
-    // Duplicates: do nothing
 
     return _rebalance(node);
   }
@@ -443,17 +447,29 @@ Stream<TreeStep> avlInsert(TreeNode? root, int value) async* {
     operation: 'Begin AVL insert $value',
     commentary: 'Inserting $value into AVL tree.',
     visitedNodes: List.from(visited),
+    pathNodes: List.from(path),
     line: 1,
   );
 
   final newTree = _insert(tree, value);
+
+  // Yield a step showing the visited traversal path
+  yield TreeStep(
+    tree: newTree.clone(),
+    operation: 'Traversed to find insertion point',
+    commentary: 'Visited ${visited.length} nodes to find where to insert $value.',
+    visitedNodes: List.from(visited),
+    pathNodes: List.from(path),
+    line: 2,
+  );
 
   yield TreeStep(
     tree: newTree.clone(),
     operation: 'Inserted $value, tree rebalanced',
     commentary: 'AVL tree rebalanced after insertion.',
     visitedNodes: List.from(visited),
-    line: 2,
+    pathNodes: List.from(path),
+    line: 3,
     isComplete: true,
   );
 }
