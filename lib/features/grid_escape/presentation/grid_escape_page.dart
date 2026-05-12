@@ -42,9 +42,9 @@ extension LevelConfigX on LevelConfig {
   }
 
   List<GridPos> get wallPositions => walls.map((w) {
-        final parts = w.split(',').map(int.parse).toList();
-        return GridPos(parts[0], parts[1]);
-      }).toList();
+    final parts = w.split(',').map(int.parse).toList();
+    return GridPos(parts[0], parts[1]);
+  }).toList();
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -233,8 +233,13 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
           onPressed: () => Navigator.of(context).maybePop(),
         ),
       ),
-      body: _gameComplete ? _buildGameComplete() : _buildLevelPlay(),
-      bottomNavigationBar: _levelComplete ? _buildNextLevelBar(context) : null,
+      body: SafeArea(
+        top: false,
+        child: _gameComplete ? _buildGameComplete() : _buildLevelPlay(),
+      ),
+      bottomNavigationBar: _levelComplete
+          ? SafeArea(top: false, child: _buildNextLevelBar(context))
+          : null,
     );
   }
 
@@ -281,7 +286,9 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
                   label: const Text('Hint -10'),
                   style: TextButton.styleFrom(
                     foregroundColor: AppColors.primary500,
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm,
+                    ),
                   ),
                 ),
             ],
@@ -318,11 +325,14 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
                         children: level.options.map((option) {
                           final isSelected = _selectedAnswer == option;
                           final showCorrect =
-                              _selectedAnswer != null && option == level.correctAnswer;
+                              _selectedAnswer != null &&
+                              option == level.correctAnswer;
                           final showWrong = isSelected && !_answerCorrect!;
 
                           return GestureDetector(
-                            onTap: _levelComplete ? null : () => _selectAnswer(option),
+                            onTap: _levelComplete
+                                ? null
+                                : () => _selectAnswer(option),
                             child: Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: AppSpacing.lg,
@@ -332,19 +342,19 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
                                 color: showCorrect
                                     ? AppColors.success100
                                     : showWrong
-                                        ? AppColors.error100
-                                        : isSelected
-                                            ? AppColors.primary50
-                                            : AppColors.sunken,
+                                    ? AppColors.error100
+                                    : isSelected
+                                    ? AppColors.primary50
+                                    : AppColors.sunken,
                                 borderRadius: AppRadius.mdBorder,
                                 border: Border.all(
                                   color: showCorrect
                                       ? AppColors.success600
                                       : showWrong
-                                          ? AppColors.error600
-                                          : isSelected
-                                              ? AppColors.primary500
-                                              : Colors.transparent,
+                                      ? AppColors.error600
+                                      : isSelected
+                                      ? AppColors.primary500
+                                      : Colors.transparent,
                                   width: 1.5,
                                 ),
                               ),
@@ -356,8 +366,8 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
                                   color: showCorrect
                                       ? AppColors.success600
                                       : showWrong
-                                          ? AppColors.error600
-                                          : AppColors.textPrimary,
+                                      ? AppColors.error600
+                                      : AppColors.textPrimary,
                                 ),
                               ),
                             ),
@@ -376,13 +386,19 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
                           ),
                           child: Row(
                             children: [
-                              const Icon(Icons.lightbulb,
-                                  color: AppColors.primary500, size: 18),
+                              const Icon(
+                                Icons.lightbulb,
+                                color: AppColors.primary500,
+                                size: 18,
+                              ),
                               const SizedBox(width: AppSpacing.sm),
                               Expanded(
-                                child: Text(level.hint,
-                                    style: AppTypography.caption
-                                        .copyWith(color: AppColors.primary700)),
+                                child: Text(
+                                  level.hint,
+                                  style: AppTypography.caption.copyWith(
+                                    color: AppColors.primary700,
+                                  ),
+                                ),
                               ),
                             ],
                           ),
@@ -420,14 +436,10 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
         style: FilledButton.styleFrom(
           backgroundColor: AppColors.solarGold,
           minimumSize: const Size.fromHeight(52),
-          shape: RoundedRectangleBorder(
-            borderRadius: AppRadius.mdBorder,
-          ),
+          shape: RoundedRectangleBorder(borderRadius: AppRadius.mdBorder),
         ),
         child: Text(
-          _currentLevel < _levels.length - 1
-              ? 'Next Level'
-              : 'See Results',
+          _currentLevel < _levels.length - 1 ? 'Next Level' : 'See Results',
         ),
       ),
     );
@@ -609,9 +621,7 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.primary500,
                 minimumSize: const Size.fromHeight(52),
-                shape: RoundedRectangleBorder(
-                  borderRadius: AppRadius.mdBorder,
-                ),
+                shape: RoundedRectangleBorder(borderRadius: AppRadius.mdBorder),
               ),
               child: const Text('Play Again'),
             ),
@@ -623,14 +633,14 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
               onPressed: () => Navigator.of(context).maybePop(),
               style: OutlinedButton.styleFrom(
                 minimumSize: const Size.fromHeight(48),
-                shape: RoundedRectangleBorder(
-                  borderRadius: AppRadius.mdBorder,
-                ),
+                shape: RoundedRectangleBorder(borderRadius: AppRadius.mdBorder),
               ),
               child: const Text('Back to Menu'),
             ),
           ),
-          SizedBox(height: MediaQuery.of(context).padding.bottom + AppSpacing.lg),
+          SizedBox(
+            height: MediaQuery.of(context).padding.bottom + AppSpacing.lg,
+          ),
         ],
       ),
     );

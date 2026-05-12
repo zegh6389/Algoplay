@@ -33,40 +33,42 @@ class StatsPage extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.card,
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.lg,
-          vertical: AppSpacing.xl,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // ── Header ──────────────────────────────────────────────────────
-            Text('Statistics', style: AppTypography.h1),
-            const SizedBox(height: AppSpacing.xl),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.xl,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ── Header ──────────────────────────────────────────────────────
+              Text('Statistics', style: AppTypography.h1),
+              const SizedBox(height: AppSpacing.xl),
 
-            // ── Overview 2×2 Grid ───────────────────────────────────────────
-            _buildOverviewGrid(statsAsync),
-            const SizedBox(height: AppSpacing.xxl),
+              // ── Overview 2×2 Grid ───────────────────────────────────────────
+              _buildOverviewGrid(statsAsync),
+              const SizedBox(height: AppSpacing.xxl),
 
-            // ── Category Progress ───────────────────────────────────────────
-            SectionHeader(title: 'Category Progress'),
-            const SizedBox(height: AppSpacing.md),
-            _buildCategoryProgress(statsAsync),
-            const SizedBox(height: AppSpacing.xxl),
+              // ── Category Progress ───────────────────────────────────────────
+              SectionHeader(title: 'Category Progress'),
+              const SizedBox(height: AppSpacing.md),
+              _buildCategoryProgress(statsAsync),
+              const SizedBox(height: AppSpacing.xxl),
 
-            // ── Weekly Activity ─────────────────────────────────────────────
-            SectionHeader(title: 'This Week'),
-            const SizedBox(height: AppSpacing.md),
-            _buildWeeklyActivity(statsAsync),
-            const SizedBox(height: AppSpacing.xxl),
+              // ── Weekly Activity ─────────────────────────────────────────────
+              SectionHeader(title: 'This Week'),
+              const SizedBox(height: AppSpacing.md),
+              _buildWeeklyActivity(statsAsync),
+              const SizedBox(height: AppSpacing.xxl),
 
-            // ── Recent Activity ─────────────────────────────────────────────
-            SectionHeader(title: 'Recent Activity'),
-            const SizedBox(height: AppSpacing.md),
-            _buildRecentActivity(statsAsync),
-            const SizedBox(height: AppSpacing.xl),
-          ],
+              // ── Recent Activity ─────────────────────────────────────────────
+              SectionHeader(title: 'Recent Activity'),
+              const SizedBox(height: AppSpacing.md),
+              _buildRecentActivity(statsAsync),
+              const SizedBox(height: AppSpacing.xl),
+            ],
+          ),
         ),
       ),
     );
@@ -122,12 +124,12 @@ class StatsPage extends ConsumerWidget {
 
     // Category metadata: label, color, and total available
     const categoryMeta = <String, _CategoryMeta>{
-      'Sorting':   _CategoryMeta(total: 12, color: AppColors.catSorting),
+      'Sorting': _CategoryMeta(total: 12, color: AppColors.catSorting),
       'Searching': _CategoryMeta(total: 10, color: AppColors.catSearching),
-      'Graphs':    _CategoryMeta(total: 10, color: AppColors.catGraphs),
-      'DP':        _CategoryMeta(total: 8,  color: AppColors.catDp),
-      'Greedy':    _CategoryMeta(total: 8,  color: AppColors.catGreedy),
-      'Trees':     _CategoryMeta(total: 6,  color: AppColors.catTrees),
+      'Graphs': _CategoryMeta(total: 10, color: AppColors.catGraphs),
+      'DP': _CategoryMeta(total: 8, color: AppColors.catDp),
+      'Greedy': _CategoryMeta(total: 8, color: AppColors.catGreedy),
+      'Trees': _CategoryMeta(total: 6, color: AppColors.catTrees),
     };
 
     final categories = <Map<String, dynamic>>[
@@ -149,8 +151,7 @@ class StatsPage extends ConsumerWidget {
             total: categories[i]['total'] as int,
             color: categories[i]['color'] as Color,
           ),
-          if (i < categories.length - 1)
-            const SizedBox(height: AppSpacing.md),
+          if (i < categories.length - 1) const SizedBox(height: AppSpacing.md),
         ],
       ],
     );
@@ -168,8 +169,9 @@ class StatsPage extends ConsumerWidget {
         : List<double>.filled(7, 0.0);
 
     const dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    final maxActivity =
-        activityData.reduce((a, b) => a > b ? a : b).clamp(1.0, double.infinity);
+    final maxActivity = activityData
+        .reduce((a, b) => a > b ? a : b)
+        .clamp(1.0, double.infinity);
     final todayIndex = repo.todayWeekdayIndex;
 
     return Container(
@@ -238,11 +240,11 @@ class StatsPage extends ConsumerWidget {
               icon: Icons.access_time,
               title: _formatDate(recentDays[i]),
               time: '${activityMap[recentDays[i]]!.round()} min',
-              xp: (activityMap[recentDays[i]]! * 5).round(), // estimate XP from minutes
+              xp: (activityMap[recentDays[i]]! * 5)
+                  .round(), // estimate XP from minutes
             ),
           ),
-          if (i < recentDays.length - 1)
-            const Divider(height: 1),
+          if (i < recentDays.length - 1) const Divider(height: 1),
         ],
       ],
     );
@@ -345,9 +347,7 @@ class _ActivityTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: AppSpacing.md,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
       child: Row(
         children: [
           // Icon

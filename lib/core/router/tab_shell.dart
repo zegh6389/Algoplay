@@ -51,9 +51,12 @@ class _TabShellWidgetState extends ConsumerState<TabShellWidget> {
         isPremium: isPremium,
         child: widget.navigationShell,
       ),
-      bottomNavigationBar: _AnimatedBottomNavBar(
-        currentIndex: widget.navigationShell.currentIndex,
-        onTap: _onTabTap,
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: _AnimatedBottomNavBar(
+          currentIndex: widget.navigationShell.currentIndex,
+          onTap: _onTabTap,
+        ),
       ),
     );
   }
@@ -157,23 +160,31 @@ class _SpringTabButtonState extends State<_SpringTabButton>
     // Spring-like bounce using a custom curve
     _scaleAnimation = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween(begin: 1.0, end: 1.3)
-            .chain(CurveTween(curve: Curves.easeOutCubic)),
+        tween: Tween(
+          begin: 1.0,
+          end: 1.3,
+        ).chain(CurveTween(curve: Curves.easeOutCubic)),
         weight: 30,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: 1.3, end: 0.9)
-            .chain(CurveTween(curve: Curves.easeInOut)),
+        tween: Tween(
+          begin: 1.3,
+          end: 0.9,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 25,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: 0.9, end: 1.05)
-            .chain(CurveTween(curve: Curves.easeOut)),
+        tween: Tween(
+          begin: 0.9,
+          end: 1.05,
+        ).chain(CurveTween(curve: Curves.easeOut)),
         weight: 25,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: 1.05, end: 1.0)
-            .chain(CurveTween(curve: Curves.easeOut)),
+        tween: Tween(
+          begin: 1.05,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.easeOut)),
         weight: 20,
       ),
     ]).animate(_controller);
@@ -181,18 +192,24 @@ class _SpringTabButtonState extends State<_SpringTabButton>
     // Vertical bounce (icon jumps up then settles)
     _bounceAnimation = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween(begin: 0.0, end: -8.0)
-            .chain(CurveTween(curve: Curves.easeOutCubic)),
+        tween: Tween(
+          begin: 0.0,
+          end: -8.0,
+        ).chain(CurveTween(curve: Curves.easeOutCubic)),
         weight: 35,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: -8.0, end: 2.0)
-            .chain(CurveTween(curve: Curves.easeInOut)),
+        tween: Tween(
+          begin: -8.0,
+          end: 2.0,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 30,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: 2.0, end: 0.0)
-            .chain(CurveTween(curve: Curves.easeOut)),
+        tween: Tween(
+          begin: 2.0,
+          end: 0.0,
+        ).chain(CurveTween(curve: Curves.easeOut)),
         weight: 35,
       ),
     ]).animate(_controller);
@@ -220,8 +237,7 @@ class _SpringTabButtonState extends State<_SpringTabButton>
 
   @override
   Widget build(BuildContext context) {
-    final color =
-        widget.isSelected ? widget.activeColor : widget.inactiveColor;
+    final color = widget.isSelected ? widget.activeColor : widget.inactiveColor;
 
     return Expanded(
       child: GestureDetector(
@@ -248,8 +264,9 @@ class _SpringTabButtonState extends State<_SpringTabButton>
                 duration: const Duration(milliseconds: 200),
                 style: TextStyle(
                   fontSize: widget.isSelected ? 12 : 11,
-                  fontWeight:
-                      widget.isSelected ? FontWeight.w600 : FontWeight.w500,
+                  fontWeight: widget.isSelected
+                      ? FontWeight.w600
+                      : FontWeight.w500,
                   color: color,
                 ),
                 child: Text(widget.label),

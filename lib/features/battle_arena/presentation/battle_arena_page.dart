@@ -45,7 +45,10 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
   @override
   void initState() {
     super.initState();
-    _questions = QuestionBank.generate(count: 5, seed: Random().nextInt(100000));
+    _questions = QuestionBank.generate(
+      count: 5,
+      seed: Random().nextInt(100000),
+    );
     _countdownController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 3),
@@ -63,7 +66,10 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
 
   void _startBattle() {
     setState(() {
-      _questions = QuestionBank.generate(count: 5, seed: Random().nextInt(100000));
+      _questions = QuestionBank.generate(
+        count: 5,
+        seed: Random().nextInt(100000),
+      );
       _state = BattleState.countdown;
       _playerScore = 0;
       _opponentScore = 0;
@@ -156,7 +162,7 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
           onPressed: () => Navigator.of(context).maybePop(),
         ),
       ),
-      body: _buildBody(),
+      body: SafeArea(top: false, child: _buildBody()),
     );
   }
 
@@ -212,9 +218,7 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.secondary500,
                 minimumSize: const Size.fromHeight(52),
-                shape: RoundedRectangleBorder(
-                  borderRadius: AppRadius.mdBorder,
-                ),
+                shape: RoundedRectangleBorder(borderRadius: AppRadius.mdBorder),
               ),
               child: const Text('Find Opponent'),
             ),
@@ -236,18 +240,22 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
       children: [
         Text('How to Play', style: AppTypography.h3),
         const SizedBox(height: AppSpacing.md),
-        ...rules.map((r) => Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-              child: Row(
-                children: [
-                  const Icon(Icons.check_circle, color: AppColors.success600, size: 18),
-                  const SizedBox(width: AppSpacing.sm),
-                  Expanded(
-                    child: Text(r, style: AppTypography.caption),
-                  ),
-                ],
-              ),
-            )),
+        ...rules.map(
+          (r) => Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.check_circle,
+                  color: AppColors.success600,
+                  size: 18,
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(child: Text(r, style: AppTypography.caption)),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -317,7 +325,9 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
                   vertical: AppSpacing.xs,
                 ),
                 decoration: BoxDecoration(
-                  color: _timeRemaining <= 5 ? AppColors.error600 : AppColors.sunken,
+                  color: _timeRemaining <= 5
+                      ? AppColors.error600
+                      : AppColors.sunken,
                   borderRadius: AppRadius.smBorder,
                 ),
                 child: Row(
@@ -364,16 +374,18 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
                 Text(question.question, style: AppTypography.h3),
                 const SizedBox(height: AppSpacing.lg),
                 // Options grid
-                ...question.options.map((option) => Padding(
-                      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                      child: _AnswerOption(
-                        text: option,
-                        isSelected: _selectedAnswer == option,
-                        isCorrect: option == question.correctAnswer,
-                        showResult: _selectedAnswer != null,
-                        onTap: () => _selectAnswer(option),
-                      ),
-                    )),
+                ...question.options.map(
+                  (option) => Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                    child: _AnswerOption(
+                      text: option,
+                      isSelected: _selectedAnswer == option,
+                      isCorrect: option == question.correctAnswer,
+                      showResult: _selectedAnswer != null,
+                      onTap: () => _selectAnswer(option),
+                    ),
+                  ),
+                ),
                 if (_selectedAnswer != null && !_answerCorrect!) ...[
                   const SizedBox(height: AppSpacing.md),
                   Container(
@@ -384,8 +396,11 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.lightbulb_outline,
-                            color: AppColors.primary500, size: 18),
+                        const Icon(
+                          Icons.lightbulb_outline,
+                          color: AppColors.primary500,
+                          size: 18,
+                        ),
                         const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(
@@ -421,8 +436,11 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.local_fire_department,
-                    color: AppColors.secondary500, size: 20),
+                const Icon(
+                  Icons.local_fire_department,
+                  color: AppColors.secondary500,
+                  size: 20,
+                ),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
                   '${_playerStreak} Streak! +${_playerStreak * 2} bonus',
@@ -494,7 +512,9 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
                 Text('Opponent', style: AppTypography.caption),
                 Text(
                   '$_opponentScore pts',
-                  style: AppTypography.h3.copyWith(color: AppColors.secondary500),
+                  style: AppTypography.h3.copyWith(
+                    color: AppColors.secondary500,
+                  ),
                 ),
               ],
             ),
@@ -538,9 +558,7 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            playerWon
-                ? 'You dominated the arena!'
-                : 'Better luck next time!',
+            playerWon ? 'You dominated the arena!' : 'Better luck next time!',
             style: AppTypography.body.copyWith(color: AppColors.textSecondary),
           ),
           const SizedBox(height: AppSpacing.xxl),
@@ -572,12 +590,16 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.local_fire_department,
-                                color: AppColors.secondary500, size: 16),
+                            const Icon(
+                              Icons.local_fire_department,
+                              color: AppColors.secondary500,
+                              size: 16,
+                            ),
                             Text(
                               ' $_playerStreak streak',
-                              style: AppTypography.caption
-                                  .copyWith(color: AppColors.secondary500),
+                              style: AppTypography.caption.copyWith(
+                                color: AppColors.secondary500,
+                              ),
                             ),
                           ],
                         ),
@@ -585,11 +607,7 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
                     ],
                   ),
                 ),
-                Container(
-                  width: 1,
-                  height: 80,
-                  color: AppColors.sunken,
-                ),
+                Container(width: 1, height: 80, color: AppColors.sunken),
                 Expanded(
                   child: Column(
                     children: [
@@ -617,9 +635,7 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.primary500,
                 minimumSize: const Size.fromHeight(52),
-                shape: RoundedRectangleBorder(
-                  borderRadius: AppRadius.mdBorder,
-                ),
+                shape: RoundedRectangleBorder(borderRadius: AppRadius.mdBorder),
               ),
               child: const Text('Play Again'),
             ),
@@ -631,14 +647,14 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
               onPressed: _resetBattle,
               style: OutlinedButton.styleFrom(
                 minimumSize: const Size.fromHeight(48),
-                shape: RoundedRectangleBorder(
-                  borderRadius: AppRadius.mdBorder,
-                ),
+                shape: RoundedRectangleBorder(borderRadius: AppRadius.mdBorder),
               ),
               child: const Text('Back to Menu'),
             ),
           ),
-          SizedBox(height: MediaQuery.of(context).padding.bottom + AppSpacing.lg),
+          SizedBox(
+            height: MediaQuery.of(context).padding.bottom + AppSpacing.lg,
+          ),
         ],
       ),
     );
@@ -716,7 +732,11 @@ class _AnswerOption extends StatelessWidget {
               ),
             ),
             if (showResult && isCorrect)
-              const Icon(Icons.check_circle, color: AppColors.success600, size: 20),
+              const Icon(
+                Icons.check_circle,
+                color: AppColors.success600,
+                size: 20,
+              ),
             if (showResult && isSelected && !isCorrect)
               const Icon(Icons.cancel, color: AppColors.error600, size: 20),
           ],

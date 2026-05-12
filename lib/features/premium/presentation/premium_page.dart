@@ -28,7 +28,9 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
         if (success) {
           _showSuccessDialog();
         } else {
-          _showErrorSnackBar('Purchase could not be completed. Please try again.');
+          _showErrorSnackBar(
+            'Purchase could not be completed. Please try again.',
+          );
         }
       }
     } catch (e) {
@@ -58,7 +60,11 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
                 borderRadius: AppRadius.mdBorder,
               ),
               alignment: Alignment.center,
-              child: const Icon(Icons.check, color: AppColors.success600, size: 22),
+              child: const Icon(
+                Icons.check,
+                color: AppColors.success600,
+                size: 22,
+              ),
             ),
             const SizedBox(width: AppSpacing.md),
             Text('Welcome, Premium!', style: AppTypography.h3),
@@ -99,42 +105,45 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
 
     return Scaffold(
       backgroundColor: AppColors.canvas,
-      body: CustomScrollView(
-        slivers: [
-          // ── App Bar ──
-          SliverAppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.close, color: AppColors.textPrimary),
-              onPressed: () => Navigator.of(context).maybePop(),
+      body: SafeArea(
+        top: false,
+        child: CustomScrollView(
+          slivers: [
+            // ── App Bar ──
+            SliverAppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              leading: IconButton(
+                icon: const Icon(Icons.close, color: AppColors.textPrimary),
+                onPressed: () => Navigator.of(context).maybePop(),
+              ),
+              pinned: true,
             ),
-            pinned: true,
-          ),
 
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                // ── Header ──
-                _buildHeader(),
-                const SizedBox(height: AppSpacing.xl),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  // ── Header ──
+                  _buildHeader(),
+                  const SizedBox(height: AppSpacing.xl),
 
-                // ── Feature Comparison ──
-                _buildFeatureComparison(),
-                const SizedBox(height: AppSpacing.xl),
+                  // ── Feature Comparison ──
+                  _buildFeatureComparison(),
+                  const SizedBox(height: AppSpacing.xl),
 
-                // ── What's Included ──
-                _buildWhatsIncluded(),
-                const SizedBox(height: AppSpacing.xl),
+                  // ── What's Included ──
+                  _buildWhatsIncluded(),
+                  const SizedBox(height: AppSpacing.xl),
 
-                // ── Pricing Card ──
-                if (!isPremium) _buildPricingCard(),
-                const SizedBox(height: AppSpacing.xxl),
-              ]),
+                  // ── Pricing Card ──
+                  if (!isPremium) _buildPricingCard(),
+                  const SizedBox(height: AppSpacing.xxl),
+                ]),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -156,7 +165,11 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
             boxShadow: AppShadows.md,
           ),
           alignment: Alignment.center,
-          child: const Icon(Icons.stars, color: AppColors.textInverse, size: 36),
+          child: const Icon(
+            Icons.stars,
+            color: AppColors.textInverse,
+            size: 36,
+          ),
         ),
         const SizedBox(height: AppSpacing.lg),
 
@@ -222,12 +235,36 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
 
   Widget _buildWhatsIncluded() {
     final features = [
-      (icon: Icons.school, title: 'All Algorithms', desc: 'Learn 25+ algorithms with interactive examples'),
-      (icon: Icons.sports_esports, title: 'All Games', desc: 'Battle Arena, Grid Escape, Race Mode & more'),
-      (icon: Icons.visibility, title: 'Full Visualizers', desc: 'Step-by-step algorithm visualization'),
-      (icon: Icons.leaderboard, title: 'Full Leaderboard', desc: 'Compete with the global community'),
-      (icon: Icons.block, title: 'No Ads', desc: 'Distraction-free learning experience'),
-      (icon: Icons.restore, title: 'Lifetime Access', desc: 'One-time purchase, yours forever'),
+      (
+        icon: Icons.school,
+        title: 'All Algorithms',
+        desc: 'Learn 25+ algorithms with interactive examples',
+      ),
+      (
+        icon: Icons.sports_esports,
+        title: 'All Games',
+        desc: 'Battle Arena, Grid Escape, Race Mode & more',
+      ),
+      (
+        icon: Icons.visibility,
+        title: 'Full Visualizers',
+        desc: 'Step-by-step algorithm visualization',
+      ),
+      (
+        icon: Icons.leaderboard,
+        title: 'Full Leaderboard',
+        desc: 'Compete with the global community',
+      ),
+      (
+        icon: Icons.block,
+        title: 'No Ads',
+        desc: 'Distraction-free learning experience',
+      ),
+      (
+        icon: Icons.restore,
+        title: 'Lifetime Access',
+        desc: 'One-time purchase, yours forever',
+      ),
     ];
 
     return Column(
@@ -235,7 +272,9 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
       children: [
         Text("What's Included", style: AppTypography.h2),
         const SizedBox(height: AppSpacing.lg),
-        ...features.map((f) => _FeatureTile(icon: f.icon, title: f.title, desc: f.desc)),
+        ...features.map(
+          (f) => _FeatureTile(icon: f.icon, title: f.title, desc: f.desc),
+        ),
       ],
     );
   }
@@ -273,7 +312,9 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
               ),
               Text(
                 '.99',
-                style: AppTypography.h2.copyWith(color: AppColors.textInverse.withValues(alpha: 0.8)),
+                style: AppTypography.h2.copyWith(
+                  color: AppColors.textInverse.withValues(alpha: 0.8),
+                ),
               ),
             ],
           ),
@@ -293,12 +334,12 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.textInverse,
                 foregroundColor: AppColors.primary700,
-                disabledBackgroundColor: AppColors.textInverse.withValues(alpha: 0.6),
+                disabledBackgroundColor: AppColors.textInverse.withValues(
+                  alpha: 0.6,
+                ),
                 disabledForegroundColor: AppColors.primary500,
                 minimumSize: const Size.fromHeight(52),
-                shape: RoundedRectangleBorder(
-                  borderRadius: AppRadius.mdBorder,
-                ),
+                shape: RoundedRectangleBorder(borderRadius: AppRadius.mdBorder),
                 textStyle: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -325,10 +366,14 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
               if (mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: const Text('Restore requested. Check your purchases.'),
+                    content: const Text(
+                      'Restore requested. Check your purchases.',
+                    ),
                     backgroundColor: AppColors.success600,
                     behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: AppRadius.mdBorder),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: AppRadius.mdBorder,
+                    ),
                   ),
                 );
               }
@@ -366,10 +411,7 @@ class _ComparisonRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          flex: 2,
-          child: Text(feature, style: AppTypography.body),
-        ),
+        Expanded(flex: 2, child: Text(feature, style: AppTypography.body)),
         Expanded(
           child: Text(
             free,
@@ -381,7 +423,11 @@ class _ComparisonRow extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.check_circle, color: AppColors.success600, size: 16),
+              const Icon(
+                Icons.check_circle,
+                color: AppColors.success600,
+                size: 16,
+              ),
               const SizedBox(width: 4),
               Flexible(
                 child: Text(

@@ -136,8 +136,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       _AchievementDef(
         label: 'Perfect Score',
         icon: Icons.star,
-        achieved: progress.quizHistory
-            .any((q) => q.correctAnswers == q.totalQuestions),
+        achieved: progress.quizHistory.any(
+          (q) => q.correctAnswers == q.totalQuestions,
+        ),
       ),
     ];
   }
@@ -150,7 +151,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     if (!_initialized) {
       return const Scaffold(
         backgroundColor: AppColors.card,
-        body: Center(child: CircularProgressIndicator()),
+        body: SafeArea(child: Center(child: CircularProgressIndicator())),
       );
     }
 
@@ -158,36 +159,38 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
     return Scaffold(
       backgroundColor: AppColors.card,
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.lg,
-          vertical: AppSpacing.xl,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // ── Profile Header ────────────────────────────────────────────
-            _buildProfileHeader(),
-            const SizedBox(height: AppSpacing.xxl),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.xl,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ── Profile Header ────────────────────────────────────────────
+              _buildProfileHeader(),
+              const SizedBox(height: AppSpacing.xxl),
 
-            // ── Achievements ──────────────────────────────────────────────
-            const SectionHeader(title: 'Achievements'),
-            const SizedBox(height: AppSpacing.md),
-            _buildAchievements(progress),
-            const SizedBox(height: AppSpacing.xxl),
+              // ── Achievements ──────────────────────────────────────────────
+              const SectionHeader(title: 'Achievements'),
+              const SizedBox(height: AppSpacing.md),
+              _buildAchievements(progress),
+              const SizedBox(height: AppSpacing.xxl),
 
-            // ── Settings ──────────────────────────────────────────────────
-            const SectionHeader(title: 'Settings'),
-            const SizedBox(height: AppSpacing.md),
-            _buildSettings(),
-            const SizedBox(height: AppSpacing.xxl),
+              // ── Settings ──────────────────────────────────────────────────
+              const SectionHeader(title: 'Settings'),
+              const SizedBox(height: AppSpacing.md),
+              _buildSettings(),
+              const SizedBox(height: AppSpacing.xxl),
 
-            // ── Account ───────────────────────────────────────────────────
-            const SectionHeader(title: 'Account'),
-            const SizedBox(height: AppSpacing.md),
-            _buildAccount(),
-            const SizedBox(height: AppSpacing.xl),
-          ],
+              // ── Account ───────────────────────────────────────────────────
+              const SectionHeader(title: 'Account'),
+              const SizedBox(height: AppSpacing.md),
+              _buildAccount(),
+              const SizedBox(height: AppSpacing.xl),
+            ],
+          ),
         ),
       ),
     );
@@ -315,24 +318,33 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         children: [
           // Edit Profile
           ListTile(
-            leading: const Icon(Icons.person_outline, color: AppColors.textSecondary),
+            leading: const Icon(
+              Icons.person_outline,
+              color: AppColors.textSecondary,
+            ),
             title: Text('Edit Profile', style: AppTypography.body),
-            trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted, size: 20),
-            contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            trailing: const Icon(
+              Icons.chevron_right,
+              color: AppColors.textMuted,
+              size: 20,
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.lg,
+            ),
             onTap: () => _showEditProfileDialog(),
           ),
           const Divider(height: 1, indent: 56),
           // Subscription
           ListTile(
-            leading: const Icon(Icons.card_membership_outlined, color: AppColors.textSecondary),
+            leading: const Icon(
+              Icons.card_membership_outlined,
+              color: AppColors.textSecondary,
+            ),
             title: Text('Subscription', style: AppTypography.body),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  'Free Plan',
-                  style: AppTypography.caption,
-                ),
+                Text('Free Plan', style: AppTypography.caption),
                 const SizedBox(width: AppSpacing.sm),
                 Container(
                   padding: const EdgeInsets.symmetric(
@@ -354,7 +366,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 ),
               ],
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.lg,
+            ),
             onTap: () => context.go('/premium'),
           ),
         ],

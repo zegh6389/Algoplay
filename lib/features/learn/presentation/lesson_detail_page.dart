@@ -30,59 +30,59 @@ class LessonDetailPage extends ConsumerWidget {
         ),
         title: Text(lesson.title),
       ),
-      body: lesson.modules.isEmpty
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.xxl),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.construction_rounded,
-                      size: 48,
-                      color: AppColors.textMuted,
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
-                    Text(
-                      'Coming soon!',
-                      style: AppTypography.h2,
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      'This lesson\'s content is being crafted.',
-                      style: AppTypography.body.copyWith(
-                        color: AppColors.textSecondary,
+      body: SafeArea(
+        top: false,
+        child: lesson.modules.isEmpty
+            ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.xxl),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.construction_rounded,
+                        size: 48,
+                        color: AppColors.textMuted,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-            )
-          : Column(
-              children: [
-                // ── Segmented progress bar ────────────────────────────────
-                _SegmentedProgress(lesson: lesson),
-
-                // ── Module list ───────────────────────────────────────────
-                Expanded(
-                  child: ListView.separated(
-                    padding: const EdgeInsets.all(AppSpacing.lg),
-                    itemCount: lesson.modules.length,
-                    separatorBuilder: (_, __) =>
-                        const SizedBox(height: AppSpacing.sm),
-                    itemBuilder: (context, index) {
-                      final module = lesson.modules[index];
-                      return _ModuleRow(
-                        lessonId: lessonId,
-                        module: module,
-                        moduleIndex: index,
-                      );
-                    },
+                      const SizedBox(height: AppSpacing.lg),
+                      Text('Coming soon!', style: AppTypography.h2),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        'This lesson\'s content is being crafted.',
+                        style: AppTypography.body.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              )
+            : Column(
+                children: [
+                  // ── Segmented progress bar ────────────────────────────────
+                  _SegmentedProgress(lesson: lesson),
+
+                  // ── Module list ───────────────────────────────────────────
+                  Expanded(
+                    child: ListView.separated(
+                      padding: const EdgeInsets.all(AppSpacing.lg),
+                      itemCount: lesson.modules.length,
+                      separatorBuilder: (_, __) =>
+                          const SizedBox(height: AppSpacing.sm),
+                      itemBuilder: (context, index) {
+                        final module = lesson.modules[index];
+                        return _ModuleRow(
+                          lessonId: lessonId,
+                          module: module,
+                          moduleIndex: index,
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+      ),
     );
   }
 }
@@ -108,9 +108,12 @@ class _SegmentedProgress extends ConsumerWidget {
             Expanded(
               child: Consumer(
                 builder: (context, ref, _) {
-                  final completeAsync = ref.watch(moduleCompleteProvider(
-                    (lessonId: lesson.id, moduleId: lesson.modules[i].id),
-                  ));
+                  final completeAsync = ref.watch(
+                    moduleCompleteProvider((
+                      lessonId: lesson.id,
+                      moduleId: lesson.modules[i].id,
+                    )),
+                  );
                   final done = completeAsync.valueOrNull ?? false;
                   return Container(
                     height: 6,
@@ -148,9 +151,7 @@ class _ModuleRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final completeAsync = ref.watch(
-      moduleCompleteProvider(
-        (lessonId: lessonId, moduleId: module.id),
-      ),
+      moduleCompleteProvider((lessonId: lessonId, moduleId: module.id)),
     );
     final isComplete = completeAsync.valueOrNull ?? false;
 
@@ -203,9 +204,7 @@ class _ModuleRow extends ConsumerWidget {
                     color: isComplete
                         ? AppColors.textSecondary
                         : AppColors.textPrimary,
-                    decoration: isComplete
-                        ? TextDecoration.lineThrough
-                        : null,
+                    decoration: isComplete ? TextDecoration.lineThrough : null,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
