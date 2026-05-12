@@ -1164,8 +1164,9 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
     final cells = step.array;
     final maxValue = cells.isEmpty ? 1 : cells.reduce((a, b) => a > b ? a : b).clamp(1, 9999);
 
-    // Detect 2D table from memo keys (format: "row,col")
-    final is2D = step.memo.keys.isNotEmpty && step.memo.keys.first.contains(',');
+    // Detect 2D table from memo keys (format: "row,col").
+    // Fibonacci memo keys are ints, so guard the key type first.
+    final is2D = step.memo.keys.any((key) => key is String && key.contains(','));
     if (is2D) {
       return _buildDp2DTable(step);
     }
@@ -1226,7 +1227,9 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
     // Parse memo to build 2D grid
     final rows = <int, Map<int, int>>{};
     for (final entry in step.memo.entries) {
-      final parts = entry.key.split(',');
+      final key = entry.key;
+      if (key is! String) continue;
+      final parts = key.split(',');
       if (parts.length != 2) continue;
       final r = int.tryParse(parts[0]) ?? 0;
       final c = int.tryParse(parts[1]) ?? 0;
@@ -1278,6 +1281,16 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
                 _MetricPill(label: 'Table', value: '${rowCount}x$colCount'),
                 _MetricPill(label: 'Result', value: step.result?.toString() ?? '...'),
               ],
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            const Text(
+              'DP Table',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 16,
+                fontWeight: FontWeight.w800,
+              ),
             ),
             const SizedBox(height: AppSpacing.sm),
             Expanded(
