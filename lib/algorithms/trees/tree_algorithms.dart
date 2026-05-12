@@ -406,9 +406,6 @@ Stream<TreeStep> avlInsert(TreeNode? root, int value) async* {
   final visited = <String>[];
   final path = <String>[];
 
-  // Track rotation steps for yielding
-  final rotationSteps = <(String, TreeNode)>[];
-
   TreeNode _insert(TreeNode node, int val) {
     visited.add(node.id);
     path.add(node.id);

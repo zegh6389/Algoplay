@@ -815,9 +815,8 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Target badge
-            if (step.target != null)
-              Container(
+            // Target badge (always show — target is required, 0 is valid)
+            Container(
                 margin: const EdgeInsets.only(bottom: AppSpacing.md),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
@@ -1231,7 +1230,7 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
       if (parts.length != 2) continue;
       final r = int.tryParse(parts[0]) ?? 0;
       final c = int.tryParse(parts[1]) ?? 0;
-      final v = entry.value is int ? entry.value as int : 0;
+      final v = entry.value;
       rows.putIfAbsent(r, () => {})[c] = v;
     }
     if (rows.isEmpty) return const SizedBox.shrink();
@@ -1351,7 +1350,6 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
         ),
       ),
     );
-  }
   }
 
   // ── Greedy visualization ───────────────────────────────────────────────
