@@ -9,6 +9,7 @@ import '../../data/avatar_repository.dart';
 /// Renders either:
 ///   - A letter initial in a colored circle (default)
 ///   - A bundled Icons8 avatar image in a circle
+///   - Fallback to initial if image fails to load
 // ═══════════════════════════════════════════════════════════════════════════════
 class AvatarWidget extends StatelessWidget {
   final String initial;
@@ -26,46 +27,53 @@ class AvatarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Always build the circle container
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: AppColors.primary100,
+        shape: BoxShape.circle,
+      ),
+      alignment: Alignment.center,
+      child: _buildContent(),
+    );
+  }
+
+  Widget _buildContent() {
+    // Try image avatar if selected
     if (avatarType == AvatarType.image && avatarKey != null) {
       final def = AvatarRepository.availableAvatars
           .where((a) => a.key == avatarKey)
           .firstOrNull;
       if (def != null) {
-        return _buildCircle(
-          child: ClipOval(
-            child: Image.asset(
-              def.assetPath,
-              width: size,
-              height: size,
-              fit: BoxFit.cover,
-            ),
+        return ClipOval(
+          child: Image.asset(
+            def.assetPath,
+            width: size,
+            height: size,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              // Fallback to initial if image fails
+              return _buildInitialText();
+            },
           ),
         );
       }
     }
 
-    // Fallback: initial-based avatar
-    return _buildCircle(
-      child: Text(
-        initial,
-        style: AppTypography.h1.copyWith(
-          color: AppColors.primary500,
-          fontSize: size * 0.45,
-        ),
-      ),
-    );
+    // Default: initial-based avatar
+    return _buildInitialText();
   }
 
-  Widget _buildCircle({required Widget child}) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: const BoxDecoration(
-        color: AppColors.primary100,
-        shape: BoxShape.circle,
+  Widget _buildInitialText() {
+    return Text(
+      initial,
+      style: TextStyle(
+        color: AppColors.primary500,
+        fontSize: size * 0.45,
+        fontWeight: FontWeight.w700,
       ),
-      alignment: Alignment.center,
-      child: child,
     );
   }
 }
@@ -120,16 +128,17 @@ class AvatarPickerDialog extends StatelessWidget {
               child: Container(
                 width: 56,
                 height: 56,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: AppColors.primary100,
                   shape: BoxShape.circle,
                 ),
                 alignment: Alignment.center,
                 child: Text(
                   currentInitial,
-                  style: AppTypography.h2.copyWith(
+                  style: TextStyle(
                     color: AppColors.primary500,
                     fontSize: 28,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
@@ -147,6 +156,23 @@ class AvatarPickerDialog extends StatelessWidget {
                     width: 56,
                     height: 56,
                     fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      // Show initial if image can't load
+                      return Container(
+                        width: 56,
+                        height: 56,
+                        color: AppColors.primary100,
+                        alignment: Alignment.center,
+                        child: Text(
+                          currentInitial,
+                          style: TextStyle(
+                            color: AppColors.primary500,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
               );
