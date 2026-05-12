@@ -24,46 +24,231 @@ class SortBarData {
   int get hashCode => Object.hash(value, state);
 }
 
-/// Stateless widget that renders an animated sorting bar chart.
+/// Public state palette for sorting bars.
+class SortBarStatePalette {
+  SortBarStatePalette._();
+
+  static const Color defaultColor = Color(0xFF2563EB); // vivid blue
+  static const Color comparingColor = Color(0xFFD97706); // amber/orange
+  static const Color swappingColor = Color(0xFFE11D48); // rose/magenta
+  static const Color sortedColor = Color(0xFF059669); // emerald green
+  static const Color pivotColor = Color(0xFF7C3AED); // violet
+  static const Color foundColor = Color(0xFF047857); // deep green
+  static const Color eliminatedColor = Color(0x59999999); // gray 35%
+
+  static bool shouldShowValueLabel(double barWidth, double barHeight) {
+    return barWidth >= 14;
+  }
+
+  static double valueLabelFontSize(double barWidth) {
+    if (barWidth >= 26) return 14;
+    if (barWidth >= 20) return 12;
+    return 10;
+  }
+
+  static SortBarLabelPlacement labelPlacementForHeight(double barHeight) {
+    return barHeight >= 34 ? SortBarLabelPlacement.inside : SortBarLabelPlacement.above;
+  }
+
+  static Color colorForState(String state) {
+    switch (state) {
+      case 'comparing':
+        return comparingColor;
+      case 'swapping':
+        return swappingColor;
+      case 'sorted':
+        return sortedColor;
+      case 'pivot':
+        return pivotColor;
+      case 'found':
+        return foundColor;
+      case 'eliminated':
+        return eliminatedColor;
+      default:
+        return defaultColor;
+    }
+  }
+
+  static double blurForState(String state) {
+    switch (state) {
+      case 'comparing':
+      case 'swapping':
+        return 12.0;
+      case 'sorted':
+      case 'pivot':
+        return 10.0;
+      case 'found':
+        return 11.0;
+      default:
+        return 8.0;
+    }
+  }
+}
+
+/// Animated sorting bar chart that physically slides bars during swaps.
 ///
-/// Uses a [CustomPainter] to draw bars whose heights are proportional to
-/// their [SortBarData.value] relative to [maxValue]. Each bar is coloured
-/// according to its [SortBarData.state] and receives a matching glow shadow.
+/// Instead of a CustomPaint that just redraws, this uses [AnimatedPositioned]
+/// via [Stack] so bars glide horizontally when their index changes (swap),
+/// and [AnimatedContainer] for smooth height transitions.
 class AnimatedSortBar extends StatelessWidget {
-  /// The list of bar data to visualise.
   final List<SortBarData> bars;
-
-  /// The maximum value used to scale bar heights.
   final double maxValue;
-
-  /// Optional index of a bar to highlight (draws a brighter emphasis).
-  final int? highlightIndex;
 
   const AnimatedSortBar({
     super.key,
     required this.bars,
     required this.maxValue,
-    this.highlightIndex,
+    this.highlightIndex, // kept for API compat, not used in new visual
+  });
+
+  final int? highlightIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        final height = constraints.maxHeight;
+
+        if (bars.isEmpty || maxValue <= 0 || width <= 0 || height <= 0) {
+          return const SizedBox.shrink();
+        }
+
+        final count = bars.length;
+        final gap = count > 32 ? 1.5 : 3.0;
+        const outerPadding = 8.0;
+        final availableWidth = width - outerPadding * 2 - (count - 1) * gap;
+        final naturalBarWidth = availableWidth / count;
+        final maxBarWidth = count > 24 ? 18.0 : 34.0;
+        final barWidth = naturalBarWidth.clamp(3.0, maxBarWidth);
+        final usedWidth = count * barWidth + (count - 1) * gap;
+        final leftPadding = ((width - usedWidth) / 2).clamp(outerPadding, double.infinity);
+
+        final chartHeight = (height * 0.72).clamp(120.0, 340.0);
+        final chartTop = ((height - chartHeight) / 2).clamp(0.0, double.infinity);
+        final baseline = chartTop + chartHeight;
+
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            for (int i = 0; i < count; i++)
+              _AnimatedBar(
+                key: ValueKey('bar_${bars[i].value}_$i'),
+                index: i,
+                barWidth: barWidth,
+                gap: gap,
+                leftPadding: leftPadding,
+                barData: bars[i],
+                fraction: maxValue > 0 ? (bars[i].value.toDouble() / maxValue) : 0.0,
+                maxBarHeight: chartHeight,
+                baseline: baseline,
+                chartTop: chartTop,
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _AnimatedBar extends StatelessWidget {
+  final int index;
+  final double barWidth;
+  final double gap;
+  final double leftPadding;
+  final SortBarData barData;
+  final double fraction;
+  final double maxBarHeight;
+  final double baseline;
+  final double chartTop;
+
+  const _AnimatedBar({
+    super.key,
+    required this.index,
+    required this.barWidth,
+    required this.gap,
+    required this.leftPadding,
+    required this.barData,
+    required this.fraction,
+    required this.maxBarHeight,
+    required this.baseline,
+    required this.chartTop,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.expand(
-      child: CustomPaint(
-        painter: _SortBarPainter(
-          bars: bars,
-          maxValue: maxValue,
-          highlightIndex: highlightIndex,
+    final barHeight = fraction.clamp(0.0, 1.0) * maxBarHeight;
+    final left = leftPadding + index * (barWidth + gap);
+    final top = baseline - barHeight;
+    final color = SortBarStatePalette.colorForState(barData.state);
+    final blur = SortBarStatePalette.blurForState(barData.state);
+
+    // Determine animation duration: swap steps get a longer slide
+    final isSwapping = barData.state == 'swapping';
+    final duration = isSwapping
+        ? const Duration(milliseconds: 300)
+        : const Duration(milliseconds: 150);
+
+    return AnimatedPositioned(
+      duration: duration,
+      curve: Curves.easeInOut,
+      left: left,
+      top: top,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        width: barWidth,
+        height: barHeight,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(4),
+            topRight: Radius.circular(4),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: color.withValues(alpha: 0.45),
+              blurRadius: blur,
+              spreadRadius: 0,
+            ),
+          ],
+        ),
+        child: SortBarStatePalette.shouldShowValueLabel(barWidth, barHeight)
+            ? _buildLabel(barHeight, color)
+            : null,
+      ),
+    );
+  }
+
+  Widget _buildLabel(double barHeight, Color barColor) {
+    final inside = barHeight >= 34;
+    final labelColor = inside ? Colors.white : AppColors.textPrimary;
+    final fontSize = SortBarStatePalette.valueLabelFontSize(barWidth);
+
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.only(
+          top: inside ? 4 : 0,
+          bottom: inside ? 0 : 2,
+        ),
+        child: Text(
+          '${barData.value}',
+          style: TextStyle(
+            color: labelColor,
+            fontSize: fontSize,
+            fontWeight: FontWeight.w800,
+            height: 1,
+          ),
+          textAlign: TextAlign.center,
         ),
       ),
     );
   }
 }
 
-/// Deterministic geometry for the sort bar chart.
-///
-/// Exposed for tests so layout regressions are caught without brittle golden
-/// screenshots.
+// ---------------------------------------------------------------------------
+// Backward compat: SortBarLayout still exposed for tests
+// ---------------------------------------------------------------------------
+
 class SortBarLayout {
   final double width;
   final double height;
@@ -96,255 +281,29 @@ class SortBarLayout {
     required int count,
   }) {
     if (count <= 0 || width <= 0 || height <= 0) {
-      return SortBarLayout(
-        width: width,
-        height: height,
-        count: count,
-        leftPadding: 0,
-        chartTop: 0,
-        chartHeight: 0,
-        barWidth: 0,
-        barGap: 0,
+      return const SortBarLayout(
+        width: 0, height: 0, count: 0,
+        leftPadding: 0, chartTop: 0, chartHeight: 0,
+        barWidth: 0, barGap: 0,
       );
     }
-
-    final chartHeight = (height * 0.72).clamp(120.0, 340.0).toDouble();
-    final chartTop = ((height - chartHeight) / 2)
-        .clamp(0.0, double.infinity)
-        .toDouble();
+    final chartHeight = (height * 0.72).clamp(120.0, 340.0);
+    final chartTop = ((height - chartHeight) / 2).clamp(0.0, double.infinity);
     final gap = count > 32 ? 1.5 : 3.0;
     const outerPadding = 8.0;
     final availableWidth = width - outerPadding * 2 - (count - 1) * gap;
     final naturalBarWidth = availableWidth / count;
     final maxBarWidth = count > 24 ? 18.0 : 34.0;
-    final barWidth = naturalBarWidth.clamp(3.0, maxBarWidth).toDouble();
+    final barWidth = naturalBarWidth.clamp(3.0, maxBarWidth);
     final usedWidth = count * barWidth + (count - 1) * gap;
-    final leftPadding = ((width - usedWidth) / 2)
-        .clamp(outerPadding, double.infinity)
-        .toDouble();
+    final leftPadding = ((width - usedWidth) / 2).clamp(outerPadding, double.infinity);
 
     return SortBarLayout(
-      width: width,
-      height: height,
-      count: count,
-      leftPadding: leftPadding,
-      chartTop: chartTop,
-      chartHeight: chartHeight,
-      barWidth: barWidth,
-      barGap: gap,
+      width: width, height: height, count: count,
+      leftPadding: leftPadding, chartTop: chartTop,
+      chartHeight: chartHeight, barWidth: barWidth, barGap: gap,
     );
   }
 }
 
 enum SortBarLabelPlacement { inside, above }
-
-/// Public state palette for sorting bars.
-///
-/// Kept outside the painter so tests can guard against visually similar colors
-/// regressing back into the chart.
-class SortBarStatePalette {
-  SortBarStatePalette._();
-
-  static const Color defaultColor = Color(0xFF2563EB); // vivid blue
-  static const Color comparingColor = Color(0xFFD97706); // amber/orange
-  static const Color swappingColor = Color(0xFFE11D48); // rose/magenta
-  static const Color sortedColor = Color(0xFF059669); // emerald green
-  static const Color pivotColor = Color(0xFF7C3AED); // violet
-  static const Color foundColor = Color(0xFF047857); // deep green
-  static const Color eliminatedColor = Color(0x59999999); // gray 35%
-
-  /// Labels must remain visible for random arrays (default size 15), where bars
-  /// are narrower than the manual 10-item example.
-  static bool shouldShowValueLabel(double barWidth, double barHeight) {
-    return barWidth >= 14;
-  }
-
-  static SortBarLabelPlacement labelPlacementForHeight(double barHeight) {
-    return barHeight >= 34 ? SortBarLabelPlacement.inside : SortBarLabelPlacement.above;
-  }
-
-  static double valueLabelFontSize(double barWidth) {
-    if (barWidth >= 26) return 14;
-    if (barWidth >= 20) return 12;
-    return 10;
-  }
-
-  static Color colorForState(String state) {
-
-    switch (state) {
-      case 'comparing':
-        return comparingColor;
-      case 'swapping':
-        return swappingColor;
-      case 'sorted':
-        return sortedColor;
-      case 'pivot':
-        return pivotColor;
-      case 'found':
-        return foundColor;
-      case 'eliminated':
-        return eliminatedColor;
-      default:
-        return defaultColor;
-    }
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Private painter
-// ---------------------------------------------------------------------------
-
-class _SortBarPainter extends CustomPainter {
-  final List<SortBarData> bars;
-  final double maxValue;
-  final int? highlightIndex;
-
-  _SortBarPainter({
-    required this.bars,
-    required this.maxValue,
-    this.highlightIndex,
-  });
-
-  // -- Colour palette -------------------------------------------------------
-
-  static const Color _trackColor = Color(0x0F2563EB); // blue 6%
-  static const Color _labelColor = Color(0xFFFFFFFF); // white
-
-  static const double _topRadius = 4.0;
-
-  Color _colorForState(String state) => SortBarStatePalette.colorForState(state);
-
-  double _blurForState(String state) {
-    switch (state) {
-      case 'comparing':
-      case 'swapping':
-        return 12.0;
-      case 'sorted':
-      case 'pivot':
-        return 10.0;
-      case 'found':
-        return 11.0;
-      default:
-        return 8.0;
-    }
-  }
-
-  // -- Painting -------------------------------------------------------------
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (bars.isEmpty || maxValue <= 0) return;
-
-    final int count = bars.length;
-    final layout = SortBarLayout.calculate(
-      width: size.width,
-      height: size.height,
-      count: count,
-    );
-
-    final double maxBarHeight = layout.chartHeight;
-
-    for (int i = 0; i < count; i++) {
-      final SortBarData bar = bars[i];
-      final Color color = _colorForState(bar.state);
-      final double blurRadius = _blurForState(bar.state);
-
-      final double fraction =
-          maxValue > 0 ? (bar.value.toDouble() / maxValue) : 0.0;
-      final double barHeight = fraction.clamp(0.0, 1.0) * maxBarHeight;
-
-      final double left = layout.leftForIndex(i);
-      final double top = layout.baseline - barHeight;
-
-      final Rect barRect = Rect.fromLTWH(
-        left,
-        top,
-        layout.barWidth,
-        barHeight,
-      );
-
-      // Background track ---------------------------------------------------
-      final RRect trackRect = RRect.fromRectAndCorners(
-        Rect.fromLTWH(left, layout.chartTop, layout.barWidth, maxBarHeight),
-        topLeft: const Radius.circular(_topRadius),
-        topRight: const Radius.circular(_topRadius),
-      );
-      canvas.drawRRect(
-        trackRect,
-        Paint()..color = _trackColor,
-      );
-
-      // Glow shadow --------------------------------------------------------
-      final RRect barRRect = RRect.fromRectAndCorners(
-        barRect,
-        topLeft: const Radius.circular(_topRadius),
-        topRight: const Radius.circular(_topRadius),
-      );
-
-      // Shadow layer
-      canvas.drawRRect(
-        barRRect,
-        Paint()
-          ..color = color.withValues(alpha: 0.45)
-          ..maskFilter = MaskFilter.blur(BlurStyle.normal, blurRadius)
-          ..style = PaintingStyle.fill,
-      );
-
-      // Filled bar
-      canvas.drawRRect(
-        barRRect,
-        Paint()..color = color,
-      );
-
-      // Highlight emphasis --------------------------------------------------
-      if (highlightIndex != null && i == highlightIndex) {
-        canvas.drawRRect(
-          barRRect.inflate(1.5),
-          Paint()
-            ..color = Colors.white.withValues(alpha: 0.25)
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 2.0,
-        );
-      }
-
-      // Value label ---------------------------------------------------------
-      if (SortBarStatePalette.shouldShowValueLabel(layout.barWidth, barHeight)) {
-        final placement = SortBarStatePalette.labelPlacementForHeight(barHeight);
-        final Color labelColor = placement == SortBarLabelPlacement.inside
-            ? _labelColor
-            : AppColors.textPrimary;
-        final TextSpan span = TextSpan(
-          text: '${bar.value}',
-          style: TextStyle(
-            color: labelColor,
-            fontSize: SortBarStatePalette.valueLabelFontSize(layout.barWidth),
-            fontWeight: FontWeight.w800,
-          ),
-        );
-        final TextPainter tp = TextPainter(
-          text: span,
-          textDirection: TextDirection.ltr,
-        )..layout(maxWidth: layout.barWidth);
-
-        final double labelX = left + (layout.barWidth - tp.width) / 2;
-        final double insideY = top + 6;
-        final double aboveY = (top - tp.height - 4).clamp(
-          layout.chartTop,
-          layout.baseline - tp.height,
-        );
-        final double labelY = placement == SortBarLabelPlacement.inside
-            ? insideY
-            : aboveY;
-
-        tp.paint(canvas, Offset(labelX, labelY));
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _SortBarPainter oldDelegate) {
-    return oldDelegate.bars != bars ||
-        oldDelegate.maxValue != maxValue ||
-        oldDelegate.highlightIndex != highlightIndex;
-  }
-}
