@@ -6695,6 +6695,132 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+      ModuleContent(
+        id: 'lesson11_module4',
+        title: 'Kruskal\'s Algorithm',
+        order: 3,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'In this module we explore a second greedy algorithm for finding the minimum spanning tree of a graph: '
+            'Kruskal\'s algorithm. '
+            'Like Prim\'s algorithm, it uses the greedy method, but it approaches the problem from a different angle.',
+          ),
+          TextBlock(
+            'Instead of growing a single tree from a root vertex, Kruskal\'s algorithm looks at all the edges in the entire graph at once. '
+            'The rule at each stage is to add the minimum weight edge that is not already in the tree and that does not create a cycle. '
+            'During execution, the growing structure is not a single connected tree; it is a forest of separate smaller trees. '
+            'Whenever an edge is added, it connects two of these trees together, merging them into one. '
+            'Eventually all trees are merged into a single spanning tree.',
+          ),
+          DefinitionBlock(
+            term: 'Union-Find',
+            definition:
+                'A data structure that tracks which set (tree in the forest) each vertex belongs to. '
+                'The find operation identifies which set a vertex belongs to. '
+                'The union operation merges two sets into one. '
+                'It is the standard structure for implementing Kruskal\'s algorithm efficiently.',
+          ),
+          TextBlock(
+            'The Union-Find structure works as follows: '
+            'Initially every vertex is in its own separate set. '
+            'As Kruskal\'s adds edges, the union operation merges sets. '
+            'For example, with vertices A, B, C, D, E, we start with five singleton sets. '
+            'If the cheapest edge is AE (weight 1), we add it and union the sets containing A and E. '
+            'If the next cheapest is BC (weight 1), we add it and union B and C. '
+            'If the next cheapest is AC (weight 2), we add it and union the set containing A (which now includes E) with the set containing C (which now includes B). '
+            'This process continues until only one set remains, containing all vertices, '
+            'at which point the minimum spanning tree is complete.',
+          ),
+          TextBlock(
+            'To prove Kruskal\'s algorithm is optimal, we again use the cut property. '
+            'When Kruskal\'s evaluates an edge e to be added, let S be the set of all vertices currently connected to one endpoint of e in its specific sub-tree. '
+            'If the other endpoint of e is not in S, then adding e will not create a cycle. '
+            'The edge e is crossing from S to its complement. '
+            'Because Kruskal\'s considers edges in sorted order of weight, e is guaranteed to be the minimum weight edge crossing this cut. '
+            'Therefore by the cut property, e belongs to the minimum spanning tree.',
+          ),
+          QuizBlock(
+            question:
+                'What is the key difference between how Prim\'s and Kruskal\'s algorithms build the MST?',
+            options: [
+              'Prim\'s uses a cut property while Kruskal\'s does not',
+              'Prim\'s grows a single tree from one vertex; Kruskal\'s considers all edges and builds a forest that merges into one tree',
+              'Prim\'s runs in Theta(E log V) while Kruskal\'s runs in Theta(V squared)',
+              'Kruskal\'s always picks the globally cheapest edge; Prim\'s only considers edges from the current tree',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Prim\'s grows a single connected tree from an arbitrary root, always considering edges from the current tree to outside vertices. '
+                'Kruskal\'s considers all edges globally in weight order, adding an edge only if it does not create a cycle, '
+                'which means it builds many small trees that gradually merge.',
+          ),
+          QuizBlock(
+            question: 'In Union-Find, what does the union operation do?',
+            options: [
+              'It finds the minimum weight edge crossing a cut',
+              'It merges two sets of vertices into a single set',
+              'It removes an edge from the growing forest',
+              'It identifies which set a particular vertex belongs to',
+            ],
+            correctIndex: 1,
+            explanation:
+                'The union operation takes two sets (two trees in the growing forest) and merges them into one set. '
+                'This corresponds to adding an edge that connects two separate trees in Kruskal\'s algorithm.',
+          ),
+          QuizBlock(
+            question:
+                'Why does Kruskal\'s algorithm produce a minimum spanning tree according to the cut property?',
+            options: [
+              'Because it sorts all edges by weight first, and sorting guarantees optimality',
+              'Because every edge it adds is the minimum weight edge crossing the cut between its two endpoints\' current sets',
+              'Because the Union-Find data structure guarantees the result is spanning',
+              'Because Kruskal\'s always picks edges from the smallest spanning tree',
+            ],
+            correctIndex: 1,
+            explanation:
+                'When Kruskal\'s evaluates an edge e, let S be the set of vertices connected to one endpoint in its current sub-tree. '
+                'e is the minimum weight edge crossing from S to its complement (since edges are considered in sorted order). '
+                'By the cut property, e belongs to the MST, so adding it is always correct.',
+          ),
+          TextBlock(
+            'How long does Kruskal\'s algorithm take? '
+            'Creating the initial individual sets takes Theta(V) time. '
+            'The find operation is highly optimized and effectively takes constant time. '
+            'The union operation depends on the implementation but is also effectively constant with good optimizations. '
+            'Sorting the edges initially takes O(E log E) time. '
+            'With a reasonable implementation, the total time complexity is O(V plus E log V). '
+            'For a connected graph where E is at least V minus 1, this simplifies to O(E log V). '
+            'This is the exact same efficiency class as Prim\'s algorithm.',
+          ),
+          MathBlock(
+            r'T(V, E) = O(V + E \log V)',
+            semanticsLabel: 'Kruskal\'s algorithm time complexity',
+          ),
+          QuizBlock(
+            question:
+                'What is the time complexity of Kruskal\'s algorithm for a connected graph?',
+            options: [
+              'Theta(V squared)',
+              'Theta(E log V)',
+              'Theta(V plus E)',
+              'O(E squared)',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Sorting edges takes O(E log E) = O(E log V) (since E is bounded by V squared). '
+                'Union-Find operations are effectively constant per edge. '
+                'The total is O(E log V), which is the same asymptotic bound as Prim\'s with a min-heap.',
+          ),
+          KeyTakeawayBlock(
+            'Kruskal\'s algorithm builds the MST by considering all edges in increasing weight order, '
+            'adding an edge if it does not create a cycle. '
+            'It works on a forest of trees that gradually merge via Union-Find. '
+            'Optimality follows from the cut property: every edge added is the minimum crossing some cut. '
+            'Time complexity is O(E log V), the same as Prim\'s, but the two algorithms explore the problem in fundamentally different ways.',
+          ),
+        ],
+      ),
     ],
   ),
 

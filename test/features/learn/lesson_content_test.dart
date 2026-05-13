@@ -2437,8 +2437,8 @@ void main() {
       expect(lesson11.categoryColor, '#F59E0B');
     });
 
-    test('has 3 modules', () {
-      expect(lesson11.modules.length, 3);
+    test('has 4 modules', () {
+      expect(lesson11.modules.length, 4);
     });
 
     String combinedText11(List<ContentBlock> blocks) {
@@ -2534,6 +2534,28 @@ void main() {
       expect(combined.toLowerCase(), contains('cut property'));
       expect(combined.toLowerCase(), contains('optimal'));
       expect(combined.toLowerCase(), contains('log'));
+    });
+
+    test('Module 4 covers Kruskal\'s algorithm and Union-Find', () {
+      final module = lesson11.modules[3];
+      expect(module.id, 'lesson11_module4');
+      expect(module.title, 'Kruskal\'s Algorithm');
+      expect(module.order, 3);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(1),
+      );
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(1));
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = combinedText11(blocks);
+      expect(combined.toLowerCase(), contains('kruskal'));
+      expect(combined.toLowerCase(), contains('union'));
+      expect(combined.toLowerCase(), contains('forest'));
     });
   });
 
