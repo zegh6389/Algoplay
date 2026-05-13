@@ -7063,6 +7063,124 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+      ModuleContent(
+        id: 'lesson11_module7',
+        title: 'Fractional Knapsack',
+        order: 6,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'We conclude Lesson 11 with a brief but important greedy problem: the fractional knapsack problem. '
+            'Recall from Lesson 10 that in the standard knapsack problem we have n items with weights and values, '
+            'and a knapsack of capacity W. '
+            'In the earlier knapsack problem, each item had to be chosen in a binary way: either the whole item is included, or it is not included at all.',
+          ),
+          TextBlock(
+            'In the fractional knapsack problem, we are allowed to take only part of an item. '
+            'This makes sense for divisible goods such as flour, sugar, rice, oil, or chocolate chips. '
+            'So instead of deciding take it or leave it, we may take any fraction of an item.',
+          ),
+          TextBlock(
+            'For each item, we compute its value per unit weight, which tells us how much value we get from one unit of that item weight. '
+            'Then we apply the greedy rule: '
+            'first, compute the value-to-weight ratio for every item. '
+            'Second, sort the items in decreasing order of this ratio. '
+            'Third, start with the item that has the largest ratio and put as much of it into the knapsack as possible. '
+            'If the knapsack is not full, move to the next item in sorted order. '
+            'Continue until the weight limit W is reached.',
+          ),
+          TextBlock(
+            'The greedy choice is: always take as much as possible of the remaining item with the highest value-per-weight ratio. '
+            'This strategy works because every unit of weight in the knapsack should be used as efficiently as possible. '
+            'If one item gives more value per unit weight than another, then it is always better to use the remaining space on that item first. '
+            'Because fractions are allowed, we never get trapped by an all-or-nothing decision. '
+            'This is exactly why the fractional version is much easier than the 0/1 knapsack problem, where greedy does not always work.',
+          ),
+          MathBlock(
+            r'O(n \log n)',
+            semanticsLabel: 'Fractional knapsack time complexity',
+          ),
+          TextBlock(
+            'Suppose the knapsack has capacity W equals 50, and we have three items: '
+            'Item 1 with weight 10 and value 60, Item 2 with weight 20 and value 100, and Item 3 with weight 30 and value 120. '
+            'First, compute value per weight: Item 1 gives 6 per unit, Item 2 gives 5 per unit, and Item 3 gives 4 per unit. '
+            'Now sort by ratio in decreasing order: Item 1, then Item 2, then Item 3. '
+            'Fill the knapsack: take all of Item 1, remaining capacity is 40, total value is 60. '
+            'Take all of Item 2, remaining capacity is 20, total value is 160. '
+            'Item 3 weighs 30 but only 20 capacity remains, so take 20 over 30 of Item 3, which is two thirds. '
+            'The value gained from that fraction is 120 times two thirds, which equals 80. '
+            'Final total value is 60 plus 100 plus 80, which equals 240.',
+          ),
+          TextBlock(
+            'Efficiency: computing ratios takes O(n) time, sorting takes O(n log n) time, and filling the knapsack takes O(n) time. '
+            'The sorting step dominates the running time, so the total efficiency is O(n log n).',
+          ),
+          QuizBlock(
+            question:
+                'What is the key difference between 0/1 knapsack and fractional knapsack?',
+            options: [
+              '0/1 knapsack allows fractions, fractional knapsack does not',
+              '0/1 knapsack requires binary decisions, fractional knapsack allows partial items',
+              'Fractional knapsack requires more items than 0/1 knapsack',
+              'The two problems have identical greedy strategies',
+            ],
+            correctIndex: 1,
+            explanation:
+                'In 0/1 knapsack, each item must be taken in its entirety or left out. '
+                'In fractional knapsack, any fraction of an item can be taken. '
+                'This flexibility allows greedy to work in the fractional version.',
+          ),
+          QuizBlock(
+            question: 'What is the greedy strategy for fractional knapsack?',
+            options: [
+              'Take items in order of decreasing weight',
+              'Take items in order of increasing value',
+              'Take as much as possible of the item with the highest value-per-weight ratio first',
+              'Randomly select items until the knapsack is full',
+            ],
+            correctIndex: 2,
+            explanation:
+                'The greedy strategy is to compute the value-to-weight ratio for each item, '
+                'sort in decreasing order, and greedily take as much as possible from the highest-ratio item first.',
+          ),
+          QuizBlock(
+            question:
+                'Why does greedy work for fractional knapsack but not always for 0/1 knapsack?',
+            options: [
+              'Because fractional knapsack has fewer items',
+              'Because fractions are allowed, every unit of weight can be used optimally without all-or-nothing commitment',
+              'Because 0/1 knapsack requires sorting but fractional does not',
+              'Because fractional knapsack always has integer weights',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Because fractions are allowed, we are never forced into an irreversible all-or-nothing decision. '
+                'Every unit of remaining capacity can always be filled with the highest-value-per-weight item available, '
+                'which guarantees optimality. In 0/1 knapsack, taking an item precludes taking other items, '
+                'and the greedy choice can lead to suboptimal bundles.',
+          ),
+          QuizBlock(
+            question: 'What is the time complexity of fractional knapsack?',
+            options: [
+              'O(n) because we only scan items once',
+              'O(n log n) because sorting dominates the running time',
+              'O(n squared) because we compare every pair of items',
+              'O(2 to the n) because we consider all subsets',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Computing ratios takes O(n), sorting takes O(n log n), and filling takes O(n). '
+                'The sorting step dominates, giving O(n log n) total.',
+          ),
+          KeyTakeawayBlock(
+            'Fractional knapsack allows taking any fraction of an item, unlike 0/1 knapsack where items are all-or-nothing. '
+            'The greedy strategy computes the value-to-weight ratio for each item, sorts in decreasing order, '
+            'and takes as much as possible of the highest-ratio item first. '
+            'This always yields an optimal solution in O(n log n) time. '
+            'The key insight is that allowing fractions removes the trap of irreversible binary decisions.',
+          ),
+        ],
+      ),
     ],
   ),
 

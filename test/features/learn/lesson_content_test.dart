@@ -2437,8 +2437,8 @@ void main() {
       expect(lesson11.categoryColor, '#F59E0B');
     });
 
-    test('has 6 modules', () {
-      expect(lesson11.modules.length, 6);
+    test('has 7 modules', () {
+      expect(lesson11.modules.length, 7);
     });
 
     String combinedText11(List<ContentBlock> blocks) {
@@ -2599,6 +2599,25 @@ void main() {
       expect(combined.toLowerCase(), contains('interval'));
       expect(combined.toLowerCase(), contains('depth'));
       expect(combined.toLowerCase(), contains('classroom'));
+    });
+
+    test('Module 7 covers fractional knapsack', () {
+      final module = lesson11.modules[6];
+      expect(module.id, 'lesson11_module7');
+      expect(module.title, 'Fractional Knapsack');
+      expect(module.order, 6);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(1));
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = combinedText11(blocks);
+      expect(combined.toLowerCase(), contains('fraction'));
+      expect(combined.toLowerCase(), contains('knapsack'));
+      expect(combined.toLowerCase(), contains('value'));
+      expect(combined.toLowerCase(), contains('weight'));
     });
   });
 
