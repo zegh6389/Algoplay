@@ -247,7 +247,7 @@ class AdService {
   ///
   /// [onDismissed] runs after the ad closes, or immediately when there is no ad
   /// to show. This lets transition screens continue safely.
-  bool showInterstitialAd({VoidCallback? onDismissed}) {
+  bool showInterstitialAd({VoidCallback? onShown, VoidCallback? onDismissed}) {
     void continueFlow() => onDismissed?.call();
 
     if (!_isInitialized) {
@@ -278,6 +278,12 @@ class AdService {
 
     _interstitialAd = null;
     ad.fullScreenContentCallback = FullScreenContentCallback(
+      onAdShowedFullScreenContent: (ad) {
+        if (kDebugMode) {
+          debugPrint('[AdService] interstitial ad shown');
+        }
+        onShown?.call();
+      },
       onAdDismissedFullScreenContent: (ad) {
         if (kDebugMode) {
           debugPrint('[AdService] interstitial ad dismissed');

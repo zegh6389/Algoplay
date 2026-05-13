@@ -2471,7 +2471,6 @@ void main() {
           blocks.whereType<DefinitionBlock>().length,
           greaterThanOrEqualTo(1),
         );
-        expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(1));
         expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
         expect(blocks.last, isA<KeyTakeawayBlock>());
 
@@ -2479,6 +2478,7 @@ void main() {
         expect(combined.toLowerCase(), contains('greedy'));
         expect(combined.toLowerCase(), contains('coin'));
         expect(combined.toLowerCase(), contains('optimal'));
+        expect(combined, contains('37 = 25 + 10 + 1 + 1'));
       },
     );
 
@@ -2506,6 +2506,13 @@ void main() {
       for (final module in lesson11.modules) {
         final combined = combinedText11(module.contentBlocks);
         expect(combined, isNot(contains('n^2')));
+        expect(combined, isNot(contains('0/1')));
+      }
+    });
+
+    test('Lesson 11 keeps short expressions inline, not as math cards', () {
+      for (final module in lesson11.modules) {
+        expect(module.contentBlocks.whereType<MathBlock>().length, 0);
       }
     });
 
@@ -2526,7 +2533,6 @@ void main() {
       expect(module.algorithmId, isNull);
 
       final blocks = module.contentBlocks;
-      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(1));
       expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
       expect(blocks.last, isA<KeyTakeawayBlock>());
 
@@ -2548,7 +2554,6 @@ void main() {
         blocks.whereType<DefinitionBlock>().length,
         greaterThanOrEqualTo(1),
       );
-      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(1));
       expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
       expect(blocks.last, isA<KeyTakeawayBlock>());
 
@@ -2570,7 +2575,6 @@ void main() {
         blocks.whereType<DefinitionBlock>().length,
         greaterThanOrEqualTo(1),
       );
-      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(1));
       expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
       expect(blocks.last, isA<KeyTakeawayBlock>());
 
@@ -2609,7 +2613,6 @@ void main() {
       expect(module.algorithmId, isNull);
 
       final blocks = module.contentBlocks;
-      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(1));
       expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
       expect(blocks.last, isA<KeyTakeawayBlock>());
 

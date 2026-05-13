@@ -74,7 +74,17 @@ void main() {
       );
       expect(moduleContent, contains('recordModuleCompletionAndShouldShow'));
       expect(moduleContent, contains('hasCachedInterstitialAd'));
+      expect(moduleContent, contains('onShown: ()'));
       expect(moduleContent, contains('markInterstitialShown'));
+      expect(moduleContent, contains('unawaited('));
+      expect(
+        moduleContent,
+        isNot(
+          contains(
+            'await LessonCompletionAdGate.instance.markInterstitialShown();',
+          ),
+        ),
+      );
       expect(moduleContent, contains('onDismissed: ()'));
       expect(moduleContent, contains('_navigateAfterModuleCompletion'));
     });
@@ -99,8 +109,11 @@ void main() {
       expect(adService, contains('bool get hasCachedInterstitialAd'));
       expect(
         adService,
-        contains('bool showInterstitialAd({VoidCallback? onDismissed})'),
+        contains(
+          'bool showInterstitialAd({VoidCallback? onShown, VoidCallback? onDismissed})',
+        ),
       );
+      expect(adService, contains('onAdShowedFullScreenContent'));
       expect(adGate, contains('completionsBetweenInterstitials = 3'));
       expect(adGate, contains('minInterstitialGap = Duration(minutes: 3)'));
       expect(bannerWrapper, contains('SafeArea('));

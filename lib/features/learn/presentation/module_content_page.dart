@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
@@ -152,15 +153,18 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
     );
 
     if (shouldShowInterstitial && AdService.instance.hasCachedInterstitialAd) {
-      await LessonCompletionAdGate.instance.markInterstitialShown();
-      if (!mounted) return;
-      AdService.instance.showInterstitialAd(
+      var handledByInterstitialCallback = false;
+      final adShown = AdService.instance.showInterstitialAd(
+        onShown: () {
+          unawaited(LessonCompletionAdGate.instance.markInterstitialShown());
+        },
         onDismissed: () {
+          handledByInterstitialCallback = true;
           if (!mounted) return;
           _navigateAfterModuleCompletion(lesson, currentIndex);
         },
       );
-      return;
+      if (adShown || handledByInterstitialCallback) return;
     }
 
     AdService.instance.loadInterstitialAd();

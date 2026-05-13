@@ -6358,39 +6358,23 @@ const List<LessonContent> lessons = [
           TextBlock(
             'A classic greedy example is making change. Suppose you want to give someone 37 cents in change using old Canadian coins: '
             'quarters (25 cents), dimes (10 cents), nickels (5 cents), and pennies (1 cent). '
+            'The denomination set is 25, 10, 5, and 1 cents. '
             'The greedy strategy is to pick the largest available coin at each step.',
           ),
-          MathBlock(
-            r'\text{coins } = \{25,\, 10,\, 5,\, 1\}',
-            semanticsLabel: 'Canadian coin denominations',
-          ),
           TextBlock(
-            'Working through 37 cents greedily: pick a quarter (25 cents), leaving 12 cents remaining. '
+            'Working through 37 cents greedily gives 37 = 25 + 10 + 1 + 1. '
+            'Pick a quarter (25 cents), leaving 12 cents remaining. '
             'Then pick a dime (10 cents), leaving 2 cents. '
-            'Then pick a nickel (5 cents) is too much, so pick a penny (1 cent), leaving 1 cent. '
+            'A nickel (5 cents) is too much, so pick a penny (1 cent), leaving 1 cent. '
             'Pick one more penny, leaving 0 cents. '
             'The result is four coins: one quarter, one dime, and two pennies.',
-          ),
-          MathBlock(
-            r'37 = 25 + 10 + 1 + 1',
-            semanticsLabel: 'greedy coin decomposition for 37 cents',
           ),
           TextBlock(
             'It is not hard to verify this is the minimum number of coins for this denomination system. '
             'But the greedy strategy does not always win. '
             'Consider a hypothetical Canadian Mint that issues coins in denominations of eleven cents, five cents, and one cent. '
-            'If you need to make 15 cents, the greedy approach picks an eleven-cent coin first, then four one-cent coins: five coins in total.',
-          ),
-          MathBlock(
-            r'15_{\text{greedy}} = 11 + 1 + 1 + 1 + 1',
-            semanticsLabel: 'greedy approach to 15 cents uses five coins',
-          ),
-          TextBlock(
-            'However, three five-cent coins give exactly 15 cents in just three coins.',
-          ),
-          MathBlock(
-            r'15_{\text{optimal}} = 5 + 5 + 5',
-            semanticsLabel: 'optimal approach to 15 cents uses three coins',
+            'If you need to make 15 cents, greedy gives 15 = 11 + 1 + 1 + 1 + 1, five coins total. '
+            'The optimal answer is 15 = 5 + 5 + 5, just three coins.',
           ),
           TextBlock(
             'The greedy strategy fails here because the locally optimal first choice (pick eleven cents) blocks a better overall solution. '
@@ -6648,16 +6632,12 @@ const List<LessonContent> lessons = [
             'we add all but one vertex to the tree, giving us V removals from the min-heap, '
             'and we check and potentially update priorities E times (once for every edge).',
           ),
-          MathBlock(
-            r'\text{Time complexity} = (|V| - 1 + |E|) \cdot O(\log |V|) = O(|E| \log |V|)',
-            semanticsLabel: 'Prim\'s algorithm time complexity using min-heap',
-          ),
           TextBlock(
-            'The cost of removing an element from a min-heap is O(log V) and the cost of changing an element\'s priority is also O(log V). '
-            'Since we perform V minus 1 removals and E priority updates, the total time is Theta(E log V). '
+            'The cost of removing an element from a min-heap is O(log V), and the cost of changing an element\'s priority is also O(log V). '
+            'Putting those costs together gives O((V + E) log V), which simplifies to O(E log V) for connected graphs. '
             'Why does the expression simplify to just E log V? '
             'For any connected graph, the number of edges is at least the number of vertices minus 1, so V is O(E). '
-            'Therefore the (V plus E) factor is dominated by E asymptotically.',
+            'Therefore the V plus E factor is dominated by E asymptotically.',
           ),
           QuizBlock(
             question:
@@ -6793,10 +6773,6 @@ const List<LessonContent> lessons = [
             'For a connected graph where E is at least V minus 1, this simplifies to O(E log V). '
             'This is the exact same efficiency class as Prim\'s algorithm.',
           ),
-          MathBlock(
-            r'T(V, E) = O(V + E \log V)',
-            semanticsLabel: 'Kruskal\'s algorithm time complexity',
-          ),
           QuizBlock(
             question:
                 'What is the time complexity of Kruskal\'s algorithm for a connected graph?',
@@ -6866,10 +6842,6 @@ const List<LessonContent> lessons = [
             'At each step, Dijkstra\'s looks at all nodes in the fringe (nodes adjacent to the current tree but not yet added), '
             'calculates the total distance from the source to each fringe node via the current tree, '
             'and greedily adds the node with the smallest total distance from the source.',
-          ),
-          MathBlock(
-            r'O(|E| \log |V|)',
-            semanticsLabel: 'Dijkstra algorithm time complexity with min-heap',
           ),
           TextBlock(
             'Because the underlying structure and mechanics are practically identical to Prim\'s algorithm, '
@@ -7094,11 +7066,7 @@ const List<LessonContent> lessons = [
             'This strategy works because every unit of weight in the knapsack should be used as efficiently as possible. '
             'If one item gives more value per unit weight than another, then it is always better to use the remaining space on that item first. '
             'Because fractions are allowed, we never get trapped by an all-or-nothing decision. '
-            'This is exactly why the fractional version is much easier than the 0/1 knapsack problem, where greedy does not always work.',
-          ),
-          MathBlock(
-            r'O(n \log n)',
-            semanticsLabel: 'Fractional knapsack time complexity',
+            'This is exactly why the fractional version is much easier than the zero-one knapsack problem, where greedy does not always work.',
           ),
           TextBlock(
             'Suppose the knapsack has capacity W equals 50, and we have three items: '
@@ -7117,16 +7085,16 @@ const List<LessonContent> lessons = [
           ),
           QuizBlock(
             question:
-                'What is the key difference between 0/1 knapsack and fractional knapsack?',
+                'What is the key difference between zero-one knapsack and fractional knapsack?',
             options: [
-              '0/1 knapsack allows fractions, fractional knapsack does not',
-              '0/1 knapsack requires binary decisions, fractional knapsack allows partial items',
-              'Fractional knapsack requires more items than 0/1 knapsack',
+              'Zero-one knapsack allows fractions, fractional knapsack does not',
+              'Zero-one knapsack requires binary decisions, fractional knapsack allows partial items',
+              'Fractional knapsack requires more items than zero-one knapsack',
               'The two problems have identical greedy strategies',
             ],
             correctIndex: 1,
             explanation:
-                'In 0/1 knapsack, each item must be taken in its entirety or left out. '
+                'In zero-one knapsack, each item must be taken in its entirety or left out. '
                 'In fractional knapsack, any fraction of an item can be taken. '
                 'This flexibility allows greedy to work in the fractional version.',
           ),
@@ -7145,18 +7113,18 @@ const List<LessonContent> lessons = [
           ),
           QuizBlock(
             question:
-                'Why does greedy work for fractional knapsack but not always for 0/1 knapsack?',
+                'Why does greedy work for fractional knapsack but not always for zero-one knapsack?',
             options: [
               'Because fractional knapsack has fewer items',
               'Because fractions are allowed, every unit of weight can be used optimally without all-or-nothing commitment',
-              'Because 0/1 knapsack requires sorting but fractional does not',
+              'Because zero-one knapsack requires sorting but fractional does not',
               'Because fractional knapsack always has integer weights',
             ],
             correctIndex: 1,
             explanation:
                 'Because fractions are allowed, we are never forced into an irreversible all-or-nothing decision. '
                 'Every unit of remaining capacity can always be filled with the highest-value-per-weight item available, '
-                'which guarantees optimality. In 0/1 knapsack, taking an item precludes taking other items, '
+                'which guarantees optimality. In zero-one knapsack, taking an item precludes taking other items, '
                 'and the greedy choice can lead to suboptimal bundles.',
           ),
           QuizBlock(
@@ -7173,7 +7141,7 @@ const List<LessonContent> lessons = [
                 'The sorting step dominates, giving O(n log n) total.',
           ),
           KeyTakeawayBlock(
-            'Fractional knapsack allows taking any fraction of an item, unlike 0/1 knapsack where items are all-or-nothing. '
+            'Fractional knapsack allows taking any fraction of an item, unlike zero-one knapsack where items are all-or-nothing. '
             'The greedy strategy computes the value-to-weight ratio for each item, sorts in decreasing order, '
             'and takes as much as possible of the highest-ratio item first. '
             'This always yields an optimal solution in O(n log n) time. '
