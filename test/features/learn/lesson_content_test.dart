@@ -2437,8 +2437,8 @@ void main() {
       expect(lesson11.categoryColor, '#F59E0B');
     });
 
-    test('has 4 modules', () {
-      expect(lesson11.modules.length, 4);
+    test('has 5 modules', () {
+      expect(lesson11.modules.length, 5);
     });
 
     String combinedText11(List<ContentBlock> blocks) {
@@ -2556,6 +2556,28 @@ void main() {
       expect(combined.toLowerCase(), contains('kruskal'));
       expect(combined.toLowerCase(), contains('union'));
       expect(combined.toLowerCase(), contains('forest'));
+    });
+
+    test('Module 5 covers Dijkstra\'s shortest path algorithm', () {
+      final module = lesson11.modules[4];
+      expect(module.id, 'lesson11_module5');
+      expect(module.title, "Dijkstra's Shortest Path Algorithm");
+      expect(module.order, 4);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(1),
+      );
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(1));
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = combinedText11(blocks);
+      expect(combined.toLowerCase(), contains('dijkstra'));
+      expect(combined.toLowerCase(), contains('shortest path'));
+      expect(combined.toLowerCase(), contains('nonnegative'));
     });
   });
 

@@ -6821,6 +6821,130 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+      ModuleContent(
+        id: 'lesson11_module5',
+        title: "Dijkstra's Shortest Path Algorithm",
+        order: 4,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'In this final module of Lesson 11, we explore another famous greedy algorithm: Dijkstra\'s algorithm. '
+            'Instead of finding a minimum spanning tree, Dijkstra\'s algorithm solves the Single-Source Shortest Path problem.',
+          ),
+          DefinitionBlock(
+            term: 'Shortest Path',
+            definition:
+                'Given two vertices x and y in a weighted graph, the shortest path between them is the path whose total edge weight is minimum among all possible paths from x to y. '
+                'The weight of a path is the sum of the weights of all edges in that path.',
+          ),
+          TextBlock(
+            'The Single-Source Shortest Path problem is defined as follows: '
+            'Given a weighted graph with nonnegative edge weights and a fixed source vertex s, '
+            'find the shortest path from s to every other vertex in the graph. '
+            'A real-world example: the source is a central warehouse, and we want to find the most efficient delivery route to every individual franchise store in a city.',
+          ),
+          TextBlock(
+            'Dijkstra\'s algorithm is structurally very similar to Prim\'s algorithm. '
+            'Could we just run Prim\'s algorithm to find the minimum spanning tree and use those paths as our shortest routes? '
+            'No. While Prim\'s creates a tree where the total sum of all edges is minimal, '
+            'it does not guarantee that the path from the root to any specific node is the shortest possible path.',
+          ),
+          TextBlock(
+            'Consider a hexagon graph with vertices A, B, C, D, E, F arranged in a ring. '
+            'The path A to F going around the hexagon A, B, C, D, E, F consists of five edges each of weight 10, for a total path weight of 50. '
+            'There is also a direct edge from A to F with weight 20. '
+            'Prim\'s algorithm will select the five edges of weight 10 each because adding five edges of weight 10 (total 50) is cheaper than adding the single edge of weight 20. '
+            'But if you want to travel from A to F, the direct edge of weight 20 is much shorter than going around the perimeter (weight 50). '
+            'Prim\'s tree is optimal for total tree weight, but not for individual shortest paths from the root.',
+          ),
+          TextBlock(
+            'How Dijkstra\'s algorithm works: '
+            'Like Prim\'s, Dijkstra\'s grows a tree outward from the source node greedily. '
+            'The crucial difference is this: '
+            'Prim\'s chooses the next vertex based on how close it is to the tree (the cheapest single edge attached to any node currently in the tree). '
+            'Dijkstra\'s chooses the next vertex based on how close it is to the root (the cheapest total accumulated path from the source). '
+            'At each step, Dijkstra\'s looks at all nodes in the fringe (nodes adjacent to the current tree but not yet added), '
+            'calculates the total distance from the source to each fringe node via the current tree, '
+            'and greedily adds the node with the smallest total distance from the source.',
+          ),
+          MathBlock(
+            r'O(|E| \log |V|)',
+            semanticsLabel: 'Dijkstra algorithm time complexity with min-heap',
+          ),
+          TextBlock(
+            'Because the underlying structure and mechanics are practically identical to Prim\'s algorithm, '
+            'the efficiency analysis is the same. '
+            'Using an adjacency list representation of the graph and a min-heap to manage the fringe vertices, '
+            'Dijkstra\'s algorithm runs in O(E log V) time. '
+            'This efficiency assumes all edge weights are nonnegative, '
+            'which is a strict requirement for Dijkstra\'s algorithm to work correctly.',
+          ),
+          QuizBlock(
+            question: 'What problem does Dijkstra\'s algorithm solve?',
+            options: [
+              'Finding the minimum spanning tree of a graph',
+              'Finding the shortest path from a single source to all other vertices',
+              'Sorting all edges in a graph by weight',
+              'Finding the longest path in a weighted graph',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Dijkstra\'s algorithm solves the Single-Source Shortest Path problem: '
+                'given a source vertex, it finds the shortest path from that source to every other vertex in the graph.',
+          ),
+          QuizBlock(
+            question:
+                'Why can Prim\'s algorithm not be used to find shortest paths from a source vertex?',
+            options: [
+              'Prim\'s algorithm only works on undirected graphs',
+              'Prim\'s minimizes total tree weight, not individual path weights from the root',
+              'Prim\'s algorithm requires edge weights to be sorted first',
+              'Prim\'s algorithm always selects the globally heaviest edges',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Prim\'s builds a tree that minimizes the sum of all edge weights. '
+                'But the shortest path from the root to a specific vertex may use a heavier edge that connects directly to the root, '
+                'rather than a path of many lighter edges through intermediate vertices.',
+          ),
+          QuizBlock(
+            question:
+                'What is the key difference between how Prim\'s and Dijkstra\'s algorithms select the next vertex?',
+            options: [
+              'Prim\'s uses a max-heap, Dijkstra\'s uses a min-heap',
+              'Prim\'s selects the vertex closest to the growing tree, Dijkstra\'s selects the vertex with the smallest total distance from the source',
+              'Prim\'s selects vertices in random order, Dijkstra\'s selects them in sorted order by vertex label',
+              'The two algorithms select vertices identically, the only difference is the graph representation',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Prim\'s greedy measure is the cheapest edge connecting the tree to an outside vertex. '
+                'Dijkstra\'s greedy measure is the total accumulated distance from the source to each fringe vertex. '
+                'This difference allows Dijkstra\'s to find shortest paths while Prim\'s finds a minimum spanning tree.',
+          ),
+          QuizBlock(
+            question:
+                'Why is the nonnegativity of edge weights a strict requirement for Dijkstra\'s algorithm?',
+            options: [
+              'Because negative weights would cause the min-heap to fail',
+              'Because with negative weights, the greedy choice of smallest accumulated distance can later be improved by a negative edge, breaking optimality',
+              'Because Dijkstra\'s algorithm sorts edges by weight and negative weights are not allowed in sorting',
+              'Because negative weights create cycles that Dijkstra\'s cannot handle',
+            ],
+            correctIndex: 1,
+            explanation:
+                'If edge weights can be negative, choosing the smallest accumulated distance at each step is not safe. '
+                'A later negative-weight edge could dramatically reduce the total distance to a vertex that was already added to the tree, '
+                'making the greedy approach fail. Dijkstra\'s algorithm requires nonnegative edge weights to guarantee correctness.',
+          ),
+          KeyTakeawayBlock(
+            'Dijkstra\'s algorithm solves the single-source shortest path problem with nonnegative edge weights. '
+            'It grows a tree from the source, at each step adding the fringe vertex with the smallest total accumulated distance from the source. '
+            'Unlike Prim\'s, which picks the cheapest edge to the tree, Dijkstra\'s picks the vertex with the cheapest path from the source. '
+            'Time complexity is O(E log V), the same as Prim\'s, but the greedy criterion is fundamentally different.',
+          ),
+        ],
+      ),
     ],
   ),
 
