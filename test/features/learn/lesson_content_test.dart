@@ -2437,8 +2437,8 @@ void main() {
       expect(lesson11.categoryColor, '#F59E0B');
     });
 
-    test('has 2 modules', () {
-      expect(lesson11.modules.length, 2);
+    test('has 3 modules', () {
+      expect(lesson11.modules.length, 3);
     });
 
     String combinedText11(List<ContentBlock> blocks) {
@@ -2516,6 +2516,24 @@ void main() {
         expect(combined, isNot(contains(';')));
         expect(combined, isNot(contains(' - ')));
       }
+    });
+
+    test('Module 3 covers optimality and analysis of Prim\'s algorithm', () {
+      final module = lesson11.modules[2];
+      expect(module.id, 'lesson11_module3');
+      expect(module.title, 'Optimality and Analysis of Prim\'s Algorithm');
+      expect(module.order, 2);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(1));
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = combinedText11(blocks);
+      expect(combined.toLowerCase(), contains('cut property'));
+      expect(combined.toLowerCase(), contains('optimal'));
+      expect(combined.toLowerCase(), contains('log'));
     });
   });
 

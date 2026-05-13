@@ -6565,6 +6565,136 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+      ModuleContent(
+        id: 'lesson11_module3',
+        title: 'Optimality and Analysis of Prim\'s Algorithm',
+        order: 2,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'In this module we answer two critical questions about Prim\'s algorithm: '
+            'Does it actually work? (Optimality) '
+            'How efficient is it? (Analysis)',
+          ),
+          TextBlock(
+            'Because of how Prim\'s algorithm operates, it is obvious that the result is a spanning tree '
+            '(it connects all vertices and creates no cycles). '
+            'But is it truly the minimum spanning tree? '
+            'With greedy algorithms, doing the locally optimal short-term choice does not always yield the globally optimal solution.',
+          ),
+          TextBlock(
+            'To prove that Prim\'s algorithm is optimal, we introduce the cut property. '
+            'Let S be any subset of nodes that is neither empty nor equal to all of the vertices. '
+            'Let edge e be the minimum weight edge with one endpoint in S and the other in the complement of S. '
+            'Then every minimum spanning tree must contain the edge e. '
+            'This theorem assumes all edge weights are distinct for a cleaner proof.',
+          ),
+          TextBlock(
+            'The proof works as follows: '
+            'Suppose there is a spanning tree T that does not contain e. '
+            'We show we can make a cheaper tree by swapping an edge for e. '
+            'Since T is a spanning tree, the endpoints of e are already connected by some path in T. '
+            'Because one endpoint is in S and the other is outside S, that path must cross the boundary between S and its complement. '
+            'Call the first edge on that path that crosses the boundary e prime. '
+            'Now swap e prime out of T and put e in. '
+            'The new tree T prime is still a spanning tree (it still connects all vertices). '
+            'It is cheaper because e has smaller weight than e prime, since e was defined as the minimum weight edge crossing that cut. '
+            'Therefore any tree without e cannot be the minimum spanning tree.',
+          ),
+          TextBlock(
+            'Applying the cut property to Prim\'s algorithm: '
+            'At every step of Prim\'s algorithm, the vertices already added to the tree form the set S. '
+            'The unadded vertices form the complement of S. '
+            'Prim\'s algorithm explicitly chooses the minimum weight edge connecting S to its complement. '
+            'Because of the cut property, every edge Prim\'s chooses must be part of the minimum spanning tree. '
+            'Thus Prim\'s algorithm is optimal.',
+          ),
+          QuizBlock(
+            question:
+                'What does the cut property state about the minimum weight edge crossing a cut?',
+            options: [
+              'It may or may not be part of the minimum spanning tree, depending on the graph',
+              'It is always part of every spanning tree, not just the minimum one',
+              'Every minimum spanning tree must contain it',
+              'It can only appear as a leaf in the minimum spanning tree',
+            ],
+            correctIndex: 2,
+            explanation:
+                'The cut property states that for any cut (a partition of vertices into two non-empty sets), '
+                'the minimum weight edge crossing that cut belongs to every minimum spanning tree. '
+                'This is the foundation for proving Prim\'s algorithm optimal.',
+          ),
+          QuizBlock(
+            question:
+                'In the proof of the cut property, why is the new tree T prime cheaper than T?',
+            options: [
+              'Because removing e prime reduces the total number of edges',
+              'Because e has smaller weight than e prime, so swapping e prime for e reduces total weight',
+              'Because adding e creates a cycle that can be simplified',
+              'Because e prime was the heaviest edge in the original tree',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Since e is defined as the minimum weight edge crossing the cut, its weight is strictly less than e prime\'s weight. '
+                'The new tree T prime has weight equal to weight of T minus weight of e prime plus weight of e, '
+                'which is strictly less than the weight of T.',
+          ),
+          TextBlock(
+            'To analyze efficiency, we consider implementation details. '
+            'At every step, Prim\'s algorithm needs to find the cheapest edge connecting to the unvisited vertices. '
+            'A min-heap (priority queue) is highly efficient for this. '
+            'In a min-heap, the element with the smallest priority value is at the root. '
+            'If we use an adjacency linked list to represent the graph and a min-heap to manage the priority queue, '
+            'we add all but one vertex to the tree, giving us V removals from the min-heap, '
+            'and we check and potentially update priorities E times (once for every edge).',
+          ),
+          MathBlock(
+            r'\text{Time complexity} = (|V| - 1 + |E|) \cdot O(\log |V|) = O(|E| \log |V|)',
+            semanticsLabel: 'Prim\'s algorithm time complexity using min-heap',
+          ),
+          TextBlock(
+            'The cost of removing an element from a min-heap is O(log V) and the cost of changing an element\'s priority is also O(log V). '
+            'Since we perform V minus 1 removals and E priority updates, the total time is Theta(E log V). '
+            'Why does the expression simplify to just E log V? '
+            'For any connected graph, the number of edges is at least the number of vertices minus 1, so V is O(E). '
+            'Therefore the (V plus E) factor is dominated by E asymptotically.',
+          ),
+          QuizBlock(
+            question:
+                'What is the time complexity of Prim\'s algorithm when implemented with a min-heap?',
+            options: [
+              'Theta(V squared)',
+              'Theta(E log V)',
+              'Theta(V log E)',
+              'Theta(E plus V)',
+            ],
+            correctIndex: 1,
+            explanation:
+                'With a min-heap, we perform V minus 1 removals and E decrease-key operations, each costing O(log V). '
+                'The total is O((V plus E) log V) which simplifies to O(E log V) because E dominates V in a connected graph.',
+          ),
+          QuizBlock(
+            question:
+                'In the proof of the cut property, why does the path between the endpoints of e cross the boundary between S and its complement?',
+            options: [
+              'Because all edges in a spanning tree cross a cut exactly once',
+              'Because one endpoint is in S and the other is in the complement, and the path must stay within each set',
+              'Because the cut property requires this by definition',
+              'Because Prim\'s algorithm always chooses edges that cross the cut',
+            ],
+            correctIndex: 1,
+            explanation:
+                'If one endpoint of e is in S and the other is outside S, any path connecting them in the spanning tree must at some point leave S and enter its complement, '
+                'since the two sets are disconnected. That crossing point is the edge e prime.',
+          ),
+          KeyTakeawayBlock(
+            'Prim\'s algorithm is optimal: at every step it adds the cheapest edge crossing the current cut, '
+            'and by the cut property that edge belongs to every minimum spanning tree. '
+            'With a min-heap implementation, Prim\'s runs in Theta(E log V) time. '
+            'The cut property is the theoretical foundation that makes the greedy approach work for MST.',
+          ),
+        ],
+      ),
     ],
   ),
 
