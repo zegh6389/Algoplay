@@ -6333,12 +6333,126 @@ const List<LessonContent> lessons = [
     ],
   ),
 
-  // ── Lesson 11 (stub) ──────────────────────────────────────────────────────
+  // ── Lesson 11 (fully populated) ────────────────────────────────────────────
   LessonContent(
     id: 11,
     title: 'Greedy Algorithms',
     categoryColor: '#F59E0B',
-    modules: [],
+    modules: [
+      ModuleContent(
+        id: 'lesson11_module1',
+        title: 'Introduction to Greedy Algorithms',
+        order: 0,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'In this lesson we explore one of the most intuitive algorithm design techniques: greedy algorithms. '
+            'With a greedy approach, you make the choice that looks best right now, without worrying about how that decision affects the future. '
+            'You build the solution one piece at a time, and at each step you pick the locally optimal option.',
+          ),
+          TextBlock(
+            'The surprising part is that this short-sighted strategy sometimes produces the globally optimal solution. '
+            'Greedy algorithms work best on optimization problems where a local optimum somehow adds up to a global optimum. '
+            'When the technique succeeds, it gives us fast and simple algorithms. When it fails, we need a different approach.',
+          ),
+          TextBlock(
+            'A classic greedy example is making change. Suppose you want to give someone 37 cents in change using old Canadian coins: '
+            'quarters (25 cents), dimes (10 cents), nickels (5 cents), and pennies (1 cent). '
+            'The greedy strategy is to pick the largest available coin at each step.',
+          ),
+          MathBlock(
+            r'\text{coins } = \{25,\, 10,\, 5,\, 1\}',
+            semanticsLabel: 'Canadian coin denominations',
+          ),
+          TextBlock(
+            'Working through 37 cents greedily: pick a quarter (25 cents), leaving 12 cents remaining. '
+            'Then pick a dime (10 cents), leaving 2 cents. '
+            'Then pick a nickel (5 cents) is too much, so pick a penny (1 cent), leaving 1 cent. '
+            'Pick one more penny, leaving 0 cents. '
+            'The result is four coins: one quarter, one dime, and two pennies.',
+          ),
+          MathBlock(
+            r'37 = 25 + 10 + 1 + 1',
+            semanticsLabel: 'greedy coin decomposition for 37 cents',
+          ),
+          TextBlock(
+            'It is not hard to verify this is the minimum number of coins for this denomination system. '
+            'But the greedy strategy does not always win. '
+            'Consider a hypothetical Canadian Mint that issues coins in denominations of eleven cents, five cents, and one cent. '
+            'If you need to make 15 cents, the greedy approach picks an eleven-cent coin first, then four one-cent coins: five coins in total.',
+          ),
+          MathBlock(
+            r'15_{\text{greedy}} = 11 + 1 + 1 + 1 + 1',
+            semanticsLabel: 'greedy approach to 15 cents uses five coins',
+          ),
+          TextBlock(
+            'However, three five-cent coins give exactly 15 cents in just three coins.',
+          ),
+          MathBlock(
+            r'15_{\text{optimal}} = 5 + 5 + 5',
+            semanticsLabel: 'optimal approach to 15 cents uses three coins',
+          ),
+          TextBlock(
+            'The greedy strategy fails here because the locally optimal first choice (pick eleven cents) blocks a better overall solution. '
+            'Whether a greedy approach works depends on the specific problem and the structure of its options. '
+            'Two properties often determine success: the greedy choice property (a globally optimal solution can be reached by always choosing the locally optimal option) '
+            'and optimal substructure (an optimal solution contains optimal solutions to its subproblems).',
+          ),
+          DefinitionBlock(
+            term: 'Greedy Algorithm',
+            definition:
+                'An algorithm that builds a solution by making the best local choice at each step, '
+                'with the hope that these choices lead to a globally optimal solution. '
+                'Greedy algorithms never revisit a decision once it is made.',
+          ),
+          QuizBlock(
+            question:
+                'Why does the greedy strategy fail for making 15 cents with coins of denominations 11, 5, and 1?',
+            options: [
+              'The greedy algorithm picks too few coins in the first step',
+              'The locally optimal first choice (11 cents) prevents a better combination of coins from being reached',
+              'The denomination set does not include a 10-cent coin',
+              'Greedy algorithms can only be used with a base-10 coin system',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Greedy makes 11 + 1 + 1 + 1 + 1 = 15 (five coins), but 5 + 5 + 5 = 15 (three coins). '
+                'The first choice of 11 cents is locally optimal but leaves a remainder that cannot be solved efficiently with the remaining denominations.',
+          ),
+          QuizBlock(
+            question:
+                'What are the two key properties that determine whether a greedy algorithm will produce an optimal solution?',
+            options: [
+              'Recursion depth and base case coverage',
+              'Greedy choice property and optimal substructure',
+              'Time complexity and space complexity',
+              'Divide and conquer compatibility and memoization readiness',
+            ],
+            correctIndex: 1,
+            explanation:
+                'The greedy choice property means a locally optimal step leads to a globally optimal solution. '
+                'Optimal substructure means an optimal solution to the whole problem contains optimal solutions to its subproblems.',
+          ),
+          QuizBlock(
+            question:
+                'For which of these amounts does the greedy algorithm produce the optimal coin count using denominations 11, 5, and 1?',
+            options: ['16 cents', '20 cents', '25 cents', '30 cents'],
+            correctIndex: 0,
+            explanation:
+                'For 16 cents: greedy picks 11 + 5 = 2 coins, which is optimal. '
+                'For 20 cents: greedy picks 11 + 5 + 1 + 1 + 1 + 1 = 6 coins, but 5 + 5 + 5 + 5 = 4 coins. '
+                'For 25 cents: greedy picks 11 five times = 5 coins, but 5 + 5 + 5 + 5 + 5 = 5 coins is tied. '
+                'For 30 cents: greedy picks 11 + 11 + 5 + 1 + 1 + 1 = 6 coins, but 5 times 6 = 30 in 5 coins.',
+          ),
+          KeyTakeawayBlock(
+            'Greedy algorithms make the best local choice at each step without considering future consequences. '
+            'They succeed when the problem has the greedy choice property and optimal substructure, '
+            'but fail when a locally optimal step blocks a better overall solution. '
+            'Knowing when to apply greedy versus a more exhaustive technique is a core algorithm design skill.',
+          ),
+        ],
+      ),
+    ],
   ),
 
   // ── Lesson 12 (stub) ──────────────────────────────────────────────────────

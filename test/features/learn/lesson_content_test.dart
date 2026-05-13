@@ -2422,6 +2422,79 @@ void main() {
     });
   });
 
+  group('Lesson 11', () {
+    final lesson11 = lessons[10]; // 0-indexed
+
+    test('id is 11', () {
+      expect(lesson11.id, 11);
+    });
+
+    test('title is Greedy Algorithms', () {
+      expect(lesson11.title, 'Greedy Algorithms');
+    });
+
+    test('categoryColor is F59E0B', () {
+      expect(lesson11.categoryColor, '#F59E0B');
+    });
+
+    test('has 1 module', () {
+      expect(lesson11.modules.length, 1);
+    });
+
+    String combinedText11(List<ContentBlock> blocks) {
+      final prose = StringBuffer();
+      for (final block in blocks) {
+        if (block is TextBlock) prose.write('${block.text} ');
+        if (block is DefinitionBlock)
+          prose.write('${block.term} ${block.definition} ');
+        if (block is QuizBlock) {
+          prose.write('${block.question} ');
+          for (final o in block.options) prose.write('$o ');
+          prose.write('${block.explanation} ');
+        }
+        if (block is KeyTakeawayBlock) prose.write('${block.text} ');
+      }
+      return prose.toString();
+    }
+
+    test(
+      'Module 1 introduces greedy algorithms with the coin change example',
+      () {
+        final module = lesson11.modules[0];
+        expect(module.id, 'lesson11_module1');
+        expect(module.title, 'Introduction to Greedy Algorithms');
+        expect(module.order, 0);
+        expect(module.algorithmId, isNull);
+
+        final blocks = module.contentBlocks;
+        expect(
+          blocks.whereType<DefinitionBlock>().length,
+          greaterThanOrEqualTo(1),
+        );
+        expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(1));
+        expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
+        expect(blocks.last, isA<KeyTakeawayBlock>());
+
+        final combined = combinedText11(blocks);
+        expect(combined.toLowerCase(), contains('greedy'));
+        expect(combined.toLowerCase(), contains('coin'));
+        expect(combined.toLowerCase(), contains('optimal'));
+      },
+    );
+
+    test('Lesson 11 prose uses readable math notation', () {
+      final combined = combinedText11(lesson11.modules[0].contentBlocks);
+      expect(combined, isNot(contains('n^2')));
+    });
+
+    test('Lesson 11 prose avoids AI punctuation tells', () {
+      final combined = combinedText11(lesson11.modules[0].contentBlocks);
+      expect(combined, isNot(contains('\u2014')));
+      expect(combined, isNot(contains(';')));
+      expect(combined, isNot(contains(' - ')));
+    });
+  });
+
   group('ContentBlock subclasses', () {
     test('TextBlock holds text', () {
       const block = TextBlock('hello');
