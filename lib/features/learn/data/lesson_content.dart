@@ -7191,12 +7191,4 @@ const List<LessonContent> lessons = [
       ),
     ],
   ),
-
-  // ── Lesson 12 (stub) ──────────────────────────────────────────────────────
-  LessonContent(
-    id: 12,
-    title: 'Advanced Topics',
-    categoryColor: '#10B981',
-    modules: [],
-  ),
 ];
