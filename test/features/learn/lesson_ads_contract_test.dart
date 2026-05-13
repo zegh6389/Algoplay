@@ -106,6 +106,16 @@ void main() {
       expect(inlineAd, contains('ref.watch(adFreeProvider)'));
       expect(inlineAd, contains('AdService.instance.getBannerAd()'));
       expect(adService, contains('banner skipped — MobileAds not initialized'));
+      expect(
+        adService,
+        contains('ConsentInformation.instance.requestConsentInfoUpdate'),
+      );
+      expect(
+        adService,
+        contains('ConsentForm.loadAndShowConsentFormIfRequired'),
+      );
+      expect(adService, contains('canRequestAds()'));
+      expect(adService, contains('MobileAds skipped — consent not ready'));
       expect(adService, contains('bool get hasCachedInterstitialAd'));
       expect(
         adService,

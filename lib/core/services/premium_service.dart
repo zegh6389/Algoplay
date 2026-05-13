@@ -26,11 +26,15 @@ class PremiumService {
   bool _isPremium = false;
   String? _purchaseReceipt;
   bool _initialized = false;
+  final ValueNotifier<bool> _premiumNotifier = ValueNotifier<bool>(false);
 
   // ── Public getters ───────────────────────────────────────────────────────
 
   /// Whether the current user has unlocked premium (shorthand getter).
   bool get isPremium => _isPremium;
+
+  /// Notifies UI state when a purchase or restore actually unlocks premium.
+  ValueListenable<bool> get premiumListenable => _premiumNotifier;
 
   /// Whether [initialize] has completed.
   bool get isInitialized => _initialized;
@@ -47,6 +51,7 @@ class PremiumService {
     try {
       final prefs = await SharedPreferences.getInstance();
       _isPremium = prefs.getBool(_kPremiumKey) ?? false;
+      _premiumNotifier.value = _isPremium;
       _purchaseReceipt = prefs.getString(_kReceiptKey);
       _initialized = true;
       if (kDebugMode) {
@@ -57,6 +62,7 @@ class PremiumService {
         debugPrint('[PremiumService] initialize error: $e');
       }
       _isPremium = false;
+      _premiumNotifier.value = false;
       _initialized = true;
     }
   }
@@ -71,6 +77,7 @@ class PremiumService {
   /// Sets the premium flag and persists it immediately.
   Future<void> setPremium(bool value) async {
     _isPremium = value;
+    _premiumNotifier.value = value;
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_kPremiumKey, value);
@@ -103,6 +110,7 @@ class PremiumService {
   /// Clears all premium state (useful for logout / debug).
   Future<void> clear() async {
     _isPremium = false;
+    _premiumNotifier.value = false;
     _purchaseReceipt = null;
     try {
       final prefs = await SharedPreferences.getInstance();

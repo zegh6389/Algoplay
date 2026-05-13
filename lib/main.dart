@@ -16,22 +16,43 @@ void main() async {
   await AdService.instance.init();
   await IAPService.instance.initialize();
 
-  runApp(
-    const ProviderScope(
-      child: AlgoplayApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: AlgoplayApp()));
 }
 
 /// Root widget for the Algoplay application.
-class AlgoplayApp extends ConsumerWidget {
+class AlgoplayApp extends ConsumerStatefulWidget {
   const AlgoplayApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // Sync Riverpod premium state with PremiumService on first build.
+  ConsumerState<AlgoplayApp> createState() => _AlgoplayAppState();
+}
+
+class _AlgoplayAppState extends ConsumerState<AlgoplayApp> {
+  late final VoidCallback _premiumListener;
+
+  @override
+  void initState() {
+    super.initState();
+    _premiumListener = () {
+      if (!mounted) return;
+      ref.read(premiumProvider.notifier).state =
+          PremiumService.instance.isPremium;
+    };
+    PremiumService.instance.premiumListenable.addListener(_premiumListener);
+  }
+
+  @override
+  void dispose() {
+    PremiumService.instance.premiumListenable.removeListener(_premiumListener);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Keep Riverpod premium state in sync with purchase/restore callbacks.
     if (ref.read(premiumProvider) != PremiumService.instance.isPremium) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
         ref.read(premiumProvider.notifier).state =
             PremiumService.instance.isPremium;
       });

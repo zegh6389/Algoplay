@@ -9,7 +9,6 @@ import '../../../../algorithms/searching/searching_algorithms.dart';
 import '../../../../algorithms/models/sort_step.dart';
 import '../../../../algorithms/models/search_step.dart';
 import '../../../../features/learn/data/algorithm_data.dart';
-import '../../../../shared/providers/app_providers.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 /// Playground Page — free-form algorithm sandbox.
@@ -60,10 +59,7 @@ class _PlaygroundPageState extends ConsumerState<PlaygroundPage> {
     'heap-sort',
   ];
 
-  static const _searchingAlgorithms = [
-    'linear-search',
-    'binary-search',
-  ];
+  static const _searchingAlgorithms = ['linear-search', 'binary-search'];
 
   @override
   void initState() {
@@ -82,7 +78,10 @@ class _PlaygroundPageState extends ConsumerState<PlaygroundPage> {
     final random = Random();
     if (_selectedCategory == AlgorithmCategory.searching) {
       // For searching, generate a sorted array
-      _array = List.generate(_arraySize, (i) => (i + 1) * random.nextInt(10) + 5);
+      _array = List.generate(
+        _arraySize,
+        (i) => (i + 1) * random.nextInt(10) + 5,
+      );
       _array.sort();
     } else {
       _array = List.generate(_arraySize, (_) => random.nextInt(100) + 5);
@@ -350,19 +349,10 @@ class _PlaygroundPageState extends ConsumerState<PlaygroundPage> {
                 ? Row(
                     children: [
                       // Visualization
-                      Expanded(
-                        flex: 3,
-                        child: _buildVisualization(),
-                      ),
+                      Expanded(flex: 3, child: _buildVisualization()),
                       // Pseudocode panel
-                      Container(
-                        width: 1,
-                        color: AppColors.sunken,
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: _buildPseudocodePanel(),
-                      ),
+                      Container(width: 1, color: AppColors.sunken),
+                      Expanded(flex: 2, child: _buildPseudocodePanel()),
                     ],
                   )
                 : _buildVisualization(),
@@ -416,7 +406,9 @@ class _PlaygroundPageState extends ConsumerState<PlaygroundPage> {
                       }
                     },
                     backgroundColor: AppColors.sunken,
-                    selectedColor: _getCategoryColor(cat).withValues(alpha: 0.2),
+                    selectedColor: _getCategoryColor(
+                      cat,
+                    ).withValues(alpha: 0.2),
                     checkmarkColor: _getCategoryColor(cat),
                     labelStyle: TextStyle(
                       fontSize: 13,
@@ -458,7 +450,9 @@ class _PlaygroundPageState extends ConsumerState<PlaygroundPage> {
                       }
                     },
                     backgroundColor: AppColors.canvas,
-                    selectedColor: _getCategoryColor(_selectedCategory).withValues(alpha: 0.15),
+                    selectedColor: _getCategoryColor(
+                      _selectedCategory,
+                    ).withValues(alpha: 0.15),
                     labelStyle: TextStyle(
                       fontSize: 12,
                       color: isSelected
@@ -478,55 +472,60 @@ class _PlaygroundPageState extends ConsumerState<PlaygroundPage> {
           const SizedBox(height: AppSpacing.sm),
 
           // Array size + speed controls
-          Row(
+          Wrap(
+            spacing: AppSpacing.md,
+            runSpacing: AppSpacing.sm,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              // Array size
-              const Text('Size:', style: TextStyle(fontSize: 12, color: AppColors.textMuted)),
-              const SizedBox(width: AppSpacing.sm),
-              SizedBox(
-                height: 28,
-                child: Row(
-                  children: [
-                    _MiniIconButton(
-                      icon: Icons.remove,
-                      onTap: () => _setArraySize(_arraySize - 1),
-                    ),
-                    Container(
-                      width: 32,
-                      alignment: Alignment.center,
-                      child: Text(
-                        '$_arraySize',
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'Size:',
+                    style: TextStyle(fontSize: 12, color: AppColors.textMuted),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  SizedBox(
+                    height: 28,
+                    child: Row(
+                      children: [
+                        _MiniIconButton(
+                          icon: Icons.remove,
+                          onTap: () => _setArraySize(_arraySize - 1),
                         ),
-                      ),
+                        Container(
+                          width: 32,
+                          alignment: Alignment.center,
+                          child: Text(
+                            '$_arraySize',
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        _MiniIconButton(
+                          icon: Icons.add,
+                          onTap: () => _setArraySize(_arraySize + 1),
+                        ),
+                      ],
                     ),
-                    _MiniIconButton(
-                      icon: Icons.add,
-                      onTap: () => _setArraySize(_arraySize + 1),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              const SizedBox(width: AppSpacing.lg),
-
-              // Shuffle
               TextButton.icon(
                 onPressed: _generateArray,
                 icon: const Icon(Icons.shuffle, size: 16),
                 label: const Text('Shuffle', style: TextStyle(fontSize: 12)),
                 style: TextButton.styleFrom(
                   foregroundColor: AppColors.textSecondary,
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                  ),
                   minimumSize: Size.zero,
                 ),
               ),
-
-              const Spacer(),
-
-              // Complexity info
-              if (_showComplexity) ...[
+              if (_showComplexity)
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.sm,
@@ -545,7 +544,6 @@ class _PlaygroundPageState extends ConsumerState<PlaygroundPage> {
                     ),
                   ),
                 ),
-              ],
             ],
           ),
         ],
@@ -563,8 +561,11 @@ class _PlaygroundPageState extends ConsumerState<PlaygroundPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.play_circle_outline,
-                size: 64, color: AppColors.textMuted),
+            const Icon(
+              Icons.play_circle_outline,
+              size: 64,
+              color: AppColors.textMuted,
+            ),
             const SizedBox(height: AppSpacing.md),
             const Text('Press play to start', style: AppTypography.body),
           ],
@@ -595,13 +596,13 @@ class _PlaygroundPageState extends ConsumerState<PlaygroundPage> {
       child: Column(
         children: [
           // Legend
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: AppSpacing.lg,
+            runSpacing: AppSpacing.sm,
             children: [
               _LegendDot(color: AppColors.primary500, label: 'Comparing'),
-              const SizedBox(width: AppSpacing.lg),
               _LegendDot(color: AppColors.solarAmber, label: 'Swapping'),
-              const SizedBox(width: AppSpacing.lg),
               _LegendDot(color: AppColors.success600, label: 'Sorted'),
             ],
           ),
@@ -609,51 +610,64 @@ class _PlaygroundPageState extends ConsumerState<PlaygroundPage> {
 
           // Bars
           Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: List.generate(arr.length, (i) {
-                final height = maxVal > 0 ? (arr[i] / maxVal) * 200 : 10.0;
-                final isSorted = sorted.contains(i);
-                final isComparing = comparing.contains(i);
-                final isSwapping = swapping.contains(i);
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                const horizontalPaddingPerBar = 4.0;
+                final baseBarWidth = _arraySize > 20
+                    ? 12.0
+                    : (_arraySize > 12 ? 20.0 : 28.0);
+                final maxBarWidth =
+                    (constraints.maxWidth / arr.length) -
+                    horizontalPaddingPerBar;
+                final barWidth = max(4.0, min(baseBarWidth, maxBarWidth));
 
-                Color color = AppColors.catSorting.withValues(alpha: 0.5);
-                if (isSorted) {
-                  color = AppColors.success600;
-                } else if (isSwapping) {
-                  color = AppColors.solarAmber;
-                } else if (isComparing) {
-                  color = AppColors.primary500;
-                }
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: List.generate(arr.length, (i) {
+                    final height = maxVal > 0 ? (arr[i] / maxVal) * 200 : 10.0;
+                    final isSorted = sorted.contains(i);
+                    final isComparing = comparing.contains(i);
+                    final isSwapping = swapping.contains(i);
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 2),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 150),
-                    width: _arraySize > 20 ? 12.0 : (_arraySize > 12 ? 20.0 : 28.0),
-                    height: height,
-                    decoration: BoxDecoration(
-                      color: color,
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(4),
-                      ),
-                    ),
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 2),
-                      child: Text(
-                        '${arr[i]}',
-                        style: TextStyle(
-                          fontSize: _arraySize > 15 ? 8 : 10,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
+                    Color color = AppColors.catSorting.withValues(alpha: 0.5);
+                    if (isSorted) {
+                      color = AppColors.success600;
+                    } else if (isSwapping) {
+                      color = AppColors.solarAmber;
+                    } else if (isComparing) {
+                      color = AppColors.primary500;
+                    }
+
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 150),
+                        width: barWidth,
+                        height: height,
+                        decoration: BoxDecoration(
+                          color: color,
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(4),
+                          ),
+                        ),
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: Text(
+                            '${arr[i]}',
+                            style: TextStyle(
+                              fontSize: _arraySize > 15 ? 8 : 10,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
+                    );
+                  }),
                 );
-              }),
+              },
             ),
           ),
         ],
@@ -676,13 +690,13 @@ class _PlaygroundPageState extends ConsumerState<PlaygroundPage> {
       child: Column(
         children: [
           // Legend
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: AppSpacing.lg,
+            runSpacing: AppSpacing.sm,
             children: [
               _LegendDot(color: AppColors.primary500, label: 'Current'),
-              const SizedBox(width: AppSpacing.lg),
               _LegendDot(color: AppColors.solarAmber, label: 'Search Range'),
-              const SizedBox(width: AppSpacing.lg),
               _LegendDot(color: AppColors.success600, label: 'Found'),
             ],
           ),
@@ -703,69 +717,83 @@ class _PlaygroundPageState extends ConsumerState<PlaygroundPage> {
 
           // Array cells
           Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: List.generate(arr.length, (i) {
-                final height = maxVal > 0 ? (arr[i] / maxVal) * 180 : 20.0;
-                final isCurrent = i == currentIndex;
-                final inRange = leftBound != null &&
-                    rightBound != null &&
-                    i >= leftBound &&
-                    i <= rightBound;
-                final isFound = found == true && i == currentIndex;
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                const horizontalPaddingPerCell = 4.0;
+                final baseCellWidth = _arraySize > 20
+                    ? 14.0
+                    : (_arraySize > 12 ? 28.0 : 40.0);
+                final maxCellWidth =
+                    (constraints.maxWidth / arr.length) -
+                    horizontalPaddingPerCell;
+                final cellWidth = max(8.0, min(baseCellWidth, maxCellWidth));
 
-                Color color = AppColors.catSearching.withValues(alpha: 0.3);
-                if (isFound) {
-                  color = AppColors.success600;
-                } else if (isCurrent) {
-                  color = AppColors.primary500;
-                } else if (inRange) {
-                  color = AppColors.solarAmber;
-                }
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: List.generate(arr.length, (i) {
+                    final height = maxVal > 0 ? (arr[i] / maxVal) * 180 : 20.0;
+                    final isCurrent = i == currentIndex;
+                    final inRange =
+                        leftBound != null &&
+                        rightBound != null &&
+                        i >= leftBound &&
+                        i <= rightBound;
+                    final isFound = found == true && i == currentIndex;
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 2),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 150),
-                        width: _arraySize > 20 ? 14.0 : (_arraySize > 12 ? 28.0 : 40.0),
-                        height: height,
-                        decoration: BoxDecoration(
-                          color: color,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          '${arr[i]}',
-                          style: TextStyle(
-                            fontSize: _arraySize > 15 ? 8 : 11,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
+                    Color color = AppColors.catSearching.withValues(alpha: 0.3);
+                    if (isFound) {
+                      color = AppColors.success600;
+                    } else if (isCurrent) {
+                      color = AppColors.primary500;
+                    } else if (inRange) {
+                      color = AppColors.solarAmber;
+                    }
+
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 150),
+                            width: cellWidth,
+                            height: height,
+                            decoration: BoxDecoration(
+                              color: color,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              '${arr[i]}',
+                              style: TextStyle(
+                                fontSize: _arraySize > 15 ? 8 : 11,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Container(
-                        width: _arraySize > 20 ? 14.0 : (_arraySize > 12 ? 28.0 : 40.0),
-                        alignment: Alignment.center,
-                        child: Text(
-                          '$i',
-                          style: TextStyle(
-                            fontSize: 9,
-                            color: isCurrent
-                                ? AppColors.primary500
-                                : AppColors.textMuted,
-                            fontWeight: isCurrent ? FontWeight.w700 : null,
+                          const SizedBox(height: 4),
+                          SizedBox(
+                            width: cellWidth,
+                            child: Text(
+                              '$i',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 9,
+                                color: isCurrent
+                                    ? AppColors.primary500
+                                    : AppColors.textMuted,
+                                fontWeight: isCurrent ? FontWeight.w700 : null,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
+                    );
+                  }),
                 );
-              }),
+              },
             ),
           ),
         ],
@@ -817,10 +845,7 @@ class _PlaygroundPageState extends ConsumerState<PlaygroundPage> {
                         : Colors.transparent,
                     borderRadius: AppRadius.smBorder,
                     border: isHighlighted
-                        ? Border.all(
-                            color: AppColors.primary300,
-                            width: 1,
-                          )
+                        ? Border.all(color: AppColors.primary300, width: 1)
                         : null,
                   ),
                   child: Text(
@@ -832,8 +857,9 @@ class _PlaygroundPageState extends ConsumerState<PlaygroundPage> {
                       color: isHighlighted
                           ? AppColors.primary900
                           : AppColors.textSecondary,
-                      fontWeight:
-                          isHighlighted ? FontWeight.w600 : FontWeight.w400,
+                      fontWeight: isHighlighted
+                          ? FontWeight.w600
+                          : FontWeight.w400,
                     ),
                   ),
                 );
@@ -852,9 +878,7 @@ class _PlaygroundPageState extends ConsumerState<PlaygroundPage> {
         horizontal: AppSpacing.lg,
         vertical: AppSpacing.md,
       ),
-      decoration: const BoxDecoration(
-        color: AppColors.sunken,
-      ),
+      decoration: const BoxDecoration(color: AppColors.sunken),
       child: Row(
         children: [
           Expanded(
@@ -872,10 +896,7 @@ class _PlaygroundPageState extends ConsumerState<PlaygroundPage> {
           const SizedBox(width: AppSpacing.md),
           Text(
             'Step ${_steps.isEmpty ? 0 : _currentStepIndex + 1} / ${_steps.length}',
-            style: const TextStyle(
-              fontSize: 12,
-              color: AppColors.textMuted,
-            ),
+            style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
           ),
         ],
       ),
@@ -941,8 +962,9 @@ class _PlaygroundPageState extends ConsumerState<PlaygroundPage> {
             _ControlButton(
               icon: Icons.skip_next,
               label: 'Next',
-              onTap:
-                  _currentStepIndex < _steps.length - 1 ? _stepForward : null,
+              onTap: _currentStepIndex < _steps.length - 1
+                  ? _stepForward
+                  : null,
               color: AppColors.textSecondary,
             ),
             // Speed
@@ -989,7 +1011,10 @@ class _PlaygroundPageState extends ConsumerState<PlaygroundPage> {
   }
 
   String _algoName(String id) {
-    return id.split('-').map((w) => w[0].toUpperCase() + w.substring(1)).join(' ');
+    return id
+        .split('-')
+        .map((w) => w[0].toUpperCase() + w.substring(1))
+        .join(' ');
   }
 }
 
@@ -1058,10 +1083,7 @@ class _LegendDot extends StatelessWidget {
         const SizedBox(width: 4),
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 11,
-            color: AppColors.textMuted,
-          ),
+          style: const TextStyle(fontSize: 11, color: AppColors.textMuted),
         ),
       ],
     );

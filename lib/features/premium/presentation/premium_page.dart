@@ -23,13 +23,15 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
     setState(() => _isPurchasing = true);
 
     try {
-      final success = await IAPService.instance.buyUnlockAll();
+      final launched = await IAPService.instance.buyUnlockAll();
       if (mounted) {
-        if (success) {
-          _showSuccessDialog();
+        if (launched) {
+          _showInfoSnackBar(
+            'Purchase started. Premium unlocks after Google Play confirms it.',
+          );
         } else {
           _showErrorSnackBar(
-            'Purchase could not be completed. Please try again.',
+            'Purchase could not be started. Please try again.',
           );
         }
       }
@@ -99,8 +101,29 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
     );
   }
 
+  void _showInfoSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: AppColors.primary500,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.mdBorder),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    ref.listen<bool>(premiumProvider, (previous, next) {
+      if (previous == false && next) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _showSuccessDialog();
+          }
+        });
+      }
+    });
+
     final isPremium = ref.watch(premiumProvider);
 
     return Scaffold(

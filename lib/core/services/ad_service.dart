@@ -55,6 +55,14 @@ class AdService {
   Future<void> init() async {
     if (_isInitialized) return;
     try {
+      final canRequestAds = await _requestConsentForAds();
+      if (!canRequestAds) {
+        if (kDebugMode) {
+          debugPrint('[AdService] MobileAds skipped — consent not ready');
+        }
+        return;
+      }
+
       await MobileAds.instance.initialize();
       _isInitialized = true;
       if (kDebugMode) {
@@ -65,6 +73,74 @@ class AdService {
         debugPrint('[AdService] init error: $e');
       }
     }
+  }
+
+  Future<bool> _requestConsentForAds() async {
+    final completer = Completer<bool>();
+
+    void completeWithCanRequestAds() {
+      ConsentInformation.instance
+          .canRequestAds()
+          .then((canRequestAds) {
+            if (!completer.isCompleted) {
+              completer.complete(canRequestAds);
+            }
+          })
+          .catchError((Object error) {
+            if (kDebugMode) {
+              debugPrint('[AdService] consent status error: $error');
+            }
+            if (!completer.isCompleted) {
+              completer.complete(false);
+            }
+          });
+    }
+
+    try {
+      ConsentInformation.instance.requestConsentInfoUpdate(
+        ConsentRequestParameters(tagForUnderAgeOfConsent: false),
+        () {
+          ConsentForm.loadAndShowConsentFormIfRequired((formError) {
+            if (formError != null && kDebugMode) {
+              debugPrint(
+                '[AdService] consent form error: '
+                '${formError.errorCode} ${formError.message}',
+              );
+            }
+            completeWithCanRequestAds();
+          }).catchError((Object error) {
+            if (kDebugMode) {
+              debugPrint('[AdService] consent form load error: $error');
+            }
+            completeWithCanRequestAds();
+          });
+        },
+        (formError) {
+          if (kDebugMode) {
+            debugPrint(
+              '[AdService] consent update error: '
+              '${formError.errorCode} ${formError.message}',
+            );
+          }
+          completeWithCanRequestAds();
+        },
+      );
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('[AdService] consent request error: $e');
+      }
+      completeWithCanRequestAds();
+    }
+
+    return completer.future.timeout(
+      const Duration(seconds: 8),
+      onTimeout: () {
+        if (kDebugMode) {
+          debugPrint('[AdService] consent request timed out');
+        }
+        return false;
+      },
+    );
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -304,6 +380,26 @@ class AdService {
 
     ad.show();
     return true;
+  }
+
+  // ── Consent / Privacy Options ────────────────────────────────────────────
+
+  /// Opens Google's privacy options form when available for the user's region.
+  Future<void> showPrivacyOptionsForm() async {
+    try {
+      await ConsentForm.showPrivacyOptionsForm((formError) {
+        if (formError != null && kDebugMode) {
+          debugPrint(
+            '[AdService] privacy options error: '
+            '${formError.errorCode} ${formError.message}',
+          );
+        }
+      });
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('[AdService] privacy options show error: $e');
+      }
+    }
   }
 
   // ── Cleanup ──────────────────────────────────────────────────────────────

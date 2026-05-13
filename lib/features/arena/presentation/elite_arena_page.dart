@@ -32,7 +32,11 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
     (label: 'Bronze', icon: Icons.workspace_premium, color: Color(0xFFCD7F32)),
     (label: 'Silver', icon: Icons.workspace_premium, color: Color(0xFFC0C0C0)),
     (label: 'Gold', icon: Icons.workspace_premium, color: Color(0xFFFFD700)),
-    (label: 'Platinum', icon: Icons.workspace_premium, color: Color(0xFF00CED1)),
+    (
+      label: 'Platinum',
+      icon: Icons.workspace_premium,
+      color: Color(0xFF00CED1),
+    ),
     (label: 'Diamond', icon: Icons.diamond, color: Color(0xFFB9F2FF)),
     (label: 'Master', icon: Icons.emoji_events, color: Color(0xFFFF6B6B)),
   ];
@@ -66,7 +70,7 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
             backgroundColor: AppColors.canvas,
             elevation: 0,
             pinned: true,
-            expandedHeight: 120,
+            expandedHeight: 150,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
               onPressed: () => Navigator.of(context).pop(),
@@ -97,7 +101,9 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
                             Container(
                               padding: const EdgeInsets.all(AppSpacing.sm),
                               decoration: BoxDecoration(
-                                color: AppColors.solarGold.withValues(alpha: 0.2),
+                                color: AppColors.solarGold.withValues(
+                                  alpha: 0.2,
+                                ),
                                 borderRadius: AppRadius.mdBorder,
                               ),
                               child: const Icon(
@@ -138,10 +144,14 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
                                 vertical: AppSpacing.sm,
                               ),
                               decoration: BoxDecoration(
-                                color: _rankTiers[2].color.withValues(alpha: 0.2),
+                                color: _rankTiers[2].color.withValues(
+                                  alpha: 0.2,
+                                ),
                                 borderRadius: AppRadius.mdBorder,
                                 border: Border.all(
-                                  color: _rankTiers[2].color.withValues(alpha: 0.5),
+                                  color: _rankTiers[2].color.withValues(
+                                    alpha: 0.5,
+                                  ),
                                   width: 1,
                                 ),
                               ),
@@ -285,12 +295,12 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xs),
-                  Row(
+                  Wrap(
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.xs,
                     children: [
                       _statChip('Rating', '1,847', AppColors.solarGold),
-                      const SizedBox(width: AppSpacing.sm),
                       _statChip('Win Rate', '67%', AppColors.success600),
-                      const SizedBox(width: AppSpacing.sm),
                       _statChip('Streak', '5 🔥', AppColors.secondary500),
                     ],
                   ),
@@ -302,7 +312,9 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
             Container(
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
-                color: _rankTiers[_selectedTierIndex].color.withValues(alpha: 0.15),
+                color: _rankTiers[_selectedTierIndex].color.withValues(
+                  alpha: 0.15,
+                ),
                 borderRadius: AppRadius.mdBorder,
               ),
               child: Icon(
@@ -371,9 +383,7 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
                     : AppColors.card,
                 borderRadius: AppRadius.mdBorder,
                 border: Border.all(
-                  color: isSelected
-                      ? tier.color
-                      : AppColors.sunken,
+                  color: isSelected ? tier.color : AppColors.sunken,
                   width: isSelected ? 2 : 1,
                 ),
                 boxShadow: isSelected ? AppShadows.sm : null,
@@ -391,7 +401,9 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
                     tier.label,
                     style: TextStyle(
                       fontSize: 11,
-                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                      fontWeight: isSelected
+                          ? FontWeight.w700
+                          : FontWeight.w500,
                       color: isSelected ? tier.color : AppColors.textMuted,
                     ),
                   ),
@@ -442,10 +454,12 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
 
   Widget _buildTopPlayers() {
     if (_isLoading) {
-      return const Center(child: Padding(
-        padding: EdgeInsets.all(AppSpacing.xl),
-        child: CircularProgressIndicator(),
-      ));
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(AppSpacing.xl),
+          child: CircularProgressIndicator(),
+        ),
+      );
     }
     return Container(
       decoration: BoxDecoration(
@@ -569,10 +583,12 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
 
   Widget _buildMatchHistory() {
     if (_isLoading) {
-      return const Center(child: Padding(
-        padding: EdgeInsets.all(AppSpacing.xl),
-        child: CircularProgressIndicator(),
-      ));
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(AppSpacing.xl),
+          child: CircularProgressIndicator(),
+        ),
+      );
     }
     if (_matchHistory.isEmpty) {
       return Container(
@@ -584,10 +600,7 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
         child: const Center(
           child: Text(
             'No matches yet. Start a battle!',
-            style: TextStyle(
-              fontSize: 14,
-              color: AppColors.textMuted,
-            ),
+            style: TextStyle(fontSize: 14, color: AppColors.textMuted),
           ),
         ),
       );
@@ -619,9 +632,7 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
                     vertical: AppSpacing.xs,
                   ),
                   decoration: BoxDecoration(
-                    color: isWin
-                        ? AppColors.success100
-                        : AppColors.error100,
+                    color: isWin ? AppColors.success100 : AppColors.error100,
                     borderRadius: AppRadius.smBorder,
                   ),
                   child: Text(
@@ -629,9 +640,7 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
-                      color: isWin
-                          ? AppColors.success600
-                          : AppColors.error600,
+                      color: isWin ? AppColors.success600 : AppColors.error600,
                     ),
                   ),
                 ),
@@ -802,9 +811,7 @@ class _ArenaModeCard extends StatelessWidget {
           color: AppColors.card,
           borderRadius: AppRadius.lgBorder,
           boxShadow: AppShadows.sm,
-          border: Border(
-            top: BorderSide(color: color, width: 3),
-          ),
+          border: Border(top: BorderSide(color: color, width: 3)),
         ),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
@@ -877,11 +884,7 @@ class _ArenaModeCard extends StatelessWidget {
               ),
 
               const SizedBox(width: AppSpacing.sm),
-              Icon(
-                Icons.chevron_right,
-                color: AppColors.textMuted,
-                size: 20,
-              ),
+              Icon(Icons.chevron_right, color: AppColors.textMuted, size: 20),
             ],
           ),
         ),

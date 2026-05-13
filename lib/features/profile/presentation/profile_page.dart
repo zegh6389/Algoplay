@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/services/ad_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/providers/app_providers.dart';
 import '../../../shared/widgets/section_header.dart';
@@ -370,6 +371,27 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               horizontal: AppSpacing.lg,
             ),
             onTap: () => context.go('/premium'),
+          ),
+          const Divider(height: 1, indent: 56),
+          ListTile(
+            leading: const Icon(
+              Icons.privacy_tip_outlined,
+              color: AppColors.textSecondary,
+            ),
+            title: Text('Ad Privacy Choices', style: AppTypography.body),
+            subtitle: Text(
+              'Manage consent for personalized ads',
+              style: AppTypography.caption,
+            ),
+            trailing: const Icon(
+              Icons.chevron_right,
+              color: AppColors.textMuted,
+              size: 20,
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.lg,
+            ),
+            onTap: () => AdService.instance.showPrivacyOptionsForm(),
           ),
         ],
       ),
