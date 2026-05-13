@@ -3,9 +3,9 @@ import 'package:algoplay/features/learn/data/lesson_content.dart';
 
 void main() {
   group('lessons list', () {
-    test('all 12 lessons exist', () {
-      expect(lessons.length, 12);
-      for (var i = 1; i <= 12; i++) {
+    test('all 11 lessons exist', () {
+      expect(lessons.length, 11);
+      for (var i = 1; i <= 11; i++) {
         expect(
           lessons.any((l) => l.id == i),
           isTrue,
@@ -14,8 +14,8 @@ void main() {
       }
     });
 
-    test('lesson IDs are sequential 1–12', () {
-      for (var i = 0; i < 12; i++) {
+    test('lesson IDs are sequential 1–11', () {
+      for (var i = 0; i < 11; i++) {
         expect(lessons[i].id, i + 1);
       }
     });
