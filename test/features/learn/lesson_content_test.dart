@@ -1838,13 +1838,17 @@ void main() {
       expect(visibleProse, isNot(contains('T(n) =')));
       expect(visibleProse, isNot(contains(r'\frac')));
       expect(visibleProse, isNot(contains(r'\Theta')));
+      expect(visibleProse, isNot(contains('Θ(')));
+      expect(visibleProse, isNot(contains('Theta(')));
+      expect(visibleProse, isNot(contains('O(')));
+      expect(visibleProse, isNot(contains('^')));
     });
 
     test('Lesson 7 prose uses readable math notation', () {
       final combined = lesson7Prose().join('\n');
-      expect(combined, contains('Θ'));
       expect(combined, isNot(contains('n^2')));
       expect(combined, isNot(contains('n^1')));
+      expect(combined, isNot(contains('n^(')));
     });
 
     test('Lesson 7 prose avoids AI punctuation tells', () {
@@ -1894,11 +1898,7 @@ void main() {
               prose.add('$term $definition');
             case KeyTakeawayBlock(:final text):
               prose.add(text);
-            case QuizBlock(
-              :final question,
-              :final options,
-              :final explanation,
-            ):
+            case QuizBlock(:final question, :final options, :final explanation):
               prose.add(question);
               prose.addAll(options);
               prose.add(explanation);
@@ -2005,7 +2005,10 @@ void main() {
       expect(module.algorithmId, isNull);
 
       final blocks = module.contentBlocks;
-      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(2));
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(2),
+      );
       expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
       expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(2));
       expect(blocks.whereType<CodeBlock>().length, greaterThanOrEqualTo(1));
@@ -2026,7 +2029,10 @@ void main() {
       expect(module.algorithmId, isNull);
 
       final blocks = module.contentBlocks;
-      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(2));
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(2),
+      );
       expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
       expect(blocks.last, isA<KeyTakeawayBlock>());
 
@@ -2093,11 +2099,7 @@ void main() {
             prose.add('$term $definition');
           case KeyTakeawayBlock(:final text):
             prose.add(text);
-          case QuizBlock(
-            :final question,
-            :final options,
-            :final explanation,
-          ):
+          case QuizBlock(:final question, :final options, :final explanation):
             prose.add(question);
             prose.addAll(options);
             prose.add(explanation);
@@ -2118,7 +2120,7 @@ void main() {
       return prose;
     }
 
-    test('has 2 modules', () {
+    test('has 4 modules', () {
       expect(lesson9.modules.length, 4);
     });
 
@@ -2130,7 +2132,10 @@ void main() {
       expect(module.algorithmId, isNull);
 
       final blocks = module.contentBlocks;
-      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(5));
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(5),
+      );
       expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
       expect(blocks.last, isA<KeyTakeawayBlock>());
 
@@ -2151,7 +2156,10 @@ void main() {
       expect(module.algorithmId, isNull);
 
       final blocks = module.contentBlocks;
-      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(4));
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(4),
+      );
       expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(5));
       expect(blocks.last, isA<KeyTakeawayBlock>());
 
@@ -2177,18 +2185,21 @@ void main() {
     });
 
     test('Lesson 9 prose uses readable math notation', () {
-      final combined = combinedText(lesson9.modules.expand((m) => m.contentBlocks).toList()).join(' ');
+      final combined = combinedText(
+        lesson9.modules.expand((m) => m.contentBlocks).toList(),
+      ).join(' ');
       expect(combined, isNot(contains('n^2')));
     });
 
     test('Lesson 9 prose avoids AI punctuation tells', () {
-      final combined = combinedText(lesson9.modules.expand((m) => m.contentBlocks).toList()).join(' ');
+      final combined = combinedText(
+        lesson9.modules.expand((m) => m.contentBlocks).toList(),
+      ).join(' ');
       expect(combined, isNot(contains('\u2014')));
       expect(combined, isNot(contains(';')));
       expect(combined, isNot(contains(' - ')));
     });
   });
-
 
   group('Lesson 10 content', () {
     late LessonContent lesson10;
@@ -2253,26 +2264,32 @@ void main() {
       expect(lesson10.modules.length, 6);
     });
 
-    test('Module 1 introduces dynamic programming and the Fibonacci example', () {
-      final module = lesson10.modules[0];
-      expect(module.id, 'lesson10_module1');
-      expect(module.title, 'Introduction to Dynamic Programming');
-      expect(module.order, 0);
-      expect(module.algorithmId, isNull);
+    test(
+      'Module 1 introduces dynamic programming and the Fibonacci example',
+      () {
+        final module = lesson10.modules[0];
+        expect(module.id, 'lesson10_module1');
+        expect(module.title, 'Introduction to Dynamic Programming');
+        expect(module.order, 0);
+        expect(module.algorithmId, isNull);
 
-      final blocks = module.contentBlocks;
-      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(1));
-      expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(1));
-      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
-      expect(blocks.last, isA<KeyTakeawayBlock>());
+        final blocks = module.contentBlocks;
+        expect(
+          blocks.whereType<DefinitionBlock>().length,
+          greaterThanOrEqualTo(1),
+        );
+        expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(1));
+        expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
+        expect(blocks.last, isA<KeyTakeawayBlock>());
 
-      final combined = combinedText(blocks);
-      expect(combined.toLowerCase(), contains('dynamic programming'));
-      expect(combined.toLowerCase(), contains('fibonacci'));
-      expect(combined, contains(r'F(n) = F(n-1) + F(n-2)'));
-      expect(combined.toLowerCase(), contains('subproblem'));
-      expect(combined.toLowerCase(), contains('decision tree'));
-    });
+        final combined = combinedText(blocks);
+        expect(combined.toLowerCase(), contains('dynamic programming'));
+        expect(combined.toLowerCase(), contains('fibonacci'));
+        expect(combined, contains(r'F(n) = F(n-1) + F(n-2)'));
+        expect(combined.toLowerCase(), contains('subproblem'));
+        expect(combined.toLowerCase(), contains('decision tree'));
+      },
+    );
 
     test('Module 2 covers Binomial Coefficients', () {
       final module = lesson10.modules[1];
@@ -2282,7 +2299,10 @@ void main() {
       expect(module.algorithmId, isNull);
 
       final blocks = module.contentBlocks;
-      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(1));
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(1),
+      );
       expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(3));
       expect(blocks.whereType<CodeBlock>().length, greaterThanOrEqualTo(1));
       expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
@@ -2303,7 +2323,10 @@ void main() {
       expect(module.algorithmId, 'knapsack');
 
       final blocks = module.contentBlocks;
-      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(1));
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(1),
+      );
       expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(3));
       expect(blocks.whereType<CodeBlock>().length, greaterThanOrEqualTo(1));
       expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
@@ -2324,7 +2347,10 @@ void main() {
       expect(module.algorithmId, 'lcs');
 
       final blocks = module.contentBlocks;
-      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(1));
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(1),
+      );
       expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(1));
       expect(blocks.whereType<CodeBlock>().length, 1);
       expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(2));
@@ -2344,7 +2370,10 @@ void main() {
       expect(module.order, 4);
 
       final blocks = module.contentBlocks;
-      expect(blocks.whereType<DefinitionBlock>().length, greaterThanOrEqualTo(1));
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(1),
+      );
       expect(blocks.whereType<MathBlock>().length, greaterThanOrEqualTo(1));
       expect(blocks.whereType<CodeBlock>().length, 1);
       expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(2));
@@ -2373,12 +2402,10 @@ void main() {
     });
 
     test('Lesson 10 visible prose keeps formulas out of prose blocks', () {
-      final visibleProse = lesson10.modules
-          .expand((module) => module.contentBlocks)
-          .whereType<TextBlock>()
-          .map((b) => b.text)
-          .join(' ');
+      final visibleProse = lesson10Prose().join(' ');
       expect(visibleProse, isNot(contains('O(n')));
+      expect(visibleProse, isNot(contains('Theta(')));
+      expect(visibleProse, isNot(contains('Θ(')));
       expect(visibleProse, isNot(contains(r'$')));
     });
 

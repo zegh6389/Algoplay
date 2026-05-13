@@ -2865,8 +2865,7 @@ const List<LessonContent> lessons = [
           ),
           MathBlock(
             r'\log_2(1024) = 10',
-            semanticsLabel:
-                'log base 2 of 1024 equals 10',
+            semanticsLabel: 'log base 2 of 1024 equals 10',
           ),
           DefinitionBlock(
             term: 'Duplicate elements in Binary Search',
@@ -3340,10 +3339,10 @@ const List<LessonContent> lessons = [
             semanticsLabel: 'Merge sort recurrence',
           ),
           TextBlock(
-            'Many divide and conquer algorithms end up with a running time of '
-            '\u0398(n log n) because the work done per level (f(n)) and the '
-            'number of levels (log n) both contribute meaningfully. We will '
-            'see exactly why using the Master Theorem.',
+            'Many divide and conquer algorithms end up with linearithmic running time '
+            'because the work done per level and the number of recursion levels '
+            'both contribute meaningfully. We will see exactly why using the '
+            'Master Theorem.',
           ),
           QuizBlock(
             question:
@@ -3386,11 +3385,11 @@ const List<LessonContent> lessons = [
             'speaking, three cases arise.',
           ),
           MathBlock(
-            r'Case 1: f(n) = O(n^{d - \epsilon}) \Rightarrow T(n) = \Theta(n^d)',
+            r'Case 1: f(n) = O(n^{d-\epsilon}) \Rightarrow T(n) = \Theta(n^{d})',
             semanticsLabel: 'Master Theorem case 1 subproblems dominate',
           ),
           MathBlock(
-            r'Case 2: f(n) = \Theta(n^d \log^k n) \Rightarrow T(n) = \Theta(n^d \log^{k+1} n)',
+            r'Case 2: f(n) = \Theta(n^{d} \log^{k} n) \Rightarrow T(n) = \Theta(n^{d} \log^{k+1} n)',
             semanticsLabel: 'Master Theorem case 2 balanced',
           ),
           MathBlock(
@@ -3400,8 +3399,8 @@ const List<LessonContent> lessons = [
           TextBlock('Stop and Think'),
           QuizBlock(
             question:
-                'For Merge Sort the recurrence is 2T(n/2) + Theta(n). '
-                'Which Master Theorem case applies?',
+                'For Merge Sort, the recurrence has two half-size recursive calls '
+                'plus linear combine work. Which Master Theorem case applies?',
             options: [
               'Case 1: the subproblems dominate',
               'Case 2: balanced growth',
@@ -3410,26 +3409,21 @@ const List<LessonContent> lessons = [
             ],
             correctIndex: 1,
             explanation:
-                'Here a = 2, b = 2, so d = log₂ 2 = 1. Since f(n) = Theta(n) '
-                'grows on the same order as n to the power of d, this is '
-                'Case 2, giving Theta(n log n).',
+                'Here a = 2, b = 2, so d = log₂ 2 = 1. Since the combine work '
+                'grows on the same order as n, this is Case 2, giving '
+                'linearithmic time.',
           ),
           QuizBlock(
             question:
                 'An algorithm has recurrence 3T(n/2) + n. '
                 'What is its asymptotic order of growth?',
-            options: [
-              'linearithmic',
-              'cubic',
-              'quadratic',
-              'exponential',
-            ],
+            options: ['linearithmic', 'cubic', 'quadratic', 'exponential'],
             correctIndex: 0,
             explanation:
                 'Here a = 3, b = 2, so d = log₂ 3 approximately equals 1.585. '
-                'Since f(n) = n grows more slowly than n to the power of d, '
-                'Case 1 applies and the running time is Theta(n to the power of d), '
-                'which is linearithmic.',
+                'Since the combine work grows more slowly than the recursive '
+                'branching term, Case 1 applies and the running time is roughly '
+                'n¹·⁵⁸⁵.',
           ),
           TextBlock('Mini Practice'),
           QuizBlock(
@@ -3445,9 +3439,9 @@ const List<LessonContent> lessons = [
             ],
             correctIndex: 2,
             explanation:
-                'When f(n) = Theta(n) and d = 1, the recurrence 2T(n/2) '
-                '+ Theta(n) solves to Theta(n log n). The work per level and '
-                'the number of levels both scale with n, giving a log n factor.',
+                'When the combine work is linear and d = 1, the balanced recurrence '
+                'solves to linearithmic time. The work per level and the number '
+                'of levels both matter.',
           ),
           KeyTakeawayBlock(
             'The Master Theorem makes it easy to read off the solution of a '
@@ -3456,10 +3450,10 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
-// ══════════════════════════════════════════════════════════════════════════════
-// Module 2: Mergesort
-// Source: /tmp/algoplay_lessons/M2.txt
-// ══════════════════════════════════════════════════════════════════════════════
+      // ══════════════════════════════════════════════════════════════════════════════
+      // Module 2: Mergesort
+      // Source: /tmp/algoplay_lessons/M2.txt
+      // ══════════════════════════════════════════════════════════════════════════════
       ModuleContent(
         id: 'lesson7_module2',
         title: 'Mergesort',
@@ -3513,9 +3507,7 @@ const List<LessonContent> lessons = [
             'pointer and the destination pointer. If one subarray runs out of '
             'elements, copy the remaining elements from the other subarray directly.',
           ),
-          TextBlock(
-            'The basic operation in Merge is comparison.',
-          ),
+          TextBlock('The basic operation in Merge is comparison.'),
           TextBlock('Cost of Merge in the Worst Case'),
           TextBlock(
             'Suppose we are merging two subarrays whose total length is n. In '
@@ -3537,14 +3529,10 @@ const List<LessonContent> lessons = [
           TextBlock(
             'We compare the recurrence with the general form aT(n/b) + f(n).',
           ),
+          TextBlock('Here a = 2, b = 2, and the combine work is linear.'),
           TextBlock(
-            '. Here a = 2, b = 2, and f(n) is Θ(n).',
-          ),
-          TextBlock(
-            'Since d = log₂ 2 = 1, we have n to the power of d = n. '
-            'We see that f(n) is Θ(n to the power of d). '
-            'This is the balanced case, Case 2 of the Master Theorem, where '
-            'f(n) matches n to the power of d.',
+            'Since d = log₂ 2 = 1, the combine work matches the branching term. '
+            'This is the balanced case, Case 2 of the Master Theorem.',
           ),
           TextBlock(
             'So in the worst case, Mergesort runs in time proportional to n log n.',
@@ -3561,12 +3549,13 @@ const List<LessonContent> lessons = [
           ),
           TextBlock('Summary of Mergesort'),
           TextBlock(
-            'Key points: the strategy is divide-and-conquer, the recurrence is '
-            'C(n) = 2C(n/2) + n − 1 and the solution is Θ(n log n). '
-            'Mergesort typically needs an auxiliary array of size n during merge.',
+            'Key points: the strategy is divide and conquer, the recurrence has two '
+            'half-size recursive calls plus linear merge work, and the solution '
+            'is linearithmic. Mergesort typically needs an auxiliary array of '
+            'size n during merge.',
           ),
           TextBlock(
-            'Pros: predictable Θ(n log n) time in the worst case, and it is a '
+            'Pros: predictable linearithmic time in the worst case, and it is a '
             'stable sort that preserves the order of equal elements.',
           ),
           TextBlock(
@@ -3617,16 +3606,16 @@ const List<LessonContent> lessons = [
             ],
             correctIndex: 1,
             explanation:
-                'Even with f(n) = 3n, we still have f(n) in Θ(n) and d = 1. '
+                'Even with f(n) = 3n, the combine work is still linear and d = 1. '
                 'Case 2 of the Master Theorem still applies, giving n log n. '
-                'The constant factor in f(n) does not change the asymptotic order.',
+                'The constant factor does not change the asymptotic order.',
           ),
           KeyTakeawayBlock(
             'Mergesort is the textbook example of divide and conquer applied to '
             'sorting. Its recurrence',
           ),
           MathBlock(
-            r'C(n) = 2C\!\left(\frac{n}{2}\right) + n - 1',
+            r'C(n) = 2C\!\left(\frac{n}{2}\right) + n-1',
             semanticsLabel: 'mergesort recurrence',
           ),
           KeyTakeawayBlock(
@@ -3646,9 +3635,7 @@ const List<LessonContent> lessons = [
             'solve it efficiently.',
           ),
           TextBlock('What Is an Inversion?'),
-          TextBlock(
-            'Suppose we have an array of positive integers:',
-          ),
+          TextBlock('Suppose we have an array of positive integers:'),
           MathBlock(
             r'A = [a_1, a_2, \dots, a_n]',
             semanticsLabel: 'array of positive integers',
@@ -3662,9 +3649,7 @@ const List<LessonContent> lessons = [
             'to sorted ascending order. The number of inversions measures how far '
             'the array is from being sorted.',
           ),
-          TextBlock(
-            'For the array:',
-          ),
+          TextBlock('For the array:'),
           MathBlock(
             r'[4, 2, 7, 1, 3, 5, 8, 6]',
             semanticsLabel: 'example array with inversions',
@@ -3693,25 +3678,15 @@ const List<LessonContent> lessons = [
             'each half, merge the two sorted halves. We will do something similar, '
             'but we also keep track of how many inversions we see.',
           ),
-          TextBlock(
-            'High-level steps:',
-          ),
-          TextBlock(
-            '1. Divide the array into two halves: left and right.',
-          ),
-          TextBlock(
-            '2. Recursively count inversions in each half.',
-          ),
+          TextBlock('High-level steps:'),
+          TextBlock('1. Divide the array into two halves: left and right.'),
+          TextBlock('2. Recursively count inversions in each half.'),
           TextBlock(
             '3. Count the between-half inversions, where one element is in the '
             'left half and the other is in the right half.',
           ),
-          TextBlock(
-            '4. Add these three counts together.',
-          ),
-          TextBlock(
-            'The tricky part is step 3.',
-          ),
+          TextBlock('4. Add these three counts together.'),
+          TextBlock('The tricky part is step 3.'),
           TextBlock('Counting Between-Half Inversions While Merging'),
           TextBlock(
             'We use a modified Merge procedure that works like Mergesort but also '
@@ -3734,9 +3709,7 @@ const List<LessonContent> lessons = [
             'inversion count by the number of elements still left in the left half.',
           ),
           TextBlock('Algorithm Trace Example'),
-          TextBlock(
-            'Consider the array:',
-          ),
+          TextBlock('Consider the array:'),
           MathBlock(
             r'[4, 2, 7, 1, 3, 5, 8, 6]',
             semanticsLabel: 'example array for counting inversions',
@@ -3771,7 +3744,7 @@ const List<LessonContent> lessons = [
             semanticsLabel: 'counting inversions complexity',
           ),
           TextBlock(
-            'So counting inversions can be done in Θ(n log n) time, much faster '
+            'So counting inversions can be done in linearithmic time, much faster '
             'than the naive quadratic algorithm.',
           ),
           TextBlock('Why This Works Conceptually'),
@@ -3794,7 +3767,7 @@ const List<LessonContent> lessons = [
                 'Why can all cross inversions be found during the merge step?',
             options: [
               'Because both halves are sorted, any remaining inversion must span '
-              'the two halves',
+                  'the two halves',
               'Because the merge step compares every pair of elements',
               'Because cross inversions are always fewer than in-half inversions',
               'Because the merge step sorts the array',
@@ -3827,12 +3800,7 @@ const List<LessonContent> lessons = [
             question:
                 'For an array that is already sorted, how many inversions are '
                 'there?',
-            options: [
-              'Zero',
-              'n',
-              'n log n',
-              'Θ(n²)',
-            ],
+            options: ['Zero', 'n', 'n log n', 'quadratic'],
             correctIndex: 0,
             explanation:
                 'A sorted array has no pairs (i, j) with i less than j and the '
@@ -3869,9 +3837,7 @@ const List<LessonContent> lessons = [
             'worst-case and average-case behaviour.',
           ),
           TextBlock('High-Level Idea of Quicksort'),
-          TextBlock(
-            'Quicksort follows the divide, conquer, combine pattern:',
-          ),
+          TextBlock('Quicksort follows the divide, conquer, combine pattern:'),
           TextBlock(
             '1. Divide: Choose a pivot element from the array and partition '
             'the remaining elements into two groups: those less than the pivot '
@@ -3905,9 +3871,7 @@ const List<LessonContent> lessons = [
             'larger. We then recursively sort the left and right subarrays.',
           ),
           TextBlock('Worst-Case Analysis'),
-          TextBlock(
-            'The basic operation is comparison of two keys.',
-          ),
+          TextBlock('The basic operation is comparison of two keys.'),
           TextBlock(
             'The worst case for Quicksort occurs when the pivot is always the '
             'smallest element (or always the largest element) in the current '
@@ -3925,11 +3889,9 @@ const List<LessonContent> lessons = [
             r'C_{\text{worst}}(n) = (n+1) + n + (n-1) + \dots + 3',
             semanticsLabel: 'quicksort worst case comparisons',
           ),
-          TextBlock(
-            'Using the summation formula, this can be rewritten as:',
-          ),
+          TextBlock('Using the summation formula, this can be rewritten as:'),
           MathBlock(
-            r'C_{\text{worst}}(n) = \frac{(n+1)(n+2)}{2} - 3 \in \Theta(n^{2})',
+            r'C_{\text{worst}}(n) = \frac{(n+1)(n+2)}{2}-3 \in \Theta(n^{2})',
             semanticsLabel: 'quicksort worst case quadratic',
           ),
           TextBlock(
@@ -3960,9 +3922,7 @@ const List<LessonContent> lessons = [
             'that behaves like the solution, and then prove by induction that '
             'the guess works.',
           ),
-          TextBlock(
-            'The helpful guess is:',
-          ),
+          TextBlock('The helpful guess is:'),
           MathBlock(
             r'Q(n) \equiv n + 2Q(n/2)',
             semanticsLabel: 'quicksort guessed recurrence',
@@ -3986,7 +3946,7 @@ const List<LessonContent> lessons = [
                 'Mergesort?',
             options: [
               'Because after partitioning, each subarray is already in its '
-              'correct region of the array',
+                  'correct region of the array',
               'Because Quicksort does not use recursion',
               'Because the pivot is always the median',
               'Because Quicksort uses extra memory',
@@ -4009,22 +3969,17 @@ const List<LessonContent> lessons = [
             correctIndex: 0,
             explanation:
                 'When the pivot is always the smallest or largest, one side of '
-                'the partition is always empty, leading to Θ(n²) time.',
+                'the partition is always empty, leading to quadratic time.',
           ),
           QuizBlock(
             question:
                 'What is the average-case time complexity of Quicksort under '
                 'standard assumptions?',
-            options: [
-              'Θ(n log n)',
-              'Θ(n²)',
-              'Θ(n)',
-              'Θ(log n)',
-            ],
+            options: ['linearithmic', 'quadratic', 'linear', 'logarithmic'],
             correctIndex: 0,
             explanation:
-                'Although the worst case is Θ(n²), the average case is '
-                'n log n, which is why Quicksort is fast in practice.',
+                'Although the worst case is quadratic, the average case is '
+                'linearithmic, which is why Quicksort is fast in practice.',
           ),
           KeyTakeawayBlock(
             'Quicksort ties together many ideas in this lesson: '
@@ -4058,12 +4013,8 @@ const List<LessonContent> lessons = [
             'get a divide-and-conquer algorithm.',
           ),
           TextBlock('A Simple Example: 45 × 28'),
-          TextBlock(
-            'Write each number in base 10. For 45: 4 × 10 + 5',
-          ),
-          TextBlock(
-            'For 28: 2 × 10 + 8',
-          ),
+          TextBlock('Write each number in base 10. For 45: 4 × 10 + 5'),
+          TextBlock('For 28: 2 × 10 + 8'),
           TextBlock('Multiplying gives:'),
           MathBlock(
             r'45 \cdot 28 = (4 \cdot 10^1 + 5 \cdot 10^0)(2 \cdot 10^1 + 8 \cdot 10^0)',
@@ -4096,11 +4047,9 @@ const List<LessonContent> lessons = [
             'reduce this to three.',
           ),
           TextBlock('Reducing to Three Multiplications'),
-          TextBlock(
-            'Define three quantities:',
-          ),
+          TextBlock('Define three quantities:'),
           MathBlock(
-            r'c_2 = a_1 b_1, \quad c_0 = a_0 b_0, \quad c_1 = (a_1 + a_0)(b_1 + b_0) - c_2 - c_0',
+            r'c_2 = a_1 b_1, \quad c_0 = a_0 b_0, \quad c_1 = (a_1 + a_0)(b_1 + b_0)-c_2-c_0',
             semanticsLabel: 'three products trick',
           ),
           TextBlock(
@@ -4121,34 +4070,23 @@ const List<LessonContent> lessons = [
             r'M(n) = 3M(n/2), \quad M(1) = 1',
             semanticsLabel: 'karatsuba recurrence',
           ),
-          TextBlock(
-            'Solving by repeated substitution:',
-          ),
+          TextBlock('Solving by repeated substitution:'),
           MathBlock(
             r'M(n) = 3^{\log_2 n} = n^{\log_2 3}',
             semanticsLabel: 'karatsuba solution',
           ),
           TextBlock(
-            'The exponent log₂ 3 is approximately 1.585. So the multiplication complexity is',
-          ),
-          TextBlock(
-            'n¹·⁵⁸⁵',
-          ),
-          TextBlock(
-            ', which is asymptotically faster than the straightforward '
+            'The exponent log₂ 3 is approximately 1.585, so the multiplication '
+            'complexity is n¹·⁵⁸⁵, asymptotically faster than the straightforward '
             'quadratic grade-school algorithm.',
           ),
           TextBlock('Why the Exponent Identity Works'),
-          TextBlock(
-            'The step from',
-          ),
+          TextBlock('The step from'),
           MathBlock(
             r'3^{\log_2 n}',
             semanticsLabel: '3 to the power of log base 2 of n',
           ),
-          TextBlock(
-            'to',
-          ),
+          TextBlock('to'),
           MathBlock(
             r'n^{\log_2 3}',
             semanticsLabel: 'n to the power of log base 2 of 3',
@@ -4158,31 +4096,16 @@ const List<LessonContent> lessons = [
             r'a^{\log_b c} = c^{\log_b a}',
             semanticsLabel: 'exponent identity',
           ),
-          TextBlock(
-            'This identity is handy whenever you have terms like',
-          ),
-          MathBlock(
-            r'k^{\log n}',
-            semanticsLabel: 'k to the power of log n',
-          ),
-          TextBlock(
-            'or',
-          ),
-          MathBlock(
-            r'n^{\log k}',
-            semanticsLabel: 'n to the power of log k',
-          ),
+          TextBlock('This identity is handy whenever you have terms like'),
+          MathBlock(r'k^{\log n}', semanticsLabel: 'k to the power of log n'),
+          TextBlock('or'),
+          MathBlock(r'n^{\log k}', semanticsLabel: 'n to the power of log k'),
           TextBlock('and want to rewrite them.'),
           QuizBlock(
             question:
                 'How many half-size multiplications does the Karatsuba trick '
                 'require instead of the naive four?',
-            options: [
-              'Three',
-              'Two',
-              'Four',
-              'Five',
-            ],
+            options: ['Three', 'Two', 'Four', 'Five'],
             correctIndex: 0,
             explanation:
                 'By defining c1 as (a1 plus a0)(b1 plus b0) minus c2 minus c0, '
@@ -4192,15 +4115,15 @@ const List<LessonContent> lessons = [
             question:
                 'What is the time complexity of Karatsuba multiplication?',
             options: [
-              'Θ(n^(log₂ 3)) ≈ Θ(n²·⁵⁸⁵)',
-              'Θ(n²)',
-              'Θ(n log n)',
-              'Θ(n)',
+              'roughly n¹·⁵⁸⁵ time',
+              'quadratic time',
+              'linearithmic time',
+              'linear time',
             ],
             correctIndex: 0,
             explanation:
-                'The recurrence M(n) = 3M(n/2) solves to '
-                'n^(log₂ 3), which is approximately n to the power of 1.585.',
+                'The recurrence with three half-size multiplications solves to roughly '
+                'n¹·⁵⁸⁵ time.',
           ),
           KeyTakeawayBlock(
             'Multiplication of large integers via divide and conquer is a '
@@ -4233,21 +4156,13 @@ const List<LessonContent> lessons = [
             'method that reduces the number of scalar multiplications needed.',
           ),
           TextBlock('Classical 2 by 2 Matrix Multiplication'),
-          TextBlock(
-            'Consider multiplying two 2 by 2 matrices',
-          ),
-          MathBlock(
-            r'C = A \times B',
-            semanticsLabel: 'C equals A times B',
-          ),
-          TextBlock('.'),
+          TextBlock('Consider multiplying two 2 by 2 matrices'),
+          MathBlock(r'C = A \times B', semanticsLabel: 'C equals A times B'),
           MathBlock(
             r'A = \begin{bmatrix} a_{00} & a_{01} \\ a_{10} & a_{11} \end{bmatrix}, \quad B = \begin{bmatrix} b_{00} & b_{01} \\ b_{10} & b_{11} \end{bmatrix}',
             semanticsLabel: 'two by two matrices A and B',
           ),
-          TextBlock(
-            'The usual formula for C is:',
-          ),
+          TextBlock('The usual formula for C is:'),
           MathBlock(
             r'C = \begin{bmatrix} a_{00}b_{00} + a_{01}b_{10} & a_{00}b_{01} + a_{01}b_{11} \\ a_{10}b_{00} + a_{11}b_{10} & a_{10}b_{01} + a_{11}b_{11} \end{bmatrix}',
             semanticsLabel: 'classical matrix multiplication result',
@@ -4279,7 +4194,8 @@ const List<LessonContent> lessons = [
           TextBlock(
             'To apply Strassen\'s idea to larger matrices, suppose A and B are '
             'n by n matrices where n is a power of 2. We partition each matrix '
-            'into four blocks of size n/2 × n/2:'),
+            'into four blocks of size n/2 × n/2:',
+          ),
           MathBlock(
             r'A = \begin{bmatrix} A_{00} & A_{01} \\ A_{10} & A_{11} \end{bmatrix}, \quad B = \begin{bmatrix} B_{00} & B_{01} \\ B_{10} & B_{11} \end{bmatrix}',
             semanticsLabel: 'block matrices',
@@ -4303,9 +4219,7 @@ const List<LessonContent> lessons = [
             r'M(n) = 7 M(n/2), \quad M(1) = 1',
             semanticsLabel: 'strassen recurrence',
           ),
-          TextBlock(
-            'Solving by substitution:',
-          ),
+          TextBlock('Solving by substitution:'),
           MathBlock(
             r'M(n) = 7^{\log_2 n} = n^{\log_2 7}',
             semanticsLabel: 'strassen solution',
@@ -4313,7 +4227,7 @@ const List<LessonContent> lessons = [
           TextBlock('The exponent log₂ 7'),
           TextBlock(
             'is approximately 2.807. Thus Strassen\'s algorithm has multiplication '
-            'complexity n^(log₂ 7), which is asymptotically faster than the '
+            'complexity about n²·⁸⁰⁷, which is asymptotically faster than the '
             'classical n³ algorithm.',
           ),
           TextBlock('Counting Additions'),
@@ -4335,17 +4249,11 @@ const List<LessonContent> lessons = [
             r'n^{\log_2 7}',
             semanticsLabel: 'n to the power of log base 2 of 7',
           ),
-          TextBlock('.'),
           QuizBlock(
             question:
                 'How many scalar multiplications does Strassen use for the 2 by '
                 '2 case instead of the classical eight?',
-            options: [
-              'Seven',
-              'Six',
-              'Five',
-              'Four',
-            ],
+            options: ['Seven', 'Six', 'Five', 'Four'],
             correctIndex: 0,
             explanation:
                 'Strassen saves one multiplication by using seven carefully '
@@ -4356,15 +4264,15 @@ const List<LessonContent> lessons = [
                 'What is the time complexity of Strassen\'s matrix '
                 'multiplication algorithm?',
             options: [
-              'Θ(n^(log₂ 7)) ≈ Θ(n²·⁸⁰⁷)',
-              'Θ(n³)',
-              'Θ(n²)',
-              'Θ(n log n)',
+              'roughly n²·⁸⁰⁷ time',
+              'cubic time',
+              'quadratic time',
+              'linearithmic time',
             ],
             correctIndex: 0,
             explanation:
-                'The recurrence M(n) = 7M(n/2) solves to '
-                'n^(log₂ 7), which is approximately n²·⁸⁰⁷.',
+                'The recurrence with seven half-size matrix multiplications solves to '
+                'approximately n²·⁸⁰⁷ time.',
           ),
           QuizBlock(
             question:
@@ -4372,7 +4280,7 @@ const List<LessonContent> lessons = [
                 'practice?',
             options: [
               'The extra additions and constant factors can dominate for small '
-              'sizes',
+                  'sizes',
               'It only works for odd-sized matrices',
               'It requires more memory than available',
               'It produces incorrect results for small sizes',
@@ -4415,14 +4323,8 @@ const List<LessonContent> lessons = [
             r'T\!\left(\frac{n}{2}\right)',
             semanticsLabel: 'T of n over 2',
           ),
-          TextBlock(
-            'and terms like',
-          ),
-          MathBlock(
-            r'\log_2 n',
-            semanticsLabel: 'log base 2 of n',
-          ),
-          TextBlock('.'),
+          TextBlock('and terms like'),
+          MathBlock(r'\log_2 n', semanticsLabel: 'log base 2 of n'),
 
           TextBlock('Key Takeaways'),
           TextBlock(
@@ -4431,10 +4333,7 @@ const List<LessonContent> lessons = [
           TextBlock(
             'Mergesort: A clean recursive sorting algorithm that hits exactly',
           ),
-          MathBlock(
-            r'\Theta(n \log n)',
-            semanticsLabel: 'Theta n log n',
-          ),
+          MathBlock(r'\Theta(n \log n)', semanticsLabel: 'Theta n log n'),
           TextBlock('time.'),
           TextBlock(
             'Quicksort: Where we looked at worst-case and touched upon the '
@@ -4452,18 +4351,9 @@ const List<LessonContent> lessons = [
             'Strassen\'s Matrix Multiplication: How algebraic tricks combined '
             'with dividing matrix blocks can lower the asymptotic bounds from',
           ),
-          MathBlock(
-            r'n^3',
-            semanticsLabel: 'n cubed',
-          ),
-          TextBlock(
-            'to approximately',
-          ),
-          MathBlock(
-            r'n^{2.807}',
-            semanticsLabel: 'n to the power of 2.807',
-          ),
-          TextBlock('.'),
+          MathBlock(r'n^{3}', semanticsLabel: 'n cubed'),
+          TextBlock('to approximately'),
+          MathBlock(r'n^{2.807}', semanticsLabel: 'n to the power of 2.807'),
           TextBlock('Looking Ahead: Transform and Conquer'),
           TextBlock(
             'In the next lesson, we move on to a completely new technique: '
@@ -4513,7 +4403,8 @@ const List<LessonContent> lessons = [
           ),
           DefinitionBlock(
             term: 'Transform and Conquer',
-            definition: 'An algorithm design technique that changes a problem into a different '
+            definition:
+                'An algorithm design technique that changes a problem into a different '
                 'but related problem, solves it in the new form, and optionally transforms '
                 'the result back.',
           ),
@@ -4528,7 +4419,8 @@ const List<LessonContent> lessons = [
           ),
           DefinitionBlock(
             term: 'Gaussian Elimination',
-            definition: 'A classic transform-and-conquer algorithm from linear algebra. '
+            definition:
+                'A classic transform-and-conquer algorithm from linear algebra. '
                 'It transforms a system of n linear equations in n unknowns into an upper triangular '
                 'system, which can then be solved easily using backward substitution.',
           ),
@@ -4539,7 +4431,8 @@ const List<LessonContent> lessons = [
           ),
           DefinitionBlock(
             term: 'Instance Simplification',
-            definition: 'A type of transform and conquer where the given instance of a problem '
+            definition:
+                'A type of transform and conquer where the given instance of a problem '
                 'is changed into an easier instance of the same problem. The underlying problem '
                 'type does not change, only the input becomes more regular.',
           ),
@@ -4550,7 +4443,8 @@ const List<LessonContent> lessons = [
           ),
           DefinitionBlock(
             term: 'Representation Change',
-            definition: 'A type of transform and conquer where the essence of the problem is kept '
+            definition:
+                'A type of transform and conquer where the essence of the problem is kept '
                 'but how the data is represented is changed. For example, mapping an array-based problem '
                 'into a tree or graph structure.',
           ),
@@ -4561,7 +4455,8 @@ const List<LessonContent> lessons = [
           ),
           DefinitionBlock(
             term: 'Problem Reduction',
-            definition: 'A type of transform and conquer where the given problem is transformed into '
+            definition:
+                'A type of transform and conquer where the given problem is transformed into '
                 'an instance of a well-studied problem that already has known algorithms. The strategy '
                 'is to transform, apply the existing algorithm, and optionally transform the result back.',
           ),
@@ -4571,7 +4466,8 @@ const List<LessonContent> lessons = [
             'is already known.',
           ),
           QuizBlock(
-            question: 'Which type of transform and conquer sorts the input to make '
+            question:
+                'Which type of transform and conquer sorts the input to make '
                 'a later step easier?',
             options: [
               'Instance simplification',
@@ -4580,11 +4476,13 @@ const List<LessonContent> lessons = [
               'Divide and conquer',
             ],
             correctIndex: 0,
-            explanation: 'Instance simplification changes the given instance into an easier '
+            explanation:
+                'Instance simplification changes the given instance into an easier '
                 'instance of the same problem, such as sorting an array before processing it.',
           ),
           QuizBlock(
-            question: 'What is the key difference between instance simplification and '
+            question:
+                'What is the key difference between instance simplification and '
                 'representation change?',
             options: [
               'Instance simplification keeps the same problem type, representation change changes the data structure',
@@ -4593,12 +4491,14 @@ const List<LessonContent> lessons = [
               'Instance simplification uses graphs, representation change uses arrays',
             ],
             correctIndex: 0,
-            explanation: 'Instance simplification produces an easier instance of the same problem, '
+            explanation:
+                'Instance simplification produces an easier instance of the same problem, '
                 'while representation change keeps the problem essence but changes how the data is '
                 'represented (e.g., array to tree).',
           ),
           QuizBlock(
-            question: 'In Gaussian Elimination, what does the transformation produce?',
+            question:
+                'In Gaussian Elimination, what does the transformation produce?',
             options: [
               'An upper triangular system',
               'A sorted array',
@@ -4606,11 +4506,13 @@ const List<LessonContent> lessons = [
               'A directed graph',
             ],
             correctIndex: 0,
-            explanation: 'Gaussian Elimination transforms the coefficient matrix into upper '
+            explanation:
+                'Gaussian Elimination transforms the coefficient matrix into upper '
                 'triangular form, which can then be solved by backward substitution.',
           ),
           QuizBlock(
-            question: 'Why does learning about graphs and trees help with transform and conquer?',
+            question:
+                'Why does learning about graphs and trees help with transform and conquer?',
             options: [
               'They provide new representations where specialist algorithms already exist',
               'They are always faster than array-based solutions',
@@ -4618,7 +4520,8 @@ const List<LessonContent> lessons = [
               'They are required for instance simplification',
             ],
             correctIndex: 0,
-            explanation: 'Many transform-and-conquer algorithms work by re-expressing a problem '
+            explanation:
+                'Many transform-and-conquer algorithms work by re-expressing a problem '
                 'as a graph or tree, where powerful algorithms and patterns are already available.',
           ),
           TextBlock(
@@ -4646,7 +4549,8 @@ const List<LessonContent> lessons = [
           ),
           DefinitionBlock(
             term: 'Presorting',
-            definition: 'An instance simplification technique where the input is sorted first, '
+            definition:
+                'An instance simplification technique where the input is sorted first, '
                 'then the original problem is solved on the sorted data. The idea is that an '
                 'ordered instance of the same problem is often easier to solve.',
           ),
@@ -4667,7 +4571,8 @@ const List<LessonContent> lessons = [
           ),
           DefinitionBlock(
             term: 'Presorting vs Sorting While Solving',
-            definition: 'In presorting, sorting by itself does not give the final answer. '
+            definition:
+                'In presorting, sorting by itself does not give the final answer. '
                 'It only prepares the input. If you do not yet have the answer immediately '
                 'after sorting, then you are using presorting. By contrast, some algorithms '
                 '(like counting inversions via merge sort) produce the answer as a side effect '
@@ -4688,15 +4593,12 @@ const List<LessonContent> lessons = [
             'costs linear time, so the total is linearithmic.',
           ),
           QuizBlock(
-            question: 'What is the total worst-case time for element uniqueness via presorting?',
-            options: [
-              'linearithmic',
-              'quadratic',
-              'linear',
-              'logarithmic',
-            ],
+            question:
+                'What is the total worst-case time for element uniqueness via presorting?',
+            options: ['linearithmic', 'quadratic', 'linear', 'logarithmic'],
             correctIndex: 0,
-            explanation: 'Sorting costs linearithmic time and the single scan comparing '
+            explanation:
+                'Sorting costs linearithmic time and the single scan comparing '
                 'neighbours costs linear time, so the total is linearithmic.',
           ),
           TextBlock(
@@ -4704,7 +4606,8 @@ const List<LessonContent> lessons = [
           ),
           DefinitionBlock(
             term: 'Mode',
-            definition: 'The value that appears most frequently in a collection of numbers. '
+            definition:
+                'The value that appears most frequently in a collection of numbers. '
                 'For example, in the list 3, 4, 8, 16, 8, 4, 8, 24, 6, 8 the mode is 8.',
           ),
           TextBlock(
@@ -4721,7 +4624,8 @@ const List<LessonContent> lessons = [
             'sorting, we only need to look at consecutive elements.',
           ),
           QuizBlock(
-            question: 'Why does sorting reduce the mode problem from quadratic to linearithmic?',
+            question:
+                'Why does sorting reduce the mode problem from quadratic to linearithmic?',
             options: [
               'Equal values become consecutive, so a single linear pass can count runs',
               'Sorting removes duplicate elements entirely',
@@ -4729,7 +4633,8 @@ const List<LessonContent> lessons = [
               'Sorting is always faster than any other approach',
             ],
             correctIndex: 0,
-            explanation: 'After sorting, identical values are grouped together. A single '
+            explanation:
+                'After sorting, identical values are grouped together. A single '
                 'left-to-right pass can count consecutive runs, making the post-sort step '
                 'linear instead of quadratic.',
           ),
@@ -4742,12 +4647,14 @@ const List<LessonContent> lessons = [
               'When you need to do many searches on the same data',
             ],
             correctIndex: 0,
-            explanation: 'Presorting always costs at least linearithmic time for '
+            explanation:
+                'Presorting always costs at least linearithmic time for '
                 'comparison-based sorting. If a direct algorithm already solves the problem '
                 'in linear time, presorting would only slow things down.',
           ),
           QuizBlock(
-            question: 'For element uniqueness, why is it enough to compare only '
+            question:
+                'For element uniqueness, why is it enough to compare only '
                 'neighbouring elements after sorting?',
             options: [
               'Equal elements always end up adjacent in a sorted array',
@@ -4756,7 +4663,8 @@ const List<LessonContent> lessons = [
               'Binary search is faster than comparing neighbours',
             ],
             correctIndex: 0,
-            explanation: 'In a sorted array, all equal values are placed next to each other. '
+            explanation:
+                'In a sorted array, all equal values are placed next to each other. '
                 'So if any two elements are equal, they will be neighbours, and a single pass '
                 'will detect them.',
           ),
@@ -4819,7 +4727,8 @@ const List<LessonContent> lessons = [
           ),
           DefinitionBlock(
             term: 'Priority Queue',
-            definition: 'An abstract data type where each element has an associated '
+            definition:
+                'An abstract data type where each element has an associated '
                 'priority. The element with the highest priority is always extracted '
                 'first, regardless of insertion order.',
           ),
@@ -4835,13 +4744,15 @@ const List<LessonContent> lessons = [
           ),
           DefinitionBlock(
             term: 'Heap (Max-Heap)',
-            definition: 'A complete binary tree where no child has a value greater than '
+            definition:
+                'A complete binary tree where no child has a value greater than '
                 'its parent. The root always contains the global maximum. The ordering '
                 'constraint is called the partial order tree property.',
           ),
           DefinitionBlock(
             term: 'Complete Binary Tree',
-            definition: 'A binary tree where all leaves are on the same level or on two '
+            definition:
+                'A binary tree where all leaves are on the same level or on two '
                 'adjacent levels, and the leaves on the bottommost level are placed as '
                 'far left as possible.',
           ),
@@ -4881,7 +4792,8 @@ const List<LessonContent> lessons = [
             'bottom-up heap construction.',
           ),
           QuizBlock(
-            question: 'In a 1-indexed array, where is the left child of node at index i?',
+            question:
+                'In a 1-indexed array, where is the left child of node at index i?',
             options: [
               'At index 2i',
               'At index 2i + 1',
@@ -4889,11 +4801,13 @@ const List<LessonContent> lessons = [
               'At index floor of i/2',
             ],
             correctIndex: 0,
-            explanation: 'The left child is at 2i, the right child is at 2i + 1, and the '
+            explanation:
+                'The left child is at 2i, the right child is at 2i + 1, and the '
                 'parent is at floor of i/2.',
           ),
           QuizBlock(
-            question: 'Why is the heap property called a partial order rather than a total order?',
+            question:
+                'Why is the heap property called a partial order rather than a total order?',
             options: [
               'No constraint exists between sibling nodes',
               'The heap only works for integers',
@@ -4901,7 +4815,8 @@ const List<LessonContent> lessons = [
               'The tree is not always balanced',
             ],
             correctIndex: 0,
-            explanation: 'The heap only constrains vertical parent-child relationships. '
+            explanation:
+                'The heap only constrains vertical parent-child relationships. '
                 'Left and right siblings can be in any relative order.',
           ),
           TextBlock(
@@ -4912,7 +4827,8 @@ const List<LessonContent> lessons = [
           ),
           DefinitionBlock(
             term: 'fixHeap (Sift-Down)',
-            definition: 'A subroutine that repairs a heap after the root is replaced by an '
+            definition:
+                'A subroutine that repairs a heap after the root is replaced by an '
                 'arbitrary key K. It compares K with its larger child and swaps downward '
                 'repeatedly until K is greater than or equal to both children or reaches a leaf.',
           ),
@@ -4952,14 +4868,16 @@ const List<LessonContent> lessons = [
           ),
           MathBlock(
             r'W(n) = 2\,W\!\left(\frac{n}{2}\right) + \Theta(\log n) \implies W(n) = \Theta(n)',
-            semanticsLabel: 'heap construction recurrence solved to linear time',
+            semanticsLabel:
+                'heap construction recurrence solved to linear time',
           ),
           TextBlock(
             'Because logarithmic overhead is polynomially smaller than linear (the driving '
             'function), Case 1 of the Master Theorem applies and the total cost is linear.',
           ),
           QuizBlock(
-            question: 'Why does bottom-up heap construction run in linear time instead of '
+            question:
+                'Why does bottom-up heap construction run in linear time instead of '
                 'linearithmic?',
             options: [
               'Most nodes are near the bottom and travel very short distances',
@@ -4968,7 +4886,8 @@ const List<LessonContent> lessons = [
               'Leaves are removed before construction begins',
             ],
             correctIndex: 0,
-            explanation: 'Although fixHeap is logarithmic per node, the vast majority of '
+            explanation:
+                'Although fixHeap is logarithmic per node, the vast majority of '
                 'nodes sit near the bottom of the tree and require zero or one swap. '
                 'This geometric weighting makes the total linear.',
           ),
@@ -5015,14 +4934,10 @@ const List<LessonContent> lessons = [
           ),
           QuizBlock(
             question: 'What is the worst-case time complexity of Heapsort?',
-            options: [
-              'linearithmic',
-              'quadratic',
-              'linear',
-              'n squared',
-            ],
+            options: ['linearithmic', 'quadratic', 'linear', 'n squared'],
             correctIndex: 0,
-            explanation: 'Heapsort guarantees linearithmic worst-case time, combining '
+            explanation:
+                'Heapsort guarantees linearithmic worst-case time, combining '
                 'linear heap construction with linearithmic extraction.',
           ),
           QuizBlock(
@@ -5034,11 +4949,13 @@ const List<LessonContent> lessons = [
               'Heapsort is a stable sort',
             ],
             correctIndex: 0,
-            explanation: 'Mergesort requires linear auxiliary space, while Heapsort '
+            explanation:
+                'Mergesort requires linear auxiliary space, while Heapsort '
                 'operates entirely in place. Both have the same worst-case bound.',
           ),
           QuizBlock(
-            question: 'What practical disadvantage does Heapsort have compared to Quicksort?',
+            question:
+                'What practical disadvantage does Heapsort have compared to Quicksort?',
             options: [
               'Heapsort has poor cache locality due to non-sequential array access',
               'Heapsort requires more memory than Quicksort',
@@ -5046,7 +4963,8 @@ const List<LessonContent> lessons = [
               'Heapsort has a worse worst-case complexity',
             ],
             correctIndex: 0,
-            explanation: 'During fixHeap, the algorithm jumps across array indices '
+            explanation:
+                'During fixHeap, the algorithm jumps across array indices '
                 '(i to 2i to 4i), causing cache misses on modern hardware. Quicksort\'s '
                 'sequential scans are cache-friendly.',
           ),
@@ -5071,7 +4989,8 @@ const List<LessonContent> lessons = [
           ),
           DefinitionBlock(
             term: 'Polynomial',
-            definition: 'An expression of the form a sub n times x to the n plus '
+            definition:
+                'An expression of the form a sub n times x to the n plus '
                 'a sub n minus 1 times x to the n minus 1 plus dot dot dot plus '
                 'a sub 1 times x plus a sub 0, where the a sub i are coefficients '
                 'and n is the degree.',
@@ -5099,7 +5018,8 @@ const List<LessonContent> lessons = [
           ),
           DefinitionBlock(
             term: "Horner's Rule",
-            definition: 'A method for evaluating polynomials that rewrites the '
+            definition:
+                'A method for evaluating polynomials that rewrites the '
                 'polynomial as a nested sequence of multiplications and additions. '
                 'Starting from the leading coefficient, each step multiplies the '
                 'running result by x and adds the next coefficient.',
@@ -5128,16 +5048,13 @@ const List<LessonContent> lessons = [
             semanticsLabel: 'Horner Rule total operations',
           ),
           QuizBlock(
-            question: "How many multiplications does Horner's Rule use for a "
+            question:
+                "How many multiplications does Horner's Rule use for a "
                 'polynomial of degree n?',
-            options: [
-              'Exactly n',
-              'n squared',
-              '2n',
-              'n plus 1',
-            ],
+            options: ['Exactly n', 'n squared', '2n', 'n plus 1'],
             correctIndex: 0,
-            explanation: 'Each of the n iterations performs exactly one '
+            explanation:
+                'Each of the n iterations performs exactly one '
                 'multiplication (result times x). There are no extra '
                 'exponentiation steps.',
           ),
@@ -5145,18 +5062,10 @@ const List<LessonContent> lessons = [
             'Let us trace through the example with coefficients 7, minus 5, 3, 1 '
             'and x equals 2.',
           ),
-          TextBlock(
-            'Step 1: result equals 7 (the leading coefficient).',
-          ),
-          TextBlock(
-            'Step 2: result equals 7 times 2 plus (minus 5) equals 9.',
-          ),
-          TextBlock(
-            'Step 3: result equals 9 times 2 plus 3 equals 21.',
-          ),
-          TextBlock(
-            'Step 4: result equals 21 times 2 plus 1 equals 43.',
-          ),
+          TextBlock('Step 1: result equals 7 (the leading coefficient).'),
+          TextBlock('Step 2: result equals 7 times 2 plus (minus 5) equals 9.'),
+          TextBlock('Step 3: result equals 9 times 2 plus 3 equals 21.'),
+          TextBlock('Step 4: result equals 21 times 2 plus 1 equals 43.'),
           TextBlock(
             'The polynomial value at x equals 2 is 43. Now compare the operation '
             'counts with brute force.',
@@ -5174,7 +5083,8 @@ const List<LessonContent> lessons = [
             'needs over 5000 multiplications while Horner needs only 100.',
           ),
           QuizBlock(
-            question: 'For a degree 100 polynomial, roughly how many multiplications '
+            question:
+                'For a degree 100 polynomial, roughly how many multiplications '
                 'does brute force need compared to Horner?',
             options: [
               'About 5000 versus 100',
@@ -5183,7 +5093,8 @@ const List<LessonContent> lessons = [
               'About 10000 versus 100',
             ],
             correctIndex: 0,
-            explanation: 'Brute force needs roughly n squared over 2 multiplications, '
+            explanation:
+                'Brute force needs roughly n squared over 2 multiplications, '
                 'which is about 5000 for n equals 100. Horner needs exactly n equals 100.',
           ),
           TextBlock(
@@ -5197,7 +5108,8 @@ const List<LessonContent> lessons = [
             'exponentiation or power computations.',
           ),
           QuizBlock(
-            question: "Why is Horner's Rule classified as representation change?",
+            question:
+                "Why is Horner's Rule classified as representation change?",
             options: [
               'The polynomial is rewritten into a nested form without changing the math',
               'It changes the polynomial coefficients',
@@ -5205,12 +5117,14 @@ const List<LessonContent> lessons = [
               'It converts the polynomial into a graph',
             ],
             correctIndex: 0,
-            explanation: "Horner's Rule keeps the same polynomial but represents it "
+            explanation:
+                "Horner's Rule keeps the same polynomial but represents it "
                 'as a nested expression, changing how we compute it without altering '
                 'the mathematical value.',
           ),
           QuizBlock(
-            question: 'What hardware advantage does the nested multiply-add form have?',
+            question:
+                'What hardware advantage does the nested multiply-add form have?',
             options: [
               'It uses only multiply and add in a tight loop, avoiding exponentiation',
               'It uses less memory by storing fewer coefficients',
@@ -5218,7 +5132,8 @@ const List<LessonContent> lessons = [
               'It avoids floating point errors entirely',
             ],
             correctIndex: 0,
-            explanation: 'The nested form processes one multiply-add per iteration, '
+            explanation:
+                'The nested form processes one multiply-add per iteration, '
                 'which maps directly to efficient hardware instructions with no '
                 'need for a separate power function.',
           ),
@@ -5241,19 +5156,19 @@ const List<LessonContent> lessons = [
             'leverages techniques from other areas of mathematics to solve problems '
             'and calculate the efficiency of algorithms.',
           ),
-          TextBlock(
-            'We saw two ways to apply this idea.',
-          ),
+          TextBlock('We saw two ways to apply this idea.'),
           DefinitionBlock(
             term: 'Presorting (Instance Simplification)',
-            definition: 'Sorting the input first to simplify a later computation. '
+            definition:
+                'Sorting the input first to simplify a later computation. '
                 'The problem stays the same, but the sorted instance is easier to '
                 'process. Examples include the element uniqueness problem and '
                 'computing the mode.',
           ),
           DefinitionBlock(
             term: 'Representation Change',
-            definition: 'Encoding the same data in a different structure to expose '
+            definition:
+                'Encoding the same data in a different structure to expose '
                 'hidden patterns or enable faster algorithms. The data does not '
                 'change, but the representation does.',
           ),
@@ -5272,7 +5187,8 @@ const List<LessonContent> lessons = [
             'linear time with exactly n multiplications and n additions.',
           ),
           QuizBlock(
-            question: 'Which transform-and-conquer type sorts the input to make a '
+            question:
+                'Which transform-and-conquer type sorts the input to make a '
                 'later step easier?',
             options: [
               'Instance simplification',
@@ -5281,7 +5197,8 @@ const List<LessonContent> lessons = [
               'Divide and conquer',
             ],
             correctIndex: 0,
-            explanation: 'Presorting is an example of instance simplification: '
+            explanation:
+                'Presorting is an example of instance simplification: '
                 'the problem instance is made more regular by sorting, but the '
                 'underlying problem does not change.',
           ),
@@ -5294,11 +5211,13 @@ const List<LessonContent> lessons = [
               'Removing one element to shrink the problem',
             ],
             correctIndex: 0,
-            explanation: 'The heap encodes a tree as an array, changing how the data '
+            explanation:
+                'The heap encodes a tree as an array, changing how the data '
                 'is represented. Presorting changes the instance, not the representation.',
           ),
           QuizBlock(
-            question: "How does Horner's Rule reduce polynomial evaluation cost?",
+            question:
+                "How does Horner's Rule reduce polynomial evaluation cost?",
             options: [
               'By rewriting the polynomial as nested multiply-add steps',
               'By sorting the coefficients first',
@@ -5306,7 +5225,8 @@ const List<LessonContent> lessons = [
               'By using divide and conquer on the degree',
             ],
             correctIndex: 0,
-            explanation: "Horner's Rule factors out x at every level, turning a sum "
+            explanation:
+                "Horner's Rule factors out x at every level, turning a sum "
                 'of monomials into a nested form that needs only n multiplications.',
           ),
           KeyTakeawayBlock(
@@ -5327,7 +5247,7 @@ const List<LessonContent> lessons = [
     title: 'Transform and Conquer Pt.2',
     categoryColor: '#F97316',
     modules: [
-            ModuleContent(
+      ModuleContent(
         id: 'lesson9_module1',
         title: 'Transform and Conquer Part 2: Overview',
         order: 0,
@@ -5343,13 +5263,15 @@ const List<LessonContent> lessons = [
           ),
           DefinitionBlock(
             term: 'Instance Simplification (Review)',
-            definition: 'Changing the given instance of a problem into an easier '
+            definition:
+                'Changing the given instance of a problem into an easier '
                 'instance of the same problem. Presorting is the primary example: '
                 'sort the input first to make later steps simpler.',
           ),
           DefinitionBlock(
             term: 'Representation Change (Review)',
-            definition: 'Keeping the essence of the problem but changing how the data '
+            definition:
+                'Keeping the essence of the problem but changing how the data '
                 'is represented. The heap encodes a tree as an array, and Horner\'s '
                 'Rule rewrites a polynomial as nested multiply-add steps.',
           ),
@@ -5363,14 +5285,16 @@ const List<LessonContent> lessons = [
           ),
           DefinitionBlock(
             term: 'Binary Exponentiation',
-            definition: 'A representation change that computes x to the power n by '
+            definition:
+                'A representation change that computes x to the power n by '
                 'rewriting the exponent in binary. Instead of multiplying x by itself '
                 'n times, we square repeatedly and multiply only when the current '
                 'binary digit is 1.',
           ),
           DefinitionBlock(
             term: 'Longest Increasing Subsequence',
-            definition: 'The problem of finding the longest subsequence of a given '
+            definition:
+                'The problem of finding the longest subsequence of a given '
                 'sequence whose elements are in strictly increasing order. A clever '
                 'representation change maps this to a patience sorting structure.',
           ),
@@ -5380,7 +5304,8 @@ const List<LessonContent> lessons = [
           ),
           DefinitionBlock(
             term: 'Problem Reduction',
-            definition: 'A type of transform and conquer where the given problem is '
+            definition:
+                'A type of transform and conquer where the given problem is '
                 'transformed into an instance of a well-studied problem. We apply the '
                 'existing algorithm for that known problem and optionally convert the '
                 'result back.',
@@ -5392,7 +5317,8 @@ const List<LessonContent> lessons = [
             'and the simplex method is the classic algorithm for solving it.',
           ),
           QuizBlock(
-            question: 'Which two representation change examples are covered in this lesson?',
+            question:
+                'Which two representation change examples are covered in this lesson?',
             options: [
               'Binary exponentiation and longest increasing subsequence',
               'Heapsort and Horner\'s Rule',
@@ -5400,11 +5326,13 @@ const List<LessonContent> lessons = [
               'Quicksort and mergesort',
             ],
             correctIndex: 0,
-            explanation: 'This lesson continues representation change with binary '
+            explanation:
+                'This lesson continues representation change with binary '
                 'exponentiation and longest increasing subsequence as new examples.',
           ),
           QuizBlock(
-            question: 'What does "linear programming" actually refer to in this context?',
+            question:
+                'What does "linear programming" actually refer to in this context?',
             options: [
               'Optimizing a linear objective function subject to linear constraints',
               'Writing code in a linear fashion',
@@ -5412,11 +5340,13 @@ const List<LessonContent> lessons = [
               'Creating linear animations',
             ],
             correctIndex: 0,
-            explanation: 'Despite the name, linear programming is a mathematical '
+            explanation:
+                'Despite the name, linear programming is a mathematical '
                 'optimization technique, not a coding paradigm.',
           ),
           QuizBlock(
-            question: 'Which of the three transform-and-conquer types maps a problem '
+            question:
+                'Which of the three transform-and-conquer types maps a problem '
                 'to an entirely different, well-studied problem?',
             options: [
               'Problem reduction',
@@ -5425,7 +5355,8 @@ const List<LessonContent> lessons = [
               'Divide and conquer',
             ],
             correctIndex: 0,
-            explanation: 'Problem reduction transforms the given problem into an '
+            explanation:
+                'Problem reduction transforms the given problem into an '
                 'instance of a different problem that already has efficient algorithms.',
           ),
           KeyTakeawayBlock(
@@ -5453,10 +5384,11 @@ const List<LessonContent> lessons = [
           ),
           DefinitionBlock(
             term: 'Binary Exponentiation',
-            definition: 'A transform-and-conquer algorithm that computes a to the power n '
+            definition:
+                'A transform-and-conquer algorithm that computes a to the power n '
                 'by representing n in binary and using the identity a to the power 2p plus b '
                 'sub i equals (a to the power p) squared times a to the power b sub i. '
-                'This gives O(log n) multiplications instead of n.',
+                'This gives logarithmic multiplications instead of n.',
           ),
           TextBlock(
             'Write the exponent n in binary as a sequence of bits. Then:',
@@ -5471,7 +5403,8 @@ const List<LessonContent> lessons = [
           ),
           DefinitionBlock(
             term: 'Left-to-Right Binary Exponentiation',
-            definition: 'Scan the binary digits of n from most significant to least significant. '
+            definition:
+                'Scan the binary digits of n from most significant to least significant. '
                 'At each step, square the current result. If the current bit is 1, also multiply by a. '
                 'Based on the identity a to the power 2p plus b sub i equals (a to the power p) squared '
                 'times a to the power b sub i.',
@@ -5517,7 +5450,8 @@ const List<LessonContent> lessons = [
           ),
           DefinitionBlock(
             term: 'Connection to Horner\'s Rule',
-            definition: 'Binary exponentiation is an implementation of Horner\'s Rule with 2 playing '
+            definition:
+                'Binary exponentiation is an implementation of Horner\'s Rule with 2 playing '
                 'the role normally played by x. A polynomial p(x) equals a sub n times x to the power n '
                 'plus a sub n minus 1 times x to the power n minus 1 and so on. '
                 'Horner\'s Rule rewrites it as nested multiply-add. '
@@ -5537,7 +5471,8 @@ const List<LessonContent> lessons = [
           ),
           DefinitionBlock(
             term: 'Right-to-Left Binary Exponentiation',
-            definition: 'Rewrite a to the power n using the binary expansion. '
+            definition:
+                'Rewrite a to the power n using the binary expansion. '
                 'For each bit position i, if the bit is 1, include a to the power 2 to the i in the product. '
                 'If the bit is 0, contribute 1 instead. Square repeatedly to generate '
                 'a, a squared, a to the power 4, a to the power 8, and so on.',
@@ -5554,7 +5489,8 @@ const List<LessonContent> lessons = [
             'for the same basic reason: the number of processed bits is proportional to log base 2 of n.',
           ),
           QuizBlock(
-            question: 'What is the key representation change in binary exponentiation?',
+            question:
+                'What is the key representation change in binary exponentiation?',
             options: [
               'Express the exponent n in binary instead of decimal',
               'Use addition instead of multiplication',
@@ -5562,11 +5498,13 @@ const List<LessonContent> lessons = [
               'Use a different base for the exponent',
             ],
             correctIndex: 0,
-            explanation: 'Binary exponentiation transforms the problem by representing n in binary, '
+            explanation:
+                'Binary exponentiation transforms the problem by representing n in binary, '
                 'which gives access to the much faster squaring-and-multiply method.',
           ),
           QuizBlock(
-            question: 'In left-to-right binary exponentiation, what two operations happen at each bit?',
+            question:
+                'In left-to-right binary exponentiation, what two operations happen at each bit?',
             options: [
               'Square and, if bit is 1, multiply by a',
               'Multiply by a and then square',
@@ -5574,12 +5512,14 @@ const List<LessonContent> lessons = [
               'Add the bit value to the result',
             ],
             correctIndex: 0,
-            explanation: 'At each step we always square the current result. If the current bit is 1, '
+            explanation:
+                'At each step we always square the current result. If the current bit is 1, '
                 'we also multiply by a. This follows from the identity '
                 'a to the power 2p plus b sub i equals (a to the power p) squared times a to the power b sub i.',
           ),
           QuizBlock(
-            question: 'How many multiplications does binary exponentiation use to compute a to the power n?',
+            question:
+                'How many multiplications does binary exponentiation use to compute a to the power n?',
             options: [
               'Theta of log base 2 of n',
               'Exactly n',
@@ -5587,12 +5527,14 @@ const List<LessonContent> lessons = [
               'N times log base 2 of n',
             ],
             correctIndex: 0,
-            explanation: 'The number of iterations equals the number of bits in n, '
+            explanation:
+                'The number of iterations equals the number of bits in n, '
                 'which is floor of log base 2 of n plus 1. Each iteration performs at most two multiplications, '
                 'giving theta of log n.',
           ),
           QuizBlock(
-            question: 'Why is binary exponentiation considered a representation change?',
+            question:
+                'Why is binary exponentiation considered a representation change?',
             options: [
               'It changes how the input n is represented, from decimal to binary',
               'It changes the output of the computation',
@@ -5600,12 +5542,14 @@ const List<LessonContent> lessons = [
               'It uses a different programming language',
             ],
             correctIndex: 0,
-            explanation: 'The improvement comes not from changing the answer but from changing '
+            explanation:
+                'The improvement comes not from changing the answer but from changing '
                 'how the input is represented. By switching from decimal to binary thinking, '
                 'we gain access to the squaring-and-multiply structure.',
           ),
           QuizBlock(
-            question: 'Binary exponentiation is really an application of which concept?',
+            question:
+                'Binary exponentiation is really an application of which concept?',
             options: [
               'Horner\'s Rule with x replaced by 2',
               'The Euclidean algorithm',
@@ -5613,12 +5557,14 @@ const List<LessonContent> lessons = [
               'The Fibonacci recurrence',
             ],
             correctIndex: 0,
-            explanation: 'When we write the binary expansion of n in nested form like '
+            explanation:
+                'When we write the binary expansion of n in nested form like '
                 '2(2(2(1)+0)+1)+1, we see the same structure as Horner\'s Rule applied '
                 'to the polynomial representation with x equals 2.',
           ),
           QuizBlock(
-            question: 'Using left-to-right binary exponentiation on a to the power 13, '
+            question:
+                'Using left-to-right binary exponentiation on a to the power 13, '
                 'which of the following is the correct binary representation of 13?',
             options: [
               '1101 in binary',
@@ -5627,7 +5573,8 @@ const List<LessonContent> lessons = [
               '10011 in binary',
             ],
             correctIndex: 0,
-            explanation: '13 equals 8 plus 4 plus 1, which is 1101 in binary. '
+            explanation:
+                '13 equals 8 plus 4 plus 1, which is 1101 in binary. '
                 'Left-to-right processing of 1, 1, 0, 1 gives the nested computation.',
           ),
           KeyTakeawayBlock(
@@ -5638,7 +5585,7 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
-ModuleContent(
+      ModuleContent(
         id: 'lesson9_module3',
         title: 'Problem Reduction (Linear Programming)',
         order: 2,
@@ -5652,14 +5599,16 @@ ModuleContent(
           ),
           DefinitionBlock(
             term: 'Problem Reduction',
-            definition: 'A type of transform and conquer where the given problem is '
+            definition:
+                'A type of transform and conquer where the given problem is '
                 'transformed into an instance of a well-studied problem. '
                 'We apply the existing algorithm for that known problem and optionally '
                 'convert the result back into the original setting.',
           ),
           DefinitionBlock(
             term: 'Linear Programming',
-            definition: 'The problem of minimizing or maximizing a linear function '
+            definition:
+                'The problem of minimizing or maximizing a linear function '
                 'subject to linear constraints. '
                 'Despite the name, programming here means planning or optimizing, '
                 'not writing code. LP is easily solved in practice using the Simplex Method.',
@@ -5698,7 +5647,8 @@ ModuleContent(
           ),
           DefinitionBlock(
             term: 'Reducing to Linear Programming',
-            definition: 'Formulate the problem using variables x1 through x6 representing '
+            definition:
+                'Formulate the problem using variables x1 through x6 representing '
                 'the number of packs bought of each colour. '
                 'Stock constraints give upper bounds. '
                 'Requirement constraints give linear inequalities. '
@@ -5730,7 +5680,8 @@ ModuleContent(
             'and get the optimal answer instantly.',
           ),
           QuizBlock(
-            question: 'What does programming mean in the term linear programming?',
+            question:
+                'What does programming mean in the term linear programming?',
             options: [
               'Writing code',
               'Planning or optimizing',
@@ -5738,7 +5689,8 @@ ModuleContent(
               'Scheduling tasks',
             ],
             correctIndex: 1,
-            explanation: 'Programming here is an older term meaning planning or optimizing, '
+            explanation:
+                'Programming here is an older term meaning planning or optimizing, '
                 'not writing code. Linear programming is about optimizing a linear objective '
                 'function subject to linear constraints.',
           ),
@@ -5751,12 +5703,14 @@ ModuleContent(
               'It eliminates the need for constraints',
             ],
             correctIndex: 1,
-            explanation: 'Problem reduction lets us reuse decades of highly optimized algorithms '
+            explanation:
+                'Problem reduction lets us reuse decades of highly optimized algorithms '
                 'instead of starting from scratch, by showing that a new problem is just '
                 'a disguised version of an old one.',
           ),
           QuizBlock(
-            question: 'What is the key trade-off with the Simplex Method for linear programming?',
+            question:
+                'What is the key trade-off with the Simplex Method for linear programming?',
             options: [
               'Fast in practice but exponential worst-case time',
               'Polynomial always but slow in practice',
@@ -5764,12 +5718,14 @@ ModuleContent(
               'Requires special hardware to run',
             ],
             correctIndex: 0,
-            explanation: 'The Simplex Method has exponential worst-case time, '
+            explanation:
+                'The Simplex Method has exponential worst-case time, '
                 'but in practice on real data it is extremely fast. '
                 'Newer polynomial-time algorithms like Karmarkar\'s algorithm also exist.',
           ),
           QuizBlock(
-            question: 'In the robot energy pack problem, what do the variables x1 through x6 represent?',
+            question:
+                'In the robot energy pack problem, what do the variables x1 through x6 represent?',
             options: [
               'The energy, cuteness, and duration of each pack',
               'The number of packs bought of each colour',
@@ -5777,11 +5733,13 @@ ModuleContent(
               'The stock remaining after purchase',
             ],
             correctIndex: 1,
-            explanation: 'The variables x1 through x6 represent the number of packs bought '
+            explanation:
+                'The variables x1 through x6 represent the number of packs bought '
                 'of each colour: red, green, blue, yellow, brown, and purple.',
           ),
           QuizBlock(
-            question: 'Which type of constraint ensures the shop stock limits are respected?',
+            question:
+                'Which type of constraint ensures the shop stock limits are respected?',
             options: [
               'Objective constraints',
               'Requirement constraints',
@@ -5789,7 +5747,8 @@ ModuleContent(
               'Cost constraints',
             ],
             correctIndex: 2,
-            explanation: 'Stock constraints set upper bounds on each variable '
+            explanation:
+                'Stock constraints set upper bounds on each variable '
                 'like 0 is less than or equal to x1 is less than or equal to 4, '
                 'ensuring we do not buy more packs than are available.',
           ),
@@ -5802,7 +5761,7 @@ ModuleContent(
           ),
         ],
       ),
-ModuleContent(
+      ModuleContent(
         id: 'lesson9_module4',
         title: 'Conclusion',
         order: 3,
@@ -5821,7 +5780,8 @@ ModuleContent(
             'Problem reduction transforms our problem into an instance of a well-known problem with established algorithms, like formulating a scheduling problem as linear programming.',
           ),
           QuizBlock(
-            question: 'What is the key difference between instance simplification and representation change?',
+            question:
+                'What is the key difference between instance simplification and representation change?',
             options: [
               'Instance simplification changes the problem type, while representation change changes the data structure',
               'Instance simplification finds an easier version of the same problem, while representation change encodes the problem in a different form',
@@ -5829,10 +5789,12 @@ ModuleContent(
               'There is no difference, both terms mean the same thing',
             ],
             correctIndex: 1,
-            explanation: 'Instance simplification works on the same problem but with a nicer input instance. Representation change keeps the same problem but expresses it in a different domain, like a tree, graph, matrix, or automaton, to unlock different tools.',
+            explanation:
+                'Instance simplification works on the same problem but with a nicer input instance. Representation change keeps the same problem but expresses it in a different domain, like a tree, graph, matrix, or automaton, to unlock different tools.',
           ),
           QuizBlock(
-            question: 'Gaussian Elimination transforms the original system of linear equations into what form that makes solving straightforward?',
+            question:
+                'Gaussian Elimination transforms the original system of linear equations into what form that makes solving straightforward?',
             options: [
               'A diagonal matrix',
               'A lower triangular matrix',
@@ -5840,7 +5802,8 @@ ModuleContent(
               'A sparse matrix',
             ],
             correctIndex: 2,
-            explanation: 'Gaussian Elimination converts the coefficient matrix into upper triangular form. Once the system is upper triangular, it can be solved efficiently using backward substitution.',
+            explanation:
+                'Gaussian Elimination converts the coefficient matrix into upper triangular form. Once the system is upper triangular, it can be solved efficiently using backward substitution.',
           ),
           QuizBlock(
             question: 'Why is problem reduction a powerful technique?',
@@ -5851,7 +5814,8 @@ ModuleContent(
               'It works for every computational problem',
             ],
             correctIndex: 1,
-            explanation: 'Problem reduction leverages the fact that many important problems already have highly optimized algorithms. By transforming our problem to fit one of these known forms, we can apply proven solutions directly.',
+            explanation:
+                'Problem reduction leverages the fact that many important problems already have highly optimized algorithms. By transforming our problem to fit one of these known forms, we can apply proven solutions directly.',
           ),
           KeyTakeawayBlock(
             'Lesson 9 completed our exploration of Transform and Conquer. '
@@ -5868,7 +5832,7 @@ ModuleContent(
     title: 'Dynamic Programming',
     categoryColor: '#8B5CF6',
     modules: [
-ModuleContent(
+      ModuleContent(
         id: 'lesson10_module1',
         title: 'Introduction to Dynamic Programming',
         order: 0,
@@ -5888,7 +5852,8 @@ ModuleContent(
           ),
           DefinitionBlock(
             term: 'Dynamic Programming',
-            definition: 'A recursive algorithm design technique that solves subproblems once, stores their results in a table, and reuses the stored results instead of recomputing them. '
+            definition:
+                'A recursive algorithm design technique that solves subproblems once, stores their results in a table, and reuses the stored results instead of recomputing them. '
                 'It is particularly useful when subproblems share overlapping results.',
           ),
           TextBlock(
@@ -5902,7 +5867,8 @@ ModuleContent(
             'A naive recursive implementation computes the same subproblem many times. For instance, F(3) appears twice in the decision tree for F(5), and each time it is recomputed fully. This exponential waste is the core problem dynamic programming solves.',
           ),
           QuizBlock(
-            question: 'What is the key characteristic that makes dynamic programming different from divide and conquer?',
+            question:
+                'What is the key characteristic that makes dynamic programming different from divide and conquer?',
             options: [
               'Dynamic programming splits the problem into independent subproblems',
               'Dynamic programming stores and reuses computed subproblem results in a table',
@@ -5910,21 +5876,20 @@ ModuleContent(
               'Dynamic programming does not use recursion',
             ],
             correctIndex: 1,
-            explanation: 'Divide and conquer solves each subproblem independently. Dynamic programming solves each subproblem once and stores the results, so overlapping subproblems are computed only once.',
+            explanation:
+                'Divide and conquer solves each subproblem independently. Dynamic programming solves each subproblem once and stores the results, so overlapping subproblems are computed only once.',
           ),
           QuizBlock(
-            question: 'In the naive recursive Fibonacci algorithm, how many times is F(3) computed when evaluating F(5)?',
-            options: [
-              'Once',
-              'Twice',
-              'Three times',
-              'Five times',
-            ],
+            question:
+                'In the naive recursive Fibonacci algorithm, how many times is F(3) computed when evaluating F(5)?',
+            options: ['Once', 'Twice', 'Three times', 'Five times'],
             correctIndex: 1,
-            explanation: 'In the decision tree for F(5), the subtree F(3) appears twice: once on the left branch (F(4) → F(3)) and once on the right (F(3)). The naive recursive algorithm recomputes F(3) each time instead of reusing the stored result.',
+            explanation:
+                'In the decision tree for F(5), the subtree F(3) appears twice: once on the left branch (F(4) → F(3)) and once on the right (F(3)). The naive recursive algorithm recomputes F(3) each time instead of reusing the stored result.',
           ),
           QuizBlock(
-            question: 'Why might a dynamic programming algorithm compute subproblems that are not needed in the final answer?',
+            question:
+                'Why might a dynamic programming algorithm compute subproblems that are not needed in the final answer?',
             options: [
               'It is a flaw in the design',
               'It stores all possible subproblems that could arise during the recursion',
@@ -5932,7 +5897,8 @@ ModuleContent(
               'It runs faster this way',
             ],
             correctIndex: 1,
-            explanation: 'Dynamic programming fills the table by solving every subproblem that could appear in the decision tree, even if some are not strictly needed for the final result. This systematic filling ensures each value is available when needed and is a common trade-off of the approach.',
+            explanation:
+                'Dynamic programming fills the table by solving every subproblem that could appear in the decision tree, even if some are not strictly needed for the final result. This systematic filling ensures each value is available when needed and is a common trade-off of the approach.',
           ),
           KeyTakeawayBlock(
             'Dynamic programming solves overlapping subproblems once, stores their results, and reuses them. '
@@ -5942,7 +5908,7 @@ ModuleContent(
         ],
       ),
 
-ModuleContent(
+      ModuleContent(
         id: 'lesson10_module2',
         title: 'Binomial Coefficients',
         order: 1,
@@ -5953,7 +5919,8 @@ ModuleContent(
           ),
           DefinitionBlock(
             term: 'Binomial Coefficient',
-            definition: 'The binomial coefficient C(n, k) represents the number of ways to choose k elements from a set of n elements. It is read as "n choose k" and written as the notation n choose k.',
+            definition:
+                'The binomial coefficient C(n, k) represents the number of ways to choose k elements from a set of n elements. It is read as "n choose k" and written as the notation n choose k.',
           ),
           MathBlock(
             r'C(n, k) = \binom{n}{k} = \frac{n!}{k!(n-k)!}',
@@ -5970,7 +5937,8 @@ ModuleContent(
             'This recurrence is based on Pascal\'s Triangle: every entry is the sum of the two entries directly above it. The recurrence gives us a clear structure to compute binomial coefficients efficiently.',
           ),
           QuizBlock(
-            question: 'Why do we prefer the recurrence relation over the factorial formula for computing binomial coefficients?',
+            question:
+                'Why do we prefer the recurrence relation over the factorial formula for computing binomial coefficients?',
             options: [
               'The recurrence is easier to prove correct',
               'The factorial formula only works for small values of n',
@@ -5978,7 +5946,8 @@ ModuleContent(
               'The recurrence runs in constant time',
             ],
             correctIndex: 2,
-            explanation: 'Factorials grow extremely fast, causing integer overflow even for moderate n. The recurrence avoids computing large factorials and instead builds up results from smaller subproblems.',
+            explanation:
+                'Factorials grow extremely fast, causing integer overflow even for moderate n. The recurrence avoids computing large factorials and instead builds up results from smaller subproblems.',
           ),
           TextBlock(
             'If we implement the recurrence as a simple recursive function, we face the same problem as the naive recursive Fibonacci: overlapping subproblems. The recursion tree recalculates the same binomial coefficients over and over, giving exponential time complexity.',
@@ -5987,7 +5956,8 @@ ModuleContent(
             'Dynamic programming solves this by creating a table and filling it systematically from the smallest subproblems up to the final answer.',
           ),
           QuizBlock(
-            question: 'What is the key inefficiency in a naive recursive implementation of the binomial coefficient recurrence?',
+            question:
+                'What is the key inefficiency in a naive recursive implementation of the binomial coefficient recurrence?',
             options: [
               'The base cases are computed too many times',
               'The factorial values overflow',
@@ -5995,7 +5965,8 @@ ModuleContent(
               'The recursion depth exceeds stack limits',
             ],
             correctIndex: 2,
-            explanation: 'Like the naive Fibonacci algorithm, the naive recursive binomial coefficient implementation recalculates the same subproblems many times across the recursion tree, leading to exponential time.',
+            explanation:
+                'Like the naive Fibonacci algorithm, the naive recursive binomial coefficient implementation recalculates the same subproblems many times across the recursion tree, leading to exponential time.',
           ),
           TextBlock(
             'We construct a 2D table C where C[i, j] holds the value of C(i, j). The table looks like Pascal\'s Triangle shifted to the left. We only need to fill up to column k, because values where j is greater than k are not needed for our final answer.',
@@ -6018,7 +5989,8 @@ ModuleContent(
             language: 'pseudocode',
           ),
           QuizBlock(
-            question: 'What is the time complexity of the dynamic programming algorithm for binomial coefficients?',
+            question:
+                'What is the time complexity of the dynamic programming algorithm for binomial coefficients?',
             options: [
               'Exponential',
               'Linear in n',
@@ -6026,7 +5998,8 @@ ModuleContent(
               'Quadratic in n only',
             ],
             correctIndex: 2,
-            explanation: 'The algorithm fills a table of size O(nk). Each cell requires at most one addition, giving O(nk) time. The naive recursive approach is exponential due to repeated computation of the same subproblems.',
+            explanation:
+                'The algorithm fills an n by k table. Each cell requires at most one addition, giving polynomial time. The naive recursive approach is exponential due to repeated computation of the same subproblems.',
           ),
           TextBlock(
             'To analyze complexity formally, we count the number of additions. Each non-base-case cell requires exactly one addition. The table shape has a triangle for rows 1 through k, then a rectangle of width k for rows k+1 through n.',
@@ -6036,10 +6009,10 @@ ModuleContent(
             semanticsLabel: 'binomial coefficient complexity derivation',
           ),
           TextBlock(
-            'Both terms are bounded by n times k, so the overall efficiency is Theta(nk). By using dynamic programming, we reduced the exponential cost of naive recursion down to polynomial time, and we avoid the integer overflow problems of the factorial formula.',
+            'Both terms are bounded by n times k, so the overall efficiency is polynomial in n and k. By using dynamic programming, we reduced the exponential cost of naive recursion down to polynomial time, and we avoid the integer overflow problems of the factorial formula.',
           ),
           KeyTakeawayBlock(
-            'Dynamic programming converts the exponential recursive binomial coefficient into an O(nk) algorithm by building Pascal\'s Triangle as a table. This same bottom-up table-building pattern applies to many more complex dynamic programming problems.',
+            'Dynamic programming converts the exponential recursive binomial coefficient into a polynomial table-building algorithm by building Pascal\'s Triangle as a table. This same bottom-up pattern applies to many more complex dynamic programming problems.',
           ),
         ],
       ),
@@ -6055,7 +6028,8 @@ ModuleContent(
           ),
           DefinitionBlock(
             term: '0/1 Knapsack Problem',
-            definition: 'Given n items with weights wᵢ and values vᵢ, and a knapsack of capacity W, find the maximum total value of a subset of items that fits inside the knapsack without exceeding its capacity. Each item is either taken completely or not at all.',
+            definition:
+                'Given n items with weights wᵢ and values vᵢ, and a knapsack of capacity W, find the maximum total value of a subset of items that fits inside the knapsack without exceeding its capacity. Each item is either taken completely or not at all.',
           ),
           TextBlock(
             'To use dynamic programming, we define a subproblem function F(i, j): the maximum value we can achieve using only the first i items with a knapsack capacity of j. Our goal is F(n, W): the optimal value using all n items and the full capacity.',
@@ -6065,7 +6039,8 @@ ModuleContent(
             semanticsLabel: 'subproblem definition',
           ),
           QuizBlock(
-            question: 'What does F(i, j) represent in the dynamic programming formulation of the knapsack problem?',
+            question:
+                'What does F(i, j) represent in the dynamic programming formulation of the knapsack problem?',
             options: [
               'The total weight of the first i items',
               'The maximum value achievable using only the first i items with capacity j',
@@ -6073,7 +6048,8 @@ ModuleContent(
               'The number of ways to fill the knapsack with i items',
             ],
             correctIndex: 1,
-            explanation: 'F(i, j) is defined as the maximum value achievable using only the first i items with a knapsack capacity of j. This subproblem structure lets us build up to the full solution F(n, W).',
+            explanation:
+                'F(i, j) is defined as the maximum value achievable using only the first i items with a knapsack capacity of j. This subproblem structure lets us build up to the full solution F(n, W).',
           ),
           TextBlock(
             'To build the recurrence, consider the i-th item. There are exactly two choices: exclude it or include it. If we exclude it, our value is just F(i minus 1, j). If we include it, we gain vᵢ but consume wᵢ of capacity, leaving j minus wᵢ for the remaining items.',
@@ -6090,7 +6066,8 @@ ModuleContent(
             semanticsLabel: 'knapsack recurrence when item does not fit',
           ),
           QuizBlock(
-            question: 'When does the recurrence for F(i, j) simplify to just F(i minus 1, j)?',
+            question:
+                'When does the recurrence for F(i, j) simplify to just F(i minus 1, j)?',
             options: [
               'When the item has zero weight',
               'When the item value is greater than the capacity',
@@ -6098,7 +6075,8 @@ ModuleContent(
               'When this is the last item to consider',
             ],
             correctIndex: 2,
-            explanation: 'If the item weight wᵢ exceeds the current capacity j, the item cannot be included. The recurrence simplifies to F(i, j) equals F(i minus 1, j) because we can only exclude it.',
+            explanation:
+                'If the item weight wᵢ exceeds the current capacity j, the item cannot be included. The recurrence simplifies to F(i, j) equals F(i minus 1, j) because we can only exclude it.',
           ),
           TextBlock(
             'We build a 2D table where rows represent items (0 to n) and columns represent capacities (0 to W). Each cell F(i, j) is computed from the row above, so we fill the table row by row. Each cell takes constant time since we only look at one or two cells above it.',
@@ -6114,29 +6092,32 @@ ModuleContent(
             language: 'pseudocode',
           ),
           QuizBlock(
-            question: 'What is the time complexity of the dynamic programming algorithm for the 0/1 knapsack problem?',
+            question:
+                'What is the time complexity of the dynamic programming algorithm for the 0/1 knapsack problem?',
             options: [
               'Exponential in n',
-              'Theta(nW)',
-              'Theta(n squared)',
-              'Theta(n log W)',
+              'pseudo-polynomial in n and W',
+              'quadratic in n',
+              'linearithmic in n',
             ],
             correctIndex: 1,
-            explanation: 'The algorithm builds an n by W table, and each cell takes constant time to compute from the row above. This gives Theta(nW) time.',
+            explanation:
+                'The algorithm builds an n by W table, and each cell takes constant time to compute from the row above. This gives pseudo-polynomial time.',
           ),
           VisualizerLinkBlock(
             algorithmId: 'knapsack',
             label: 'See the DP table fill in action',
-            description: 'Watch how the table builds row by row and how each decision leads to the optimal value.',
+            description:
+                'Watch how the table builds row by row and how each decision leads to the optimal value.',
           ),
           TextBlock(
-            'You might wonder: the knapsack problem is NP-hard. How can we have a polynomial-time algorithm? The key is that Theta(nW) is polynomial in the numeric value of W, but not in the input size. W is a number, not a count of bits. The actual input size is the number of bits needed to represent W, which is log₂ W. So Theta(nW) is actually Theta(n times 2 to the power of the input size), which is exponential.',
+            'You might wonder: the knapsack problem is NP-hard. How can this table algorithm help? The key is that the running time is polynomial in the numeric value of W, but not in the input size. W is a number, not a count of bits. The actual input size is the number of bits needed to represent W, which is log₂ W, so the method is pseudo-polynomial.',
           ),
           TextBlock(
             'Algorithms whose running time is polynomial in the numeric value of the input but exponential in the input length are called pseudo-polynomial. They work well for moderate W values, but degrade quickly when W is very large (like a 256-bit cryptographic integer).',
           ),
           KeyTakeawayBlock(
-            'The knapsack dynamic program builds an n by W table in Theta(nW) time. This is pseudo-polynomial because it is polynomial in the numeric value of W but exponential in the number of bits needed to represent W. The recurrence F(i, j) equals max(F(i minus 1, j), vᵢ plus F(i minus 1, j minus wᵢ)) captures the include/exclude decision for each item.',
+            'The knapsack dynamic program builds an n by W table. This is pseudo-polynomial because it is polynomial in the numeric value of W but can be exponential in the number of bits needed to represent W. The recurrence captures the include or exclude decision for each item.',
           ),
         ],
       ),
@@ -6152,7 +6133,8 @@ ModuleContent(
           ),
           DefinitionBlock(
             term: 'Subsequence',
-            definition: 'A sequence derived from another sequence by deleting zero or more elements without changing the order of the remaining elements.',
+            definition:
+                'A sequence derived from another sequence by deleting zero or more elements without changing the order of the remaining elements.',
           ),
           TextBlock(
             'For example, let X = ACCBDA and Y = CDCBAC. The longest common subsequence is Z = CCBA. We delete D from the first and B, D from the second to reveal this order.',
@@ -6165,23 +6147,24 @@ ModuleContent(
             'The recurrence works as follows. When either sequence is empty the LCS length is 0. When the last characters match, we extend the LCS of the prefixes by 1. When they differ, we take the better of skipping the last character of X or skipping the last character of Y.',
           ),
           CodeBlock(
-            'LCS_Length(X, m, Y, n):\n' +
-            '  create table c[0..m, 0..n]\n' +
-            '  for i from 1 to m: c[i,0] = 0\n' +
-            '  for j from 1 to n: c[0,j] = 0\n' +
-            '  for i from 1 to m:\n' +
-            '    for j from 1 to n:\n' +
-            '      if X[i] == Y[j]:\n' +
-            '        c[i,j] = c[i-1,j-1] + 1\n' +
-            '      else if c[i-1,j] >= c[i,j-1]:\n' +
-            '        c[i,j] = c[i-1,j]\n' +
-            '      else:\n' +
-            '        c[i,j] = c[i,j-1]\n' +
+            'LCS_Length(X, m, Y, n):\n'
+            '  create table c[0..m, 0..n]\n'
+            '  for i from 1 to m: c[i,0] = 0\n'
+            '  for j from 1 to n: c[0,j] = 0\n'
+            '  for i from 1 to m:\n'
+            '    for j from 1 to n:\n'
+            '      if X[i] == Y[j]:\n'
+            '        c[i,j] = c[i-1,j-1] + 1\n'
+            '      else if c[i-1,j] >= c[i,j-1]:\n'
+            '        c[i,j] = c[i-1,j]\n'
+            '      else:\n'
+            '        c[i,j] = c[i,j-1]\n'
             '  return c[m,n]\n',
             language: 'pseudocode',
           ),
           QuizBlock(
-            question: 'What does the recurrence do when the last characters x_i and y_j match?',
+            question:
+                'What does the recurrence do when the last characters x_i and y_j match?',
             options: [
               'Skip the last character of X',
               'Skip the last character of Y',
@@ -6189,7 +6172,8 @@ ModuleContent(
               'Reset the LCS length to 0',
             ],
             correctIndex: 2,
-            explanation: 'When x_i equals y_j, the character belongs to the LCS. We take the LCS of the prefixes (c[i-1, j-1]) and add 1 for the matching character.',
+            explanation:
+                'When x_i equals y_j, the character belongs to the LCS. We take the LCS of the prefixes (c[i-1, j-1]) and add 1 for the matching character.',
           ),
           TextBlock(
             'To reconstruct the actual subsequence string, start at c[m, n] and follow the arrows backwards. Whenever you follow a diagonal arrow, the character x_i equals y_j and belongs to the LCS. Record it, then reverse at the end.',
@@ -6203,7 +6187,8 @@ ModuleContent(
               'logarithmic in the length of the shorter sequence',
             ],
             correctIndex: 0,
-            explanation: 'The algorithm fills an m by n table, computing each cell in constant time. This gives quadratic time in the product of the two sequence lengths.',
+            explanation:
+                'The algorithm fills an m by n table, computing each cell in constant time. This gives quadratic time in the product of the two sequence lengths.',
           ),
           TextBlock(
             'The table itself requires quadratic space. However, if we only need the length of the LCS and not the actual string, we can reduce space to linear by keeping only the last two rows at any time.',
@@ -6211,7 +6196,8 @@ ModuleContent(
           VisualizerLinkBlock(
             algorithmId: 'lcs',
             label: 'See the LCS table fill in action',
-            description: 'Watch how the table is filled row by row and how the backtrace reconstructs the subsequence.',
+            description:
+                'Watch how the table is filled row by row and how the backtrace reconstructs the subsequence.',
           ),
           KeyTakeawayBlock(
             'The LCS dynamic program fills an m by n table in quadratic time. The recurrence captures three cases: empty prefix, matching characters, and mismatched characters. The backtrace reconstructs the subsequence by following diagonal arrows from the bottom-right corner.',
@@ -6219,7 +6205,7 @@ ModuleContent(
         ],
       ),
 
-ModuleContent(
+      ModuleContent(
         id: 'lesson10_module5',
         title: 'World Series Odds',
         order: 4,
@@ -6229,7 +6215,8 @@ ModuleContent(
           ),
           DefinitionBlock(
             term: 'P(i, j)',
-            definition: 'The probability that team A wins the series when A needs i more victories and B needs j more victories to clinch the title.',
+            definition:
+                'The probability that team A wins the series when A needs i more victories and B needs j more victories to clinch the title.',
           ),
           MathBlock(
             r"P(i,j) = \frac{1}{2} \cdot P(i-1,j) + \frac{1}{2} \cdot P(i,j-1)",
@@ -6242,17 +6229,18 @@ ModuleContent(
             'A naive recursive implementation repeats the same subproblems over and over, giving exponential running time roughly proportional to 2 to the power of (i plus j). The dynamic programming solution fills a 2D table instead, computing each entry once and reusing previously computed values.',
           ),
           CodeBlock(
-            'odds(i, j):\n' +
-            '  for s from 1 to i + j:\n' +
-            '    P[0, s] = 1.0\n' +
-            '    P[s, 0] = 0.0\n' +
-            '    for k from 1 to s - 1:\n' +
-            '      P[k, s-k] = (P[k-1, s-k] + P[k, s-k-1]) / 2.0\n' +
+            'odds(i, j):\n'
+            '  for s from 1 to i + j:\n'
+            '    P[0, s] = 1.0\n'
+            '    P[s, 0] = 0.0\n'
+            '    for k from 1 to s - 1:\n'
+            '      P[k, s-k] = (P[k-1, s-k] + P[k, s-k-1]) / 2.0\n'
             '  return P[i, j]\n',
             language: 'pseudocode',
           ),
           QuizBlock(
-            question: 'What is the time complexity of filling the World Series DP table?',
+            question:
+                'What is the time complexity of filling the World Series DP table?',
             options: [
               'quadratic in the series length parameter',
               'exponential in the series length parameter',
@@ -6260,7 +6248,8 @@ ModuleContent(
               'constant regardless of series length',
             ],
             correctIndex: 0,
-            explanation: 'The two nested loops each iterate up to i plus j times, giving Theta((i plus j) squared) which is O(n squared) for series length n.',
+            explanation:
+                'The two nested loops each iterate up to i plus j times, giving quadratic time in the series length parameter.',
           ),
           TextBlock(
             'The polynomial efficiency of the DP approach is a massive improvement over the exponential cost of naive recursion. This is a recurring theme in dynamic programming: identify overlapping subproblems, build a table, and turn an intractable problem into a polynomial-time one.',
@@ -6274,7 +6263,8 @@ ModuleContent(
               'Because the games must be played in a specific order',
             ],
             correctIndex: 1,
-            explanation: 'When i equals 0, team A has already won all the games it needs, so the probability of A winning the series is 1. When j equals 0, team B has clinched, so A has no chance left.',
+            explanation:
+                'When i equals 0, team A has already won all the games it needs, so the probability of A winning the series is 1. When j equals 0, team B has clinched, so A has no chance left.',
           ),
           KeyTakeawayBlock(
             'The World Series DP fills an i by j table in quadratic time. Base cases capture when one team has already clinched. The recurrence averages the two possible outcomes of the next game, trading exponential naive recursion for polynomial DP.',
@@ -6282,7 +6272,7 @@ ModuleContent(
         ],
       ),
 
-ModuleContent(
+      ModuleContent(
         id: 'lesson10_module6',
         title: 'Conclusion',
         order: 5,
@@ -6294,7 +6284,8 @@ ModuleContent(
             'We saw three instances of this pattern. The knapsack problem fills an n by W table to decide which items to include. The longest common subsequence problem fills an m by n table to find matching character sequences. The World Series problem fills a 2D table of probabilities using the outcomes of future games.',
           ),
           QuizBlock(
-            question: 'What distinguishes dynamic programming from a naive recursive approach?',
+            question:
+                'What distinguishes dynamic programming from a naive recursive approach?',
             options: [
               'DP always uses more memory but runs faster by avoiding repeated subproblems',
               'DP splits the problem into independent subproblems before solving them',
@@ -6302,10 +6293,12 @@ ModuleContent(
               'DP only works on problems where the recurrence base case is zero',
             ],
             correctIndex: 0,
-            explanation: 'DP avoids recomputing the same subproblems by storing their results in a table. This trades memory for time, turning exponential recursive algorithms into polynomial ones.',
+            explanation:
+                'DP avoids recomputing the same subproblems by storing their results in a table. This trades memory for time, turning exponential recursive algorithms into polynomial ones.',
           ),
           QuizBlock(
-            question: 'Why might table storage become a bottleneck in dynamic programming?',
+            question:
+                'Why might table storage become a bottleneck in dynamic programming?',
             options: [
               'Because the table must be rebuilt for each subproblem',
               'Because some DP tables grow quadratically in the input size',
@@ -6313,13 +6306,15 @@ ModuleContent(
               'Because table access is slower than function calls in most languages',
             ],
             correctIndex: 1,
-            explanation: 'The knapsack table is n by W, which can be large when W is a large numeric value rather than a function of n. This is called pseudo-polynomial time.',
+            explanation:
+                'The knapsack table is n by W, which can be large when W is a large numeric value rather than a function of n. This is called pseudo-polynomial time.',
           ),
           TextBlock(
             'Dynamic programming is one of two algorithm design techniques that grow naturally from recursive thinking. In Lesson 11 we look at the other: greedy algorithms, which make locally optimal choices at each step hoping to reach a globally optimal solution.',
           ),
           QuizBlock(
-            question: 'What is the main difference between dynamic programming and greedy algorithms?',
+            question:
+                'What is the main difference between dynamic programming and greedy algorithms?',
             options: [
               'Greedy algorithms use more memory than dynamic programming',
               'Greedy algorithms make decisions without solving subproblems first',
@@ -6327,7 +6322,8 @@ ModuleContent(
               'Dynamic programming is only applicable to optimization problems',
             ],
             correctIndex: 1,
-            explanation: 'Greedy algorithms commit to a choice at each step based on what looks best right now, without solving subproblems first. DP explores all possibilities before committing. The greedy approach can fail when local optimality does not guarantee global optimality.',
+            explanation:
+                'Greedy algorithms commit to a choice at each step based on what looks best right now, without solving subproblems first. DP explores all possibilities before committing. The greedy approach can fail when local optimality does not guarantee global optimality.',
           ),
           KeyTakeawayBlock(
             'Dynamic programming solves overlapping subproblems once in a table, giving polynomial time for problems that are exponential by naive recursion. In Lesson 11 we shift from the table-building of DP to the single-pass decision-making of greedy algorithms.',
