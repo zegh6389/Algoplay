@@ -6452,6 +6452,119 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+      ModuleContent(
+        id: 'lesson11_module2',
+        title: 'The Spanning Tree Problem',
+        order: 1,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'In this lesson we shift our focus to the greedy method. '
+            'As our main example illustrating the technique, we examine the problem of finding a Minimum Spanning Tree (MST) in a graph. '
+            'We explore two algorithms that solve this problem (Prim and Kruskal) and also look at the related problem of finding shortest paths (Dijkstra). '
+            'All three of these famous algorithms employ the greedy method.',
+          ),
+          DefinitionBlock(
+            term: 'Spanning Tree',
+            definition:
+                'A connected acyclic subgraph that contains all the vertices of the original graph. '
+                'In other words, a spanning tree is a subset of the edges that connects every vertex without creating any cycles.',
+          ),
+          TextBlock(
+            'The object of study is an undirected graph with weights (costs) on the edges. '
+            'The goal is to find a subgraph that includes all the vertices of the original graph and contains no cycles. '
+            'That kind of subgraph is called a spanning tree. '
+            'Because our graph has weights on the edges, we want to find the specific spanning tree for which the sum of the edge costs is a minimum.',
+          ),
+          DefinitionBlock(
+            term: 'Minimum Spanning Tree (MST)',
+            definition:
+                'A spanning tree whose total edge weight is less than or equal to the total edge weight of every other spanning tree for that graph. '
+                'Among all possible spanning trees, the MST is the one with the smallest total cost.',
+          ),
+          DefinitionBlock(
+            term: 'Weight of a Tree',
+            definition:
+                'The sum of the weights of all the edges in the tree. '
+                'When comparing spanning trees, the tree with the minimum total weight is the MST.',
+          ),
+          TextBlock(
+            'Could we use a brute-force approach to find the MST? '
+            'A brute-force solution would exhaustively generate all possible spanning trees for the given graph, sum the edge weights for each, and pick the one with the smallest total weight. '
+            'The problem is that generating all spanning trees takes exponential time, '
+            'and storing all those generated trees in memory requires a non-trivial amount of space. '
+            'Therefore, brute-force is completely impractical for anything other than very small graphs.',
+          ),
+          TextBlock(
+            'To solve the Minimum Spanning Tree problem efficiently, we can use a greedy algorithm. '
+            'The first one we consider is Prim\'s algorithm. '
+            'The idea behind Prim\'s algorithm is to build the tree one vertex at a time, '
+            'always making the cheapest choice available at that exact moment.',
+          ),
+          TextBlock(
+            'How it works: '
+            'First, pick any vertex to start with as the root. '
+            'Since the final tree must include all vertices, it does not matter which vertex you start with. '
+            'Start at that root vertex and look at all the edges growing out from it. '
+            'Pick the edge with the smallest weight and add it to the tree. '
+            'You have now added the new vertex to the tree. '
+            'Now look at all the edges growing out from the vertices currently in your tree. '
+            'Pick the edge of minimum weight that connects a vertex in the tree to a vertex outside the tree. '
+            'Add that edge and vertex to the tree. '
+            'Repeat this process until all vertices are included.',
+          ),
+          QuizBlock(
+            question:
+                'What two conditions must a subgraph satisfy to be considered a spanning tree?',
+            options: [
+              'It contains all vertices and has the minimum possible total edge weight',
+              'It contains all vertices and contains no cycles',
+              'It is connected and has the fewest edges of any connected subgraph',
+              'It is acyclic and has exactly one vertex of degree one',
+            ],
+            correctIndex: 1,
+            explanation:
+                'A spanning tree must include all vertices of the original graph and must not contain any cycles. '
+                'These two properties together guarantee the subgraph is a tree (connected and acyclic) that spans all vertices.',
+          ),
+          QuizBlock(
+            question:
+                'Why is a brute-force approach to finding an MST impractical for large graphs?',
+            options: [
+              'Because the MST problem requires sorting the edges first',
+              'Because generating all spanning trees takes exponential time and uses a lot of memory',
+              'Because greedy algorithms are always faster than brute-force',
+              'Because there is no known algorithm to verify a spanning tree is minimum',
+            ],
+            correctIndex: 1,
+            explanation:
+                'The number of possible spanning trees in a graph grows exponentially with the number of vertices. '
+                'Generating, storing, and comparing all of them is completely impractical for anything but the smallest graphs.',
+          ),
+          QuizBlock(
+            question:
+                'In Prim\'s algorithm, after adding a new vertex to the growing tree, from where does the algorithm consider candidate edges?',
+            options: [
+              'Only from the most recently added vertex',
+              'From all vertices currently in the tree, considering every edge in the graph',
+              'From all vertices currently in the tree, considering only edges that connect to vertices not yet in the tree',
+              'From the original root vertex only',
+            ],
+            correctIndex: 2,
+            explanation:
+                'After each new vertex joins the tree, Prim\'s algorithm looks at all edges coming from every vertex currently in the tree, '
+                'but only considers edges that point to vertices outside the tree. '
+                'This is the greedy choice: pick the cheapest edge crossing the cut between the tree and the rest of the graph.',
+          ),
+          KeyTakeawayBlock(
+            'A Minimum Spanning Tree is a spanning tree with the smallest possible total edge weight. '
+            'Brute-force generation of all spanning trees is exponential and impractical. '
+            'Prim\'s algorithm solves the MST problem greedily by growing a tree one vertex at a time, '
+            'always adding the cheapest edge that connects a vertex in the tree to a vertex outside it. '
+            'The algorithm succeeds because the MST problem has both the greedy choice property and optimal substructure.',
+          ),
+        ],
+      ),
     ],
   ),
 

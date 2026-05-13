@@ -2437,8 +2437,8 @@ void main() {
       expect(lesson11.categoryColor, '#F59E0B');
     });
 
-    test('has 1 module', () {
-      expect(lesson11.modules.length, 1);
+    test('has 2 modules', () {
+      expect(lesson11.modules.length, 2);
     });
 
     String combinedText11(List<ContentBlock> blocks) {
@@ -2482,16 +2482,40 @@ void main() {
       },
     );
 
+    test('Module 2 covers the spanning tree problem and Prim\'s algorithm', () {
+      final module = lesson11.modules[1];
+      expect(module.id, 'lesson11_module2');
+      expect(module.title, 'The Spanning Tree Problem');
+      expect(module.order, 1);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(1),
+      );
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = combinedText11(blocks);
+      expect(combined.toLowerCase(), contains('spanning tree'));
+      expect(combined.toLowerCase(), contains('prim'));
+    });
+
     test('Lesson 11 prose uses readable math notation', () {
-      final combined = combinedText11(lesson11.modules[0].contentBlocks);
-      expect(combined, isNot(contains('n^2')));
+      for (final module in lesson11.modules) {
+        final combined = combinedText11(module.contentBlocks);
+        expect(combined, isNot(contains('n^2')));
+      }
     });
 
     test('Lesson 11 prose avoids AI punctuation tells', () {
-      final combined = combinedText11(lesson11.modules[0].contentBlocks);
-      expect(combined, isNot(contains('\u2014')));
-      expect(combined, isNot(contains(';')));
-      expect(combined, isNot(contains(' - ')));
+      for (final module in lesson11.modules) {
+        final combined = combinedText11(module.contentBlocks);
+        expect(combined, isNot(contains('\u2014')));
+        expect(combined, isNot(contains(';')));
+        expect(combined, isNot(contains(' - ')));
+      }
     });
   });
 
