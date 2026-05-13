@@ -6709,7 +6709,7 @@ const List<LessonContent> lessons = [
           TextBlock(
             'Instead of growing a single tree from a root vertex, Kruskal\'s algorithm looks at all the edges in the entire graph at once. '
             'The rule at each stage is to add the minimum weight edge that is not already in the tree and that does not create a cycle. '
-            'During execution, the growing structure is not a single connected tree; it is a forest of separate smaller trees. '
+            'During execution, the growing structure is not a single connected tree, it is a forest of separate smaller trees. '
             'Whenever an edge is added, it connects two of these trees together, merging them into one. '
             'Eventually all trees are merged into a single spanning tree.',
           ),
@@ -6745,9 +6745,9 @@ const List<LessonContent> lessons = [
                 'What is the key difference between how Prim\'s and Kruskal\'s algorithms build the MST?',
             options: [
               'Prim\'s uses a cut property while Kruskal\'s does not',
-              'Prim\'s grows a single tree from one vertex; Kruskal\'s considers all edges and builds a forest that merges into one tree',
+              'Prim\'s grows a single tree from one vertex, Kruskal\'s considers all edges and builds a forest that merges into one tree',
               'Prim\'s runs in Theta(E log V) while Kruskal\'s runs in Theta(V squared)',
-              'Kruskal\'s always picks the globally cheapest edge; Prim\'s only considers edges from the current tree',
+              'Kruskal\'s always picks the globally cheapest edge, Prim\'s only considers edges from the current tree',
             ],
             correctIndex: 1,
             explanation:
