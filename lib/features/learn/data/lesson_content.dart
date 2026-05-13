@@ -7181,6 +7181,46 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+      ModuleContent(
+        id: 'lesson11_module8',
+        title: 'Conclusion',
+        order: 7,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'In Lesson 11, we learned about the greedy algorithm technique. '
+            'A greedy algorithm builds a solution step by step by making the best local choice at each stage. '
+            'The idea is to choose what looks best right now, without exploring every possible complete solution.',
+          ),
+          TextBlock(
+            'This technique does not work for every problem. '
+            'In some problems, a locally best choice can lead to a poor final result. '
+            'However, for certain important classes of problems, greedy algorithms do work, '
+            'and when they do, they are often both simple and practical.',
+          ),
+          TextBlock(
+            'Throughout this lesson, we studied several examples where greedy methods lead to optimal solutions, including: '
+            'minimum spanning tree problems (Prim\'s and Kruskal\'s), '
+            'shortest path problems under the right assumptions (Dijkstra\'s), '
+            'interval scheduling and interval partitioning, '
+            'and fractional knapsack.',
+          ),
+          TextBlock(
+            'The key lesson is this: greedy algorithms are powerful when we can prove '
+            'that each locally optimal choice helps build a globally optimal solution.',
+          ),
+          TextBlock(
+            'In the next lesson, which is the final lesson of the course, '
+            'we will explore a number of more advanced techniques of algorithm design.',
+          ),
+          KeyTakeawayBlock(
+            'Greedy algorithms solve some optimization problems by repeatedly making the best local choice. '
+            'They are not correct for every problem, but when they do apply, '
+            'they often produce simple, efficient, and practical solutions. '
+            'The power of the greedy method lies in identifying problems where local optimality leads to global optimality.',
+          ),
+        ],
+      ),
     ],
   ),
 
