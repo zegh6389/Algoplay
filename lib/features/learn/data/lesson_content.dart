@@ -6945,6 +6945,124 @@ const List<LessonContent> lessons = [
           ),
         ],
       ),
+      ModuleContent(
+        id: 'lesson11_module6',
+        title: 'Interval Scheduling and Partitioning',
+        order: 5,
+        algorithmId: null,
+        contentBlocks: [
+          TextBlock(
+            'In this final module of Lesson 11, we revisit the interval scheduling problem from Lesson 4 and explore a related, more sophisticated problem: interval partitioning. '
+            'Both problems are solved elegantly using the greedy method.',
+          ),
+          TextBlock(
+            'Recall the original interval scheduling problem: '
+            'There is one classroom for rent, and various people make requests to book it. '
+            'Each request has a start time and a finish time. '
+            'The goal is to maximize the number of requests satisfied. '
+            'The greedy algorithm sorts requests by finish time and repeatedly selects the request that finishes first, '
+            'removing any conflicting requests. '
+            'This strategy ensures the resource is freed as early as possible, '
+            'leading to the mathematically optimal number of bookings.',
+          ),
+          TextBlock(
+            'Now consider a more complex variation: interval partitioning. '
+            'Instead of one classroom, you have multiple classrooms available. '
+            'You still have a list of requests with start and finish times. '
+            'The goal is to satisfy all requests using the minimum possible number of classrooms. '
+            'An extremely inefficient solution would assign a brand new classroom for every single request. '
+            'Can we find a greedy algorithm that perfectly minimizes the number of classrooms needed?',
+          ),
+          DefinitionBlock(
+            term: 'Depth',
+            definition:
+                'If all intervals are drawn on a timeline, the depth of the set of intervals is the maximum number of intervals that overlap at any single point in time. '
+                'Logically, if five classes are happening at the exact same time, you must have at least five classrooms. '
+                'Therefore, the minimum number of resources needed is at least the depth. '
+                'If we can find an algorithm that uses exactly that many resources, we know the algorithm is optimal.',
+          ),
+          TextBlock(
+            'The greedy algorithm for interval partitioning works as follows: '
+            'First, sort all intervals by their start times. '
+            'Then process each interval in chronological order. '
+            'For each interval, assign it to any classroom that is not currently in use (any label not excluded by overlapping intervals). '
+            'If no such classroom exists, the algorithm would fail, but this never happens if we have d classrooms where d is the depth. '
+            'In practice, this means: for each interval, assign it to the classroom that became free the earliest among all currently occupied classrooms.',
+          ),
+          TextBlock(
+            'Does this algorithm use at most d labels, where d is the depth? '
+            'Yes. When labeling an interval, at most d minus 1 previous intervals can overlap with it, '
+            'because the depth d means no more than d intervals overlap at any point. '
+            'If d minus 1 previous intervals overlap and exclude their labels, at least one label from the set of d labels remains available. '
+            'Therefore every interval gets a label, no interval is left unlabeled, and there are no conflicts. '
+            'Since we established we need at least d classrooms and this algorithm uses at most d, the algorithm is 100% optimal.',
+          ),
+          QuizBlock(
+            question: 'What is the goal of the interval partitioning problem?',
+            options: [
+              'Maximize the number of requests satisfied using one classroom',
+              'Satisfy all requests using the minimum number of classrooms',
+              'Sort all requests by their start time',
+              'Find the shortest total time needed to complete all requests',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Interval partitioning asks: given multiple classrooms and many booking requests, '
+                'what is the minimum number of classrooms needed to satisfy all requests?',
+          ),
+          QuizBlock(
+            question: 'What does the depth of a set of intervals represent?',
+            options: [
+              'The total time span from the earliest start to the latest finish',
+              'The maximum number of intervals that overlap at any single point in time',
+              'The average length of all intervals',
+              'The number of intervals that do not overlap with any other interval',
+            ],
+            correctIndex: 1,
+            explanation:
+                'The depth is the maximum number of overlapping intervals at any point on the timeline. '
+                'If five classes overlap at 9 AM, the depth is at least five, '
+                'meaning you need at least five classrooms.',
+          ),
+          QuizBlock(
+            question:
+                'Why is the greedy interval partitioning algorithm optimal?',
+            options: [
+              'Because sorting by start time always produces the minimum number of overlaps',
+              'Because the number of classrooms needed is at most the depth, and we use exactly the depth number of classrooms',
+              'Because each interval is assigned to the classroom with the highest number',
+              'Because the algorithm processes intervals in reverse order',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Depth tells us we need at least d classrooms. '
+                'The greedy algorithm proves it uses at most d classrooms by showing no interval is ever left unlabeled. '
+                'Since we need at least d and use at most d, the algorithm is optimal.',
+          ),
+          QuizBlock(
+            question:
+                'What is the key difference between interval scheduling and interval partitioning?',
+            options: [
+              'Interval scheduling uses one resource, interval partitioning uses multiple resources',
+              'Interval scheduling maximizes the number of requests, interval partitioning minimizes the number of resources',
+              'Interval scheduling sorts by finish time, interval partitioning sorts by start time',
+              'All of the above',
+            ],
+            correctIndex: 3,
+            explanation:
+                'All three statements are correct. '
+                'Interval scheduling (Lesson 4) maximizes satisfied requests with one resource by sorting by finish time. '
+                'Interval partitioning satisfies all requests with minimum resources by sorting by start time. '
+                'Both are greedy algorithms that achieve optimal results.',
+          ),
+          KeyTakeawayBlock(
+            'Interval scheduling maximizes the number of requests satisfied with one resource by always picking the request that finishes first. '
+            'Interval partitioning satisfies all requests using the minimum number of resources. '
+            'The depth of a set of intervals (maximum simultaneous overlaps) is both a lower bound and achievable upper bound for the number of classrooms needed. '
+            'Both problems are solved optimally by greedy algorithms, demonstrating the power of the greedy method.',
+          ),
+        ],
+      ),
     ],
   ),
 

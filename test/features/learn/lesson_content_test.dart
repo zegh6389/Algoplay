@@ -2437,8 +2437,8 @@ void main() {
       expect(lesson11.categoryColor, '#F59E0B');
     });
 
-    test('has 5 modules', () {
-      expect(lesson11.modules.length, 5);
+    test('has 6 modules', () {
+      expect(lesson11.modules.length, 6);
     });
 
     String combinedText11(List<ContentBlock> blocks) {
@@ -2578,6 +2578,27 @@ void main() {
       expect(combined.toLowerCase(), contains('dijkstra'));
       expect(combined.toLowerCase(), contains('shortest path'));
       expect(combined.toLowerCase(), contains('nonnegative'));
+    });
+
+    test('Module 6 covers interval scheduling and partitioning', () {
+      final module = lesson11.modules[5];
+      expect(module.id, 'lesson11_module6');
+      expect(module.title, 'Interval Scheduling and Partitioning');
+      expect(module.order, 5);
+      expect(module.algorithmId, isNull);
+
+      final blocks = module.contentBlocks;
+      expect(
+        blocks.whereType<DefinitionBlock>().length,
+        greaterThanOrEqualTo(1),
+      );
+      expect(blocks.whereType<QuizBlock>().length, greaterThanOrEqualTo(3));
+      expect(blocks.last, isA<KeyTakeawayBlock>());
+
+      final combined = combinedText11(blocks);
+      expect(combined.toLowerCase(), contains('interval'));
+      expect(combined.toLowerCase(), contains('depth'));
+      expect(combined.toLowerCase(), contains('classroom'));
     });
   });
 
