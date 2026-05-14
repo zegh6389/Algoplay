@@ -51,6 +51,11 @@ class _AlgorithmVisualizerPageState
   // Hint state for monetization
   String? _hintText;
   bool _isHintLoading = false;
+
+  // Completion interstitial state for visualization playback.
+  bool _completionAdShown = false;
+  DateTime? _lastCompletionAdTime;
+
   // Sample data for the algorithm
   late List<int> _sampleArray;
 
@@ -104,9 +109,11 @@ class _AlgorithmVisualizerPageState
     // Collect all steps from the stream
     _collectSteps();
 
-    // Pre-load a rewarded ad for the hint feature (free users only)
+    // Pre-load ads for free users.
+    // Rewarded is for hints, interstitial is for visualization completion.
     if (!PremiumService.instance.isPremium) {
       AdService.instance.loadRewardedAd();
+      AdService.instance.loadInterstitialAd();
     }
   }
 
@@ -330,6 +337,7 @@ class _AlgorithmVisualizerPageState
         setState(() {
           _isPlaying = false;
         });
+        _maybeShowCompletionInterstitial();
       }
     });
   }
@@ -355,7 +363,29 @@ class _AlgorithmVisualizerPageState
     setState(() {
       _isPlaying = false;
       _currentStepIndex = 0;
+      _completionAdShown = false;
     });
+  }
+
+  void _maybeShowCompletionInterstitial() {
+    final isPremium = ref.read(premiumProvider);
+
+    if (isPremium) return;
+    if (_completionAdShown) return;
+
+    final now = DateTime.now();
+    final lastCompletionAdTime = _lastCompletionAdTime;
+    if (lastCompletionAdTime != null) {
+      final difference = now.difference(lastCompletionAdTime);
+      if (difference.inMinutes < 3) {
+        return;
+      }
+    }
+
+    _completionAdShown = true;
+    _lastCompletionAdTime = now;
+
+    AdService.instance.showInterstitialAd();
   }
 
   void _cycleSpeed() {
@@ -502,6 +532,7 @@ class _AlgorithmVisualizerPageState
         _steps = [];
         _currentStepIndex = 0;
         _isPlaying = false;
+        _completionAdShown = false;
       });
       _collectSteps(target: result.target);
     }

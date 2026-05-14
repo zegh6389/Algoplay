@@ -212,8 +212,8 @@
     "hash": "2441b41b37e0680311271a608ade94e1"
   },
   "/root/Algoplay/lib/features/visualizer/presentation/algorithm_visualizer_page.dart": {
-    "mtime": 1778744734.1538556,
-    "hash": "e199511b9ee02518b2b2a5f5d23c7a09"
+    "mtime": 1778777066.8028457,
+    "hash": "3a6029e7808e5108776160578c3aa34b"
   },
   "/root/Algoplay/lib/features/visualizer/widgets/speed_controller.dart": {
     "mtime": 1778217558.1824303,
@@ -492,8 +492,8 @@
     "hash": "39a3815183f38d4feb18aae2653f6a43"
   },
   "/root/Algoplay/test/features/visualizer/widgets/code_viewer_test.dart": {
-    "mtime": 1778217558.1874306,
-    "hash": "669fc7442c9186d29b74e4865e706683"
+    "mtime": 1778777111.962773,
+    "hash": "6022d538c44f320d45f411711fde18bb"
   },
   "/root/Algoplay/test/shared/providers/app_providers_test.dart": {
     "mtime": 1778217558.1874306,

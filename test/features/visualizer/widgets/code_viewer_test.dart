@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:algoplay/algorithms/code/code_implementations.dart';
 import 'package:algoplay/core/theme/app_theme.dart';
 import 'package:algoplay/features/visualizer/presentation/algorithm_visualizer_page.dart';
@@ -10,10 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 Widget _wrap(Widget child) {
   return ProviderScope(
-    child: MaterialApp(
-      theme: AppTheme.light,
-      home: child,
-    ),
+    child: MaterialApp(theme: AppTheme.light, home: child),
   );
 }
 
@@ -31,24 +30,27 @@ void main() {
     SharedPreferences.setMockInitialValues({});
   });
 
-  testWidgets('visualizer shows the terminal by default and has no code toggle',
-      (tester) async {
-    await tester.binding.setSurfaceSize(const Size(430, 932));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+  testWidgets(
+    'visualizer shows the terminal by default and has no code toggle',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(430, 932));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
 
-    await tester.pumpWidget(
-      _wrap(const AlgorithmVisualizerPage(algorithmId: 'bubble-sort')),
-    );
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(
+        _wrap(const AlgorithmVisualizerPage(algorithmId: 'bubble-sort')),
+      );
+      await tester.pumpAndSettle();
 
-    expect(find.byType(CodeViewer), findsOneWidget);
-    expect(find.byTooltip('Code'), findsNothing);
-    expect(find.byIcon(Icons.code), findsNothing);
-    _expectNoFlutterExceptions(tester);
-  });
+      expect(find.byType(CodeViewer), findsOneWidget);
+      expect(find.byTooltip('Code'), findsNothing);
+      expect(find.byIcon(Icons.code), findsNothing);
+      _expectNoFlutterExceptions(tester);
+    },
+  );
 
-  testWidgets('terminal header shows both complexity chips on phone width',
-      (tester) async {
+  testWidgets('terminal header shows both complexity chips on phone width', (
+    tester,
+  ) async {
     await tester.binding.setSurfaceSize(const Size(430, 280));
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
@@ -61,13 +63,44 @@ void main() {
     );
 
     await tester.pumpWidget(
-      _wrap(const Scaffold(body: SizedBox.expand(child: CodeViewer(code: code)))),
+      _wrap(
+        const Scaffold(
+          body: SizedBox.expand(child: CodeViewer(code: code)),
+        ),
+      ),
     );
     await tester.pumpAndSettle();
 
     expect(find.text('Time: O(n²)'), findsOneWidget);
     expect(find.text('Space: O(1)'), findsOneWidget);
     _expectNoFlutterExceptions(tester);
+  });
+
+  test('visualizer completion interstitial is gated to playback finish', () {
+    final source = File(
+      'lib/features/visualizer/presentation/algorithm_visualizer_page.dart',
+    ).readAsStringSync();
+
+    expect(source, contains('AdService.instance.loadRewardedAd();'));
+    expect(source, contains('AdService.instance.loadInterstitialAd();'));
+    expect(source, contains('bool _completionAdShown = false;'));
+    expect(source, contains('DateTime? _lastCompletionAdTime;'));
+    expect(source, contains('void _maybeShowCompletionInterstitial()'));
+    expect(source, contains('ref.read(premiumProvider)'));
+    expect(source, contains('difference.inMinutes < 3'));
+    expect(source, contains('AdService.instance.showInterstitialAd();'));
+    expect(source, contains('_maybeShowCompletionInterstitial();'));
+    expect(source, contains('_completionAdShown = false;'));
+
+    final playStart = source.indexOf('void _startPlayTimer()');
+    final playEnd = source.indexOf('void _stepForward()');
+    final playBody = source.substring(playStart, playEnd);
+    expect(playBody, contains('_maybeShowCompletionInterstitial();'));
+
+    final stepStart = source.indexOf('void _stepForward()');
+    final resetStart = source.indexOf('void _reset()');
+    final manualStepBody = source.substring(stepStart, resetStart);
+    expect(manualStepBody, isNot(contains('showInterstitialAd')));
   });
 
   test('sort bar palette uses visually distinct state colors', () {
