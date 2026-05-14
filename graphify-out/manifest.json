@@ -55,9 +55,13 @@
     "mtime": 1778771395.3364096,
     "hash": "56c4dec017809ce78b9aaee1989a407f"
   },
+  "/root/Algoplay/lib/core/services/feature_tour_service.dart": {
+    "mtime": 1778774432.1952455,
+    "hash": "6d2bbcaf889717d8f0005e4252c0e51a"
+  },
   "/root/Algoplay/lib/core/router/tab_shell.dart": {
-    "mtime": 1778742820.853442,
-    "hash": "160c8f4aa70b2084bbdde336462a92db"
+    "mtime": 1778774533.7685587,
+    "hash": "caa7a19b5520ecf04165a783926d5dc9"
   },
   "/root/Algoplay/lib/core/router/app_router.dart": {
     "mtime": 1778746030.76923,
@@ -92,8 +96,8 @@
     "hash": "f631bb52621515168ed2d6e2eb1971b6"
   },
   "/root/Algoplay/lib/features/guided_tour/guided_tour_controller.dart": {
-    "mtime": 1778742924.063825,
-    "hash": "7ebb1e593aae86b26ee22216a16a9786"
+    "mtime": 1778774515.029763,
+    "hash": "ed02bcd8752762457eaaed17c074a17a"
   },
   "/root/Algoplay/lib/features/cheatsheet/presentation/cheatsheet_page.dart": {
     "mtime": 1778217558.17043,
@@ -235,6 +239,10 @@
     "mtime": 1778217558.1834304,
     "hash": "9ed058ff651675ae2ba93ad9cba489fa"
   },
+  "/root/Algoplay/lib/shared/providers/feature_tour_provider.dart": {
+    "mtime": 1778774447.7749069,
+    "hash": "3af7cc6c68a85063dfdccfda7cecaa64"
+  },
   "/root/Algoplay/lib/shared/providers/premium_provider.dart": {
     "mtime": 1778217558.1834304,
     "hash": "b44305d2670adce1fde69ddec9c724c5"
@@ -266,6 +274,10 @@
   "/root/Algoplay/lib/shared/widgets/game_card.dart": {
     "mtime": 1778450135.1839573,
     "hash": "8c52b4498abd7331a203ca76962814a0"
+  },
+  "/root/Algoplay/lib/shared/widgets/algoplay_feature_tour.dart": {
+    "mtime": 1778774465.9966807,
+    "hash": "2d0c436d7c76c384f2782f18dc5cd262"
   },
   "/root/Algoplay/lib/shared/widgets/progress_indicator_bar.dart": {
     "mtime": 1778217558.1834304,
@@ -416,8 +428,8 @@
     "hash": "7c6c8051b3f818f6ff8fec7ea4d06865"
   },
   "/root/Algoplay/test/features/guided_tour/guided_tour_controller_test.dart": {
-    "mtime": 1778742690.2608993,
-    "hash": "14b8a8966379f323a16e889f131fd346"
+    "mtime": 1778774558.967629,
+    "hash": "0062b8abad99330d7dd8334c1a5e45ac"
   },
   "/root/Algoplay/test/features/grid_escape/level_generator_test.dart": {
     "mtime": 1778217558.1864305,

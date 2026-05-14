@@ -1,16 +1,16 @@
 # Graph Report - Algoplay  (2026-05-14)
 
 ## Corpus Check
-- 136 files · ~459,061 words
+- 139 files · ~459,295 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1590 nodes · 1783 edges · 100 communities (87 shown, 13 thin omitted)
+- 1603 nodes · 1799 edges · 96 communities (87 shown, 9 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `c45fc4f6`
+- Built from commit: `deb42191`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -105,27 +105,23 @@
 - [[_COMMUNITY_Community 87|Community 87]]
 - [[_COMMUNITY_Community 88|Community 88]]
 - [[_COMMUNITY_Community 89|Community 89]]
-- [[_COMMUNITY_Community 90|Community 90]]
-- [[_COMMUNITY_Community 91|Community 91]]
-- [[_COMMUNITY_Community 92|Community 92]]
-- [[_COMMUNITY_Community 93|Community 93]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `package:flutter/material.dart` - 54 edges
+1. `package:flutter/material.dart` - 55 edges
 2. `package:flutter_test/flutter_test.dart` - 37 edges
 3. `../../core/theme/app_theme.dart` - 36 edges
-4. `package:flutter_riverpod/flutter_riverpod.dart` - 34 edges
-5. `package:shared_preferences/shared_preferences.dart` - 29 edges
+4. `package:flutter_riverpod/flutter_riverpod.dart` - 35 edges
+5. `package:shared_preferences/shared_preferences.dart` - 30 edges
 6. `package:go_router/go_router.dart` - 17 edges
 7. `dart:math` - 17 edges
 8. `dart:async` - 16 edges
 9. `package:flutter/foundation.dart` - 12 edges
-10. `DESIGN.md — Algoplay Flutter Design System` - 11 edges
+10. `dart:io` - 11 edges
 
 ## Surprising Connections (you probably didn't know these)
 - None detected - all connections are within the same source files.
 
-## Communities (100 total, 13 thin omitted)
+## Communities (96 total, 9 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.03
@@ -145,39 +141,39 @@ Nodes (51): activity_selection, AlgorithmCode, astar, avl_height, avl_rotate_lef
 
 ### Community 4 - "Community 4"
 Cohesion: 0.04
-Nodes (47): ../../../algorithms/models/tree_models.dart, _assignPositions, _avHeight, build, _buildArrayRepresentation, _buildTreeCanvas, Center, collectNodes (+39 more)
+Nodes (44): dart:math, ../models/sort_step.dart, ../models/tree_models.dart, SortAlgorithm, SortStep, TimeComplexity, _balanceFactor, _copyNode (+36 more)
 
 ### Community 5 - "Community 5"
 Cohesion: 0.04
-Nodes (45): ../data/arena_repository.dart, ../../leaderboard/data/leaderboard_repository.dart, ../../learn/data/algorithm_data.dart, package:algoplay/features/onboarding/presentation/onboarding_page.dart, package:go_router/go_router.dart, _ArenaModeCard, build, _buildArenaModes (+37 more)
+Nodes (47): ../../../algorithms/models/tree_models.dart, _assignPositions, _avHeight, build, _buildArrayRepresentation, _buildTreeCanvas, Center, collectNodes (+39 more)
 
 ### Community 6 - "Community 6"
-Cohesion: 0.04
-Nodes (41): dart:math, ../models/sort_step.dart, ../models/tree_models.dart, SortAlgorithm, SortStep, TimeComplexity, _balanceFactor, _copyNode (+33 more)
-
-### Community 7 - "Community 7"
 Cohesion: 0.05
 Nodes (42): ../../../../algorithms/models/search_step.dart, ../../../../algorithms/models/sort_step.dart, ../../../algorithms/searching/searching_algorithms.dart, _algoName, AnimatedContainer, build, _buildAlgorithmSelector, _buildControls (+34 more)
 
-### Community 8 - "Community 8"
+### Community 7 - "Community 7"
 Cohesion: 0.05
 Nodes (42): ../../../algorithms/dp/dp_algorithms.dart, ../../../algorithms/models/dp_step.dart, build, _buildFibonacciInput, _buildFibonacciVisualization, _buildInputSection, _buildKnapsackInput, _buildKnapsackVisualization (+34 more)
 
-### Community 9 - "Community 9"
+### Community 8 - "Community 8"
 Cohesion: 0.05
-Nodes (40): ../../learn/data/lesson_content.dart, ../../learn/providers/lesson_providers.dart, package:algoplay/shared/providers/app_providers.dart, package:algoplay/shared/widgets/algorithm_card.dart, package:algoplay/shared/widgets/empty_state.dart, package:algoplay/shared/widgets/game_card.dart, package:algoplay/shared/widgets/section_header.dart, package:algoplay/shared/widgets/skill_category_card.dart (+32 more)
+Nodes (39): ../data/arena_repository.dart, ../../leaderboard/data/leaderboard_repository.dart, ../../learn/data/algorithm_data.dart, _ArenaModeCard, build, _buildArenaModes, _buildMatchHistory, _buildPlayerStatsCard (+31 more)
 
-### Community 10 - "Community 10"
+### Community 9 - "Community 9"
 Cohesion: 0.05
 Nodes (37): ../../data/avatar_repository.dart, _AchievementBadge, _AchievementDef, AlertDialog, build, _buildAccount, _buildAchievements, _buildProfileHeader (+29 more)
 
+### Community 10 - "Community 10"
+Cohesion: 0.05
+Nodes (38): ../../learn/data/lesson_content.dart, ../../learn/providers/lesson_providers.dart, package:algoplay/shared/widgets/algorithm_card.dart, package:algoplay/shared/widgets/empty_state.dart, package:algoplay/shared/widgets/game_card.dart, package:algoplay/shared/widgets/section_header.dart, package:algoplay/shared/widgets/skill_category_card.dart, package:algoplay/shared/widgets/xp_progress_bar.dart (+30 more)
+
 ### Community 11 - "Community 11"
 Cohesion: 0.06
-Nodes (35): _arraysEqual, build, _buildArrayVisualization, _buildChoices, _buildGameOver, _buildGameplay, _buildHUD, _buildPaused (+27 more)
+Nodes (32): core/router/app_router.dart, ../../../core/services/iap_service.dart, ../../core/services/premium_service.dart, package:flutter_riverpod/flutter_riverpod.dart, build, _buildFeatureComparison, _buildHeader, _buildPricingCard (+24 more)
 
 ### Community 12 - "Community 12"
 Cohesion: 0.06
-Nodes (32): core/router/app_router.dart, ../../../core/services/iap_service.dart, ../../core/services/premium_service.dart, package:flutter_riverpod/flutter_riverpod.dart, build, _buildFeatureComparison, _buildHeader, _buildPricingCard (+24 more)
+Nodes (35): _arraysEqual, build, _buildArrayVisualization, _buildChoices, _buildGameOver, _buildGameplay, _buildHUD, _buildPaused (+27 more)
 
 ### Community 13 - "Community 13"
 Cohesion: 0.06
@@ -188,68 +184,68 @@ Cohesion: 0.06
 Nodes (31): ../data/level_generator.dart, AnimatedContainer, _animatePath, _animateSolution, AspectRatio, build, _buildCell, _buildGameComplete (+23 more)
 
 ### Community 15 - "Community 15"
+Cohesion: 0.07
+Nodes (20): dart:io, package:algoplay/algorithms/dp/dp_algorithms.dart, package:algoplay/features/battle_arena/data/question_bank.dart, package:algoplay/features/grid_escape/data/level_generator.dart, package:algoplay/features/visualizer/widgets/array_input_sheet.dart, package:algoplay/shared/models/user_progress.dart, package:flutter_test/flutter_test.dart, main (+12 more)
+
+### Community 16 - "Community 16"
 Cohesion: 0.06
 Nodes (31): 12 Lessons (chronological, sequential unlock), Algoplay Lesson System — Design & Architecture Spec, Bottom Nav (3 tabs), code:block1 (Lessons Tab (Home)), Content Tone — "Chaotic Professor" Voice, Content Writing Rules, Data Layer, Home Screen (Lessons Tab) (+23 more)
 
-### Community 16 - "Community 16"
+### Community 17 - "Community 17"
 Cohesion: 0.07
 Nodes (28): ../../core/services/ad_service.dart, package:google_mobile_ads/google_mobile_ads.dart, ../providers/premium_provider.dart, AdService, completeWithCanRequestAds, continueFlow, dispose, Duration (+20 more)
 
-### Community 17 - "Community 17"
+### Community 18 - "Community 18"
 Cohesion: 0.07
 Nodes (29): _AchievementBadge, _AchievementDef, _AchievementsSection, _ActivityItem, _algoName, _AlgorithmMasterySection, build, _categoryColor (+21 more)
 
-### Community 18 - "Community 18"
+### Community 19 - "Community 19"
 Cohesion: 0.07
 Nodes (29): ../data/question_bank.dart, _advanceQuestion, _AnswerOption, BattleArenaPage, _BattleArenaPageState, build, _buildBattleState, _buildBody (+21 more)
 
-### Community 19 - "Community 19"
+### Community 20 - "Community 20"
 Cohesion: 0.07
 Nodes (28): ../../features/arena/presentation/elite_arena_page.dart, ../../features/battle_arena/presentation/battle_arena_page.dart, ../../features/cheatsheet/presentation/cheatsheet_page.dart, ../../features/dashboard/presentation/dashboard_page.dart, ../../features/grid_escape/presentation/grid_escape_page.dart, ../../features/home/presentation/home_page.dart, ../../features/leaderboard/presentation/leaderboard_page.dart, ../../features/learn/presentation/learn_page.dart (+20 more)
 
-### Community 20 - "Community 20"
-Cohesion: 0.07
-Nodes (28): 🔍 3 Visualizers, 🎮 4 Mini-Games, 📱 5-Tab Navigation, 🤖 AI Tutor, 🧠 Algoplay — Gamified Algorithm Learning App, 🏗 Architecture, ⚙️ CI/CD Pipeline, code:block1 (┌──────────────────────────────────────────────────────┐) (+20 more)
-
 ### Community 21 - "Community 21"
-Cohesion: 0.07
-Nodes (26): ../models/game_state.dart, ../models/subscription_state.dart, ../models/user_progress.dart, addXP, completeAlgorithm, completeDailyChallenge, copyWith, GameStateNotifier (+18 more)
+Cohesion: 0.08
+Nodes (20): dart:convert, package:algoplay/features/arena/data/arena_repository.dart, package:algoplay/features/leaderboard/data/leaderboard_repository.dart, package:algoplay/features/stats/data/stats_repository.dart, package:algoplay/shared/providers/app_providers.dart, package:shared_preferences/shared_preferences.dart, FeatureTourService, isPremiumUser (+12 more)
 
 ### Community 22 - "Community 22"
 Cohesion: 0.07
-Nodes (26): ../../../features/stats/data/stats_repository.dart, build, _buildCategorySelector, _buildEmpty, _buildProgressBar, _buildQuestionCard, _categoryColor, _categoryIcon (+18 more)
+Nodes (28): 🔍 3 Visualizers, 🎮 4 Mini-Games, 📱 5-Tab Navigation, 🤖 AI Tutor, 🧠 Algoplay — Gamified Algorithm Learning App, 🏗 Architecture, ⚙️ CI/CD Pipeline, code:block1 (┌──────────────────────────────────────────────────────┐) (+20 more)
 
 ### Community 23 - "Community 23"
 Cohesion: 0.07
-Nodes (26): Accessibility, Algorithm Visualization Bars, Border Radius, Bottom Navigation, Buttons, Cards, Category Colors (Algorithm skill groups), Color Strategy: Committed + Solar Accents (+18 more)
+Nodes (26): ../models/game_state.dart, ../models/subscription_state.dart, ../models/user_progress.dart, addXP, completeAlgorithm, completeDailyChallenge, copyWith, GameStateNotifier (+18 more)
 
 ### Community 24 - "Community 24"
+Cohesion: 0.07
+Nodes (26): ../../../features/stats/data/stats_repository.dart, build, _buildCategorySelector, _buildEmpty, _buildProgressBar, _buildQuestionCard, _categoryColor, _categoryIcon (+18 more)
+
+### Community 25 - "Community 25"
+Cohesion: 0.07
+Nodes (26): Accessibility, Algorithm Visualization Bars, Border Radius, Bottom Navigation, Buttons, Cards, Category Colors (Algorithm skill groups), Color Strategy: Committed + Solar Accents (+18 more)
+
+### Community 26 - "Community 26"
 Cohesion: 0.08
 Nodes (23): package:algoplay/features/arena/presentation/elite_arena_page.dart, package:algoplay/features/battle_arena/presentation/battle_arena_page.dart, package:algoplay/features/cheatsheet/presentation/cheatsheet_page.dart, package:algoplay/features/dashboard/presentation/dashboard_page.dart, package:algoplay/features/grid_escape/presentation/grid_escape_page.dart, package:algoplay/features/home/presentation/home_page.dart, package:algoplay/features/leaderboard/presentation/leaderboard_page.dart, package:algoplay/features/play/presentation/play_page.dart (+15 more)
 
-### Community 25 - "Community 25"
+### Community 27 - "Community 27"
 Cohesion: 0.09
 Nodes (21): ../data/stats_repository.dart, _ActivityBar, _ActivityItem, _ActivityTile, build, _buildCategoryProgress, _buildOverviewGrid, _buildRecentActivity (+13 more)
 
-### Community 26 - "Community 26"
+### Community 28 - "Community 28"
+Cohesion: 0.09
+Nodes (21): ../../features/guided_tour/algoplay_tour_keys.dart, ../../features/guided_tour/guided_tour_controller.dart, package:algoplay/core/services/ad_service.dart, package:algoplay/shared/providers/feature_tour_provider.dart, package:algoplay/shared/providers/premium_provider.dart, package:algoplay/shared/widgets/banner_ad_wrapper.dart, _AnimatedBottomNavBar, build (+13 more)
+
+### Community 29 - "Community 29"
 Cohesion: 0.09
 Nodes (21): Algoplay Flutter — Visualization Upgrade Plan, code:yaml (flutter_highlight: ^0.7.0   # syntax highlighting), Dependencies to Add, Execution Order, Overview, Phase 1: Core Visualization Engine, Phase 2: Code Hub, Phase 3: Visualizer Page Refactor (+13 more)
 
-### Community 27 - "Community 27"
-Cohesion: 0.11
-Nodes (15): dart:convert, package:algoplay/features/arena/data/arena_repository.dart, package:algoplay/features/leaderboard/data/leaderboard_repository.dart, package:algoplay/features/stats/data/stats_repository.dart, package:shared_preferences/shared_preferences.dart, ArenaPlayer, ArenaRepository, MatchRecord (+7 more)
-
-### Community 28 - "Community 28"
-Cohesion: 0.1
-Nodes (20): ../../features/guided_tour/algoplay_tour_keys.dart, ../../features/guided_tour/guided_tour_controller.dart, package:algoplay/core/services/ad_service.dart, package:algoplay/shared/providers/premium_provider.dart, package:algoplay/shared/widgets/banner_ad_wrapper.dart, _AnimatedBottomNavBar, build, Container (+12 more)
-
-### Community 29 - "Community 29"
-Cohesion: 0.1
-Nodes (20): ../data/leaderboard_repository.dart, build, _buildCurrentUserEntry, _buildPodium, _buildTabSelector, Column, Container, Divider (+12 more)
-
 ### Community 30 - "Community 30"
 Cohesion: 0.1
-Nodes (20): _apply, ArrayInputResult, _ArrayInputSheet, _ArrayInputSheetState, build, _buildApplyButton, _buildHandle, _buildManualTab (+12 more)
+Nodes (20): ../data/leaderboard_repository.dart, build, _buildCurrentUserEntry, _buildPodium, _buildTabSelector, Column, Container, Divider (+12 more)
 
 ### Community 31 - "Community 31"
 Cohesion: 0.1
@@ -260,12 +256,12 @@ Cohesion: 0.1
 Nodes (19): _AnimatedBar, AnimatedPositioned, AnimatedSortBar, blurForState, build, _buildLabel, calculate, Center (+11 more)
 
 ### Community 33 - "Community 33"
-Cohesion: 0.13
-Nodes (12): dart:io, package:algoplay/features/visualizer/widgets/array_input_sheet.dart, package:flutter_test/flutter_test.dart, main, main, main, main, main (+4 more)
+Cohesion: 0.11
+Nodes (16): package:algoplay/core/theme/app_theme.dart, package:algoplay/features/learn/presentation/learn_page.dart, package:algoplay/features/onboarding/presentation/onboarding_page.dart, package:go_router/go_router.dart, main, _expectNoFatalFlutterExceptions, GoRouter, _isIgnorableOverflow (+8 more)
 
 ### Community 34 - "Community 34"
-Cohesion: 0.12
-Nodes (16): ../../../algorithms/code/code_implementations.dart, package:flutter_highlight/flutter_highlight.dart, package:flutter_highlight/themes/monokai-sublime.dart, package:flutter/services.dart, _badge, build, _CodeBlock, CodeViewer (+8 more)
+Cohesion: 0.11
+Nodes (17): _Badge, build, Container, CustomPaint, _HeroSection, Icon, _LessonCard, LessonsHomePage (+9 more)
 
 ### Community 35 - "Community 35"
 Cohesion: 0.12
@@ -273,47 +269,47 @@ Nodes (16): build, _buildControlButton, _buildDivider, _buildPlayPauseButton, _b
 
 ### Community 36 - "Community 36"
 Cohesion: 0.12
-Nodes (15): ../data/algorithm_data.dart, _AlgorithmListCard, build, _CategoryPill, _CategoryPills, Center, Container, _EmptyState (+7 more)
+Nodes (16): ../../../algorithms/code/code_implementations.dart, package:flutter_highlight/flutter_highlight.dart, package:flutter_highlight/themes/monokai-sublime.dart, package:flutter/services.dart, _badge, build, _CodeBlock, CodeViewer (+8 more)
 
 ### Community 37 - "Community 37"
+Cohesion: 0.12
+Nodes (15): ../data/algorithm_data.dart, _AlgorithmListCard, build, _CategoryPill, _CategoryPills, Center, Container, _EmptyState (+7 more)
+
+### Community 38 - "Community 38"
+Cohesion: 0.12
+Nodes (12): package:algoplay/algorithms/code/code_implementations.dart, package:algoplay/features/learn/data/algorithm_data.dart, package:algoplay/features/visualizer/presentation/algorithm_visualizer_page.dart, package:algoplay/features/visualizer/widgets/animated_sort_bar.dart, package:algoplay/features/visualizer/widgets/code_viewer.dart, main, main, main (+4 more)
+
+### Community 39 - "Community 39"
+Cohesion: 0.14
+Nodes (13): algoplay_tour_keys.dart, package:algoplay/shared/widgets/algoplay_feature_tour.dart, package:tutorial_coach_mark/tutorial_coach_mark.dart, AlgoplayFeatureTourCard, _allTargetKeysReady, build, GuidedTourController, Padding (+5 more)
+
+### Community 40 - "Community 40"
 Cohesion: 0.14
 Nodes (13): ../../onboarding/presentation/onboarding_page.dart, build, Column, Container, dispose, initState, _LoadingBar, _LoadingText (+5 more)
 
-### Community 38 - "Community 38"
+### Community 41 - "Community 41"
 Cohesion: 0.15
 Nodes (12): ../providers/lesson_providers.dart, build, Container, InlineBannerAd, LessonDetailPage, Material, _ModuleRow, Padding (+4 more)
 
-### Community 39 - "Community 39"
+### Community 42 - "Community 42"
 Cohesion: 0.17
 Nodes (11): package:algoplay/features/learn/data/lesson_content.dart, package:algoplay/features/learn/data/lesson_progress_repository.dart, package:algoplay/features/learn/presentation/lesson_detail_page.dart, package:algoplay/features/learn/presentation/module_content_page.dart, main, GoRouter, _lessonRouter, main (+3 more)
 
-### Community 40 - "Community 40"
+### Community 43 - "Community 43"
 Cohesion: 0.17
 Nodes (11): CodeBlock, ContentBlock, DefinitionBlock, GraphBlock, KeyTakeawayBlock, LessonContent, MathBlock, ModuleContent (+3 more)
 
-### Community 41 - "Community 41"
+### Community 44 - "Community 44"
 Cohesion: 0.17
 Nodes (11): CodeBlock, combinedText, combinedText11, DefinitionBlock, GraphBlock, KeyTakeawayBlock, main, MathBlock (+3 more)
 
-### Community 42 - "Community 42"
-Cohesion: 0.17
-Nodes (11): algoplay_tour_keys.dart, package:tutorial_coach_mark/tutorial_coach_mark.dart, _allTargetKeysReady, build, GuidedTourController, Padding, SizedBox, Spacer (+3 more)
-
-### Community 43 - "Community 43"
-Cohesion: 0.18
-Nodes (8): package:flutter/foundation.dart, isPremiumUser, PremiumService, copyWith, GameState, HighScores, copyWith, SubscriptionState
-
-### Community 44 - "Community 44"
-Cohesion: 0.18
-Nodes (9): package:algoplay/core/theme/app_theme.dart, main, _buildTestTree, _expectNoFlutterExceptions, _insertTestNode, main, ProviderScope, TreeNode (+1 more)
-
 ### Community 45 - "Community 45"
-Cohesion: 0.2
-Nodes (8): package:algoplay/features/visualizer/presentation/algorithm_visualizer_page.dart, package:algoplay/features/visualizer/widgets/animated_sort_bar.dart, package:algoplay/features/visualizer/widgets/code_viewer.dart, main, _expectNoFlutterExceptions, main, ProviderScope, _wrap
+Cohesion: 0.22
+Nodes (8): package:in_app_purchase/in_app_purchase.dart, _deliverPurchase, dispose, _handleError, _handlePending, _handlePurchaseUpdates, IAPService, isPurchased
 
 ### Community 46 - "Community 46"
 Cohesion: 0.22
-Nodes (8): package:in_app_purchase/in_app_purchase.dart, _deliverPurchase, dispose, _handleError, _handlePending, _handlePurchaseUpdates, IAPService, isPurchased
+Nodes (7): ../../core/theme/app_theme.dart, build, Container, StatCard, build, SizedBox, XpProgressBar
 
 ### Community 47 - "Community 47"
 Cohesion: 0.22
@@ -321,47 +317,47 @@ Nodes (8): AppColors, AppRadius, AppShadows, AppSpacing, AppTheme, AppTypography
 
 ### Community 48 - "Community 48"
 Cohesion: 0.22
-Nodes (7): ../../core/theme/app_theme.dart, AlgorithmCard, build, GestureDetector, build, Container, StatCard
+Nodes (8): package:algoplay/algorithms/models/pathfinding_models.dart, package:algoplay/algorithms/pathfinding/pathfinding_algorithms.dart, expectNonEmptyOperations, expectValidVisitedCoords, GridCell, main, testMazeGenerator, testPathfindingAlgorithm
 
 ### Community 49 - "Community 49"
 Cohesion: 0.22
-Nodes (8): package:algoplay/features/learn/presentation/learn_page.dart, _expectNoFatalFlutterExceptions, GoRouter, _isIgnorableOverflow, main, ProviderScope, _testRouter, _wrapWithRouter
-
-### Community 50 - "Community 50"
-Cohesion: 0.22
-Nodes (8): package:algoplay/algorithms/models/pathfinding_models.dart, package:algoplay/algorithms/pathfinding/pathfinding_algorithms.dart, expectNonEmptyOperations, expectValidVisitedCoords, GridCell, main, testMazeGenerator, testPathfindingAlgorithm
-
-### Community 51 - "Community 51"
-Cohesion: 0.22
 Nodes (8): Anti-References, Brand Personality, PRODUCT.md — Algoplay, Product Purpose, Register, Strategic Principles, Tone, Users
 
-### Community 52 - "Community 52"
+### Community 50 - "Community 50"
+Cohesion: 0.25
+Nodes (6): package:flutter/foundation.dart, copyWith, GameState, HighScores, copyWith, SubscriptionState
+
+### Community 51 - "Community 51"
 Cohesion: 0.25
 Nodes (6): ad_service.dart, premium_service.dart, AdStrategyService, preloadLearningAds, showLessonRewardAd, LessonCompletionAdGate
 
-### Community 53 - "Community 53"
+### Community 52 - "Community 52"
 Cohesion: 0.25
-Nodes (6): package:flutter/material.dart, AlgoPlayTourKeys, tabKeyForIndex, build, GestureDetector, SkillCategoryCard
+Nodes (6): package:flutter/material.dart, AlgoPlayTourKeys, tabKeyForIndex, build, Column, ProgressIndicatorBar
 
-### Community 54 - "Community 54"
+### Community 53 - "Community 53"
 Cohesion: 0.25
 Nodes (7): dart:collection, ../models/pathfinding_models.dart, key, _manhattan, PathfindingStep, sortOpenSet, StateError
 
-### Community 55 - "Community 55"
+### Community 54 - "Community 54"
 Cohesion: 0.25
-Nodes (7): package:algoplay/algorithms/models/tree_models.dart, package:algoplay/algorithms/trees/tree_algorithms.dart, buildSampleBST, buildSmallBST, countNodes, expectNonEmptyOperations, main
+Nodes (7): _buildTestTree, _expectNoFlutterExceptions, _insertTestNode, main, ProviderScope, TreeNode, _wrap
 
-### Community 56 - "Community 56"
+### Community 55 - "Community 55"
 Cohesion: 0.25
 Nodes (7): package:algoplay/algorithms/models/sort_step.dart, package:algoplay/algorithms/sorting/sorting_algorithms.dart, expectFinalArraySorted, expectNonEmptyOperations, expectValidIndices, main, testSortAlgorithm
 
+### Community 56 - "Community 56"
+Cohesion: 0.25
+Nodes (7): package:algoplay/algorithms/models/tree_models.dart, package:algoplay/algorithms/trees/tree_algorithms.dart, buildSampleBST, buildSmallBST, countNodes, expectNonEmptyOperations, main
+
 ### Community 57 - "Community 57"
 Cohesion: 0.29
-Nodes (6): AlgorithmMastery, ChallengeCompletion, copyWith, QuizScore, SkillNode, UserProgress
+Nodes (6): copyWith, getStreak, saveStats, StatsRepository, _todayKey, UserStats
 
 ### Community 58 - "Community 58"
 Cohesion: 0.29
-Nodes (6): copyWith, getStreak, saveStats, StatsRepository, _todayKey, UserStats
+Nodes (6): AlgorithmMastery, ChallengeCompletion, copyWith, QuizScore, SkillNode, UserProgress
 
 ### Community 59 - "Community 59"
 Cohesion: 0.29
@@ -373,11 +369,11 @@ Nodes (3): FlutterAppDelegate, FlutterImplicitEngineDelegate, AppDelegate
 
 ### Community 61 - "Community 61"
 Cohesion: 0.33
-Nodes (5): lesson_content.dart, _currentModuleKey, LessonProgressRepository, _moduleKey, _scrollKey
+Nodes (5): build, GestureDetector, Icon, LessonCard, SizedBox
 
 ### Community 62 - "Community 62"
 Cohesion: 0.33
-Nodes (5): build, GestureDetector, Icon, LessonCard, SizedBox
+Nodes (5): AlgoplayFeatureTourCard, build, Padding, SizedBox, Spacer
 
 ### Community 63 - "Community 63"
 Cohesion: 0.33
@@ -389,7 +385,7 @@ Nodes (4): ../../features/learn/data/algorithm_data.dart, ../models/dp_step.dart
 
 ### Community 65 - "Community 65"
 Cohesion: 0.33
-Nodes (4): package:algoplay/algorithms/code/code_implementations.dart, package:algoplay/features/learn/data/algorithm_data.dart, main, main
+Nodes (5): lesson_content.dart, _currentModuleKey, LessonProgressRepository, _moduleKey, _scrollKey
 
 ### Community 66 - "Community 66"
 Cohesion: 0.4
@@ -403,70 +399,70 @@ Nodes (4): copyWith, GridCell, PathfindingStep, toString
 Cohesion: 0.4
 Nodes (4): dart:async, package:algoplay/algorithms/models/search_step.dart, package:algoplay/algorithms/searching/searching_algorithms.dart, main
 
-### Community 71 - "Community 71"
-Cohesion: 0.5
-Nodes (3): copyWith, LeaderboardEntry, LeaderboardRepository
+### Community 69 - "Community 69"
+Cohesion: 0.4
+Nodes (4): package:algoplay/core/services/feature_tour_service.dart, package:algoplay/features/guided_tour/algoplay_tour_keys.dart, package:algoplay/features/guided_tour/guided_tour_controller.dart, main
 
 ### Community 72 - "Community 72"
 Cohesion: 0.5
-Nodes (3): ../data/lesson_content.dart, ../data/lesson_progress_repository.dart, LessonProgressRepository
+Nodes (3): ArenaPlayer, ArenaRepository, MatchRecord
 
 ### Community 73 - "Community 73"
 Cohesion: 0.5
-Nodes (3): build, Column, ProgressIndicatorBar
+Nodes (3): ../data/lesson_content.dart, ../data/lesson_progress_repository.dart, LessonProgressRepository
 
 ### Community 74 - "Community 74"
 Cohesion: 0.5
-Nodes (3): build, SizedBox, XpProgressBar
+Nodes (3): build, Center, EmptyState
 
 ### Community 75 - "Community 75"
 Cohesion: 0.5
-Nodes (3): build, Center, EmptyState
+Nodes (3): build, GestureDetector, SkillCategoryCard
 
 ### Community 76 - "Community 76"
 Cohesion: 0.5
-Nodes (3): build, Row, SectionHeader
+Nodes (3): AlgorithmCard, build, GestureDetector
 
 ### Community 77 - "Community 77"
 Cohesion: 0.5
-Nodes (3): copyWith, SearchStep, toString
+Nodes (3): build, Row, SectionHeader
 
 ### Community 78 - "Community 78"
 Cohesion: 0.5
-Nodes (3): copyWith, SortStep, toString
+Nodes (3): copyWith, SearchStep, toString
 
 ### Community 79 - "Community 79"
 Cohesion: 0.5
-Nodes (3): copyWith, DPStep, toString
+Nodes (3): copyWith, SortStep, toString
 
 ### Community 80 - "Community 80"
 Cohesion: 0.5
-Nodes (3): ../models/search_step.dart, SearchAlgorithm, SearchStep
+Nodes (3): copyWith, DPStep, toString
 
 ### Community 81 - "Community 81"
 Cohesion: 0.5
-Nodes (3): package:algoplay/core/services/lesson_completion_ad_gate.dart, package:algoplay/core/services/premium_service.dart, main
+Nodes (3): ../models/search_step.dart, SearchAlgorithm, SearchStep
 
 ### Community 82 - "Community 82"
 Cohesion: 0.5
-Nodes (3): package:algoplay/features/guided_tour/algoplay_tour_keys.dart, package:algoplay/features/guided_tour/guided_tour_controller.dart, main
+Nodes (3): package:algoplay/core/services/lesson_completion_ad_gate.dart, package:algoplay/core/services/premium_service.dart, main
 
 ## Knowledge Gaps
-- **1363 isolated node(s):** `-registerWithRegistry`, `Intercept NOTIFY_DEBUGGER_ABOUT_RX_PAGES and touch the pages.`, `AlgoplayApp`, `_AlgoplayAppState`, `main` (+1358 more)
+- **1372 isolated node(s):** `-registerWithRegistry`, `Intercept NOTIFY_DEBUGGER_ABOUT_RX_PAGES and touch the pages.`, `AlgoplayApp`, `_AlgoplayAppState`, `main` (+1367 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **13 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **9 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `package:flutter/material.dart` connect `Community 53` to `Community 0`, `Community 1`, `Community 2`, `Community 4`, `Community 5`, `Community 6`, `Community 7`, `Community 8`, `Community 9`, `Community 10`, `Community 11`, `Community 12`, `Community 13`, `Community 14`, `Community 16`, `Community 17`, `Community 18`, `Community 22`, `Community 24`, `Community 25`, `Community 28`, `Community 29`, `Community 30`, `Community 31`, `Community 32`, `Community 33`, `Community 34`, `Community 35`, `Community 36`, `Community 37`, `Community 38`, `Community 39`, `Community 42`, `Community 44`, `Community 45`, `Community 47`, `Community 48`, `Community 49`, `Community 59`, `Community 62`, `Community 66`, `Community 73`, `Community 74`, `Community 75`, `Community 76`?**
-  _High betweenness centrality (0.254) - this node is a cross-community bridge._
-- **Why does `package:flutter_riverpod/flutter_riverpod.dart` connect `Community 12` to `Community 0`, `Community 1`, `Community 2`, `Community 4`, `Community 5`, `Community 6`, `Community 7`, `Community 8`, `Community 9`, `Community 10`, `Community 11`, `Community 13`, `Community 14`, `Community 16`, `Community 17`, `Community 18`, `Community 21`, `Community 22`, `Community 24`, `Community 25`, `Community 28`, `Community 29`, `Community 31`, `Community 36`, `Community 38`, `Community 39`, `Community 44`, `Community 45`, `Community 49`, `Community 72`?**
-  _High betweenness centrality (0.162) - this node is a cross-community bridge._
-- **Why does `../../core/theme/app_theme.dart` connect `Community 48` to `Community 0`, `Community 1`, `Community 2`, `Community 4`, `Community 5`, `Community 6`, `Community 7`, `Community 8`, `Community 10`, `Community 11`, `Community 12`, `Community 13`, `Community 14`, `Community 16`, `Community 17`, `Community 18`, `Community 22`, `Community 25`, `Community 29`, `Community 30`, `Community 31`, `Community 32`, `Community 36`, `Community 38`, `Community 53`, `Community 62`, `Community 66`, `Community 73`, `Community 74`, `Community 75`, `Community 76`?**
-  _High betweenness centrality (0.097) - this node is a cross-community bridge._
+- **Why does `package:flutter/material.dart` connect `Community 52` to `Community 0`, `Community 1`, `Community 2`, `Community 4`, `Community 5`, `Community 6`, `Community 7`, `Community 8`, `Community 9`, `Community 10`, `Community 11`, `Community 12`, `Community 13`, `Community 14`, `Community 15`, `Community 17`, `Community 18`, `Community 19`, `Community 24`, `Community 26`, `Community 27`, `Community 28`, `Community 30`, `Community 31`, `Community 32`, `Community 33`, `Community 34`, `Community 35`, `Community 36`, `Community 37`, `Community 38`, `Community 39`, `Community 40`, `Community 41`, `Community 42`, `Community 46`, `Community 47`, `Community 54`, `Community 59`, `Community 61`, `Community 62`, `Community 66`, `Community 74`, `Community 75`, `Community 76`, `Community 77`?**
+  _High betweenness centrality (0.244) - this node is a cross-community bridge._
+- **Why does `package:flutter_riverpod/flutter_riverpod.dart` connect `Community 11` to `Community 0`, `Community 1`, `Community 2`, `Community 5`, `Community 6`, `Community 7`, `Community 8`, `Community 9`, `Community 10`, `Community 12`, `Community 13`, `Community 14`, `Community 17`, `Community 18`, `Community 19`, `Community 23`, `Community 24`, `Community 26`, `Community 27`, `Community 28`, `Community 30`, `Community 31`, `Community 33`, `Community 34`, `Community 37`, `Community 38`, `Community 41`, `Community 42`, `Community 54`, `Community 73`?**
+  _High betweenness centrality (0.157) - this node is a cross-community bridge._
+- **Why does `../../core/theme/app_theme.dart` connect `Community 46` to `Community 0`, `Community 1`, `Community 2`, `Community 4`, `Community 5`, `Community 6`, `Community 7`, `Community 8`, `Community 9`, `Community 11`, `Community 12`, `Community 13`, `Community 14`, `Community 17`, `Community 18`, `Community 19`, `Community 24`, `Community 27`, `Community 30`, `Community 31`, `Community 32`, `Community 34`, `Community 37`, `Community 41`, `Community 52`, `Community 61`, `Community 66`, `Community 74`, `Community 75`, `Community 76`, `Community 77`?**
+  _High betweenness centrality (0.096) - this node is a cross-community bridge._
 - **What connects `-registerWithRegistry`, `Intercept NOTIFY_DEBUGGER_ABOUT_RX_PAGES and touch the pages.`, `AlgoplayApp` to the rest of the system?**
-  _1363 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _1372 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.03 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**

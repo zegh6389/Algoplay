@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:algoplay/shared/widgets/banner_ad_wrapper.dart';
-import 'package:algoplay/shared/providers/premium_provider.dart';
 import 'package:algoplay/core/services/ad_service.dart';
+import 'package:algoplay/shared/providers/feature_tour_provider.dart';
+import 'package:algoplay/shared/providers/premium_provider.dart';
+import 'package:algoplay/shared/widgets/banner_ad_wrapper.dart';
 import '../../features/guided_tour/algoplay_tour_keys.dart';
 import '../../features/guided_tour/guided_tour_controller.dart';
 
@@ -27,7 +28,17 @@ class _TabShellWidgetState extends ConsumerState<TabShellWidget> {
     AdService.instance.loadInterstitialAd();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      GuidedTourController().showTour(context);
+      GuidedTourController().showTour(
+        context,
+        onTourStarted: () {
+          if (!mounted) return;
+          ref.read(featureTourActiveProvider.notifier).state = true;
+        },
+        onTourEnded: () {
+          if (!mounted) return;
+          ref.read(featureTourActiveProvider.notifier).state = false;
+        },
+      );
     });
   }
 
@@ -37,7 +48,8 @@ class _TabShellWidgetState extends ConsumerState<TabShellWidget> {
       // Show interstitial every 4th tab switch
       if (_tabSwitchCount % 4 == 0) {
         final isPremium = ref.read(premiumProvider);
-        if (!isPremium) {
+        final tourActive = ref.read(featureTourActiveProvider);
+        if (!isPremium && !tourActive) {
           AdService.instance.showInterstitialAd();
         }
       }

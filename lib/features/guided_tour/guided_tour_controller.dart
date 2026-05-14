@@ -1,21 +1,27 @@
 import 'dart:async';
 
+import 'package:algoplay/core/services/feature_tour_service.dart';
 import 'package:algoplay/core/theme/app_theme.dart';
+import 'package:algoplay/shared/widgets/algoplay_feature_tour.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 import 'algoplay_tour_keys.dart';
 
 class GuidedTourController {
-  static const String guidedTourSeenKey = 'algoplay_guided_tour_seen_v1';
+  static const String guidedTourSeenKey = FeatureTourService.mainTourSeenKey;
 
-  Future<void> showTour(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-    final seen = prefs.getBool(guidedTourSeenKey) ?? false;
+  Future<bool> showTour(
+    BuildContext context, {
+    VoidCallback? onTourStarted,
+    VoidCallback? onTourEnded,
+  }) async {
+    final seen = await FeatureTourService.instance.hasSeenMainTour();
 
-    if (seen || !context.mounted) return;
-    if (!_allTargetKeysReady()) return;
+    if (seen || !context.mounted) return false;
+    if (!_allTargetKeysReady()) return false;
+
+    onTourStarted?.call();
 
     final tutorialCoachMark = TutorialCoachMark(
       targets: _createTargets(),
@@ -33,19 +39,21 @@ class GuidedTourController {
       pulseAnimationDuration: const Duration(milliseconds: 900),
       backgroundSemanticLabel: 'AlgoPlay guided tour overlay',
       onFinish: () {
-        unawaited(prefs.setBool(guidedTourSeenKey, true));
+        unawaited(FeatureTourService.instance.markMainTourSeen());
+        onTourEnded?.call();
       },
       onSkip: () {
-        unawaited(prefs.setBool(guidedTourSeenKey, true));
+        unawaited(FeatureTourService.instance.markMainTourSeen());
+        onTourEnded?.call();
         return true;
       },
     );
     tutorialCoachMark.show(context: context);
+    return true;
   }
 
   static Future<void> resetTour() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(guidedTourSeenKey);
+    await FeatureTourService.instance.resetMainTour();
   }
 
   bool _allTargetKeysReady() {
@@ -65,7 +73,8 @@ class GuidedTourController {
         key: AlgoPlayTourKeys.lessonsTabKey,
         step: 1,
         title: 'Lessons',
-        body: 'Start with guided modules and continue from where you left off.',
+        body:
+            'Follow guided modules, track progress, and continue learning from where you left off.',
       ),
       _target(
         id: 'explore_tab',
@@ -79,23 +88,24 @@ class GuidedTourController {
         id: 'play_tab',
         key: AlgoPlayTourKeys.playTabKey,
         step: 3,
-        title: 'Practice Through Play',
-        body: 'Use games and challenges to turn practice into quick wins.',
+        title: 'Play',
+        body:
+            'Test your skills with Battle Arena, Grid Escape, Race Mode, and sorting challenges.',
       ),
       _target(
         id: 'stats_tab',
         key: AlgoPlayTourKeys.statsTabKey,
         step: 4,
-        title: 'Track Growth',
-        body:
-            'Check XP, streaks, completed topics, and your learning momentum.',
+        title: 'Stats',
+        body: 'Track your XP, streaks, active days, and category progress.',
       ),
       _target(
         id: 'profile_tab',
         key: AlgoPlayTourKeys.profileTabKey,
         step: 5,
-        title: 'Your Profile',
-        body: 'Review achievements, account details, and premium access.',
+        title: 'Profile',
+        body:
+            'Update your profile, manage settings, view achievements, and upgrade if you want ad-free learning.',
         isLast: true,
       ),
     ];
@@ -120,7 +130,7 @@ class GuidedTourController {
         TargetContent(
           align: ContentAlign.top,
           builder: (context, controller) {
-            return _TourInfoCard(
+            return AlgoplayFeatureTourCard(
               step: step,
               totalSteps: 5,
               title: title,
@@ -132,107 +142,6 @@ class GuidedTourController {
           },
         ),
       ],
-    );
-  }
-}
-
-class _TourInfoCard extends StatelessWidget {
-  const _TourInfoCard({
-    required this.step,
-    required this.totalSteps,
-    required this.title,
-    required this.body,
-    required this.isLast,
-    required this.onNext,
-    required this.onSkip,
-  });
-
-  final int step;
-  final int totalSteps;
-  final String title;
-  final String body;
-  final bool isLast;
-  final VoidCallback onNext;
-  final VoidCallback onSkip;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      child: Material(
-        color: Colors.transparent,
-        child: Container(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          decoration: BoxDecoration(
-            color: AppColors.card,
-            borderRadius: AppRadius.xlBorder,
-            border: Border.all(color: AppColors.primary100),
-            boxShadow: AppShadows.lg,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.sm,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary100,
-                      borderRadius: AppRadius.smBorder,
-                    ),
-                    child: Text(
-                      'Step $step of $totalSteps',
-                      style: AppTypography.caption.copyWith(
-                        color: AppColors.primary700,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                  const Spacer(),
-                  TextButton(onPressed: onSkip, child: const Text('Skip')),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.md),
-              Text(title, style: AppTypography.h2),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                body,
-                style: AppTypography.body.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              Row(
-                children: [
-                  ...List.generate(
-                    totalSteps,
-                    (index) => Container(
-                      width: index + 1 == step ? 22 : 8,
-                      height: 8,
-                      margin: const EdgeInsets.only(right: 6),
-                      decoration: BoxDecoration(
-                        color: index + 1 == step
-                            ? AppColors.primary500
-                            : AppColors.sunken,
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                    ),
-                  ),
-                  const Spacer(),
-                  ElevatedButton(
-                    onPressed: onNext,
-                    child: Text(isLast ? 'Finish' : 'Next'),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
