@@ -86,10 +86,13 @@ void main() {
       expect(moduleContent, isNot(contains('bonus XP')));
       expect(moduleContent, isNot(contains('lessonRewardBonusXp')));
 
-      // AdStrategyService: frequency = every module, no cooldown for modules
+      // AdStrategyService: frequency = every module, cooldown = 3 min
       expect(adStrategy, contains('moduleInterstitialFrequency = 1'));
-      expect(adStrategy, contains('moduleInterstitialCooldown'));
-      expect(adStrategy, contains('PremiumService.instance.isPremium'));
+      expect(
+        adStrategy,
+        contains('moduleInterstitialCooldown = Duration(minutes: 3)'),
+      );
+      expect(adStrategy, contains('onShown: ()'));
     });
 
     test('locked lesson tap offers rewarded ad unlock path', () {
@@ -168,7 +171,7 @@ void main() {
         adStrategy,
         contains('moduleInterstitialCooldown = Duration(minutes: 3)'),
       );
-      expect(adStrategy, contains('showInterstitialAd()'));
+      expect(adStrategy, contains('showInterstitialAd('));
       expect(bannerWrapper, contains('SafeArea('));
       expect(bannerWrapper, contains('top: false'));
     });

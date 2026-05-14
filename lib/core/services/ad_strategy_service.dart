@@ -47,12 +47,22 @@ class AdStrategyService {
 
   /// Returns true if a module completion should trigger an interstitial ad.
   /// Frequency gating: every module completion (counter % frequency == 0).
-  /// Cooldown is NOT applied here — module completion interstitial is gated
-  /// only by frequency, not by time. (Cooldown belongs to visualizer playback.)
+  /// Cooldown: enforced via 3-minute cooldown window between interstitial shows.
   Future<bool> shouldShowModuleInterstitial() async {
     if (PremiumService.instance.isPremium) return false;
 
     final prefs = await SharedPreferences.getInstance();
+
+    // Check cooldown window
+    final nowMs = DateTime.now().millisecondsSinceEpoch;
+    final lastMs = prefs.getInt(_lastModuleInterstitialMsKey);
+
+    if (lastMs != null) {
+      final elapsed = Duration(milliseconds: nowMs - lastMs);
+      if (elapsed < moduleInterstitialCooldown) {
+        return false;
+      }
+    }
 
     // Increment module completion counter
     final completedCount = (prefs.getInt(_completedModuleCountKey) ?? 0) + 1;
@@ -75,7 +85,16 @@ class AdStrategyService {
       return false;
     }
 
-    final shown = AdService.instance.showInterstitialAd();
+    final shown = AdService.instance.showInterstitialAd(
+      onShown: () {
+        SharedPreferences.getInstance().then((prefs) {
+          prefs.setInt(
+            _lastModuleInterstitialMsKey,
+            DateTime.now().millisecondsSinceEpoch,
+          );
+        });
+      },
+    );
 
     if (!shown) {
       AdService.instance.loadInterstitialAd();
