@@ -17,6 +17,21 @@ void main() {
       contains("static const seenKey = 'has_completed_onboarding'"),
     );
     expect(onboarding, contains('prefs.setBool(OnboardingPage.seenKey, true)'));
+    expect(
+      onboarding,
+      contains('enum _ArtworkType { welcome, visualize, play }'),
+    );
+    expect(
+      onboarding,
+      contains('class _WelcomeArtwork extends StatelessWidget'),
+    );
+    expect(
+      onboarding,
+      contains('class _VisualizeArtwork extends StatelessWidget'),
+    );
+    expect(onboarding, contains('class _PlayArtwork extends StatelessWidget'));
+    expect(onboarding, isNot(contains('class OnboardingStep')));
+    expect(onboarding, isNot(contains('extends ConsumerStatefulWidget')));
     expect(router, contains("show OnboardingPage"));
     expect(router, contains("path: '/onboarding'"));
     expect(
