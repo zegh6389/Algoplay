@@ -136,7 +136,6 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
     );
     ref.invalidate(lessonProgressValueProvider(widget.lessonId));
     ref.invalidate(currentModuleProvider(widget.lessonId));
-    ref.invalidate(lessonUnlockedProvider(widget.lessonId + 1));
 
     if (!mounted) return;
 
@@ -207,6 +206,7 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
       final shown = AdStrategyService.instance.showLessonRewardAd(
         onReward: () {
           repo.markLessonAdUnlocked(nextLessonId).then((_) {
+            ref.invalidate(lessonUnlockedProvider(nextLessonId));
             if (context.mounted) {
               context.pushReplacement('/lesson/$nextLessonId');
             }
