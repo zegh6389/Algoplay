@@ -250,6 +250,8 @@ class _LessonCard extends ConsumerWidget {
 
   final LessonContent lesson;
 
+  /// Opens the rewarded ad dialog for this locked lesson.
+  /// No cooldown — user can retry immediately if the ad is not ready yet.
   Future<void> _offerAdUnlock(BuildContext context, WidgetRef ref) async {
     final wantsUnlock =
         await showDialog<bool>(
