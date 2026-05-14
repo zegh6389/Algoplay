@@ -30,7 +30,7 @@ PngInfo readPngInfo(String path) {
 }
 
 void main() {
-  test('adaptive icon keeps foreground alpha separate from white background', () {
+  test('app icons use the supplied artwork on an opaque white background', () {
     final icon = readPngInfo('assets/images/icon.png');
     final adaptive = readPngInfo('assets/images/adaptive-icon.png');
     final colors = File(
@@ -42,14 +42,15 @@ void main() {
 
     expect(icon.width, 1024);
     expect(icon.height, 1024);
-    expect(icon.hasAlpha, isFalse, reason: 'legacy source must be opaque');
+    expect(icon.hasAlpha, isFalse, reason: 'app icon must be white-baked');
 
     expect(adaptive.width, 1024);
     expect(adaptive.height, 1024);
     expect(
       adaptive.hasAlpha,
-      isTrue,
-      reason: 'adaptive foreground must stay transparent, not white-baked',
+      isFalse,
+      reason:
+          'adaptive source is also white-baked for launcher and Play surfaces',
     );
 
     expect(colors, contains('<color name="iconBackground">#ffffff</color>'));
@@ -59,7 +60,9 @@ void main() {
     );
     expect(
       adaptiveXml,
-      contains('<foreground android:drawable="@mipmap/ic_launcher_foreground"/>'),
+      contains(
+        '<foreground android:drawable="@mipmap/ic_launcher_foreground"/>',
+      ),
     );
   });
 }
