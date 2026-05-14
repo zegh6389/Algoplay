@@ -347,8 +347,8 @@ class _ArrayInputSheetState extends State<_ArrayInputSheet>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(
-          height: 76,
+        Padding(
+          padding: const EdgeInsets.only(top: 8),
           child: TextField(
             controller: _manualController,
             onChanged: _onManualChanged,
@@ -359,7 +359,7 @@ class _ArrayInputSheetState extends State<_ArrayInputSheet>
               hintStyle: const TextStyle(color: AppColors.textMuted),
               labelText: _copy.valueLabel,
               floatingLabelBehavior: FloatingLabelBehavior.always,
-              contentPadding: const EdgeInsets.fromLTRB(16, 24, 16, 14),
+              contentPadding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
               errorText: _parseError,
               enabledBorder: OutlineInputBorder(
                 borderRadius: AppRadius.mdBorder,
