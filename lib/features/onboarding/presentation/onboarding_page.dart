@@ -8,6 +8,8 @@ import '../../../core/theme/app_theme.dart';
 class OnboardingPage extends ConsumerStatefulWidget {
   const OnboardingPage({super.key});
 
+  static const seenKey = 'has_completed_onboarding';
+
   @override
   ConsumerState<OnboardingPage> createState() => _OnboardingPageState();
 }
@@ -19,25 +21,29 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
   final List<OnboardingStep> _steps = [
     const OnboardingStep(
       title: 'Welcome to Algoplay!',
-      description: 'Master algorithms through interactive visualizations and games.',
+      description:
+          'Master algorithms through interactive visualizations and games.',
       icon: Icons.play_arrow_rounded,
       color: AppColors.primary500,
     ),
     const OnboardingStep(
       title: 'See Algorithms in Action',
-      description: 'Watch step-by-step executions of sorting, searching, and pathfinding algorithms.',
+      description:
+          'Watch step-by-step executions of sorting, searching, and pathfinding algorithms.',
       icon: Icons.visibility,
       color: AppColors.catSearching,
     ),
     const OnboardingStep(
       title: 'Play to Learn',
-      description: 'Test your skills in Battle Arena, Grid Escape, and other mini-games.',
+      description:
+          'Test your skills in Battle Arena, Grid Escape, and other mini-games.',
       icon: Icons.sports_esports,
       color: AppColors.secondary500,
     ),
     const OnboardingStep(
       title: 'Track Your Progress',
-      description: 'Earn XP, keep your daily streak alive, and level up your algorithm mastery.',
+      description:
+          'Earn XP, keep your daily streak alive, and level up your algorithm mastery.',
       icon: Icons.trending_up,
       color: AppColors.solarGold,
     ),
@@ -62,7 +68,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
 
   Future<void> _finishOnboarding() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('has_completed_onboarding', true);
+    await prefs.setBool(OnboardingPage.seenKey, true);
     if (mounted) context.go('/home');
   }
 
@@ -80,7 +86,10 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                 onPressed: _finishOnboarding,
                 child: const Text(
                   'Skip',
-                  style: TextStyle(color: AppColors.textMuted, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: AppColors.textMuted,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -96,7 +105,9 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                 itemBuilder: (context, index) {
                   final step = _steps[index];
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.xl,
+                    ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -114,14 +125,18 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                         // Title
                         Text(
                           step.title,
-                          style: AppTypography.h1.copyWith(color: AppColors.textPrimary),
+                          style: AppTypography.h1.copyWith(
+                            color: AppColors.textPrimary,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: AppSpacing.md),
                         // Description
                         Text(
                           step.description,
-                          style: AppTypography.body.copyWith(color: AppColors.textSecondary),
+                          style: AppTypography.body.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                       ],
@@ -147,7 +162,9 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                         height: 8,
                         width: _currentPage == index ? 24 : 8,
                         decoration: BoxDecoration(
-                          color: _currentPage == index ? AppColors.primary500 : AppColors.sunken,
+                          color: _currentPage == index
+                              ? AppColors.primary500
+                              : AppColors.sunken,
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),
@@ -159,14 +176,22 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary500,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 16,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: AppRadius.mdBorder,
                       ),
                     ),
                     child: Text(
-                      _currentPage == _steps.length - 1 ? 'Start Playing' : 'Next',
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      _currentPage == _steps.length - 1
+                          ? 'Start Playing'
+                          : 'Next',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 ],

@@ -37,7 +37,8 @@ import '../../features/cheatsheet/presentation/cheatsheet_page.dart'
 import '../../features/dashboard/presentation/dashboard_page.dart'
     show DashboardPage;
 import '../../features/splash/presentation/splash_page.dart' show SplashPage;
-import '../../features/onboarding/presentation/onboarding_page.dart' show OnboardingPage;
+import '../../features/onboarding/presentation/onboarding_page.dart'
+    show OnboardingPage;
 
 // ── GoRouter configuration ─────────────────────────────────────────────────
 
@@ -45,7 +46,10 @@ final router = GoRouter(
   initialLocation: '/splash',
   routes: [
     GoRoute(path: '/splash', builder: (context, state) => const SplashPage()),
-    GoRoute(path: '/onboarding', builder: (context, state) => const OnboardingPage()),
+    GoRoute(
+      path: '/onboarding',
+      builder: (context, state) => const OnboardingPage(),
+    ),
 
     // ── Tabbed shell (bottom nav) ──
     StatefulShellRoute.indexedStack(
