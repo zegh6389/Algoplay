@@ -92,6 +92,29 @@ void main() {
       expect(adStrategy, contains('PremiumService.instance.isPremium'));
     });
 
+    test('locked lesson tap offers rewarded ad unlock path', () {
+      final lessonsHome = File(
+        'lib/features/learn/presentation/lessons_home_page.dart',
+      ).readAsStringSync();
+      final repo = File(
+        'lib/features/learn/data/lesson_progress_repository.dart',
+      ).readAsStringSync();
+      final providers = File(
+        'lib/features/learn/providers/lesson_providers.dart',
+      ).readAsStringSync();
+
+      expect(lessonsHome, contains('Unlock Lesson'));
+      expect(lessonsHome, contains('Maybe Later'));
+      expect(lessonsHome, contains('Unlock with Ad'));
+      expect(lessonsHome, contains('showLessonRewardAd'));
+      expect(lessonsHome, contains('markLessonAdUnlocked'));
+      expect(lessonsHome, contains('ref.invalidate(lessonUnlockedProvider'));
+      expect(repo, contains('isLessonAdUnlocked'));
+      expect(repo, contains('markLessonAdUnlocked'));
+      expect(repo, contains('PremiumService.instance.isPremium'));
+      expect(providers, contains('ref.watch(premiumProvider)'));
+    });
+
     test('ad widgets are premium-aware and test-safe', () {
       final inlineAd = File(
         'lib/shared/widgets/inline_banner_ad.dart',

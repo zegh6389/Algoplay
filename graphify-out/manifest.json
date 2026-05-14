@@ -136,16 +136,16 @@
     "hash": "1e9566ae7f9c3131d347612ddf803775"
   },
   "/root/Algoplay/lib/features/learn/providers/lesson_providers.dart": {
-    "mtime": 1778217558.17843,
-    "hash": "3341ca498f8c39de43070757ba539e65"
+    "mtime": 1778776594.2646677,
+    "hash": "ae7d9fceef956a7af9e6c08b13eb3fdd"
   },
   "/root/Algoplay/lib/features/learn/data/algorithm_data.dart": {
     "mtime": 1778217558.17643,
     "hash": "1b30725baa8f0d1a47209b8e9ef8130c"
   },
   "/root/Algoplay/lib/features/learn/data/lesson_progress_repository.dart": {
-    "mtime": 1778217558.1774302,
-    "hash": "8c2855e1ca54e049992b9371a8bbb62b"
+    "mtime": 1778776717.4429297,
+    "hash": "7fa4daa2d14cc98cdd83b773cf10adbf"
   },
   "/root/Algoplay/lib/features/learn/data/lesson_content.dart": {
     "mtime": 1778699935.0339324,
@@ -156,8 +156,8 @@
     "hash": "bc4c941d2ec4d8596d3b22c4838d2811"
   },
   "/root/Algoplay/lib/features/learn/presentation/lessons_home_page.dart": {
-    "mtime": 1778217558.1774302,
-    "hash": "819720c03a4b17f89688ca56094a7a04"
+    "mtime": 1778776594.3056693,
+    "hash": "be4f06cd7b13e69e4f0ec903f88af8a5"
   },
   "/root/Algoplay/lib/features/learn/presentation/module_content_page.dart": {
     "mtime": 1778771489.3173754,
@@ -444,16 +444,16 @@
     "hash": "b23abed914c7b904cdad3bfc9ef434d7"
   },
   "/root/Algoplay/test/features/learn/lesson_ads_contract_test.dart": {
-    "mtime": 1778771465.4323668,
-    "hash": "197c9aa5e69fc7e2d1885c55dbcbf0e4"
+    "mtime": 1778776584.6482568,
+    "hash": "cdda6db3cb47a8ca1a0aed3de394b04f"
   },
   "/root/Algoplay/test/features/learn/module_content_page_test.dart": {
     "mtime": 1778771445.2655158,
     "hash": "7809087f274b03ec9c2ae8634a10ded2"
   },
   "/root/Algoplay/test/features/learn/lesson_progress_test.dart": {
-    "mtime": 1778217558.1864305,
-    "hash": "138803650e8f46f42e80e1df1f683bb8"
+    "mtime": 1778776570.306644,
+    "hash": "96c2c4244fa177196c37e803ba7d7cec"
   },
   "/root/Algoplay/test/features/learn/data/algorithm_data_test.dart": {
     "mtime": 1778217558.1864305,

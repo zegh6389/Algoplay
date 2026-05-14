@@ -1,9 +1,10 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-/// SharedPreferences-backed repository for lesson & module progress tracking.
+// SharedPreferences-backed repository for lesson & module progress tracking.
 // ═══════════════════════════════════════════════════════════════════════════════
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/services/premium_service.dart';
 import 'lesson_content.dart';
 
 class LessonProgressRepository {
@@ -13,14 +14,18 @@ class LessonProgressRepository {
 
   /// Key for a boolean flag indicating module completion.
   String _moduleKey(int lessonId, String moduleId) =>
-      '${_prefix}${lessonId}_module_$moduleId';
+      '$_prefix${lessonId}_module_$moduleId';
 
   /// Key for the last-viewed module in a lesson.
   String _currentModuleKey(int lessonId) =>
-      '${_prefix}${lessonId}_current_module';
+      '$_prefix${lessonId}_current_module';
 
   /// Key for saved scroll position of a lesson.
-  String _scrollKey(int lessonId) => '${_prefix}${lessonId}_scroll';
+  String _scrollKey(int lessonId) => '$_prefix${lessonId}_scroll';
+
+  /// Key for a rewarded-ad early unlock of a lesson.
+  String _adUnlockedLessonKey(int lessonId) =>
+      '$_prefix${lessonId}_ad_unlocked';
 
   // ── Module completion ──────────────────────────────────────────────────────
 
@@ -60,10 +65,13 @@ class LessonProgressRepository {
   // ── Unlock logic ───────────────────────────────────────────────────────────
 
   /// Lesson 1 is always unlocked.
-  /// Lesson N (N > 1) is unlocked only when ALL modules of Lesson N-1
-  /// have been completed.
+  /// Premium users unlock every lesson.
+  /// Lesson N (N > 1) also unlocks through a rewarded-ad early unlock or when
+  /// ALL modules of Lesson N-1 have been completed.
   Future<bool> isLessonUnlocked(int lessonId) async {
     if (lessonId <= 1) return true;
+    if (PremiumService.instance.isPremium) return true;
+    if (await isLessonAdUnlocked(lessonId)) return true;
 
     // Check if all modules of the previous lesson are complete.
     final previousLesson = lessons.firstWhere(
@@ -79,6 +87,18 @@ class LessonProgressRepository {
       }
     }
     return true;
+  }
+
+  /// Returns true when a rewarded ad has permanently unlocked [lessonId].
+  Future<bool> isLessonAdUnlocked(int lessonId) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_adUnlockedLessonKey(lessonId)) ?? false;
+  }
+
+  /// Permanently unlocks [lessonId] after the rewarded-ad reward is earned.
+  Future<void> markLessonAdUnlocked(int lessonId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_adUnlockedLessonKey(lessonId), true);
   }
 
   // ── Current module tracking ────────────────────────────────────────────────

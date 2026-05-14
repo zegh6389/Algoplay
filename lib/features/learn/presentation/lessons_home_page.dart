@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/services/ad_strategy_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../data/lesson_content.dart';
 import '../providers/lesson_providers.dart';
@@ -41,9 +42,7 @@ class LessonsHomePage extends ConsumerWidget {
               const SizedBox(height: AppSpacing.lg),
 
               // ── Lesson cards ─────────────────────────────────────────────
-              ...allLessons.map(
-                (lesson) => _LessonCard(lesson: lesson),
-              ),
+              ...allLessons.map((lesson) => _LessonCard(lesson: lesson)),
             ],
           ),
         ),
@@ -210,19 +209,14 @@ class _RingPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _RingPainter old) =>
-      old.progress != progress;
+  bool shouldRepaint(covariant _RingPainter old) => old.progress != progress;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
 /// Small badge widget (XP / streak).
 // ═══════════════════════════════════════════════════════════════════════════════
 class _Badge extends StatelessWidget {
-  const _Badge({
-    required this.icon,
-    required this.label,
-    required this.color,
-  });
+  const _Badge({required this.icon, required this.label, required this.color});
 
   final IconData icon;
   final String label;
@@ -256,6 +250,52 @@ class _LessonCard extends ConsumerWidget {
 
   final LessonContent lesson;
 
+  Future<void> _offerAdUnlock(BuildContext context, WidgetRef ref) async {
+    final wantsUnlock =
+        await showDialog<bool>(
+          context: context,
+          builder: (dialogContext) => AlertDialog(
+            title: const Text('Unlock Lesson'),
+            content: Text(
+              'Watch a short ad to unlock Lesson ${lesson.id} now.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(false),
+                child: const Text('Maybe Later'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(dialogContext).pop(true),
+                child: const Text('Unlock with Ad'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+
+    if (!wantsUnlock || !context.mounted) return;
+
+    final repo = ref.read(lessonProgressRepoProvider);
+    final shown = AdStrategyService.instance.showLessonRewardAd(
+      onReward: () {
+        repo.markLessonAdUnlocked(lesson.id).then((_) {
+          ref.invalidate(lessonUnlockedProvider(lesson.id));
+          if (context.mounted) {
+            context.push('/lesson/${lesson.id}');
+          }
+        });
+      },
+    );
+
+    if (!shown && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Ad is not ready yet. Try again in a moment.'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final progressAsync = ref.watch(lessonProgressValueProvider(lesson.id));
@@ -274,7 +314,7 @@ class _LessonCard extends ConsumerWidget {
           borderRadius: AppRadius.lgBorder,
           onTap: isUnlocked
               ? () => context.push('/lesson/${lesson.id}')
-              : null,
+              : () => _offerAdUnlock(context, ref),
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Opacity(

@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:algoplay/core/services/premium_service.dart';
 import 'package:algoplay/features/learn/data/lesson_progress_repository.dart';
 import 'package:algoplay/features/learn/data/lesson_content.dart';
 
@@ -8,8 +9,9 @@ void main() {
 
   late LessonProgressRepository repo;
 
-  setUp(() {
+  setUp(() async {
     SharedPreferences.setMockInitialValues({});
+    await PremiumService.instance.clear();
     repo = LessonProgressRepository();
   });
 
@@ -35,6 +37,30 @@ void main() {
       // Only complete first module
       await repo.markModuleComplete(1, lesson1.modules.first.id);
       expect(await repo.isLessonUnlocked(2), isFalse);
+    });
+
+    test('rewarded ad unlock persists and unlocks the lesson early', () async {
+      expect(await repo.isLessonAdUnlocked(2), isFalse);
+      expect(await repo.isLessonUnlocked(2), isFalse);
+
+      await repo.markLessonAdUnlocked(2);
+
+      expect(await repo.isLessonAdUnlocked(2), isTrue);
+      expect(await repo.isLessonUnlocked(2), isTrue);
+    });
+
+    test('ad unlocks are tracked independently per lesson', () async {
+      await repo.markLessonAdUnlocked(3);
+
+      expect(await repo.isLessonAdUnlocked(2), isFalse);
+      expect(await repo.isLessonAdUnlocked(3), isTrue);
+    });
+
+    test('premium unlocks every lesson without progress or ads', () async {
+      await PremiumService.instance.setPremium(true);
+
+      expect(await repo.isLessonUnlocked(2), isTrue);
+      expect(await repo.isLessonUnlocked(3), isTrue);
     });
   });
 
