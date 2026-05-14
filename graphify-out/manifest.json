@@ -28,8 +28,8 @@
     "hash": "98fc75412162af387e2e3461e4e58094"
   },
   "/root/Algoplay/lib/main.dart": {
-    "mtime": 1778704958.1870856,
-    "hash": "d2c17eed87d22df14fed458e60278110"
+    "mtime": 1778705270.886419,
+    "hash": "ba3a6df1f819d49c0094980ac913e3fe"
   },
   "/root/Algoplay/lib/core/theme/app_theme.dart": {
     "mtime": 1778217558.1684299,
@@ -48,8 +48,8 @@
     "hash": "006306cc35d9cf93ee0184379a17d20e"
   },
   "/root/Algoplay/lib/core/services/ad_service.dart": {
-    "mtime": 1778654522.6639032,
-    "hash": "9fe9698600927e6dc67c20418340f840"
+    "mtime": 1778705374.476836,
+    "hash": "231c83f2f70e4e5d024d53d81e8fc3cb"
   },
   "/root/Algoplay/lib/core/router/tab_shell.dart": {
     "mtime": 1778624479.363648,
@@ -64,12 +64,12 @@
     "hash": "46d2954e9caa20c6a7357a9268c87c5f"
   },
   "/root/Algoplay/lib/features/arena/presentation/elite_arena_page.dart": {
-    "mtime": 1778217558.1694298,
-    "hash": "817304b9359e947f2c09bfb161b83bb6"
+    "mtime": 1778706191.3494337,
+    "hash": "0f30351b4f284ec9ad008477d8f06d88"
   },
   "/root/Algoplay/lib/features/premium/presentation/premium_page.dart": {
-    "mtime": 1778624479.486653,
-    "hash": "53c50870ae80cf15cb2014190cdb49b4"
+    "mtime": 1778705238.3200305,
+    "hash": "125ad6ae989aea831655aaf06d357100"
   },
   "/root/Algoplay/lib/features/stats/data/stats_repository.dart": {
     "mtime": 1778217558.1794302,
@@ -108,8 +108,8 @@
     "hash": "9440758c8f6dbb492eda13afc0d06303"
   },
   "/root/Algoplay/lib/features/playground/presentation/playground_page.dart": {
-    "mtime": 1778217558.17843,
-    "hash": "9103502d60a585727c5c3b7ece12b81c"
+    "mtime": 1778706207.5841205,
+    "hash": "60c15f90a1a972b74d2893b3b274225e"
   },
   "/root/Algoplay/lib/features/leaderboard/data/leaderboard_repository.dart": {
     "mtime": 1778217558.1744301,
@@ -164,15 +164,15 @@
     "hash": "f8331b69ee03cc8556caa05a5cc3495a"
   },
   "/root/Algoplay/lib/features/profile/presentation/profile_page.dart": {
-    "mtime": 1778624479.4236505,
-    "hash": "b24280b56f7ab2591ae0defb07c4af87"
+    "mtime": 1778705404.0720978,
+    "hash": "5a5ae85b9b21308f1dd470ade81f0794"
   },
   "/root/Algoplay/lib/features/profile/presentation/widgets/avatar_widget.dart": {
     "mtime": 1778559439.8737211,
     "hash": "0884286f0203b07585a27762ab5e0fda"
   },
   "/root/Algoplay/lib/features/splash/presentation/splash_page.dart": {
-    "mtime": 1778217558.1794302,
+    "mtime": 1778723990.699226,
     "hash": "4f18c0f7a9d6b1c1e521812e639ff368"
   },
   "/root/Algoplay/lib/features/battle_arena/data/question_bank.dart": {
@@ -192,8 +192,8 @@
     "hash": "2441b41b37e0680311271a608ade94e1"
   },
   "/root/Algoplay/lib/features/visualizer/presentation/algorithm_visualizer_page.dart": {
-    "mtime": 1778621783.7140713,
-    "hash": "60802120e56218307e6df1d97902a7e2"
+    "mtime": 1778736112.8959894,
+    "hash": "93a52b49a121fbb562858d997c90fecc"
   },
   "/root/Algoplay/lib/features/visualizer/widgets/speed_controller.dart": {
     "mtime": 1778217558.1824303,
@@ -208,8 +208,8 @@
     "hash": "4d6c7183ed82b0b314a7fd4c3f5ad856"
   },
   "/root/Algoplay/lib/features/visualizer/widgets/array_input_sheet.dart": {
-    "mtime": 1778217558.1824303,
-    "hash": "56cb0cff7ad5e0dabefdb45c1d3cb90c"
+    "mtime": 1778736112.7749841,
+    "hash": "2e7992be472ad1872f2107c0102e02ee"
   },
   "/root/Algoplay/lib/features/play/presentation/play_page.dart": {
     "mtime": 1778217558.17843,
@@ -340,8 +340,8 @@
     "hash": "ff1ddbebbc9b4d04f2e9f8cab50d6595"
   },
   "/root/Algoplay/android/app/build.gradle.kts": {
-    "mtime": 1778217558.1394286,
-    "hash": "4803df550d4e3890f7b35abd4ce54ebf"
+    "mtime": 1778711237.9713593,
+    "hash": "2c54fac17b9a65a7be20818aac4f7895"
   },
   "/root/Algoplay/android/app/src/main/kotlin/com/algoplay/app/MainActivity.kt": {
     "mtime": 1778217558.1404285,
@@ -354,6 +354,10 @@
   "/root/Algoplay/test/widget_test.dart": {
     "mtime": 1778217558.1874306,
     "hash": "acb94b686893f26add4a37499c83757d"
+  },
+  "/root/Algoplay/test/release_readiness_contract_test.dart": {
+    "mtime": 1778705444.6928298,
+    "hash": "f70fd0a52ef37b2d5629a1297e22b85b"
   },
   "/root/Algoplay/test/core/theme/app_theme_test.dart": {
     "mtime": 1778217558.1844304,
@@ -383,6 +387,10 @@
     "mtime": 1778217558.1864305,
     "hash": "52d4d1efb1ac7098c3c01ba603f8a1d8"
   },
+  "/root/Algoplay/test/features/premium/premium_purchase_contract_test.dart": {
+    "mtime": 1778705270.9614222,
+    "hash": "0dd5fd797f927ddfbf4b7348e1749f01"
+  },
   "/root/Algoplay/test/features/stats/stats_integration_test.dart": {
     "mtime": 1778553734.748933,
     "hash": "426c8b38db0084fe747ca393ac7fac84"
@@ -404,8 +412,8 @@
     "hash": "b23abed914c7b904cdad3bfc9ef434d7"
   },
   "/root/Algoplay/test/features/learn/lesson_ads_contract_test.dart": {
-    "mtime": 1778654702.3635683,
-    "hash": "073cfbf829dc76496258897afbc9037b"
+    "mtime": 1778706184.0011227,
+    "hash": "ee7224274b538a3f84a5dc8c1576f05a"
   },
   "/root/Algoplay/test/features/learn/module_content_page_test.dart": {
     "mtime": 1778301455.8661108,
@@ -432,16 +440,16 @@
     "hash": "79bac52d137f9394c9d9d9e0dc494461"
   },
   "/root/Algoplay/test/features/visualizer/visualizer_graph_tree_test.dart": {
-    "mtime": 1778217558.1874306,
-    "hash": "b2a2be5460b2d63816a8f3ebf435928a"
+    "mtime": 1778736165.785263,
+    "hash": "b7e4f9071f12936ed8026e030730f0a7"
   },
   "/root/Algoplay/test/features/visualizer/widgets/animated_sort_bar_test.dart": {
     "mtime": 1778217558.1874306,
     "hash": "f71d31020a038bdd7ed29b2513efedf9"
   },
   "/root/Algoplay/test/features/visualizer/widgets/array_input_sheet_test.dart": {
-    "mtime": 1778217558.1874306,
-    "hash": "a8822b5eb92e2bb17554c7fe769a22e7"
+    "mtime": 1778736112.9049897,
+    "hash": "57ab413c3e0c6eba12bd09b1c3f782a6"
   },
   "/root/Algoplay/test/features/visualizer/widgets/code_viewer_test.dart": {
     "mtime": 1778217558.1874306,
@@ -492,8 +500,8 @@
     "hash": "a993bd9a8466b705f520b2a269a544bc"
   },
   "/root/Algoplay/pubspec.yaml": {
-    "mtime": 1778559460.889622,
-    "hash": "3199b04e38587afeabb6d034823afb83"
+    "mtime": 1778711228.8539712,
+    "hash": "7d40f51f6d8a86341750ffad139bc8f5"
   },
   "/root/Algoplay/ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md": {
     "mtime": 1778217558.1654296,
@@ -516,64 +524,64 @@
     "hash": "d1973ee4b77d3f3e78bd29aec112f5ad"
   },
   "/root/Algoplay/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png": {
-    "mtime": 1778262805.8629982,
-    "hash": "64c2179b929f5b55c27a76a20ae94cbf"
+    "mtime": 1778734729.6070728,
+    "hash": "d7ff801a28a21384d77ead2473a21117"
   },
   "/root/Algoplay/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png": {
-    "mtime": 1778262806.8780415,
-    "hash": "f6e400ec5195441cdd5743ecb9b0bb80"
+    "mtime": 1778734729.606073,
+    "hash": "c409e42fed1e893605ef995071ce393d"
   },
   "/root/Algoplay/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png": {
-    "mtime": 1778262805.9130003,
-    "hash": "c0bc150adb4277bbd72eb6bd5d69840e"
+    "mtime": 1778734729.608073,
+    "hash": "2e2387ecff494da9c87b1169b4bac388"
   },
   "/root/Algoplay/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png": {
-    "mtime": 1778262805.8219965,
-    "hash": "713260f33a68374e746f6cb35aa5c3c1"
+    "mtime": 1778734729.6070728,
+    "hash": "4e26a54490c95ef8f61ccb251c1d8e54"
   },
   "/root/Algoplay/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png": {
-    "mtime": 1778262805.8009956,
-    "hash": "281536edf4b2bb87528b98ba1e17f6a0"
+    "mtime": 1778734729.6070728,
+    "hash": "f401183701df98379eb0542e46ac7d23"
   },
   "/root/Algoplay/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png": {
-    "mtime": 1778262805.978003,
-    "hash": "f36a6c1f8ce3628e7e5ec3044df0129c"
+    "mtime": 1778734729.608073,
+    "hash": "4f8edb53d2d37c28f2d648e5090cd5e3"
   },
   "/root/Algoplay/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png": {
-    "mtime": 1778262805.8859992,
-    "hash": "713260f33a68374e746f6cb35aa5c3c1"
+    "mtime": 1778734729.6070728,
+    "hash": "4e26a54490c95ef8f61ccb251c1d8e54"
   },
   "/root/Algoplay/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png": {
-    "mtime": 1778262806.023005,
-    "hash": "1adb76f6ee6c94cc78fb53d298f21caa"
+    "mtime": 1778734729.609073,
+    "hash": "cdd30b8ec448b8ff0500338dad5489d0"
   },
   "/root/Algoplay/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png": {
-    "mtime": 1778262805.7259922,
-    "hash": "d33f213c147fd6f979d4c0fa78775e6a"
+    "mtime": 1778734729.608073,
+    "hash": "822c52af713c28875677f37fefe13b07"
   },
   "/root/Algoplay/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png": {
-    "mtime": 1778262805.9370012,
-    "hash": "289018d33f623df7cd3f5cade52c046e"
+    "mtime": 1778734729.608073,
+    "hash": "e16428e14014305c1e8968ac4089380a"
   },
   "/root/Algoplay/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png": {
-    "mtime": 1778262805.67399,
-    "hash": "d33f213c147fd6f979d4c0fa78775e6a"
+    "mtime": 1778734729.608073,
+    "hash": "822c52af713c28875677f37fefe13b07"
   },
   "/root/Algoplay/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png": {
-    "mtime": 1778262805.5059829,
-    "hash": "335b750b5646ab57f85ccc55bbf3bfab"
+    "mtime": 1778734729.6070728,
+    "hash": "0adbf1c56b86f0cd275b5cde555a655f"
   },
   "/root/Algoplay/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png": {
-    "mtime": 1778262805.8409972,
-    "hash": "ef908d38b9f05d9abbb6b31ddefaf98c"
+    "mtime": 1778734729.6070728,
+    "hash": "544c69abea96edc88b25db4ee346d7cc"
   },
   "/root/Algoplay/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png": {
-    "mtime": 1778262805.5919867,
-    "hash": "0d69a67a73fe3e1521751f5c37805f95"
+    "mtime": 1778734729.6070728,
+    "hash": "fd32c6093bbcd4619e7465a7b4419e8c"
   },
   "/root/Algoplay/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png": {
-    "mtime": 1778262805.7789946,
-    "hash": "abeeba7eed46cdda898a8c56a156146a"
+    "mtime": 1778734729.608073,
+    "hash": "789f95f231bd3e446b642baf522109f6"
   },
   "/root/Algoplay/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@2x.png": {
     "mtime": 1778217558.1654296,
@@ -588,24 +596,24 @@
     "hash": "978c1bee49d7ad5fc1a4d81099b13e18"
   },
   "/root/Algoplay/assets/images/adaptive-icon.png": {
-    "mtime": 1778262793.349464,
-    "hash": "f6e400ec5195441cdd5743ecb9b0bb80"
+    "mtime": 1778734729.5940723,
+    "hash": "349c267610a9aa2763c4836d2ee2a995"
   },
   "/root/Algoplay/assets/images/splash-screen.png": {
     "mtime": 1778217558.1584294,
     "hash": "0d10c918779bcbb57c9bcc442804f974"
   },
   "/root/Algoplay/assets/images/favicon.png": {
-    "mtime": 1778217558.1464288,
-    "hash": "6b39524970172dd64b93a132c5941581"
+    "mtime": 1778734729.5940723,
+    "hash": "1acd44086c76132c712108a5debeaea5"
   },
   "/root/Algoplay/assets/images/icon.png": {
-    "mtime": 1778262792.367422,
-    "hash": "f6e400ec5195441cdd5743ecb9b0bb80"
+    "mtime": 1778734729.5990725,
+    "hash": "349c267610a9aa2763c4836d2ee2a995"
   },
   "/root/Algoplay/assets/images/splash-icon.png": {
-    "mtime": 1778262794.379508,
-    "hash": "f6e400ec5195441cdd5743ecb9b0bb80"
+    "mtime": 1778734729.6020727,
+    "hash": "349c267610a9aa2763c4836d2ee2a995"
   },
   "/root/Algoplay/assets/images/avatars/student_female.png": {
     "mtime": 1778556321.2893524,
@@ -623,73 +631,73 @@
     "mtime": 1777909979.129989,
     "hash": "536b2d6174e97ab8d93f0aa1ef5951ea"
   },
-  "/root/Algoplay/android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp": {
-    "mtime": 1778262794.6445193,
-    "hash": "b4b5089928d2803ad623c6ee78d88a12"
-  },
   "/root/Algoplay/android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.webp": {
-    "mtime": 1778262798.3086758,
-    "hash": "81f06e9d0e4362835ca7db88596e3558"
+    "mtime": 1778734729.5900722,
+    "hash": "541f97b4563b60cae1487a4d93d9e65d"
+  },
+  "/root/Algoplay/android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png": {
+    "mtime": 1778734729.5900722,
+    "hash": "0eb5c0079eeb48e11c249b13a88e4e44"
   },
   "/root/Algoplay/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png": {
-    "mtime": 1778262794.6205182,
-    "hash": "b14b346caac48c682a87fa6f852661ff"
+    "mtime": 1778734729.589072,
+    "hash": "0eb5c0079eeb48e11c249b13a88e4e44"
   },
   "/root/Algoplay/android/app/src/main/res/drawable-xhdpi/splashscreen_logo.png": {
     "mtime": 1777909979.129989,
     "hash": "97959bfb6b0e1ae76dcdc50cb85c57da"
   },
-  "/root/Algoplay/android/app/src/main/res/mipmap-hdpi/ic_launcher_round.webp": {
-    "mtime": 1778262794.5945172,
-    "hash": "d52e311193a085864b34fbebeb759648"
-  },
   "/root/Algoplay/android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.webp": {
-    "mtime": 1778262797.2436302,
-    "hash": "48a36f9a27306af537d7f3339cb5e3d9"
+    "mtime": 1778734729.589072,
+    "hash": "6629601a1014b1f332b0587b7376423d"
+  },
+  "/root/Algoplay/android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png": {
+    "mtime": 1778734729.589072,
+    "hash": "cc7e3b16293136235c072aed8ad3fcfa"
   },
   "/root/Algoplay/android/app/src/main/res/mipmap-hdpi/ic_launcher.png": {
-    "mtime": 1778262794.5725162,
-    "hash": "ef4523f14ec8fa735ad6042d2064e105"
+    "mtime": 1778734729.589072,
+    "hash": "cc7e3b16293136235c072aed8ad3fcfa"
   },
   "/root/Algoplay/android/app/src/main/res/drawable-mdpi/splashscreen_logo.png": {
     "mtime": 1777909979.129989,
     "hash": "aca8e7fa6ee87e389c8220c8500ef5e6"
   },
-  "/root/Algoplay/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.webp": {
-    "mtime": 1778262794.7105222,
-    "hash": "bb8a3a497d463b6475c4654ff0db529b"
-  },
   "/root/Algoplay/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.webp": {
-    "mtime": 1778262803.002876,
-    "hash": "a948a8e8e6f5e72fe834824bbc328ee2"
+    "mtime": 1778734729.5900722,
+    "hash": "a81d66e9b95560a4aafae46d0646135e"
+  },
+  "/root/Algoplay/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png": {
+    "mtime": 1778734729.5900722,
+    "hash": "c126a2a71e845274fd8c5ce785dfb314"
   },
   "/root/Algoplay/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png": {
-    "mtime": 1778262794.683521,
-    "hash": "4e193efded9c426192e1d526c0ea4428"
-  },
-  "/root/Algoplay/android/app/src/main/res/mipmap-mdpi/ic_launcher_round.webp": {
-    "mtime": 1778262794.5485153,
-    "hash": "0f6b13c538b857ce670b85b530cd4683"
+    "mtime": 1778734729.5900722,
+    "hash": "c126a2a71e845274fd8c5ce785dfb314"
   },
   "/root/Algoplay/android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.webp": {
-    "mtime": 1778262795.6605628,
-    "hash": "0c62baf301342fc5541d0230c4785894"
+    "mtime": 1778734729.589072,
+    "hash": "6076c0878c77430f82b620bdd5910578"
+  },
+  "/root/Algoplay/android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png": {
+    "mtime": 1778734729.589072,
+    "hash": "2b75b07b85c871c93cb92d54e0a69f44"
   },
   "/root/Algoplay/android/app/src/main/res/mipmap-mdpi/ic_launcher.png": {
-    "mtime": 1778262794.4235098,
-    "hash": "6954ad99279e97578a38357e35a2486a"
-  },
-  "/root/Algoplay/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp": {
-    "mtime": 1778262794.8155267,
-    "hash": "e94cbdcc058c0d44dc98da34cd9740f0"
+    "mtime": 1778734729.589072,
+    "hash": "2b75b07b85c871c93cb92d54e0a69f44"
   },
   "/root/Algoplay/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.webp": {
-    "mtime": 1778262805.4439802,
-    "hash": "6ca85a4008a37cf5b7da5997c34cc797"
+    "mtime": 1778734729.5900722,
+    "hash": "a77861f631f9c6659d7b97beeeecd7ba"
+  },
+  "/root/Algoplay/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png": {
+    "mtime": 1778734729.591072,
+    "hash": "2b65b42b652870835235a1adb138b503"
   },
   "/root/Algoplay/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png": {
-    "mtime": 1778262794.777525,
-    "hash": "6832accac24d3c67624108a4948b840e"
+    "mtime": 1778734729.5900722,
+    "hash": "2b65b42b652870835235a1adb138b503"
   },
   "/root/Algoplay/android/app/src/main/res/drawable-hdpi/splashscreen_logo.png": {
     "mtime": 1777909979.129989,

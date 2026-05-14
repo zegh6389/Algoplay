@@ -34,7 +34,9 @@ void main() {
     return result;
   }
 
-  testWidgets('manual and random sheet does not show bar preview text', (tester) async {
+  testWidgets('manual and random sheet does not show bar preview text', (
+    tester,
+  ) async {
     await openSheet(tester, initialArray: [5, 1, 3]);
 
     expect(find.text('Preview will appear here'), findsNothing);
@@ -43,11 +45,17 @@ void main() {
     expect(find.textContaining('Elements: 3'), findsOneWidget);
   });
 
-  testWidgets('manual input field gives array text enough vertical room', (tester) async {
+  testWidgets('manual input field gives array text enough vertical room', (
+    tester,
+  ) async {
     await openSheet(tester, initialArray: [64, 25, 12, 22, 11]);
 
     final field = tester.widget<TextField>(find.byType(TextField).first);
     expect(field.textAlignVertical, TextAlignVertical.center);
+    expect(
+      tester.getSize(find.byType(TextField).first).height,
+      greaterThanOrEqualTo(72),
+    );
 
     final decoration = field.decoration!;
     final padding = decoration.contentPadding! as EdgeInsets;
@@ -55,7 +63,35 @@ void main() {
     expect(padding.bottom, greaterThanOrEqualTo(10));
   });
 
-  testWidgets('manual input applies parsed comma separated integers', (tester) async {
+  testWidgets('tree input sheet labels values as tree values', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Builder(
+            builder: (context) => ElevatedButton(
+              onPressed: () => showArrayInputSheet(
+                context,
+                inputKind: VisualizerInputKind.treeValues,
+                initialArray: const [50, 30, 70],
+              ),
+              child: const Text('Open'),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Open'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Tree values'), findsOneWidget);
+    expect(find.text('Array values'), findsNothing);
+    expect(find.textContaining('Values: 3'), findsOneWidget);
+  });
+
+  testWidgets('manual input applies parsed comma separated integers', (
+    tester,
+  ) async {
     ArrayInputResult? result;
 
     await tester.pumpWidget(
@@ -87,7 +123,9 @@ void main() {
     expect(result?.target, isNull);
   });
 
-  testWidgets('random tab generates default sized array and applies it', (tester) async {
+  testWidgets('random tab generates default sized array and applies it', (
+    tester,
+  ) async {
     ArrayInputResult? result;
 
     await tester.pumpWidget(

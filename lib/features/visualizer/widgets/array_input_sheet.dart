@@ -13,6 +13,28 @@ class ArrayInputResult {
   const ArrayInputResult({required this.array, this.target});
 }
 
+enum VisualizerInputKind { array, sortedArray, treeValues }
+
+class _InputCopy {
+  final String valueLabel;
+  final String valueHint;
+  final String countLabel;
+  final String randomSizeLabel;
+  final String generateLabel;
+  final String targetLabel;
+  final String targetHint;
+
+  const _InputCopy({
+    required this.valueLabel,
+    required this.valueHint,
+    required this.countLabel,
+    required this.randomSizeLabel,
+    required this.generateLabel,
+    required this.targetLabel,
+    required this.targetHint,
+  });
+}
+
 // ═══════════════════════════════════════════════════════════════════════════════
 /// Convenience function — shows the array-input bottom sheet and returns the
 /// selected array (or `null` if the user dismissed the sheet).
@@ -24,6 +46,7 @@ Future<ArrayInputResult?> showArrayInputSheet(
   BuildContext context, {
   bool showTarget = false,
   List<int>? initialArray,
+  VisualizerInputKind inputKind = VisualizerInputKind.array,
 }) {
   return showModalBottomSheet<ArrayInputResult>(
     context: context,
@@ -32,6 +55,7 @@ Future<ArrayInputResult?> showArrayInputSheet(
     builder: (_) => _ArrayInputSheet(
       showTarget: showTarget,
       initialArray: initialArray,
+      inputKind: inputKind,
     ),
   );
 }
@@ -42,10 +66,12 @@ Future<ArrayInputResult?> showArrayInputSheet(
 class _ArrayInputSheet extends StatefulWidget {
   final bool showTarget;
   final List<int>? initialArray;
+  final VisualizerInputKind inputKind;
 
   const _ArrayInputSheet({
     this.showTarget = false,
     this.initialArray,
+    this.inputKind = VisualizerInputKind.array,
   });
 
   @override
@@ -54,6 +80,41 @@ class _ArrayInputSheet extends StatefulWidget {
 
 class _ArrayInputSheetState extends State<_ArrayInputSheet>
     with TickerProviderStateMixin {
+  _InputCopy get _copy {
+    switch (widget.inputKind) {
+      case VisualizerInputKind.sortedArray:
+        return const _InputCopy(
+          valueLabel: 'Sorted values',
+          valueHint: 'e.g. 3, 7, 11, 15, 22',
+          countLabel: 'Values',
+          randomSizeLabel: 'Value count',
+          generateLabel: 'Generate Sorted Values',
+          targetLabel: 'Target value',
+          targetHint: 'Value to search for',
+        );
+      case VisualizerInputKind.treeValues:
+        return const _InputCopy(
+          valueLabel: 'Tree values',
+          valueHint: 'e.g. 50, 30, 70, 20, 40',
+          countLabel: 'Values',
+          randomSizeLabel: 'Node count',
+          generateLabel: 'Generate Tree Values',
+          targetLabel: 'Search or insert value',
+          targetHint: 'Value used by this tree operation',
+        );
+      case VisualizerInputKind.array:
+        return const _InputCopy(
+          valueLabel: 'Array values',
+          valueHint: 'e.g. 64, 25, 12, 22, 11',
+          countLabel: 'Elements',
+          randomSizeLabel: 'Array size',
+          generateLabel: 'Generate Random Array',
+          targetLabel: 'Target',
+          targetHint: 'Target value to search for',
+        );
+    }
+  }
+
   // ── Tabs ─────────────────────────────────────────────────────────────────
   late final TabController _tabController;
 
@@ -117,7 +178,9 @@ class _ArrayInputSheetState extends State<_ArrayInputSheet>
     if (trimmed.isEmpty) return [];
 
     // Allow trailing comma while typing
-    final cleaned = trimmed.endsWith(',') ? trimmed.substring(0, trimmed.length - 1) : trimmed;
+    final cleaned = trimmed.endsWith(',')
+        ? trimmed.substring(0, trimmed.length - 1)
+        : trimmed;
 
     if (cleaned.isEmpty) return [];
 
@@ -159,7 +222,10 @@ class _ArrayInputSheetState extends State<_ArrayInputSheet>
     final size = _randomSize.round();
     final rng = Random();
     setState(() {
-      _randomValues = List.generate(size, (_) => rng.nextInt(100) + 1);
+      final values = List.generate(size, (_) => rng.nextInt(100) + 1);
+      _randomValues = widget.inputKind == VisualizerInputKind.sortedArray
+          ? (values..sort())
+          : values;
     });
   }
 
@@ -194,10 +260,7 @@ class _ArrayInputSheetState extends State<_ArrayInputSheet>
         builder: (context, child) {
           // Horizontal shake offset: sin curve ±4 px
           final dx = sin(_shakeAnimation.value * pi * 4) * 4;
-          return Transform.translate(
-            offset: Offset(dx, 0),
-            child: child,
-          );
+          return Transform.translate(offset: Offset(dx, 0), child: child);
         },
         child: Padding(
           padding: EdgeInsets.only(
@@ -215,13 +278,10 @@ class _ArrayInputSheetState extends State<_ArrayInputSheet>
               const SizedBox(height: AppSpacing.md),
               Flexible(
                 child: SizedBox(
-                  height: 190,
+                  height: 210,
                   child: TabBarView(
                     controller: _tabController,
-                    children: [
-                      _buildManualTab(),
-                      _buildRandomTab(),
-                    ],
+                    children: [_buildManualTab(), _buildRandomTab()],
                   ),
                 ),
               ),
@@ -268,10 +328,7 @@ class _ArrayInputSheetState extends State<_ArrayInputSheet>
         dividerColor: Colors.transparent,
         labelColor: AppColors.primary500,
         unselectedLabelColor: AppColors.textSecondary,
-        labelStyle: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-        ),
+        labelStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
         unselectedLabelStyle: const TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w400,
@@ -291,17 +348,18 @@ class _ArrayInputSheetState extends State<_ArrayInputSheet>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          height: 64,
+          height: 76,
           child: TextField(
             controller: _manualController,
             onChanged: _onManualChanged,
             keyboardType: const TextInputType.numberWithOptions(signed: true),
             textAlignVertical: TextAlignVertical.center,
             decoration: InputDecoration(
-              hintText: 'e.g. 64, 25, 12, 22, 11',
+              hintText: _copy.valueHint,
               hintStyle: const TextStyle(color: AppColors.textMuted),
-              labelText: 'Array values',
-              contentPadding: const EdgeInsets.fromLTRB(16, 22, 16, 10),
+              labelText: _copy.valueLabel,
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+              contentPadding: const EdgeInsets.fromLTRB(16, 24, 16, 14),
               errorText: _parseError,
               enabledBorder: OutlineInputBorder(
                 borderRadius: AppRadius.mdBorder,
@@ -309,16 +367,14 @@ class _ArrayInputSheetState extends State<_ArrayInputSheet>
                   color: _manualController.text.isEmpty
                       ? AppColors.sunken
                       : _isValid
-                          ? AppColors.success600
-                          : AppColors.error600,
+                      ? AppColors.success600
+                      : AppColors.error600,
                 ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: AppRadius.mdBorder,
                 borderSide: BorderSide(
-                  color: _isValid
-                      ? AppColors.primary500
-                      : AppColors.error600,
+                  color: _isValid ? AppColors.primary500 : AppColors.error600,
                   width: 1.5,
                 ),
               ),
@@ -327,7 +383,7 @@ class _ArrayInputSheetState extends State<_ArrayInputSheet>
         ),
         const SizedBox(height: AppSpacing.sm),
         Text(
-          'Elements: ${_manualValues.length}',
+          '${_copy.countLabel}: ${_manualValues.length}',
           style: const TextStyle(
             fontSize: 13,
             color: AppColors.textSecondary,
@@ -345,7 +401,7 @@ class _ArrayInputSheetState extends State<_ArrayInputSheet>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Array size: ${_randomSize.round()}',
+          '${_copy.randomSizeLabel}: ${_randomSize.round()}',
           softWrap: false,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(
@@ -371,13 +427,11 @@ class _ArrayInputSheetState extends State<_ArrayInputSheet>
           child: OutlinedButton.icon(
             onPressed: _generateRandom,
             icon: const Icon(Icons.casino, size: 18),
-            label: const Text('Generate Random Array'),
+            label: Text(_copy.generateLabel),
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.primary500,
               side: const BorderSide(color: AppColors.primary500, width: 1.5),
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.mdBorder,
-              ),
+              shape: RoundedRectangleBorder(borderRadius: AppRadius.mdBorder),
               textStyle: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
@@ -387,7 +441,7 @@ class _ArrayInputSheetState extends State<_ArrayInputSheet>
         ),
         const SizedBox(height: AppSpacing.sm),
         Text(
-          'Elements: ${_randomValues.length}',
+          '${_copy.countLabel}: ${_randomValues.length}',
           style: const TextStyle(
             fontSize: 13,
             color: AppColors.textSecondary,
@@ -404,11 +458,11 @@ class _ArrayInputSheetState extends State<_ArrayInputSheet>
     return TextField(
       controller: _targetController,
       keyboardType: const TextInputType.numberWithOptions(signed: true),
-      decoration: const InputDecoration(
-        hintText: 'Target value to search for',
-        hintStyle: TextStyle(color: AppColors.textMuted),
-        labelText: 'Target',
-        prefixIcon: Icon(Icons.track_changes, size: 20),
+      decoration: InputDecoration(
+        hintText: _copy.targetHint,
+        hintStyle: const TextStyle(color: AppColors.textMuted),
+        labelText: _copy.targetLabel,
+        prefixIcon: const Icon(Icons.track_changes, size: 20),
       ),
     );
   }
@@ -437,17 +491,11 @@ class _ArrayInputSheetState extends State<_ArrayInputSheet>
           disabledBackgroundColor: AppColors.primary300,
           disabledForegroundColor: AppColors.textInverse.withValues(alpha: 0.6),
           elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: AppRadius.mdBorder,
-          ),
-          textStyle: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-          ),
+          shape: RoundedRectangleBorder(borderRadius: AppRadius.mdBorder),
+          textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
         ),
         child: const Text('Apply'),
       ),
     );
   }
 }
-

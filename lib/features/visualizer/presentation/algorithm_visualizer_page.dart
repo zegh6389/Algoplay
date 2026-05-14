@@ -36,7 +36,8 @@ class AlgorithmVisualizerPage extends ConsumerStatefulWidget {
       _AlgorithmVisualizerPageState();
 }
 
-class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPage>
+class _AlgorithmVisualizerPageState
+    extends ConsumerState<AlgorithmVisualizerPage>
     with WidgetsBindingObserver {
   // ── State ────────────────────────────────────────────────────────────────
   List<dynamic> _steps = [];
@@ -123,10 +124,7 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
     const cols = 9;
     const start = (row: 0, col: 0);
     const end = (row: 6, col: 8);
-    const obstacles = {
-      '1,2', '2,2', '3,2', '4,2',
-      '1,5', '2,5', '3,5', '5,5',
-    };
+    const obstacles = {'1,2', '2,2', '3,2', '4,2', '1,5', '2,5', '3,5', '5,5'};
 
     return List.generate(rows, (row) {
       return List.generate(cols, (col) {
@@ -144,7 +142,10 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
 
   TreeNode? _buildSampleTree() {
     TreeNode? root;
-    for (final value in [50, 30, 70, 20, 40, 60, 80]) {
+    final values = _sampleArray.isEmpty
+        ? [50, 30, 70, 20, 40, 60, 80]
+        : _sampleArray;
+    for (final value in values) {
       root = _insertTreeNode(root, value, 0);
     }
     return root;
@@ -152,11 +153,7 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
 
   TreeNode _insertTreeNode(TreeNode? node, int value, int depth) {
     if (node == null) {
-      return TreeNode(
-        id: '${value}_$depth',
-        value: value,
-        depth: depth,
-      );
+      return TreeNode(id: '${value}_$depth', value: value, depth: depth);
     }
     if (value < node.value) {
       node.left = _insertTreeNode(node.left, value, depth + 1);
@@ -225,16 +222,16 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
         break;
       // Tree algorithms
       case 'bst-operations':
-        stream = bstSearch(_buildSampleTree(), 60);
+        stream = bstSearch(_buildSampleTree(), target ?? 60);
         break;
       case 'avl-tree':
-        stream = avlInsert(_buildSampleTree(), 65);
+        stream = avlInsert(_buildSampleTree(), target ?? 65);
         break;
       case 'tree-traversals':
         stream = inorderTraversal(_buildSampleTree());
         break;
       case 'heap-sort-tree':
-        stream = heapInsert([90, 78, 64, 45, 33, 25, 12], 88);
+        stream = heapInsert(_sampleArray, target ?? 88);
         break;
       // Dynamic programming algorithms
       case 'fibonacci':
@@ -422,23 +419,37 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
     }
   }
 
-  bool get _isSorting =>
-      _algorithmInfo?.category == AlgorithmCategory.sorting;
+  bool get _isSorting => _algorithmInfo?.category == AlgorithmCategory.sorting;
 
   bool get _isSearching =>
       _algorithmInfo?.category == AlgorithmCategory.searching;
 
-  bool get _isGraph =>
-      _algorithmInfo?.category == AlgorithmCategory.graphs;
+  bool get _isGraph => _algorithmInfo?.category == AlgorithmCategory.graphs;
 
-  bool get _isTree =>
-      _algorithmInfo?.category == AlgorithmCategory.trees;
+  bool get _isTree => _algorithmInfo?.category == AlgorithmCategory.trees;
 
-  bool get _isDp =>
-      _algorithmInfo?.category == AlgorithmCategory.dp;
+  bool get _isDp => _algorithmInfo?.category == AlgorithmCategory.dp;
 
-  bool get _isGreedy =>
-      _algorithmInfo?.category == AlgorithmCategory.greedy;
+  bool get _isGreedy => _algorithmInfo?.category == AlgorithmCategory.greedy;
+
+  bool get _supportsCustomInput => _isSorting || _isSearching || _isTree;
+
+  bool get _needsTargetInput =>
+      _isSearching || (_isTree && widget.algorithmId != 'tree-traversals');
+
+  VisualizerInputKind get _visualizerInputKind {
+    if (_isTree) return VisualizerInputKind.treeValues;
+    if (widget.algorithmId == 'binary-search') {
+      return VisualizerInputKind.sortedArray;
+    }
+    return VisualizerInputKind.array;
+  }
+
+  String get _customInputTooltip {
+    if (_isTree) return 'Edit Tree Values';
+    if (_isSearching) return 'Edit Search Data';
+    return 'Edit Array';
+  }
 
   // ── Hint logic ──────────────────────────────────────────────────────────
 
@@ -453,8 +464,8 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
     final nextOp = nextStep is SortStep
         ? nextStep.operation
         : nextStep is SearchStep
-            ? nextStep.operation
-            : 'the next step';
+        ? nextStep.operation
+        : 'the next step';
     return 'Next: $nextOp';
   }
 
@@ -482,7 +493,8 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
     final result = await showArrayInputSheet(
       context,
       initialArray: _sampleArray,
-      showTarget: !_isSorting,
+      showTarget: _needsTargetInput,
+      inputKind: _visualizerInputKind,
     );
     if (result != null && mounted) {
       setState(() {
@@ -514,8 +526,7 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
   Widget build(BuildContext context) {
     final isPremium = ref.watch(premiumProvider);
     final algorithmName = _algorithmInfo?.name ?? widget.algorithmId;
-    final currentStep =
-        _steps.isNotEmpty ? _steps[_currentStepIndex] : null;
+    final currentStep = _steps.isNotEmpty ? _steps[_currentStepIndex] : null;
 
     return Scaffold(
       backgroundColor: AppColors.card,
@@ -536,12 +547,12 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
         ),
         centerTitle: true,
         actions: [
-          // Edit array button
-          IconButton(
-            icon: const Icon(Icons.edit_note),
-            tooltip: 'Edit Array',
-            onPressed: _openArrayInput,
-          ),
+          if (_supportsCustomInput)
+            IconButton(
+              icon: const Icon(Icons.edit_note),
+              tooltip: _customInputTooltip,
+              onPressed: _openArrayInput,
+            ),
           // Hint button — premium gets direct hint, free users watch an ad
           IconButton(
             icon: _isHintLoading
@@ -622,9 +633,7 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
               horizontal: AppSpacing.lg,
               vertical: AppSpacing.md,
             ),
-            decoration: const BoxDecoration(
-              color: AppColors.sunken,
-            ),
+            decoration: const BoxDecoration(color: AppColors.sunken),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -632,14 +641,14 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
                   currentStep is SortStep
                       ? currentStep.operation
                       : currentStep is SearchStep
-                          ? currentStep.operation
-                          : currentStep is PathfindingStep
-                              ? currentStep.operation
-                              : currentStep is TreeStep
-                                  ? currentStep.operation
-                                  : currentStep is DPStep
-                                      ? currentStep.operation
-                                      : 'Ready',
+                      ? currentStep.operation
+                      : currentStep is PathfindingStep
+                      ? currentStep.operation
+                      : currentStep is TreeStep
+                      ? currentStep.operation
+                      : currentStep is DPStep
+                      ? currentStep.operation
+                      : 'Ready',
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -690,15 +699,9 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   // Reset
-                  _GhostButton(
-                    icon: Icons.replay,
-                    onTap: _reset,
-                  ),
+                  _GhostButton(icon: Icons.replay, onTap: _reset),
                   // Step Back
-                  _GhostButton(
-                    icon: Icons.skip_previous,
-                    onTap: _stepBack,
-                  ),
+                  _GhostButton(icon: Icons.skip_previous, onTap: _stepBack),
                   // Play/Pause
                   SizedBox(
                     width: 56,
@@ -714,10 +717,7 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
                     ),
                   ),
                   // Step Forward
-                  _GhostButton(
-                    icon: Icons.skip_next,
-                    onTap: _stepForward,
-                  ),
+                  _GhostButton(icon: Icons.skip_next, onTap: _stepForward),
                   // Speed toggle
                   _GhostButton(
                     icon: Icons.speed,
@@ -768,7 +768,9 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
     if (step == null) return const SizedBox.shrink();
 
     final array = step.array;
-    final maxValue = array.isEmpty ? 1.0 : array.reduce((a, b) => a > b ? a : b).toDouble();
+    final maxValue = array.isEmpty
+        ? 1.0
+        : array.reduce((a, b) => a > b ? a : b).toDouble();
 
     // Get precomputed UIDs for this step index (no mutation in build!)
     final uids = _currentStepIndex < _stepUids.length
@@ -787,13 +789,14 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
       } else if (step.comparing.contains(i)) {
         state = 'comparing';
       }
-      return SortBarData(value: array[i], state: state, uid: i < uids.length ? uids[i] : i);
+      return SortBarData(
+        value: array[i],
+        state: state,
+        uid: i < uids.length ? uids[i] : i,
+      );
     });
 
-    return AnimatedSortBar(
-      bars: bars,
-      maxValue: maxValue,
-    );
+    return AnimatedSortBar(bars: bars, maxValue: maxValue);
   }
 
   // ── Searching visualization (horizontal cells with spotlight) ────────────
@@ -817,35 +820,41 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
           children: [
             // Target badge (always show — target is required, 0 is valid)
             Container(
-                margin: const EdgeInsets.only(bottom: AppSpacing.md),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: AppColors.secondary500.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppColors.secondary500, width: 2),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.search, color: AppColors.secondary500, size: 18),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Target: ${step.target}',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.secondary500,
-                      ),
-                    ),
-                  ],
-                ),
+              margin: const EdgeInsets.only(bottom: AppSpacing.md),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: AppColors.secondary500.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: AppColors.secondary500, width: 2),
               ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.search,
+                    color: AppColors.secondary500,
+                    size: 18,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Target: ${step.target}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.secondary500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
             // Search range indicator
             if (searchRange.left >= 0)
               Padding(
                 padding: EdgeInsets.only(
                   left: searchRange.left * (cellWidth + 4),
-                  right: availableWidth - (searchRange.right + 1) * (cellWidth + 4),
+                  right:
+                      availableWidth -
+                      (searchRange.right + 1) * (cellWidth + 4),
                   bottom: 4,
                 ),
                 child: Container(
@@ -863,8 +872,7 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
                 final isComparing = comparing.contains(i);
                 final isFound = found && isComparing;
                 final isEliminated = eliminated.contains(i);
-                final inRange = i >= searchRange.left &&
-                    i <= searchRange.right;
+                final inRange = i >= searchRange.left && i <= searchRange.right;
 
                 Color bgColor;
                 Color textColor;
@@ -987,8 +995,10 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
         Expanded(
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final cell = (constraints.maxWidth / cols)
-                  .clamp(22.0, constraints.maxHeight / rows);
+              final cell = (constraints.maxWidth / cols).clamp(
+                22.0,
+                constraints.maxHeight / rows,
+              );
               return Center(
                 child: SizedBox(
                   width: cell * cols,
@@ -1006,36 +1016,39 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
                       final row = index ~/ cols;
                       final col = index % cols;
                       final c = step.grid[row][col];
-                      final isCurrent = step.current?.row == row && step.current?.col == col;
+                      final isCurrent =
+                          step.current?.row == row && step.current?.col == col;
                       final color = c.isStart
                           ? const Color(0xFF2563EB)
                           : c.isEnd
-                              ? const Color(0xFFE11D48)
-                              : c.isPath
-                                  ? const Color(0xFFF59E0B)
-                                  : isCurrent
-                                      ? const Color(0xFF7C3AED)
-                                      : c.isFrontier
-                                          ? const Color(0xFF06B6D4)
-                                          : c.isVisited
-                                              ? const Color(0xFF059669)
-                                              : c.isObstacle
-                                                  ? AppColors.textPrimary
-                                                  : AppColors.sunken;
+                          ? const Color(0xFFE11D48)
+                          : c.isPath
+                          ? const Color(0xFFF59E0B)
+                          : isCurrent
+                          ? const Color(0xFF7C3AED)
+                          : c.isFrontier
+                          ? const Color(0xFF06B6D4)
+                          : c.isVisited
+                          ? const Color(0xFF059669)
+                          : c.isObstacle
+                          ? AppColors.textPrimary
+                          : AppColors.sunken;
                       final label = c.isStart
                           ? 'S'
                           : c.isEnd
-                              ? 'E'
-                              : isCurrent
-                                  ? '•'
-                                  : '';
+                          ? 'E'
+                          : isCurrent
+                          ? '•'
+                          : '';
                       return AnimatedContainer(
                         duration: const Duration(milliseconds: 220),
                         decoration: BoxDecoration(
                           color: color,
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
-                            color: isCurrent ? AppColors.textPrimary : Colors.white,
+                            color: isCurrent
+                                ? AppColors.textPrimary
+                                : Colors.white,
                             width: isCurrent ? 2 : 1,
                           ),
                         ),
@@ -1071,11 +1084,14 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _MetricPill(label: 'Tree', value: _algorithmInfo?.id == 'avl-tree'
-                ? 'AVL'
-                : _algorithmInfo?.id == 'heap-sort-tree'
-                    ? 'Heap'
-                    : 'BST'),
+            _MetricPill(
+              label: 'Tree',
+              value: _algorithmInfo?.id == 'avl-tree'
+                  ? 'AVL'
+                  : _algorithmInfo?.id == 'heap-sort-tree'
+                  ? 'Heap'
+                  : 'BST',
+            ),
             _MetricPill(label: 'Visited', value: '${step.visitedNodes.length}'),
             _MetricPill(label: 'Path', value: '${step.pathNodes.length}'),
           ],
@@ -1085,11 +1101,11 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
           child: root == null && !hasArray
               ? const Center(child: Text('Tree is empty'))
               : root != null
-                  ? CustomPaint(
-                      painter: _TreePainter(step),
-                      child: const SizedBox.expand(),
-                    )
-                  : _buildHeapArrayVisualization(step),
+              ? CustomPaint(
+                  painter: _TreePainter(step),
+                  child: const SizedBox.expand(),
+                )
+              : _buildHeapArrayVisualization(step),
         ),
       ],
     );
@@ -1162,11 +1178,15 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
 
   Widget _buildDpVisualization(DPStep step) {
     final cells = step.array;
-    final maxValue = cells.isEmpty ? 1 : cells.reduce((a, b) => a > b ? a : b).clamp(1, 9999);
+    final maxValue = cells.isEmpty
+        ? 1
+        : cells.reduce((a, b) => a > b ? a : b).clamp(1, 9999);
 
     // Detect 2D table from memo keys (format: "row,col").
     // Fibonacci memo keys are ints, so guard the key type first.
-    final is2D = step.memo.keys.any((key) => key is String && key.contains(','));
+    final is2D = step.memo.keys.any(
+      (key) => key is String && key.contains(','),
+    );
     if (is2D) {
       return _buildDp2DTable(step);
     }
@@ -1181,7 +1201,10 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
           children: [
             const _MetricPill(label: 'State', value: 'DP'),
             _MetricPill(label: 'Cells', value: '${cells.length}'),
-            _MetricPill(label: 'Result', value: step.result?.toString() ?? '...'),
+            _MetricPill(
+              label: 'Result',
+              value: step.result?.toString() ?? '...',
+            ),
           ],
         ),
         const SizedBox(height: AppSpacing.md),
@@ -1205,14 +1228,18 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
                 final isCurrent = i == step.currentIndex;
                 final isComparing = step.comparing.contains(i);
                 final isSorted = step.sorted.contains(i);
-                final intensity = (cells[i] / maxValue).clamp(0.08, 1.0).toDouble();
+                final intensity = (cells[i] / maxValue)
+                    .clamp(0.08, 1.0)
+                    .toDouble();
                 final color = isCurrent
                     ? const Color(0xFFD97706)
                     : isComparing
-                        ? const Color(0xFF7C3AED)
-                        : isSorted
-                            ? const Color(0xFF16A34A)
-                            : AppColors.primary500.withValues(alpha: 0.25 + intensity * 0.45);
+                    ? const Color(0xFF7C3AED)
+                    : isSorted
+                    ? const Color(0xFF16A34A)
+                    : AppColors.primary500.withValues(
+                        alpha: 0.25 + intensity * 0.45,
+                      );
                 return _buildDpCell('$i', '${cells[i]}', color, isCurrent);
               }),
             ),
@@ -1239,7 +1266,9 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
     if (rows.isEmpty) return const SizedBox.shrink();
 
     final maxRow = rows.keys.reduce((a, b) => a > b ? a : b);
-    final maxCol = rows.values.expand((m) => m.keys).reduce((a, b) => a > b ? a : b);
+    final maxCol = rows.values
+        .expand((m) => m.keys)
+        .reduce((a, b) => a > b ? a : b);
     final rowCount = maxRow + 1;
     final colCount = maxCol + 1;
 
@@ -1279,7 +1308,10 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
               children: [
                 const _MetricPill(label: 'State', value: 'DP'),
                 _MetricPill(label: 'Table', value: '${rowCount}x$colCount'),
-                _MetricPill(label: 'Result', value: step.result?.toString() ?? '...'),
+                _MetricPill(
+                  label: 'Result',
+                  value: step.result?.toString() ?? '...',
+                ),
               ],
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -1305,15 +1337,25 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
                           final isCurrent = r == curRow && c == curCol;
                           final isComparing = comparingSet.contains('$r,$c');
                           final isSortedRow = sortedSet.contains(r);
-                          final intensity = (val / tableMax).clamp(0.08, 1.0).toDouble();
+                          final intensity = (val / tableMax)
+                              .clamp(0.08, 1.0)
+                              .toDouble();
                           final color = isCurrent
                               ? const Color(0xFFD97706)
                               : isComparing
-                                  ? const Color(0xFF7C3AED)
-                                  : isSortedRow
-                                      ? const Color(0xFF16A34A)
-                                      : AppColors.primary500.withValues(alpha: 0.15 + intensity * 0.5);
-                          return _buildDpCell('$r,$c', '$val', color, isCurrent, size: cellSize);
+                              ? const Color(0xFF7C3AED)
+                              : isSortedRow
+                              ? const Color(0xFF16A34A)
+                              : AppColors.primary500.withValues(
+                                  alpha: 0.15 + intensity * 0.5,
+                                );
+                          return _buildDpCell(
+                            '$r,$c',
+                            '$val',
+                            color,
+                            isCurrent,
+                            size: cellSize,
+                          );
                         }),
                       );
                     }),
@@ -1328,7 +1370,13 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
   }
 
   /// Single DP cell widget.
-  Widget _buildDpCell(String label, String value, Color color, bool isCurrent, {double size = 54}) {
+  Widget _buildDpCell(
+    String label,
+    String value,
+    Color color,
+    bool isCurrent, {
+    double size = 54,
+  }) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 220),
       width: size,
@@ -1338,7 +1386,9 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
         color: color,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: isCurrent ? AppColors.textPrimary : Colors.white.withValues(alpha: 0.15),
+          color: isCurrent
+              ? AppColors.textPrimary
+              : Colors.white.withValues(alpha: 0.15),
           width: isCurrent ? 2 : 1,
         ),
         boxShadow: isCurrent
@@ -1383,7 +1433,10 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
             children: [
               const _MetricPill(label: 'Strategy', value: 'Greedy'),
               _MetricPill(label: 'Chosen', value: '${chosen.length}'),
-              _MetricPill(label: 'Result', value: step.result?.toString() ?? '...'),
+              _MetricPill(
+                label: 'Result',
+                value: step.result?.toString() ?? '...',
+              ),
             ],
           ),
         ),
@@ -1410,8 +1463,8 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
                 final color = isChosen
                     ? const Color(0xFF16A34A)
                     : isCurrent
-                        ? const Color(0xFFD97706)
-                        : AppColors.sunken;
+                    ? const Color(0xFFD97706)
+                    : AppColors.sunken;
                 return AnimatedContainer(
                   duration: const Duration(milliseconds: 220),
                   width: 74,
@@ -1471,7 +1524,10 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
             spacing: 6,
             runSpacing: 6,
             children: step.memo.entries.take(4).map((entry) {
-              return _MetricPill(label: '${entry.key}', value: '${entry.value}');
+              return _MetricPill(
+                label: '${entry.key}',
+                value: '${entry.value}',
+              );
             }).toList(),
           ),
         ],
@@ -1494,16 +1550,13 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
     final currentLine = currentStep is SortStep
         ? currentStep.line
         : currentStep is SearchStep
-            ? currentStep.line
-            : currentStep is TreeStep
-                ? currentStep.line
-                : currentStep is DPStep
-                    ? currentStep.line
-                    : null;
-    return CodeViewer(
-      code: code,
-      currentLine: currentLine,
-    );
+        ? currentStep.line
+        : currentStep is TreeStep
+        ? currentStep.line
+        : currentStep is DPStep
+        ? currentStep.line
+        : null;
+    return CodeViewer(code: code, currentLine: currentLine);
   }
 
   // ── Algorithm Info Bottom Sheet ────────────────────────────────────────
@@ -1513,9 +1566,7 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
       context: context,
       backgroundColor: AppColors.card,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(AppRadius.lg),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
       ),
       builder: (context) {
         return Padding(
@@ -1548,11 +1599,17 @@ class _AlgorithmVisualizerPageState extends ConsumerState<AlgorithmVisualizerPag
               const SizedBox(height: AppSpacing.lg),
 
               // Time Complexity
-              _infoRow('Time Complexity', _algorithmInfo?.timeComplexity ?? '—'),
+              _infoRow(
+                'Time Complexity',
+                _algorithmInfo?.timeComplexity ?? '—',
+              ),
               const SizedBox(height: AppSpacing.sm),
 
               // Space Complexity
-              _infoRow('Space Complexity', _algorithmInfo?.spaceComplexity ?? '—'),
+              _infoRow(
+                'Space Complexity',
+                _algorithmInfo?.spaceComplexity ?? '—',
+              ),
               const SizedBox(height: AppSpacing.lg),
 
               // Description
@@ -1737,10 +1794,10 @@ class _TreePainter extends CustomPainter {
     final fill = isPath
         ? const Color(0xFF7C3AED)
         : isVisited
-            ? const Color(0xFF059669)
-            : isHighlighted
-                ? const Color(0xFFF59E0B)
-                : AppColors.card;
+        ? const Color(0xFF059669)
+        : isHighlighted
+        ? const Color(0xFFF59E0B)
+        : AppColors.card;
     final border = isHighlighted ? fill : AppColors.sunken;
 
     final shadowPaint = Paint()
@@ -1780,7 +1837,8 @@ class _TreePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _TreePainter oldDelegate) => oldDelegate.step != step;
+  bool shouldRepaint(covariant _TreePainter oldDelegate) =>
+      oldDelegate.step != step;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -1792,11 +1850,7 @@ class _GhostButton extends StatelessWidget {
   final String? label;
   final VoidCallback onTap;
 
-  const _GhostButton({
-    required this.icon,
-    this.label,
-    required this.onTap,
-  });
+  const _GhostButton({required this.icon, this.label, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
