@@ -52,12 +52,12 @@
     "hash": "231c83f2f70e4e5d024d53d81e8fc3cb"
   },
   "/root/Algoplay/lib/core/router/tab_shell.dart": {
-    "mtime": 1778624479.363648,
-    "hash": "f640f68fad06eb4d541f238d5af4757c"
+    "mtime": 1778742820.853442,
+    "hash": "160c8f4aa70b2084bbdde336462a92db"
   },
   "/root/Algoplay/lib/core/router/app_router.dart": {
-    "mtime": 1778217558.1674297,
-    "hash": "467a36e84a0902e7ff9793baaa3bef7c"
+    "mtime": 1778737054.8334463,
+    "hash": "39869256832a9ffd0990cf847899bea1"
   },
   "/root/Algoplay/lib/features/arena/data/arena_repository.dart": {
     "mtime": 1778217558.1694298,
@@ -82,6 +82,14 @@
   "/root/Algoplay/lib/features/tutor/presentation/tutor_page.dart": {
     "mtime": 1778624479.5636563,
     "hash": "d78df6c5600bb23db986ab7dd5f4c1e2"
+  },
+  "/root/Algoplay/lib/features/guided_tour/algoplay_tour_keys.dart": {
+    "mtime": 1778742273.583161,
+    "hash": "f631bb52621515168ed2d6e2eb1971b6"
+  },
+  "/root/Algoplay/lib/features/guided_tour/guided_tour_controller.dart": {
+    "mtime": 1778742924.063825,
+    "hash": "7ebb1e593aae86b26ee22216a16a9786"
   },
   "/root/Algoplay/lib/features/cheatsheet/presentation/cheatsheet_page.dart": {
     "mtime": 1778217558.17043,
@@ -156,7 +164,7 @@
     "hash": "dfa87cd205e1cd8ab41c7c95007feb13"
   },
   "/root/Algoplay/lib/features/home/presentation/home_page.dart": {
-    "mtime": 1778217558.1744301,
+    "mtime": 1778742808.484917,
     "hash": "bf7e8ae2d321fc425df1d1ae98b66755"
   },
   "/root/Algoplay/lib/features/profile/data/avatar_repository.dart": {
@@ -172,8 +180,12 @@
     "hash": "0884286f0203b07585a27762ab5e0fda"
   },
   "/root/Algoplay/lib/features/splash/presentation/splash_page.dart": {
-    "mtime": 1778723990.699226,
-    "hash": "4f18c0f7a9d6b1c1e521812e639ff368"
+    "mtime": 1778737064.217849,
+    "hash": "feab950279603dba00dac8c37e3f1447"
+  },
+  "/root/Algoplay/lib/features/onboarding/presentation/onboarding_page.dart": {
+    "mtime": 1778737083.4636753,
+    "hash": "9f2a0450a67ba0eec1808e7192b472b3"
   },
   "/root/Algoplay/lib/features/battle_arena/data/question_bank.dart": {
     "mtime": 1778217558.17043,
@@ -399,6 +411,10 @@
     "mtime": 1778217558.1874306,
     "hash": "7c6c8051b3f818f6ff8fec7ea4d06865"
   },
+  "/root/Algoplay/test/features/guided_tour/guided_tour_controller_test.dart": {
+    "mtime": 1778742690.2608993,
+    "hash": "14b8a8966379f323a16e889f131fd346"
+  },
   "/root/Algoplay/test/features/grid_escape/level_generator_test.dart": {
     "mtime": 1778217558.1864305,
     "hash": "045d59142cca79e829cfbdc0dc7f6b25"
@@ -500,8 +516,8 @@
     "hash": "a993bd9a8466b705f520b2a269a544bc"
   },
   "/root/Algoplay/pubspec.yaml": {
-    "mtime": 1778711228.8539712,
-    "hash": "7d40f51f6d8a86341750ffad139bc8f5"
+    "mtime": 1778738569.9650853,
+    "hash": "89ec3c7455a4549c8b2b4c4407232b89"
   },
   "/root/Algoplay/ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md": {
     "mtime": 1778217558.1654296,

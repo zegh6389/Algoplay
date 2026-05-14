@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:algoplay/shared/widgets/banner_ad_wrapper.dart';
 import 'package:algoplay/shared/providers/premium_provider.dart';
 import 'package:algoplay/core/services/ad_service.dart';
+import '../../features/guided_tour/algoplay_tour_keys.dart';
+import '../../features/guided_tour/guided_tour_controller.dart';
 
 class TabShellWidget extends ConsumerStatefulWidget {
   final StatefulNavigationShell navigationShell;
@@ -23,6 +25,10 @@ class _TabShellWidgetState extends ConsumerState<TabShellWidget> {
     super.initState();
     // Pre-load interstitial on app start
     AdService.instance.loadInterstitialAd();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      GuidedTourController().showTour(context);
+    });
   }
 
   void _onTabTap(int index) {
@@ -103,6 +109,7 @@ class _AnimatedBottomNavBar extends StatelessWidget {
           final isSelected = index == currentIndex;
 
           return _SpringTabButton(
+            key: AlgoPlayTourKeys.tabKeyForIndex(index),
             isSelected: isSelected,
             onTap: () => onTap(index),
             icon: tab.icon,
@@ -131,6 +138,7 @@ class _SpringTabButton extends StatefulWidget {
   final Color inactiveColor;
 
   const _SpringTabButton({
+    super.key,
     required this.isSelected,
     required this.onTap,
     required this.icon,
