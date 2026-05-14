@@ -30,7 +30,7 @@ PngInfo readPngInfo(String path) {
 }
 
 void main() {
-  test('app icons use the supplied artwork on an opaque white background', () {
+  test('app icons use the supplied artwork on the cropped opaque background', () {
     final icon = readPngInfo('assets/images/icon.png');
     final adaptive = readPngInfo('assets/images/adaptive-icon.png');
     final colors = File(
@@ -42,7 +42,7 @@ void main() {
 
     expect(icon.width, 1024);
     expect(icon.height, 1024);
-    expect(icon.hasAlpha, isFalse, reason: 'app icon must be white-baked');
+    expect(icon.hasAlpha, isFalse, reason: 'app icon must be background-baked');
 
     expect(adaptive.width, 1024);
     expect(adaptive.height, 1024);
@@ -50,10 +50,10 @@ void main() {
       adaptive.hasAlpha,
       isFalse,
       reason:
-          'adaptive source is also white-baked for launcher and Play surfaces',
+          'adaptive source is also background-baked for launcher and Play surfaces',
     );
 
-    expect(colors, contains('<color name="iconBackground">#ffffff</color>'));
+    expect(colors, contains('<color name="iconBackground">#e8e8e8</color>'));
     expect(
       adaptiveXml,
       contains('<background android:drawable="@color/iconBackground"/>'),
