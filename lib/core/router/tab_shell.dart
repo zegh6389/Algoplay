@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:algoplay/core/services/ad_service.dart';
+import 'package:algoplay/core/services/feature_tour_service.dart';
 import 'package:algoplay/shared/providers/feature_tour_provider.dart';
 import 'package:algoplay/shared/providers/premium_provider.dart';
 import 'package:algoplay/shared/widgets/banner_ad_wrapper.dart';
@@ -28,18 +29,37 @@ class _TabShellWidgetState extends ConsumerState<TabShellWidget> {
     AdService.instance.loadInterstitialAd();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      GuidedTourController().showTour(
-        context,
-        onTourStarted: () {
-          if (!mounted) return;
-          ref.read(featureTourActiveProvider.notifier).state = true;
-        },
-        onTourEnded: () {
-          if (!mounted) return;
-          ref.read(featureTourActiveProvider.notifier).state = false;
-        },
-      );
+      _maybeStartGuidedTour();
     });
+  }
+
+  Future<void> _maybeStartGuidedTour() async {
+    final hasSeenTour = await FeatureTourService.instance.hasSeenMainTour();
+    if (!mounted || hasSeenTour) return;
+
+    if (widget.navigationShell.currentIndex != 0) {
+      widget.navigationShell.goBranch(0, initialLocation: true);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _showGuidedTour();
+      });
+      return;
+    }
+
+    _showGuidedTour();
+  }
+
+  void _showGuidedTour() {
+    GuidedTourController().showTour(
+      context,
+      onTourStarted: () {
+        if (!mounted) return;
+        ref.read(featureTourActiveProvider.notifier).state = true;
+      },
+      onTourEnded: () {
+        if (!mounted) return;
+        ref.read(featureTourActiveProvider.notifier).state = false;
+      },
+    );
   }
 
   void _onTabTap(int index) {

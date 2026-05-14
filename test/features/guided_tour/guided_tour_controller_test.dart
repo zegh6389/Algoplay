@@ -69,6 +69,18 @@ void main() {
       expect(prefs.getBool(GuidedTourController.guidedTourSeenKey), isNull);
     });
 
+    test('tab shell returns to lessons branch before starting first tour', () {
+      final source = File('lib/core/router/tab_shell.dart').readAsStringSync();
+
+      expect(source, contains('FeatureTourService.instance.hasSeenMainTour()'));
+      expect(source, contains('widget.navigationShell.currentIndex != 0'));
+      expect(
+        source,
+        contains('widget.navigationShell.goBranch(0, initialLocation: true)'),
+      );
+      expect(source, contains('_showGuidedTour()'));
+    });
+
     test('tab shell blocks interstitial ads while guided tour is active', () {
       final source = File('lib/core/router/tab_shell.dart').readAsStringSync();
 
