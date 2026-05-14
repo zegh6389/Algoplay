@@ -22,6 +22,9 @@ class AdService {
   // Production IDs (Android). iOS still uses test IDs until iOS release.
 
   static String get _bannerAdUnitId {
+    if (kDebugMode) {
+      return 'ca-app-pub-3940256099942544/6300978111';
+    }
     if (Platform.isAndroid) {
       return 'ca-app-pub-8157621642469961/2735757394';
     }
@@ -29,6 +32,9 @@ class AdService {
   }
 
   static String get _interstitialAdUnitId {
+    if (kDebugMode) {
+      return 'ca-app-pub-3940256099942544/1033173712';
+    }
     if (Platform.isAndroid) {
       return 'ca-app-pub-8157621642469961/9109594050';
     }
@@ -36,6 +42,9 @@ class AdService {
   }
 
   static String get _rewardedAdUnitId {
+    if (kDebugMode) {
+      return 'ca-app-pub-3940256099942544/5224354917';
+    }
     if (Platform.isAndroid) {
       return 'ca-app-pub-8157621642469961/6734712153';
     }
@@ -203,6 +212,15 @@ class AdService {
 
   /// Pre-loads a rewarded ad.  No-op for premium users.
   void loadRewardedAd() {
+    if (!_isInitialized) {
+      if (kDebugMode) {
+        debugPrint(
+          '[AdService] rewarded load skipped — MobileAds not initialized',
+        );
+      }
+      return;
+    }
+
     if (PremiumService.instance.isPremium) {
       if (kDebugMode) {
         debugPrint('[AdService] rewarded load skipped — premium user');
@@ -236,6 +254,13 @@ class AdService {
   /// No-op for premium users or when no ad is cached.
   /// Returns true if the ad was shown.
   bool showRewardedAd({required VoidCallback onReward}) {
+    if (!_isInitialized) {
+      if (kDebugMode) {
+        debugPrint('[AdService] rewarded show skipped — not initialized');
+      }
+      return false;
+    }
+
     if (PremiumService.instance.isPremium) {
       if (kDebugMode) {
         debugPrint('[AdService] rewarded show skipped — premium user');

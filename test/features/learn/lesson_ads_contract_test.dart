@@ -67,26 +67,29 @@ void main() {
       final moduleContent = File(
         'lib/features/learn/presentation/module_content_page.dart',
       ).readAsStringSync();
+      final adStrategy = File(
+        'lib/core/services/ad_strategy_service.dart',
+      ).readAsStringSync();
 
-      expect(
-        moduleContent,
-        contains('AdService.instance.loadInterstitialAd();'),
-      );
-      expect(moduleContent, contains('recordModuleCompletionAndShouldShow'));
-      expect(moduleContent, contains('hasCachedInterstitialAd'));
-      expect(moduleContent, contains('onShown: ()'));
-      expect(moduleContent, contains('markInterstitialShown'));
-      expect(moduleContent, contains('unawaited('));
-      expect(
-        moduleContent,
-        isNot(
-          contains(
-            'await LessonCompletionAdGate.instance.markInterstitialShown();',
-          ),
-        ),
-      );
-      expect(moduleContent, contains('onDismissed: ()'));
-      expect(moduleContent, contains('_navigateAfterModuleCompletion'));
+      // New strategy service replaces the old gate
+      expect(adStrategy, contains('showModuleInterstitialIfAllowed'));
+      expect(adStrategy, contains('moduleInterstitialCooldown'));
+      expect(adStrategy, contains('shouldShowModuleInterstitial'));
+
+      // ModuleContentPage uses strategy service
+      expect(moduleContent, contains('AdStrategyService.instance'));
+      expect(moduleContent, contains('preloadLearningAds'));
+
+      // Interstitial still gated per-module
+      expect(moduleContent, contains('showModuleInterstitialIfAllowed'));
+
+      // Last module offers rewarded XP bonus
+      expect(moduleContent, contains('_offerLessonRewardIfNeeded'));
+      expect(moduleContent, contains('showLessonRewardAd'));
+      expect(moduleContent, contains('lessonRewardBonusXp'));
+
+      // Premium bypass on strategy
+      expect(adStrategy, contains('PremiumService.instance.isPremium'));
     });
 
     test('ad widgets are premium-aware and test-safe', () {
@@ -96,8 +99,8 @@ void main() {
       final adService = File(
         'lib/core/services/ad_service.dart',
       ).readAsStringSync();
-      final adGate = File(
-        'lib/core/services/lesson_completion_ad_gate.dart',
+      final adStrategy = File(
+        'lib/core/services/ad_strategy_service.dart',
       ).readAsStringSync();
       final bannerWrapper = File(
         'lib/shared/widgets/banner_ad_wrapper.dart',
@@ -106,6 +109,10 @@ void main() {
       expect(inlineAd, contains('ref.watch(adFreeProvider)'));
       expect(inlineAd, contains('AdService.instance.getBannerAd()'));
       expect(adService, contains('banner skipped — MobileAds not initialized'));
+      expect(
+        adService,
+        contains('rewarded load skipped — MobileAds not initialized'),
+      );
       expect(
         adService,
         contains('ConsentInformation.instance.requestConsentInfoUpdate'),
@@ -117,6 +124,9 @@ void main() {
       expect(adService, contains('canRequestAds()'));
       expect(adService, contains('MobileAds skipped — consent not ready'));
       expect(adService, contains('bool get hasCachedInterstitialAd'));
+      expect(adService, contains('ca-app-pub-3940256099942544/6300978111'));
+      expect(adService, contains('ca-app-pub-3940256099942544/1033173712'));
+      expect(adService, contains('ca-app-pub-3940256099942544/5224354917'));
       expect(
         adService,
         contains(
@@ -124,8 +134,12 @@ void main() {
         ),
       );
       expect(adService, contains('onAdShowedFullScreenContent'));
-      expect(adGate, contains('completionsBetweenInterstitials = 3'));
-      expect(adGate, contains('minInterstitialGap = Duration(minutes: 3)'));
+      expect(adStrategy, contains('moduleInterstitialFrequency = 1'));
+      expect(
+        adStrategy,
+        contains('moduleInterstitialCooldown = Duration(minutes: 3)'),
+      );
+      expect(adStrategy, contains('onShown: ()'));
       expect(bannerWrapper, contains('SafeArea('));
       expect(bannerWrapper, contains('top: false'));
     });

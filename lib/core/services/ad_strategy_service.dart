@@ -57,8 +57,7 @@ class AdStrategyService {
     final prefs = await SharedPreferences.getInstance();
 
     // Increment module completion counter
-    final completedCount =
-        (prefs.getInt(_completedModuleCountKey) ?? 0) + 1;
+    final completedCount = (prefs.getInt(_completedModuleCountKey) ?? 0) + 1;
     await prefs.setInt(_completedModuleCountKey, completedCount);
 
     if (completedCount % moduleInterstitialFrequency != 0) {
@@ -89,19 +88,21 @@ class AdStrategyService {
       return false;
     }
 
-    final shown = AdService.instance.showInterstitialAd();
+    final shown = AdService.instance.showInterstitialAd(
+      onShown: () {
+        SharedPreferences.getInstance().then((prefs) {
+          prefs.setInt(
+            _lastModuleInterstitialMsKey,
+            DateTime.now().millisecondsSinceEpoch,
+          );
+        });
+      },
+    );
 
     if (!shown) {
       AdService.instance.loadInterstitialAd();
       return false;
     }
-
-    // Record successful show for cooldown tracking
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(
-      _lastModuleInterstitialMsKey,
-      DateTime.now().millisecondsSinceEpoch,
-    );
 
     return true;
   }

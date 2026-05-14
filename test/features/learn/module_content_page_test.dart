@@ -138,6 +138,17 @@ void main() {
       await tester.tap(find.text('Mark Complete & Continue'));
       await tester.pumpAndSettle();
 
+      expect(find.text('Lesson Complete!'), findsOneWidget);
+      expect(
+        find.text('Watch a short ad to claim +50 bonus XP.'),
+        findsOneWidget,
+      );
+      expect(find.text('Watch Ad'), findsOneWidget);
+      expect(find.text('No Thanks'), findsOneWidget);
+
+      await tester.tap(find.text('No Thanks'));
+      await tester.pumpAndSettle();
+
       expect(find.byType(LessonDetailPage), findsOneWidget);
       expect(
         find.byIcon(Icons.check_rounded),

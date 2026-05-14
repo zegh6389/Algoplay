@@ -155,10 +155,7 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
     // Last module of the lesson: offer optional rewarded XP bonus
     if (isLastModule) {
       await _offerLessonRewardIfNeeded();
-
-      if (!mounted) return;
-      context.pop();
-      return;
+      return; // dialog handler already navigated back
     }
 
     // Show interstitial after non-last modules (cooldown enforced)
@@ -180,20 +177,25 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
   Future<void> _offerLessonRewardIfNeeded() async {
     final adStrategy = AdStrategyService.instance;
 
-    final alreadyClaimed =
-        await adStrategy.hasClaimedLessonReward(widget.lessonId);
+    final alreadyClaimed = await adStrategy.hasClaimedLessonReward(
+      widget.lessonId,
+    );
 
-    if (!mounted || alreadyClaimed) return;
+    if (!mounted) return;
 
-    final wantsReward = await showDialog<bool>(
+    if (alreadyClaimed) {
+      context.pop();
+      return;
+    }
+
+    final wantsReward =
+        await showDialog<bool>(
           context: context,
           barrierDismissible: true,
-          builder: (context) {
+          builder: (dialogContext) {
             return AlertDialog(
               backgroundColor: AppColors.card,
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.lgBorder,
-              ),
+              shape: RoundedRectangleBorder(borderRadius: AppRadius.lgBorder),
               title: Row(
                 children: [
                   Container(
@@ -211,10 +213,7 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
                   ),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
-                    child: Text(
-                      'Lesson Complete!',
-                      style: AppTypography.h3,
-                    ),
+                    child: Text('Lesson Complete!', style: AppTypography.h3),
                   ),
                 ],
               ),
@@ -226,11 +225,11 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
               ),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
+                  onPressed: () => Navigator.of(dialogContext).pop(false),
                   child: const Text('No Thanks'),
                 ),
                 ElevatedButton.icon(
-                  onPressed: () => Navigator.of(context).pop(true),
+                  onPressed: () => Navigator.of(dialogContext).pop(true),
                   icon: const Icon(Icons.play_arrow_rounded),
                   label: const Text('Watch Ad'),
                 ),
@@ -240,38 +239,19 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
         ) ??
         false;
 
-    if (!mounted || !wantsReward) return;
+    if (!mounted) return;
 
-    final shown = adStrategy.showLessonRewardAd(
-      onReward: () {
-        _grantLessonReward();
-      },
-    );
-
-    if (!shown && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Ad is still loading. Try again after the next lesson.',
-          ),
-        ),
-      );
+    if (wantsReward) {
+      adStrategy.showLessonRewardAd(onReward: _grantLessonReward);
     }
+
+    if (!mounted) return;
+    context.pop();
   }
 
   Future<void> _grantLessonReward() async {
     await StatsRepository().addXP(AdStrategyService.lessonRewardBonusXp);
     await AdStrategyService.instance.markLessonRewardClaimed(widget.lessonId);
-
-    if (!mounted) return;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          '+${AdStrategyService.lessonRewardBonusXp} XP bonus claimed!',
-        ),
-      ),
-    );
   }
 
   @override
