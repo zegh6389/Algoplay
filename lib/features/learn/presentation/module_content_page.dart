@@ -161,6 +161,69 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
         '/lesson/${widget.lessonId}/module/${nextModule.id}',
       );
     } else {
+      // Last module of the lesson completed.
+      // Offer a rewarded ad to jump straight to the next lesson.
+      await _showLessonCompleteDialog();
+    }
+  }
+
+  /// Shown after the last module of a lesson is completed.
+  /// Skip = return to lesson list (next lesson stays locked until normally unlocked).
+  /// Watch Ad = rewarded ad, then jump to next lesson immediately.
+  Future<void> _showLessonCompleteDialog() async {
+    final nextLessonId = widget.lessonId + 1;
+    final hasNextLesson = _allLessons.any((l) => l.id == nextLessonId);
+    if (!hasNextLesson) {
+      // No next lesson — just pop
+      if (mounted) context.pop();
+      return;
+    }
+
+    final choice = await showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Lesson Complete!'),
+        content: Text(
+          'Watch a short ad to unlock and jump to Lesson $nextLessonId now.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop('skip'),
+            child: const Text('Skip'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop('watch'),
+            child: const Text('Watch Ad'),
+          ),
+        ],
+      ),
+    );
+
+    if (!mounted) return;
+
+    if (choice == 'watch') {
+      final repo = ref.read(lessonProgressRepoProvider);
+      final shown = AdStrategyService.instance.showLessonRewardAd(
+        onReward: () {
+          repo.markLessonAdUnlocked(nextLessonId).then((_) {
+            if (context.mounted) {
+              context.pushReplacement('/lesson/$nextLessonId');
+            }
+          });
+        },
+      );
+
+      if (!shown && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Ad is not ready yet. Try again in a moment.'),
+          ),
+        );
+        context.pop();
+      }
+    } else {
+      // Skip — just go back, next lesson remains locked for now
       context.pop();
     }
   }

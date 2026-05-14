@@ -138,10 +138,17 @@ void main() {
       await tester.tap(find.text('Mark Complete & Continue'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Lesson Complete!'), findsNothing);
+      // Lesson Complete dialog appears with Skip and Watch Ad options.
+      // No old rewarded XP dialog or "No Thanks" button.
+      expect(find.text('Lesson Complete!'), findsOneWidget);
+      expect(find.text('Skip'), findsOneWidget);
+      expect(find.text('Watch Ad'), findsOneWidget);
       expect(find.textContaining('bonus XP'), findsNothing);
-      expect(find.text('Watch Ad'), findsNothing);
       expect(find.text('No Thanks'), findsNothing);
+
+      // Tap Skip — returns to lesson detail page
+      await tester.tap(find.text('Skip'));
+      await tester.pumpAndSettle();
 
       expect(find.byType(LessonDetailPage), findsOneWidget);
       expect(

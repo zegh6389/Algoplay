@@ -80,11 +80,12 @@ void main() {
         contains('after every module completion, including final modules'),
       );
 
-      // No rewarded XP popup on lesson completion
+      // No old rewarded XP popup or "_offerLessonRewardIfNeeded" method.
+      // New "_showLessonCompleteDialog" is the expected path.
       expect(moduleContent, isNot(contains('_offerLessonRewardIfNeeded')));
-      expect(moduleContent, isNot(contains('Lesson Complete!')));
       expect(moduleContent, isNot(contains('bonus XP')));
       expect(moduleContent, isNot(contains('lessonRewardBonusXp')));
+      expect(moduleContent, contains('_showLessonCompleteDialog'));
 
       // AdStrategyService: frequency = every module, cooldown = 3 min
       expect(adStrategy, contains('moduleInterstitialFrequency = 1'));
