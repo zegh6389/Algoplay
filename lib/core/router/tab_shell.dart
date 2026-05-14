@@ -37,16 +37,44 @@ class _TabShellWidgetState extends ConsumerState<TabShellWidget> {
     final hasSeenTour = await FeatureTourService.instance.hasSeenMainTour();
     if (!mounted || hasSeenTour) return;
 
-    // Always force the first-run tour back to the Lessons branch before
-    // creating targets. This prevents the first visible coach mark from landing
-    // on Explore when the shell was restored on another branch.
+    // Always start the first-run tour from the Lessons tab (branch 0).
     widget.navigationShell.goBranch(0, initialLocation: true);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) _showGuidedTour();
-      });
-    });
+
+    // Poll until all tab bar keys have a painted context. The double
+    // post-frame approach is not reliable because goBranch() switches the
+    // shell synchronously but the TabBarView children are built lazily.
+    _pollAndShowTour(const Duration(milliseconds: 50), maxAttempts: 20);
+  }
+
+  int _tourPollCount = 0;
+
+  Future<void> _pollAndShowTour(
+    Duration interval, {
+    required int maxAttempts,
+  }) async {
+    if (!mounted || _tourPollCount >= maxAttempts) {
+      _tourPollCount = 0;
+      return;
+    }
+
+    _tourPollCount++;
+
+    final allReady = [
+      AlgoPlayTourKeys.lessonsTabKey,
+      AlgoPlayTourKeys.exploreTabKey,
+      AlgoPlayTourKeys.playTabKey,
+      AlgoPlayTourKeys.statsTabKey,
+      AlgoPlayTourKeys.profileTabKey,
+    ].every((key) => key.currentContext != null);
+
+    if (allReady) {
+      _tourPollCount = 0;
+      if (mounted) _showGuidedTour();
+      return;
+    }
+
+    await Future.delayed(interval);
+    if (mounted) _pollAndShowTour(interval, maxAttempts: maxAttempts);
   }
 
   void _showGuidedTour() {

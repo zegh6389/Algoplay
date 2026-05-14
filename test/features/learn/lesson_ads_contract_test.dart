@@ -71,10 +71,7 @@ void main() {
         'lib/core/services/ad_strategy_service.dart',
       ).readAsStringSync();
 
-      expect(adStrategy, contains('showModuleInterstitialIfAllowed'));
-      expect(adStrategy, contains('moduleInterstitialCooldown'));
-      expect(adStrategy, contains('shouldShowModuleInterstitial'));
-
+      // Every module calls showModuleInterstitialIfAllowed
       expect(moduleContent, contains('AdStrategyService.instance'));
       expect(moduleContent, contains('preloadLearningAds'));
       expect(moduleContent, contains('showModuleInterstitialIfAllowed'));
@@ -83,11 +80,15 @@ void main() {
         contains('after every module completion, including final modules'),
       );
 
+      // No rewarded XP popup on lesson completion
       expect(moduleContent, isNot(contains('_offerLessonRewardIfNeeded')));
       expect(moduleContent, isNot(contains('Lesson Complete!')));
       expect(moduleContent, isNot(contains('bonus XP')));
       expect(moduleContent, isNot(contains('lessonRewardBonusXp')));
 
+      // AdStrategyService: frequency = every module, no cooldown for modules
+      expect(adStrategy, contains('moduleInterstitialFrequency = 1'));
+      expect(adStrategy, contains('moduleInterstitialCooldown'));
       expect(adStrategy, contains('PremiumService.instance.isPremium'));
     });
 
@@ -167,7 +168,7 @@ void main() {
         adStrategy,
         contains('moduleInterstitialCooldown = Duration(minutes: 3)'),
       );
-      expect(adStrategy, contains('onShown: ()'));
+      expect(adStrategy, contains('showInterstitialAd()'));
       expect(bannerWrapper, contains('SafeArea('));
       expect(bannerWrapper, contains('top: false'));
     });

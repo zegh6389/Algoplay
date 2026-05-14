@@ -8,9 +8,11 @@ import 'premium_service.dart';
 /// and cooldown windows.
 ///
 /// Strategy:
-/// - Interstitial: after every completed module, gated by 3-min cooldown
+/// - Interstitial: after every completed module (every module, ad-ready check)
 /// - Rewarded lesson unlock: optional early unlock for a locked lesson
 /// - Premium users: all ad methods are no-ops
+///
+/// Cooldown constants are for visualizer playback interstitial, not module completion.
 class AdStrategyService {
   AdStrategyService._();
 
@@ -44,7 +46,9 @@ class AdStrategyService {
   // ── Interstitial helpers ───────────────────────────────────────────────────
 
   /// Returns true if a module completion should trigger an interstitial ad.
-  /// Checks both the cooldown window and ad readiness.
+  /// Frequency gating: every module completion (counter % frequency == 0).
+  /// Cooldown is NOT applied here — module completion interstitial is gated
+  /// only by frequency, not by time. (Cooldown belongs to visualizer playback.)
   Future<bool> shouldShowModuleInterstitial() async {
     if (PremiumService.instance.isPremium) return false;
 
@@ -56,17 +60,6 @@ class AdStrategyService {
 
     if (completedCount % moduleInterstitialFrequency != 0) {
       return false;
-    }
-
-    // Check cooldown
-    final nowMs = DateTime.now().millisecondsSinceEpoch;
-    final lastMs = prefs.getInt(_lastModuleInterstitialMsKey);
-
-    if (lastMs != null) {
-      final elapsed = Duration(milliseconds: nowMs - lastMs);
-      if (elapsed < moduleInterstitialCooldown) {
-        return false;
-      }
     }
 
     return AdService.instance.isInterstitialReady;
@@ -82,16 +75,7 @@ class AdStrategyService {
       return false;
     }
 
-    final shown = AdService.instance.showInterstitialAd(
-      onShown: () {
-        SharedPreferences.getInstance().then((prefs) {
-          prefs.setInt(
-            _lastModuleInterstitialMsKey,
-            DateTime.now().millisecondsSinceEpoch,
-          );
-        });
-      },
-    );
+    final shown = AdService.instance.showInterstitialAd();
 
     if (!shown) {
       AdService.instance.loadInterstitialAd();

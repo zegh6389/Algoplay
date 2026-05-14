@@ -75,13 +75,15 @@ void main() {
       expect(source, contains('FeatureTourService.instance.hasSeenMainTour()'));
       expect(
         source,
-        contains('Always force the first-run tour back to the Lessons branch'),
+        contains('Always start the first-run tour from the Lessons tab'),
       );
       expect(
         source,
         contains('widget.navigationShell.goBranch(0, initialLocation: true)'),
       );
-      expect(source, contains('addPostFrameCallback'));
+      // Polling approach ensures tab keys are painted before targets are created
+      expect(source, contains('_pollAndShowTour'));
+      expect(source, contains('every((key) => key.currentContext != null)'));
       expect(source, contains('_showGuidedTour()'));
     });
 
