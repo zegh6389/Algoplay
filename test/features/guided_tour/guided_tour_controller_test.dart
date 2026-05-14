@@ -73,11 +73,15 @@ void main() {
       final source = File('lib/core/router/tab_shell.dart').readAsStringSync();
 
       expect(source, contains('FeatureTourService.instance.hasSeenMainTour()'));
-      expect(source, contains('widget.navigationShell.currentIndex != 0'));
+      expect(
+        source,
+        contains('Always force the first-run tour back to the Lessons branch'),
+      );
       expect(
         source,
         contains('widget.navigationShell.goBranch(0, initialLocation: true)'),
       );
+      expect(source, contains('addPostFrameCallback'));
       expect(source, contains('_showGuidedTour()'));
     });
 

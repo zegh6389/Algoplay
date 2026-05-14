@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:algoplay/core/services/ad_strategy_service.dart';
 import 'package:algoplay/core/theme/app_theme.dart';
 import 'package:algoplay/shared/providers/app_providers.dart';
 import 'package:algoplay/shared/providers/premium_provider.dart';
@@ -562,6 +563,52 @@ class _LessonCard extends ConsumerWidget {
 
   final LessonContent lesson;
 
+  Future<void> _offerAdUnlock(BuildContext context, WidgetRef ref) async {
+    final wantsUnlock =
+        await showDialog<bool>(
+          context: context,
+          builder: (dialogContext) => AlertDialog(
+            title: const Text('Unlock Lesson'),
+            content: Text(
+              'Watch a short ad to unlock Lesson ${lesson.id} now.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(false),
+                child: const Text('Maybe Later'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(dialogContext).pop(true),
+                child: const Text('Unlock with Ad'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+
+    if (!wantsUnlock || !context.mounted) return;
+
+    final repo = ref.read(lessonProgressRepoProvider);
+    final shown = AdStrategyService.instance.showLessonRewardAd(
+      onReward: () {
+        repo.markLessonAdUnlocked(lesson.id).then((_) {
+          ref.invalidate(lessonUnlockedProvider(lesson.id));
+          if (context.mounted) {
+            context.push('/lesson/${lesson.id}');
+          }
+        });
+      },
+    );
+
+    if (!shown && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Ad is not ready yet. Try again in a moment.'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final progressAsync = ref.watch(lessonProgressValueProvider(lesson.id));
@@ -578,7 +625,9 @@ class _LessonCard extends ConsumerWidget {
         elevation: 1,
         child: InkWell(
           borderRadius: AppRadius.lgBorder,
-          onTap: isUnlocked ? () => context.push('/lesson/${lesson.id}') : null,
+          onTap: isUnlocked
+              ? () => context.push('/lesson/${lesson.id}')
+              : () => _offerAdUnlock(context, ref),
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Opacity(

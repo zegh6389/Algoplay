@@ -9,7 +9,7 @@
       "source_file": "ios/RunnerTests/RunnerTests.swift",
       "source_location": "L1",
       "id": "ios_runnertests_runnertests_swift",
-      "community": 75,
+      "community": 74,
       "norm_label": "runnertests.swift"
     },
     {
@@ -18,7 +18,7 @@
       "source_file": "ios/RunnerTests/RunnerTests.swift",
       "source_location": "L5",
       "id": "runnertests_runnertests_runnertests",
-      "community": 75,
+      "community": 74,
       "norm_label": "runnertests"
     },
     {
@@ -27,7 +27,7 @@
       "source_file": "",
       "source_location": "",
       "id": "xctestcase",
-      "community": 75,
+      "community": 74,
       "norm_label": "xctestcase"
     },
     {
@@ -36,7 +36,7 @@
       "source_file": "ios/RunnerTests/RunnerTests.swift",
       "source_location": "L7",
       "id": "runnertests_runnertests_runnertests_testexample",
-      "community": 75,
+      "community": 74,
       "norm_label": ".testexample()"
     },
     {
@@ -99,7 +99,7 @@
       "source_file": "ios/Runner/SceneDelegate.swift",
       "source_location": "L1",
       "id": "ios_runner_scenedelegate_swift",
-      "community": 87,
+      "community": 88,
       "norm_label": "scenedelegate.swift"
     },
     {
@@ -108,7 +108,7 @@
       "source_file": "ios/Runner/SceneDelegate.swift",
       "source_location": "L4",
       "id": "runner_scenedelegate_scenedelegate",
-      "community": 87,
+      "community": 88,
       "norm_label": "scenedelegate"
     },
     {
@@ -117,7 +117,7 @@
       "source_file": "",
       "source_location": "",
       "id": "flutterscenedelegate",
-      "community": 87,
+      "community": 88,
       "norm_label": "flutterscenedelegate"
     },
     {
@@ -126,7 +126,7 @@
       "source_file": "ios/Runner/GeneratedPluginRegistrant.h",
       "source_location": "L1",
       "id": "ios_runner_generatedpluginregistrant_h",
-      "community": 95,
+      "community": 96,
       "norm_label": "generatedpluginregistrant.h"
     },
     {
@@ -135,7 +135,7 @@
       "source_file": "ios/Runner/Runner-Bridging-Header.h",
       "source_location": "L1",
       "id": "ios_runner_runner_bridging_header_h",
-      "community": 96,
+      "community": 97,
       "norm_label": "runner-bridging-header.h"
     },
     {
@@ -144,7 +144,7 @@
       "source_file": "ios/Runner/GeneratedPluginRegistrant.m",
       "source_location": "L1",
       "id": "ios_runner_generatedpluginregistrant_m",
-      "community": 88,
+      "community": 89,
       "norm_label": "generatedpluginregistrant.m"
     },
     {
@@ -153,7 +153,7 @@
       "source_file": "ios/Runner/GeneratedPluginRegistrant.m",
       "source_location": "L51",
       "id": "runner_generatedpluginregistrant_generatedpluginregistrant",
-      "community": 88,
+      "community": 89,
       "norm_label": "generatedpluginregistrant"
     },
     {
@@ -162,7 +162,7 @@
       "source_file": "ios/Runner/GeneratedPluginRegistrant.m",
       "source_location": "L53",
       "id": "runner_generatedpluginregistrant_generatedpluginregistrant_registerwithregistry",
-      "community": 88,
+      "community": 89,
       "norm_label": "-registerwithregistry"
     },
     {
@@ -171,7 +171,7 @@
       "source_file": "ios/Flutter/ephemeral/flutter_lldb_helper.py",
       "source_location": "L1",
       "id": "ios_flutter_ephemeral_flutter_lldb_helper_py",
-      "community": 76,
+      "community": 75,
       "norm_label": "flutter_lldb_helper.py"
     },
     {
@@ -180,7 +180,7 @@
       "source_file": "ios/Flutter/ephemeral/flutter_lldb_helper.py",
       "source_location": "L7",
       "id": "ephemeral_flutter_lldb_helper_handle_new_rx_page",
-      "community": 76,
+      "community": 75,
       "norm_label": "handle_new_rx_page()"
     },
     {
@@ -189,7 +189,7 @@
       "source_file": "ios/Flutter/ephemeral/flutter_lldb_helper.py",
       "source_location": "L24",
       "id": "ephemeral_flutter_lldb_helper_lldb_init_module",
-      "community": 76,
+      "community": 75,
       "norm_label": "__lldb_init_module()"
     },
     {
@@ -198,7 +198,7 @@
       "source_file": "ios/Flutter/ephemeral/flutter_lldb_helper.py",
       "source_location": "L8",
       "id": "ephemeral_flutter_lldb_helper_rationale_8",
-      "community": 76,
+      "community": 75,
       "norm_label": "intercept notify_debugger_about_rx_pages and touch the pages."
     },
     {
@@ -207,7 +207,7 @@
       "source_file": "lib/main.dart",
       "source_location": null,
       "id": "lib_main_dart",
-      "community": 39,
+      "community": 46,
       "norm_label": "main.dart"
     },
     {
@@ -216,7 +216,7 @@
       "source_file": "lib/main.dart",
       "source_location": null,
       "id": "root_algoplay_lib_main_dart_algoplayapp",
-      "community": 39,
+      "community": 46,
       "norm_label": "algoplayapp"
     },
     {
@@ -225,7 +225,7 @@
       "source_file": "lib/main.dart",
       "source_location": null,
       "id": "root_algoplay_lib_main_dart_algoplayappstate",
-      "community": 39,
+      "community": 46,
       "norm_label": "_algoplayappstate"
     },
     {
@@ -234,7 +234,7 @@
       "source_file": "lib/main.dart",
       "source_location": null,
       "id": "root_algoplay_lib_main_dart_main",
-      "community": 39,
+      "community": 46,
       "norm_label": "main"
     },
     {
@@ -243,7 +243,7 @@
       "source_file": "lib/main.dart",
       "source_location": null,
       "id": "root_algoplay_lib_main_dart_initstate",
-      "community": 39,
+      "community": 46,
       "norm_label": "initstate"
     },
     {
@@ -252,7 +252,7 @@
       "source_file": "lib/main.dart",
       "source_location": null,
       "id": "root_algoplay_lib_main_dart_dispose",
-      "community": 39,
+      "community": 46,
       "norm_label": "dispose"
     },
     {
@@ -261,7 +261,7 @@
       "source_file": "lib/main.dart",
       "source_location": null,
       "id": "root_algoplay_lib_main_dart_build",
-      "community": 39,
+      "community": 46,
       "norm_label": "build"
     },
     {
@@ -279,7 +279,7 @@
       "source_file": "test/features/visualizer/widgets/code_viewer_test.dart",
       "source_location": null,
       "id": "package_flutter_riverpod_flutter_riverpod_dart",
-      "community": 39,
+      "community": 49,
       "norm_label": "package:flutter_riverpod/flutter_riverpod.dart"
     },
     {
@@ -288,7 +288,7 @@
       "source_file": "lib/main.dart",
       "source_location": null,
       "id": "core_router_app_router_dart",
-      "community": 39,
+      "community": 46,
       "norm_label": "core/router/app_router.dart"
     },
     {
@@ -306,7 +306,7 @@
       "source_file": "lib/features/premium/presentation/premium_page.dart",
       "source_location": null,
       "id": "core_services_iap_service_dart",
-      "community": 39,
+      "community": 46,
       "norm_label": "../../../core/services/iap_service.dart"
     },
     {
@@ -315,7 +315,7 @@
       "source_file": "lib/shared/providers/premium_provider.dart",
       "source_location": null,
       "id": "core_services_premium_service_dart",
-      "community": 39,
+      "community": 49,
       "norm_label": "../../core/services/premium_service.dart"
     },
     {
@@ -333,7 +333,7 @@
       "source_file": "lib/features/visualizer/presentation/algorithm_visualizer_page.dart",
       "source_location": null,
       "id": "shared_providers_premium_provider_dart",
-      "community": 72,
+      "community": 49,
       "norm_label": "../../../shared/providers/premium_provider.dart"
     },
     {
@@ -342,7 +342,7 @@
       "source_file": "lib/core/theme/app_theme.dart",
       "source_location": null,
       "id": "lib_core_theme_app_theme_dart",
-      "community": 49,
+      "community": 51,
       "norm_label": "app_theme.dart"
     },
     {
@@ -351,7 +351,7 @@
       "source_file": "lib/core/theme/app_theme.dart",
       "source_location": null,
       "id": "root_algoplay_lib_core_theme_app_theme_dart_appcolors",
-      "community": 49,
+      "community": 51,
       "norm_label": "appcolors"
     },
     {
@@ -360,7 +360,7 @@
       "source_file": "lib/core/theme/app_theme.dart",
       "source_location": null,
       "id": "root_algoplay_lib_core_theme_app_theme_dart_apptypography",
-      "community": 49,
+      "community": 51,
       "norm_label": "apptypography"
     },
     {
@@ -369,7 +369,7 @@
       "source_file": "lib/core/theme/app_theme.dart",
       "source_location": null,
       "id": "root_algoplay_lib_core_theme_app_theme_dart_appspacing",
-      "community": 49,
+      "community": 51,
       "norm_label": "appspacing"
     },
     {
@@ -378,7 +378,7 @@
       "source_file": "lib/core/theme/app_theme.dart",
       "source_location": null,
       "id": "root_algoplay_lib_core_theme_app_theme_dart_appradius",
-      "community": 49,
+      "community": 51,
       "norm_label": "appradius"
     },
     {
@@ -387,7 +387,7 @@
       "source_file": "lib/core/theme/app_theme.dart",
       "source_location": null,
       "id": "root_algoplay_lib_core_theme_app_theme_dart_appshadows",
-      "community": 49,
+      "community": 51,
       "norm_label": "appshadows"
     },
     {
@@ -396,7 +396,7 @@
       "source_file": "lib/core/theme/app_theme.dart",
       "source_location": null,
       "id": "root_algoplay_lib_core_theme_app_theme_dart_apptheme",
-      "community": 49,
+      "community": 51,
       "norm_label": "apptheme"
     },
     {
@@ -405,7 +405,7 @@
       "source_file": "lib/core/theme/app_theme.dart",
       "source_location": null,
       "id": "root_algoplay_lib_core_theme_app_theme_dart_textstyle",
-      "community": 49,
+      "community": 51,
       "norm_label": "textstyle"
     },
     {
@@ -414,7 +414,7 @@
       "source_file": "lib/core/theme/app_theme.dart",
       "source_location": null,
       "id": "root_algoplay_lib_core_theme_app_theme_dart_iconthemedata",
-      "community": 49,
+      "community": 51,
       "norm_label": "iconthemedata"
     },
     {
@@ -423,7 +423,7 @@
       "source_file": "lib/core/services/iap_service.dart",
       "source_location": null,
       "id": "lib_core_services_iap_service_dart",
-      "community": 48,
+      "community": 35,
       "norm_label": "iap_service.dart"
     },
     {
@@ -432,7 +432,7 @@
       "source_file": "lib/core/services/iap_service.dart",
       "source_location": null,
       "id": "root_algoplay_lib_core_services_iap_service_dart_iapservice",
-      "community": 48,
+      "community": 35,
       "norm_label": "iapservice"
     },
     {
@@ -441,7 +441,7 @@
       "source_file": "lib/core/services/iap_service.dart",
       "source_location": null,
       "id": "root_algoplay_lib_core_services_iap_service_dart_ispurchased",
-      "community": 48,
+      "community": 35,
       "norm_label": "ispurchased"
     },
     {
@@ -450,7 +450,7 @@
       "source_file": "lib/core/services/iap_service.dart",
       "source_location": null,
       "id": "root_algoplay_lib_core_services_iap_service_dart_handlepurchaseupdates",
-      "community": 48,
+      "community": 35,
       "norm_label": "_handlepurchaseupdates"
     },
     {
@@ -459,7 +459,7 @@
       "source_file": "lib/core/services/iap_service.dart",
       "source_location": null,
       "id": "root_algoplay_lib_core_services_iap_service_dart_deliverpurchase",
-      "community": 48,
+      "community": 35,
       "norm_label": "_deliverpurchase"
     },
     {
@@ -468,7 +468,7 @@
       "source_file": "lib/core/services/iap_service.dart",
       "source_location": null,
       "id": "root_algoplay_lib_core_services_iap_service_dart_handlepending",
-      "community": 48,
+      "community": 35,
       "norm_label": "_handlepending"
     },
     {
@@ -477,7 +477,7 @@
       "source_file": "lib/core/services/iap_service.dart",
       "source_location": null,
       "id": "root_algoplay_lib_core_services_iap_service_dart_handleerror",
-      "community": 48,
+      "community": 35,
       "norm_label": "_handleerror"
     },
     {
@@ -486,7 +486,7 @@
       "source_file": "lib/core/services/iap_service.dart",
       "source_location": null,
       "id": "root_algoplay_lib_core_services_iap_service_dart_dispose",
-      "community": 48,
+      "community": 35,
       "norm_label": "dispose"
     },
     {
@@ -504,7 +504,7 @@
       "source_file": "lib/shared/models/subscription_state.dart",
       "source_location": null,
       "id": "package_flutter_foundation_dart",
-      "community": 37,
+      "community": 45,
       "norm_label": "package:flutter/foundation.dart"
     },
     {
@@ -513,7 +513,7 @@
       "source_file": "lib/core/services/iap_service.dart",
       "source_location": null,
       "id": "package_in_app_purchase_in_app_purchase_dart",
-      "community": 48,
+      "community": 35,
       "norm_label": "package:in_app_purchase/in_app_purchase.dart"
     },
     {
@@ -522,7 +522,7 @@
       "source_file": "lib/core/services/ad_service.dart",
       "source_location": null,
       "id": "premium_service_dart",
-      "community": 56,
+      "community": 35,
       "norm_label": "premium_service.dart"
     },
     {
@@ -531,7 +531,7 @@
       "source_file": "lib/core/services/lesson_completion_ad_gate.dart",
       "source_location": null,
       "id": "lib_core_services_lesson_completion_ad_gate_dart",
-      "community": 56,
+      "community": 35,
       "norm_label": "lesson_completion_ad_gate.dart"
     },
     {
@@ -540,7 +540,7 @@
       "source_file": "lib/core/services/lesson_completion_ad_gate.dart",
       "source_location": null,
       "id": "root_algoplay_lib_core_services_lesson_completion_ad_gate_dart_lessoncompletionadgate",
-      "community": 56,
+      "community": 35,
       "norm_label": "lessoncompletionadgate"
     },
     {
@@ -558,7 +558,7 @@
       "source_file": "lib/core/services/ad_strategy_service.dart",
       "source_location": null,
       "id": "lib_core_services_ad_strategy_service_dart",
-      "community": 56,
+      "community": 35,
       "norm_label": "ad_strategy_service.dart"
     },
     {
@@ -567,7 +567,7 @@
       "source_file": "lib/core/services/ad_strategy_service.dart",
       "source_location": null,
       "id": "root_algoplay_lib_core_services_ad_strategy_service_dart_adstrategyservice",
-      "community": 56,
+      "community": 35,
       "norm_label": "adstrategyservice"
     },
     {
@@ -576,7 +576,7 @@
       "source_file": "lib/core/services/ad_strategy_service.dart",
       "source_location": null,
       "id": "root_algoplay_lib_core_services_ad_strategy_service_dart_preloadlearningads",
-      "community": 56,
+      "community": 35,
       "norm_label": "preloadlearningads"
     },
     {
@@ -585,7 +585,7 @@
       "source_file": "lib/core/services/ad_strategy_service.dart",
       "source_location": null,
       "id": "root_algoplay_lib_core_services_ad_strategy_service_dart_showlessonrewardad",
-      "community": 56,
+      "community": 35,
       "norm_label": "showlessonrewardad"
     },
     {
@@ -594,7 +594,7 @@
       "source_file": "lib/core/services/ad_strategy_service.dart",
       "source_location": null,
       "id": "ad_service_dart",
-      "community": 56,
+      "community": 35,
       "norm_label": "ad_service.dart"
     },
     {
@@ -603,7 +603,7 @@
       "source_file": "lib/core/services/premium_service.dart",
       "source_location": null,
       "id": "lib_core_services_premium_service_dart",
-      "community": 37,
+      "community": 45,
       "norm_label": "premium_service.dart"
     },
     {
@@ -612,7 +612,7 @@
       "source_file": "lib/core/services/premium_service.dart",
       "source_location": null,
       "id": "root_algoplay_lib_core_services_premium_service_dart_premiumservice",
-      "community": 37,
+      "community": 45,
       "norm_label": "premiumservice"
     },
     {
@@ -621,7 +621,7 @@
       "source_file": "lib/core/services/premium_service.dart",
       "source_location": null,
       "id": "root_algoplay_lib_core_services_premium_service_dart_ispremiumuser",
-      "community": 37,
+      "community": 45,
       "norm_label": "ispremiumuser"
     },
     {
@@ -630,7 +630,7 @@
       "source_file": "test/features/visualizer/widgets/code_viewer_test.dart",
       "source_location": null,
       "id": "dart_io",
-      "community": 33,
+      "community": 36,
       "norm_label": "dart:io"
     },
     {
@@ -1287,7 +1287,7 @@
       "source_file": "lib/algorithms/trees/tree_algorithms.dart",
       "source_location": null,
       "id": "dart_math",
-      "community": 47,
+      "community": 48,
       "norm_label": "dart:math"
     },
     {
@@ -1710,7 +1710,7 @@
       "source_file": "lib/features/stats/data/stats_repository.dart",
       "source_location": null,
       "id": "lib_features_stats_data_stats_repository_dart",
-      "community": 62,
+      "community": 61,
       "norm_label": "stats_repository.dart"
     },
     {
@@ -1719,7 +1719,7 @@
       "source_file": "lib/features/stats/data/stats_repository.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_stats_data_stats_repository_dart_userstats",
-      "community": 62,
+      "community": 61,
       "norm_label": "userstats"
     },
     {
@@ -1728,7 +1728,7 @@
       "source_file": "lib/features/stats/data/stats_repository.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_stats_data_stats_repository_dart_statsrepository",
-      "community": 62,
+      "community": 61,
       "norm_label": "statsrepository"
     },
     {
@@ -1737,7 +1737,7 @@
       "source_file": "lib/features/stats/data/stats_repository.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_stats_data_stats_repository_dart_copywith",
-      "community": 62,
+      "community": 61,
       "norm_label": "copywith"
     },
     {
@@ -1746,7 +1746,7 @@
       "source_file": "lib/features/stats/data/stats_repository.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_stats_data_stats_repository_dart_savestats",
-      "community": 62,
+      "community": 61,
       "norm_label": "savestats"
     },
     {
@@ -1755,7 +1755,7 @@
       "source_file": "lib/features/stats/data/stats_repository.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_stats_data_stats_repository_dart_getstreak",
-      "community": 62,
+      "community": 61,
       "norm_label": "getstreak"
     },
     {
@@ -1764,7 +1764,7 @@
       "source_file": "lib/features/stats/data/stats_repository.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_stats_data_stats_repository_dart_todaykey",
-      "community": 62,
+      "community": 61,
       "norm_label": "_todaykey"
     },
     {
@@ -2313,7 +2313,7 @@
       "source_file": "test/features/visualizer/widgets/code_viewer_test.dart",
       "source_location": null,
       "id": "package_algoplay_core_theme_app_theme_dart",
-      "community": 52,
+      "community": 53,
       "norm_label": "package:algoplay/core/theme/app_theme.dart"
     },
     {
@@ -3438,7 +3438,7 @@
       "source_file": "lib/features/grid_escape/data/level_generator.dart",
       "source_location": null,
       "id": "lib_features_grid_escape_data_level_generator_dart",
-      "community": 47,
+      "community": 48,
       "norm_label": "level_generator.dart"
     },
     {
@@ -3447,7 +3447,7 @@
       "source_file": "lib/features/grid_escape/data/level_generator.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_grid_escape_data_level_generator_dart_levelconfig",
-      "community": 47,
+      "community": 48,
       "norm_label": "levelconfig"
     },
     {
@@ -3456,7 +3456,7 @@
       "source_file": "lib/features/grid_escape/data/level_generator.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_grid_escape_data_level_generator_dart_levelgenerator",
-      "community": 47,
+      "community": 48,
       "norm_label": "levelgenerator"
     },
     {
@@ -3465,7 +3465,7 @@
       "source_file": "lib/features/grid_escape/data/level_generator.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_grid_escape_data_level_generator_dart_generate",
-      "community": 47,
+      "community": 48,
       "norm_label": "generate"
     },
     {
@@ -3474,7 +3474,7 @@
       "source_file": "lib/features/grid_escape/data/level_generator.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_grid_escape_data_level_generator_dart_pathexists",
-      "community": 47,
+      "community": 48,
       "norm_label": "_pathexists"
     },
     {
@@ -3771,7 +3771,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "lib_features_playground_presentation_playground_page_dart",
-      "community": 5,
+      "community": 6,
       "norm_label": "playground_page.dart"
     },
     {
@@ -3780,7 +3780,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_playgroundpage",
-      "community": 5,
+      "community": 6,
       "norm_label": "playgroundpage"
     },
     {
@@ -3789,7 +3789,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_playgroundpagestate",
-      "community": 5,
+      "community": 6,
       "norm_label": "_playgroundpagestate"
     },
     {
@@ -3798,7 +3798,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_controlbutton",
-      "community": 5,
+      "community": 6,
       "norm_label": "_controlbutton"
     },
     {
@@ -3807,7 +3807,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_legenddot",
-      "community": 5,
+      "community": 6,
       "norm_label": "_legenddot"
     },
     {
@@ -3816,7 +3816,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_miniiconbutton",
-      "community": 5,
+      "community": 6,
       "norm_label": "_miniiconbutton"
     },
     {
@@ -3825,7 +3825,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_initstate",
-      "community": 5,
+      "community": 6,
       "norm_label": "initstate"
     },
     {
@@ -3834,7 +3834,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_dispose",
-      "community": 5,
+      "community": 6,
       "norm_label": "dispose"
     },
     {
@@ -3843,7 +3843,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_generatearray",
-      "community": 5,
+      "community": 6,
       "norm_label": "_generatearray"
     },
     {
@@ -3852,7 +3852,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_loadalgorithm",
-      "community": 5,
+      "community": 6,
       "norm_label": "_loadalgorithm"
     },
     {
@@ -3861,7 +3861,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_loadmetadata",
-      "community": 5,
+      "community": 6,
       "norm_label": "_loadmetadata"
     },
     {
@@ -3870,7 +3870,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_toggleplay",
-      "community": 5,
+      "community": 6,
       "norm_label": "_toggleplay"
     },
     {
@@ -3879,7 +3879,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_startplaytimer",
-      "community": 5,
+      "community": 6,
       "norm_label": "_startplaytimer"
     },
     {
@@ -3888,7 +3888,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_stepforward",
-      "community": 5,
+      "community": 6,
       "norm_label": "_stepforward"
     },
     {
@@ -3897,7 +3897,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_stepback",
-      "community": 5,
+      "community": 6,
       "norm_label": "_stepback"
     },
     {
@@ -3906,7 +3906,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_reset",
-      "community": 5,
+      "community": 6,
       "norm_label": "_reset"
     },
     {
@@ -3915,7 +3915,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_cyclespeed",
-      "community": 5,
+      "community": 6,
       "norm_label": "_cyclespeed"
     },
     {
@@ -3924,7 +3924,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_setarraysize",
-      "community": 5,
+      "community": 6,
       "norm_label": "_setarraysize"
     },
     {
@@ -3933,7 +3933,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_build",
-      "community": 5,
+      "community": 6,
       "norm_label": "build"
     },
     {
@@ -3942,7 +3942,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_scaffold",
-      "community": 5,
+      "community": 6,
       "norm_label": "scaffold"
     },
     {
@@ -3951,7 +3951,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_buildalgorithmselector",
-      "community": 5,
+      "community": 6,
       "norm_label": "_buildalgorithmselector"
     },
     {
@@ -3960,7 +3960,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_container",
-      "community": 5,
+      "community": 6,
       "norm_label": "container"
     },
     {
@@ -3969,7 +3969,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_padding",
-      "community": 5,
+      "community": 6,
       "norm_label": "padding"
     },
     {
@@ -3978,7 +3978,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_sizedbox",
-      "community": 5,
+      "community": 6,
       "norm_label": "sizedbox"
     },
     {
@@ -3987,7 +3987,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_text",
-      "community": 5,
+      "community": 6,
       "norm_label": "text"
     },
     {
@@ -3996,7 +3996,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_buildvisualization",
-      "community": 5,
+      "community": 6,
       "norm_label": "_buildvisualization"
     },
     {
@@ -4005,7 +4005,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_center",
-      "community": 5,
+      "community": 6,
       "norm_label": "center"
     },
     {
@@ -4014,7 +4014,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_icon",
-      "community": 5,
+      "community": 6,
       "norm_label": "icon"
     },
     {
@@ -4023,7 +4023,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_buildsortingviz",
-      "community": 5,
+      "community": 6,
       "norm_label": "_buildsortingviz"
     },
     {
@@ -4032,7 +4032,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_buildsearchingviz",
-      "community": 5,
+      "community": 6,
       "norm_label": "_buildsearchingviz"
     },
     {
@@ -4041,7 +4041,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_row",
-      "community": 5,
+      "community": 6,
       "norm_label": "row"
     },
     {
@@ -4050,7 +4050,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_buildpseudocodepanel",
-      "community": 5,
+      "community": 6,
       "norm_label": "_buildpseudocodepanel"
     },
     {
@@ -4059,7 +4059,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_divider",
-      "community": 5,
+      "community": 6,
       "norm_label": "divider"
     },
     {
@@ -4068,7 +4068,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_animatedcontainer",
-      "community": 5,
+      "community": 6,
       "norm_label": "animatedcontainer"
     },
     {
@@ -4077,7 +4077,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_buildstepinfobar",
-      "community": 5,
+      "community": 6,
       "norm_label": "_buildstepinfobar"
     },
     {
@@ -4086,7 +4086,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_buildcontrols",
-      "community": 5,
+      "community": 6,
       "norm_label": "_buildcontrols"
     },
     {
@@ -4095,7 +4095,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_getcategorycolor",
-      "community": 5,
+      "community": 6,
       "norm_label": "_getcategorycolor"
     },
     {
@@ -4104,7 +4104,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_algoname",
-      "community": 5,
+      "community": 6,
       "norm_label": "_algoname"
     },
     {
@@ -4113,7 +4113,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_gesturedetector",
-      "community": 5,
+      "community": 6,
       "norm_label": "gesturedetector"
     },
     {
@@ -4122,7 +4122,7 @@
       "source_file": "lib/features/visualizer/presentation/algorithm_visualizer_page.dart",
       "source_location": null,
       "id": "algorithms_searching_searching_algorithms_dart",
-      "community": 5,
+      "community": 6,
       "norm_label": "../../../algorithms/searching/searching_algorithms.dart"
     },
     {
@@ -4131,7 +4131,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "algorithms_models_sort_step_dart",
-      "community": 5,
+      "community": 6,
       "norm_label": "../../../../algorithms/models/sort_step.dart"
     },
     {
@@ -4140,7 +4140,7 @@
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
       "id": "algorithms_models_search_step_dart",
-      "community": 5,
+      "community": 6,
       "norm_label": "../../../../algorithms/models/search_step.dart"
     },
     {
@@ -4149,7 +4149,7 @@
       "source_file": "lib/features/leaderboard/data/leaderboard_repository.dart",
       "source_location": null,
       "id": "lib_features_leaderboard_data_leaderboard_repository_dart",
-      "community": 37,
+      "community": 23,
       "norm_label": "leaderboard_repository.dart"
     },
     {
@@ -4158,7 +4158,7 @@
       "source_file": "lib/features/leaderboard/data/leaderboard_repository.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_leaderboard_data_leaderboard_repository_dart_leaderboardentry",
-      "community": 37,
+      "community": 23,
       "norm_label": "leaderboardentry"
     },
     {
@@ -4167,7 +4167,7 @@
       "source_file": "lib/features/leaderboard/data/leaderboard_repository.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_leaderboard_data_leaderboard_repository_dart_leaderboardrepository",
-      "community": 37,
+      "community": 23,
       "norm_label": "leaderboardrepository"
     },
     {
@@ -4176,7 +4176,7 @@
       "source_file": "lib/features/leaderboard/data/leaderboard_repository.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_leaderboard_data_leaderboard_repository_dart_copywith",
-      "community": 37,
+      "community": 23,
       "norm_label": "copywith"
     },
     {
@@ -4374,7 +4374,7 @@
       "source_file": "lib/features/learn/providers/lesson_providers.dart",
       "source_location": null,
       "id": "lib_features_learn_providers_lesson_providers_dart",
-      "community": 72,
+      "community": 49,
       "norm_label": "lesson_providers.dart"
     },
     {
@@ -4383,7 +4383,7 @@
       "source_file": "lib/features/learn/providers/lesson_providers.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_providers_lesson_providers_dart_lessonprogressrepository",
-      "community": 72,
+      "community": 49,
       "norm_label": "lessonprogressrepository"
     },
     {
@@ -4392,7 +4392,7 @@
       "source_file": "lib/features/learn/presentation/lesson_detail_page.dart",
       "source_location": null,
       "id": "data_lesson_content_dart",
-      "community": 72,
+      "community": 49,
       "norm_label": "../data/lesson_content.dart"
     },
     {
@@ -4401,7 +4401,7 @@
       "source_file": "lib/features/learn/providers/lesson_providers.dart",
       "source_location": null,
       "id": "data_lesson_progress_repository_dart",
-      "community": 72,
+      "community": 49,
       "norm_label": "../data/lesson_progress_repository.dart"
     },
     {
@@ -4410,7 +4410,7 @@
       "source_file": "lib/features/learn/data/algorithm_data.dart",
       "source_location": null,
       "id": "lib_features_learn_data_algorithm_data_dart",
-      "community": 89,
+      "community": 90,
       "norm_label": "algorithm_data.dart"
     },
     {
@@ -4419,7 +4419,7 @@
       "source_file": "lib/features/learn/data/algorithm_data.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_data_algorithm_data_dart_algorithminfo",
-      "community": 89,
+      "community": 90,
       "norm_label": "algorithminfo"
     },
     {
@@ -4428,7 +4428,7 @@
       "source_file": "lib/features/learn/data/algorithm_data.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_data_algorithm_data_dart_algorithmcategory",
-      "community": 89,
+      "community": 90,
       "norm_label": "algorithmcategory"
     },
     {
@@ -4437,7 +4437,7 @@
       "source_file": "lib/features/learn/data/lesson_progress_repository.dart",
       "source_location": null,
       "id": "lib_features_learn_data_lesson_progress_repository_dart",
-      "community": 63,
+      "community": 62,
       "norm_label": "lesson_progress_repository.dart"
     },
     {
@@ -4446,7 +4446,7 @@
       "source_file": "lib/features/learn/data/lesson_progress_repository.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_data_lesson_progress_repository_dart_lessonprogressrepository",
-      "community": 63,
+      "community": 62,
       "norm_label": "lessonprogressrepository"
     },
     {
@@ -4455,7 +4455,7 @@
       "source_file": "lib/features/learn/data/lesson_progress_repository.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_data_lesson_progress_repository_dart_modulekey",
-      "community": 63,
+      "community": 62,
       "norm_label": "_modulekey"
     },
     {
@@ -4464,7 +4464,7 @@
       "source_file": "lib/features/learn/data/lesson_progress_repository.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_data_lesson_progress_repository_dart_currentmodulekey",
-      "community": 63,
+      "community": 62,
       "norm_label": "_currentmodulekey"
     },
     {
@@ -4473,7 +4473,7 @@
       "source_file": "lib/features/learn/data/lesson_progress_repository.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_data_lesson_progress_repository_dart_scrollkey",
-      "community": 63,
+      "community": 62,
       "norm_label": "_scrollkey"
     },
     {
@@ -4482,7 +4482,7 @@
       "source_file": "lib/features/learn/data/lesson_progress_repository.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_data_lesson_progress_repository_dart_adunlockedlessonkey",
-      "community": 63,
+      "community": 62,
       "norm_label": "_adunlockedlessonkey"
     },
     {
@@ -4491,7 +4491,7 @@
       "source_file": "lib/features/learn/data/lesson_progress_repository.dart",
       "source_location": null,
       "id": "lesson_content_dart",
-      "community": 63,
+      "community": 62,
       "norm_label": "lesson_content.dart"
     },
     {
@@ -4500,7 +4500,7 @@
       "source_file": "lib/features/learn/data/lesson_content.dart",
       "source_location": null,
       "id": "lib_features_learn_data_lesson_content_dart",
-      "community": 43,
+      "community": 42,
       "norm_label": "lesson_content.dart"
     },
     {
@@ -4509,7 +4509,7 @@
       "source_file": "lib/features/learn/data/lesson_content.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_data_lesson_content_dart_graphblock",
-      "community": 43,
+      "community": 42,
       "norm_label": "graphblock"
     },
     {
@@ -4518,7 +4518,7 @@
       "source_file": "lib/features/learn/data/lesson_content.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_data_lesson_content_dart_visualizerlinkblock",
-      "community": 43,
+      "community": 42,
       "norm_label": "visualizerlinkblock"
     },
     {
@@ -4527,7 +4527,7 @@
       "source_file": "lib/features/learn/data/lesson_content.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_data_lesson_content_dart_textblock",
-      "community": 43,
+      "community": 42,
       "norm_label": "textblock"
     },
     {
@@ -4536,7 +4536,7 @@
       "source_file": "lib/features/learn/data/lesson_content.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_data_lesson_content_dart_codeblock",
-      "community": 43,
+      "community": 42,
       "norm_label": "codeblock"
     },
     {
@@ -4545,7 +4545,7 @@
       "source_file": "lib/features/learn/data/lesson_content.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_data_lesson_content_dart_mathblock",
-      "community": 43,
+      "community": 42,
       "norm_label": "mathblock"
     },
     {
@@ -4554,7 +4554,7 @@
       "source_file": "lib/features/learn/data/lesson_content.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_data_lesson_content_dart_definitionblock",
-      "community": 43,
+      "community": 42,
       "norm_label": "definitionblock"
     },
     {
@@ -4563,7 +4563,7 @@
       "source_file": "lib/features/learn/data/lesson_content.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_data_lesson_content_dart_keytakeawayblock",
-      "community": 43,
+      "community": 42,
       "norm_label": "keytakeawayblock"
     },
     {
@@ -4572,7 +4572,7 @@
       "source_file": "lib/features/learn/data/lesson_content.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_data_lesson_content_dart_quizblock",
-      "community": 43,
+      "community": 42,
       "norm_label": "quizblock"
     },
     {
@@ -4581,7 +4581,7 @@
       "source_file": "lib/features/learn/data/lesson_content.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_data_lesson_content_dart_modulecontent",
-      "community": 43,
+      "community": 42,
       "norm_label": "modulecontent"
     },
     {
@@ -4590,7 +4590,7 @@
       "source_file": "lib/features/learn/data/lesson_content.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_data_lesson_content_dart_lessoncontent",
-      "community": 43,
+      "community": 42,
       "norm_label": "lessoncontent"
     },
     {
@@ -4599,7 +4599,7 @@
       "source_file": "lib/features/learn/data/lesson_content.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_data_lesson_content_dart_contentblock",
-      "community": 43,
+      "community": 42,
       "norm_label": "contentblock"
     },
     {
@@ -4608,7 +4608,7 @@
       "source_file": "lib/features/learn/presentation/learn_page.dart",
       "source_location": null,
       "id": "lib_features_learn_presentation_learn_page_dart",
-      "community": 36,
+      "community": 37,
       "norm_label": "learn_page.dart"
     },
     {
@@ -4617,7 +4617,7 @@
       "source_file": "lib/features/learn/presentation/learn_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_learn_page_dart_learnpage",
-      "community": 36,
+      "community": 37,
       "norm_label": "learnpage"
     },
     {
@@ -4626,7 +4626,7 @@
       "source_file": "lib/features/learn/presentation/learn_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_learn_page_dart_learnpagestate",
-      "community": 36,
+      "community": 37,
       "norm_label": "_learnpagestate"
     },
     {
@@ -4635,7 +4635,7 @@
       "source_file": "lib/features/learn/presentation/learn_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_learn_page_dart_searchbar",
-      "community": 36,
+      "community": 37,
       "norm_label": "_searchbar"
     },
     {
@@ -4644,7 +4644,7 @@
       "source_file": "lib/features/learn/presentation/learn_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_learn_page_dart_categorypills",
-      "community": 36,
+      "community": 37,
       "norm_label": "_categorypills"
     },
     {
@@ -4653,7 +4653,7 @@
       "source_file": "lib/features/learn/presentation/learn_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_learn_page_dart_categorypill",
-      "community": 36,
+      "community": 37,
       "norm_label": "_categorypill"
     },
     {
@@ -4662,7 +4662,7 @@
       "source_file": "lib/features/learn/presentation/learn_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_learn_page_dart_algorithmlistcard",
-      "community": 36,
+      "community": 37,
       "norm_label": "_algorithmlistcard"
     },
     {
@@ -4671,7 +4671,7 @@
       "source_file": "lib/features/learn/presentation/learn_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_learn_page_dart_emptystate",
-      "community": 36,
+      "community": 37,
       "norm_label": "_emptystate"
     },
     {
@@ -4680,7 +4680,7 @@
       "source_file": "lib/features/learn/presentation/learn_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_learn_page_dart_build",
-      "community": 36,
+      "community": 37,
       "norm_label": "build"
     },
     {
@@ -4689,7 +4689,7 @@
       "source_file": "lib/features/learn/presentation/learn_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_learn_page_dart_scaffold",
-      "community": 36,
+      "community": 37,
       "norm_label": "scaffold"
     },
     {
@@ -4698,7 +4698,7 @@
       "source_file": "lib/features/learn/presentation/learn_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_learn_page_dart_sizedbox",
-      "community": 36,
+      "community": 37,
       "norm_label": "sizedbox"
     },
     {
@@ -4707,7 +4707,7 @@
       "source_file": "lib/features/learn/presentation/learn_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_learn_page_dart_container",
-      "community": 36,
+      "community": 37,
       "norm_label": "container"
     },
     {
@@ -4716,7 +4716,7 @@
       "source_file": "lib/features/learn/presentation/learn_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_learn_page_dart_gesturedetector",
-      "community": 36,
+      "community": 37,
       "norm_label": "gesturedetector"
     },
     {
@@ -4725,7 +4725,7 @@
       "source_file": "lib/features/learn/presentation/learn_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_learn_page_dart_icon",
-      "community": 36,
+      "community": 37,
       "norm_label": "icon"
     },
     {
@@ -4734,7 +4734,7 @@
       "source_file": "lib/features/learn/presentation/learn_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_learn_page_dart_center",
-      "community": 36,
+      "community": 37,
       "norm_label": "center"
     },
     {
@@ -4743,7 +4743,7 @@
       "source_file": "lib/features/learn/presentation/learn_page.dart",
       "source_location": null,
       "id": "data_algorithm_data_dart",
-      "community": 36,
+      "community": 37,
       "norm_label": "../data/algorithm_data.dart"
     },
     {
@@ -4932,7 +4932,7 @@
       "source_file": "lib/features/learn/presentation/lesson_detail_page.dart",
       "source_location": null,
       "id": "providers_lesson_providers_dart",
-      "community": 41,
+      "community": 40,
       "norm_label": "../providers/lesson_providers.dart"
     },
     {
@@ -5107,42 +5107,6 @@
       "norm_label": "dispose"
     },
     {
-      "label": "_offerLessonRewardIfNeeded",
-      "file_type": "code",
-      "source_file": "lib/features/learn/presentation/module_content_page.dart",
-      "source_location": null,
-      "id": "root_algoplay_lib_features_learn_presentation_module_content_page_dart_offerlessonrewardifneeded",
-      "community": 1,
-      "norm_label": "_offerlessonrewardifneeded"
-    },
-    {
-      "label": "AlertDialog",
-      "file_type": "code",
-      "source_file": "lib/features/learn/presentation/module_content_page.dart",
-      "source_location": null,
-      "id": "root_algoplay_lib_features_learn_presentation_module_content_page_dart_alertdialog",
-      "community": 1,
-      "norm_label": "alertdialog"
-    },
-    {
-      "label": "SizedBox",
-      "file_type": "code",
-      "source_file": "lib/features/learn/presentation/module_content_page.dart",
-      "source_location": null,
-      "id": "root_algoplay_lib_features_learn_presentation_module_content_page_dart_sizedbox",
-      "community": 1,
-      "norm_label": "sizedbox"
-    },
-    {
-      "label": "StatsRepository",
-      "file_type": "code",
-      "source_file": "lib/features/learn/presentation/module_content_page.dart",
-      "source_location": null,
-      "id": "root_algoplay_lib_features_learn_presentation_module_content_page_dart_statsrepository",
-      "community": 1,
-      "norm_label": "statsrepository"
-    },
-    {
       "label": "build",
       "file_type": "code",
       "source_file": "lib/features/learn/presentation/module_content_page.dart",
@@ -5168,6 +5132,15 @@
       "id": "root_algoplay_lib_features_learn_presentation_module_content_page_dart_inlinebannerad",
       "community": 1,
       "norm_label": "inlinebannerad"
+    },
+    {
+      "label": "SizedBox",
+      "file_type": "code",
+      "source_file": "lib/features/learn/presentation/module_content_page.dart",
+      "source_location": null,
+      "id": "root_algoplay_lib_features_learn_presentation_module_content_page_dart_sizedbox",
+      "community": 1,
+      "norm_label": "sizedbox"
     },
     {
       "label": "Padding",
@@ -5526,7 +5499,7 @@
       "source_file": "lib/features/learn/presentation/lesson_detail_page.dart",
       "source_location": null,
       "id": "shared_widgets_inline_banner_ad_dart",
-      "community": 41,
+      "community": 40,
       "norm_label": "../../../shared/widgets/inline_banner_ad.dart"
     },
     {
@@ -5535,7 +5508,7 @@
       "source_file": "lib/features/learn/presentation/lesson_detail_page.dart",
       "source_location": null,
       "id": "lib_features_learn_presentation_lesson_detail_page_dart",
-      "community": 41,
+      "community": 40,
       "norm_label": "lesson_detail_page.dart"
     },
     {
@@ -5544,7 +5517,7 @@
       "source_file": "lib/features/learn/presentation/lesson_detail_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_lesson_detail_page_dart_lessondetailpage",
-      "community": 41,
+      "community": 40,
       "norm_label": "lessondetailpage"
     },
     {
@@ -5553,7 +5526,7 @@
       "source_file": "lib/features/learn/presentation/lesson_detail_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_lesson_detail_page_dart_segmentedprogress",
-      "community": 41,
+      "community": 40,
       "norm_label": "_segmentedprogress"
     },
     {
@@ -5562,7 +5535,7 @@
       "source_file": "lib/features/learn/presentation/lesson_detail_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_lesson_detail_page_dart_modulerow",
-      "community": 41,
+      "community": 40,
       "norm_label": "_modulerow"
     },
     {
@@ -5571,7 +5544,7 @@
       "source_file": "lib/features/learn/presentation/lesson_detail_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_lesson_detail_page_dart_build",
-      "community": 41,
+      "community": 40,
       "norm_label": "build"
     },
     {
@@ -5580,7 +5553,7 @@
       "source_file": "lib/features/learn/presentation/lesson_detail_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_lesson_detail_page_dart_scaffold",
-      "community": 41,
+      "community": 40,
       "norm_label": "scaffold"
     },
     {
@@ -5589,7 +5562,7 @@
       "source_file": "lib/features/learn/presentation/lesson_detail_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_lesson_detail_page_dart_sizedbox",
-      "community": 41,
+      "community": 40,
       "norm_label": "sizedbox"
     },
     {
@@ -5598,7 +5571,7 @@
       "source_file": "lib/features/learn/presentation/lesson_detail_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_lesson_detail_page_dart_inlinebannerad",
-      "community": 41,
+      "community": 40,
       "norm_label": "inlinebannerad"
     },
     {
@@ -5607,7 +5580,7 @@
       "source_file": "lib/features/learn/presentation/lesson_detail_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_lesson_detail_page_dart_padding",
-      "community": 41,
+      "community": 40,
       "norm_label": "padding"
     },
     {
@@ -5616,7 +5589,7 @@
       "source_file": "lib/features/learn/presentation/lesson_detail_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_lesson_detail_page_dart_container",
-      "community": 41,
+      "community": 40,
       "norm_label": "container"
     },
     {
@@ -5625,7 +5598,7 @@
       "source_file": "lib/features/learn/presentation/lesson_detail_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_learn_presentation_lesson_detail_page_dart_material",
-      "community": 41,
+      "community": 40,
       "norm_label": "material"
     },
     {
@@ -5688,7 +5661,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "lib_features_home_presentation_home_page_dart",
-      "community": 7,
+      "community": 5,
       "norm_label": "home_page.dart"
     },
     {
@@ -5697,7 +5670,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_homepage",
-      "community": 7,
+      "community": 5,
       "norm_label": "homepage"
     },
     {
@@ -5706,7 +5679,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_lessoncard",
-      "community": 7,
+      "community": 5,
       "norm_label": "_lessoncard"
     },
     {
@@ -5715,7 +5688,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_miniprogress",
-      "community": 7,
+      "community": 5,
       "norm_label": "_miniprogress"
     },
     {
@@ -5724,7 +5697,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_categorydef",
-      "community": 7,
+      "community": 5,
       "norm_label": "_categorydef"
     },
     {
@@ -5733,7 +5706,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_gamedef",
-      "community": 7,
+      "community": 5,
       "norm_label": "_gamedef"
     },
     {
@@ -5742,7 +5715,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_greeting",
-      "community": 7,
+      "community": 5,
       "norm_label": "_greeting"
     },
     {
@@ -5751,7 +5724,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_currentweekdayindex",
-      "community": 7,
+      "community": 5,
       "norm_label": "_currentweekdayindex"
     },
     {
@@ -5760,7 +5733,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_build",
-      "community": 7,
+      "community": 5,
       "norm_label": "build"
     },
     {
@@ -5769,7 +5742,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_scaffold",
-      "community": 7,
+      "community": 5,
       "norm_label": "scaffold"
     },
     {
@@ -5778,7 +5751,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_sizedbox",
-      "community": 7,
+      "community": 5,
       "norm_label": "sizedbox"
     },
     {
@@ -5787,7 +5760,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_buildheader",
-      "community": 7,
+      "community": 5,
       "norm_label": "_buildheader"
     },
     {
@@ -5796,7 +5769,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_row",
-      "community": 7,
+      "community": 5,
       "norm_label": "row"
     },
     {
@@ -5805,7 +5778,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_text",
-      "community": 7,
+      "community": 5,
       "norm_label": "text"
     },
     {
@@ -5814,7 +5787,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_buildstreakrow",
-      "community": 7,
+      "community": 5,
       "norm_label": "_buildstreakrow"
     },
     {
@@ -5823,7 +5796,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_icon",
-      "community": 7,
+      "community": 5,
       "norm_label": "icon"
     },
     {
@@ -5832,7 +5805,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_container",
-      "community": 7,
+      "community": 5,
       "norm_label": "container"
     },
     {
@@ -5841,7 +5814,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_buildlessonssection",
-      "community": 7,
+      "community": 5,
       "norm_label": "_buildlessonssection"
     },
     {
@@ -5850,7 +5823,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_column",
-      "community": 7,
+      "community": 5,
       "norm_label": "column"
     },
     {
@@ -5859,7 +5832,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_buildskillcategories",
-      "community": 7,
+      "community": 5,
       "norm_label": "_buildskillcategories"
     },
     {
@@ -5868,7 +5841,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_skillcategorycard",
-      "community": 7,
+      "community": 5,
       "norm_label": "skillcategorycard"
     },
     {
@@ -5877,7 +5850,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_buildquickgames",
-      "community": 7,
+      "community": 5,
       "norm_label": "_buildquickgames"
     },
     {
@@ -5886,7 +5859,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_sectionheader",
-      "community": 7,
+      "community": 5,
       "norm_label": "sectionheader"
     },
     {
@@ -5895,7 +5868,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_buildcontinuelearning",
-      "community": 7,
+      "community": 5,
       "norm_label": "_buildcontinuelearning"
     },
     {
@@ -5904,7 +5877,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_emptystate",
-      "community": 7,
+      "community": 5,
       "norm_label": "emptystate"
     },
     {
@@ -5913,7 +5886,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_buildupgradecard",
-      "community": 7,
+      "community": 5,
       "norm_label": "_buildupgradecard"
     },
     {
@@ -5922,7 +5895,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_gesturedetector",
-      "community": 7,
+      "community": 5,
       "norm_label": "gesturedetector"
     },
     {
@@ -5931,7 +5904,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_formatalgorithmname",
-      "community": 7,
+      "community": 5,
       "norm_label": "_formatalgorithmname"
     },
     {
@@ -5940,7 +5913,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_gettimecomplexity",
-      "community": 7,
+      "community": 5,
       "norm_label": "_gettimecomplexity"
     },
     {
@@ -5949,8 +5922,17 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_getcategorycolor",
-      "community": 7,
+      "community": 5,
       "norm_label": "_getcategorycolor"
+    },
+    {
+      "label": "SnackBar",
+      "file_type": "code",
+      "source_file": "lib/features/home/presentation/home_page.dart",
+      "source_location": null,
+      "id": "root_algoplay_lib_features_home_presentation_home_page_dart_snackbar",
+      "community": 5,
+      "norm_label": "snackbar"
     },
     {
       "label": "Padding",
@@ -5958,8 +5940,17 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_home_presentation_home_page_dart_padding",
-      "community": 7,
+      "community": 5,
       "norm_label": "padding"
+    },
+    {
+      "label": "package:algoplay/core/services/ad_strategy_service.dart",
+      "file_type": "code",
+      "source_file": "lib/features/home/presentation/home_page.dart",
+      "source_location": null,
+      "id": "package_algoplay_core_services_ad_strategy_service_dart",
+      "community": 5,
+      "norm_label": "package:algoplay/core/services/ad_strategy_service.dart"
     },
     {
       "label": "package:algoplay/shared/providers/app_providers.dart",
@@ -5967,7 +5958,7 @@
       "source_file": "test/shared/providers/app_providers_test.dart",
       "source_location": null,
       "id": "package_algoplay_shared_providers_app_providers_dart",
-      "community": 7,
+      "community": 5,
       "norm_label": "package:algoplay/shared/providers/app_providers.dart"
     },
     {
@@ -5976,7 +5967,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "package_algoplay_shared_widgets_section_header_dart",
-      "community": 7,
+      "community": 5,
       "norm_label": "package:algoplay/shared/widgets/section_header.dart"
     },
     {
@@ -5985,7 +5976,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "package_algoplay_shared_widgets_skill_category_card_dart",
-      "community": 7,
+      "community": 5,
       "norm_label": "package:algoplay/shared/widgets/skill_category_card.dart"
     },
     {
@@ -5994,7 +5985,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "package_algoplay_shared_widgets_xp_progress_bar_dart",
-      "community": 7,
+      "community": 5,
       "norm_label": "package:algoplay/shared/widgets/xp_progress_bar.dart"
     },
     {
@@ -6003,7 +5994,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "package_algoplay_shared_widgets_game_card_dart",
-      "community": 7,
+      "community": 5,
       "norm_label": "package:algoplay/shared/widgets/game_card.dart"
     },
     {
@@ -6012,7 +6003,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "package_algoplay_shared_widgets_algorithm_card_dart",
-      "community": 7,
+      "community": 5,
       "norm_label": "package:algoplay/shared/widgets/algorithm_card.dart"
     },
     {
@@ -6021,7 +6012,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "package_algoplay_shared_widgets_empty_state_dart",
-      "community": 7,
+      "community": 5,
       "norm_label": "package:algoplay/shared/widgets/empty_state.dart"
     },
     {
@@ -6030,7 +6021,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "learn_data_lesson_content_dart",
-      "community": 7,
+      "community": 5,
       "norm_label": "../../learn/data/lesson_content.dart"
     },
     {
@@ -6039,7 +6030,7 @@
       "source_file": "lib/features/home/presentation/home_page.dart",
       "source_location": null,
       "id": "learn_providers_lesson_providers_dart",
-      "community": 7,
+      "community": 5,
       "norm_label": "../../learn/providers/lesson_providers.dart"
     },
     {
@@ -6048,7 +6039,7 @@
       "source_file": "lib/features/profile/data/avatar_repository.dart",
       "source_location": null,
       "id": "lib_features_profile_data_avatar_repository_dart",
-      "community": 23,
+      "community": 76,
       "norm_label": "avatar_repository.dart"
     },
     {
@@ -6057,7 +6048,7 @@
       "source_file": "lib/features/profile/data/avatar_repository.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_profile_data_avatar_repository_dart_avatardef",
-      "community": 23,
+      "community": 76,
       "norm_label": "avatardef"
     },
     {
@@ -6066,7 +6057,7 @@
       "source_file": "lib/features/profile/data/avatar_repository.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_profile_data_avatar_repository_dart_avatarrepository",
-      "community": 23,
+      "community": 76,
       "norm_label": "avatarrepository"
     },
     {
@@ -6075,7 +6066,7 @@
       "source_file": "lib/features/profile/data/avatar_repository.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_profile_data_avatar_repository_dart_extractinitial",
-      "community": 23,
+      "community": 76,
       "norm_label": "extractinitial"
     },
     {
@@ -6426,7 +6417,7 @@
       "source_file": "lib/features/splash/presentation/splash_page.dart",
       "source_location": null,
       "id": "lib_features_splash_presentation_splash_page_dart",
-      "community": 40,
+      "community": 39,
       "norm_label": "splash_page.dart"
     },
     {
@@ -6435,7 +6426,7 @@
       "source_file": "lib/features/splash/presentation/splash_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_splash_presentation_splash_page_dart_splashpage",
-      "community": 40,
+      "community": 39,
       "norm_label": "splashpage"
     },
     {
@@ -6444,7 +6435,7 @@
       "source_file": "lib/features/splash/presentation/splash_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_splash_presentation_splash_page_dart_splashpagestate",
-      "community": 40,
+      "community": 39,
       "norm_label": "_splashpagestate"
     },
     {
@@ -6453,7 +6444,7 @@
       "source_file": "lib/features/splash/presentation/splash_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_splash_presentation_splash_page_dart_loadingbar",
-      "community": 40,
+      "community": 39,
       "norm_label": "_loadingbar"
     },
     {
@@ -6462,7 +6453,7 @@
       "source_file": "lib/features/splash/presentation/splash_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_splash_presentation_splash_page_dart_loadingtext",
-      "community": 40,
+      "community": 39,
       "norm_label": "_loadingtext"
     },
     {
@@ -6471,7 +6462,7 @@
       "source_file": "lib/features/splash/presentation/splash_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_splash_presentation_splash_page_dart_initstate",
-      "community": 40,
+      "community": 39,
       "norm_label": "initstate"
     },
     {
@@ -6480,7 +6471,7 @@
       "source_file": "lib/features/splash/presentation/splash_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_splash_presentation_splash_page_dart_dispose",
-      "community": 40,
+      "community": 39,
       "norm_label": "dispose"
     },
     {
@@ -6489,7 +6480,7 @@
       "source_file": "lib/features/splash/presentation/splash_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_splash_presentation_splash_page_dart_build",
-      "community": 40,
+      "community": 39,
       "norm_label": "build"
     },
     {
@@ -6498,7 +6489,7 @@
       "source_file": "lib/features/splash/presentation/splash_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_splash_presentation_splash_page_dart_scaffold",
-      "community": 40,
+      "community": 39,
       "norm_label": "scaffold"
     },
     {
@@ -6507,7 +6498,7 @@
       "source_file": "lib/features/splash/presentation/splash_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_splash_presentation_splash_page_dart_column",
-      "community": 40,
+      "community": 39,
       "norm_label": "column"
     },
     {
@@ -6516,7 +6507,7 @@
       "source_file": "lib/features/splash/presentation/splash_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_splash_presentation_splash_page_dart_sizedbox",
-      "community": 40,
+      "community": 39,
       "norm_label": "sizedbox"
     },
     {
@@ -6525,7 +6516,7 @@
       "source_file": "lib/features/splash/presentation/splash_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_splash_presentation_splash_page_dart_container",
-      "community": 40,
+      "community": 39,
       "norm_label": "container"
     },
     {
@@ -6534,7 +6525,7 @@
       "source_file": "lib/features/splash/presentation/splash_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_splash_presentation_splash_page_dart_text",
-      "community": 40,
+      "community": 39,
       "norm_label": "text"
     },
     {
@@ -6543,7 +6534,7 @@
       "source_file": "lib/features/splash/presentation/splash_page.dart",
       "source_location": null,
       "id": "onboarding_presentation_onboarding_page_dart",
-      "community": 40,
+      "community": 39,
       "norm_label": "../../onboarding/presentation/onboarding_page.dart"
     },
     {
@@ -7101,7 +7092,7 @@
       "source_file": "lib/features/battle_arena/data/question_bank.dart",
       "source_location": null,
       "id": "lib_features_battle_arena_data_question_bank_dart",
-      "community": 47,
+      "community": 48,
       "norm_label": "question_bank.dart"
     },
     {
@@ -7110,7 +7101,7 @@
       "source_file": "lib/features/battle_arena/data/question_bank.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_battle_arena_data_question_bank_dart_battlequestion",
-      "community": 47,
+      "community": 48,
       "norm_label": "battlequestion"
     },
     {
@@ -7119,7 +7110,7 @@
       "source_file": "lib/features/battle_arena/data/question_bank.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_battle_arena_data_question_bank_dart_questionbank",
-      "community": 47,
+      "community": 48,
       "norm_label": "questionbank"
     },
     {
@@ -7398,7 +7389,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "lib_features_visualizer_presentation_dp_visualizer_page_dart",
-      "community": 6,
+      "community": 7,
       "norm_label": "dp_visualizer_page.dart"
     },
     {
@@ -7407,7 +7398,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_dpvisualizerpage",
-      "community": 6,
+      "community": 7,
       "norm_label": "dpvisualizerpage"
     },
     {
@@ -7416,7 +7407,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_dpvisualizerpagestate",
-      "community": 6,
+      "community": 7,
       "norm_label": "_dpvisualizerpagestate"
     },
     {
@@ -7425,7 +7416,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_ghostbutton",
-      "community": 6,
+      "community": 7,
       "norm_label": "_ghostbutton"
     },
     {
@@ -7434,7 +7425,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_initstate",
-      "community": 6,
+      "community": 7,
       "norm_label": "initstate"
     },
     {
@@ -7443,7 +7434,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_loadalgorithm",
-      "community": 6,
+      "community": 7,
       "norm_label": "_loadalgorithm"
     },
     {
@@ -7452,7 +7443,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_fibonaccidp",
-      "community": 6,
+      "community": 7,
       "norm_label": "fibonaccidp"
     },
     {
@@ -7461,7 +7452,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_lcsdp",
-      "community": 6,
+      "community": 7,
       "norm_label": "lcsdp"
     },
     {
@@ -7470,7 +7461,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_knapsackdp",
-      "community": 6,
+      "community": 7,
       "norm_label": "knapsackdp"
     },
     {
@@ -7479,7 +7470,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_toggleplay",
-      "community": 6,
+      "community": 7,
       "norm_label": "_toggleplay"
     },
     {
@@ -7488,7 +7479,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_startplaytimer",
-      "community": 6,
+      "community": 7,
       "norm_label": "_startplaytimer"
     },
     {
@@ -7497,7 +7488,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_stepforward",
-      "community": 6,
+      "community": 7,
       "norm_label": "_stepforward"
     },
     {
@@ -7506,7 +7497,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_stepback",
-      "community": 6,
+      "community": 7,
       "norm_label": "_stepback"
     },
     {
@@ -7515,7 +7506,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_reset",
-      "community": 6,
+      "community": 7,
       "norm_label": "_reset"
     },
     {
@@ -7524,7 +7515,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_cyclespeed",
-      "community": 6,
+      "community": 7,
       "norm_label": "_cyclespeed"
     },
     {
@@ -7533,7 +7524,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_pauseforlifecycle",
-      "community": 6,
+      "community": 7,
       "norm_label": "_pauseforlifecycle"
     },
     {
@@ -7542,7 +7533,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_didchangeapplifecyclestate",
-      "community": 6,
+      "community": 7,
       "norm_label": "didchangeapplifecyclestate"
     },
     {
@@ -7551,7 +7542,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_dispose",
-      "community": 6,
+      "community": 7,
       "norm_label": "dispose"
     },
     {
@@ -7560,7 +7551,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_build",
-      "community": 6,
+      "community": 7,
       "norm_label": "build"
     },
     {
@@ -7569,7 +7560,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_scaffold",
-      "community": 6,
+      "community": 7,
       "norm_label": "scaffold"
     },
     {
@@ -7578,7 +7569,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_padding",
-      "community": 6,
+      "community": 7,
       "norm_label": "padding"
     },
     {
@@ -7587,7 +7578,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_divider",
-      "community": 6,
+      "community": 7,
       "norm_label": "divider"
     },
     {
@@ -7596,7 +7587,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_sizedbox",
-      "community": 6,
+      "community": 7,
       "norm_label": "sizedbox"
     },
     {
@@ -7605,7 +7596,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_buildinputsection",
-      "community": 6,
+      "community": 7,
       "norm_label": "_buildinputsection"
     },
     {
@@ -7614,7 +7605,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_container",
-      "community": 6,
+      "community": 7,
       "norm_label": "container"
     },
     {
@@ -7623,7 +7614,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_buildfibonacciinput",
-      "community": 6,
+      "community": 7,
       "norm_label": "_buildfibonacciinput"
     },
     {
@@ -7632,7 +7623,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_row",
-      "community": 6,
+      "community": 7,
       "norm_label": "row"
     },
     {
@@ -7641,7 +7632,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_text",
-      "community": 6,
+      "community": 7,
       "norm_label": "text"
     },
     {
@@ -7650,7 +7641,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_spacer",
-      "community": 6,
+      "community": 7,
       "norm_label": "spacer"
     },
     {
@@ -7659,7 +7650,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_buildlcsinput",
-      "community": 6,
+      "community": 7,
       "norm_label": "_buildlcsinput"
     },
     {
@@ -7668,7 +7659,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_column",
-      "community": 6,
+      "community": 7,
       "norm_label": "column"
     },
     {
@@ -7677,7 +7668,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_buildknapsackinput",
-      "community": 6,
+      "community": 7,
       "norm_label": "_buildknapsackinput"
     },
     {
@@ -7686,7 +7677,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_buildvisualization",
-      "community": 6,
+      "community": 7,
       "norm_label": "_buildvisualization"
     },
     {
@@ -7695,7 +7686,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_buildfibonaccivisualization",
-      "community": 6,
+      "community": 7,
       "norm_label": "_buildfibonaccivisualization"
     },
     {
@@ -7704,7 +7695,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_buildlcsvisualization",
-      "community": 6,
+      "community": 7,
       "norm_label": "_buildlcsvisualization"
     },
     {
@@ -7713,7 +7704,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_buildknapsackvisualization",
-      "community": 6,
+      "community": 7,
       "norm_label": "_buildknapsackvisualization"
     },
     {
@@ -7722,7 +7713,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_expanded",
-      "community": 6,
+      "community": 7,
       "norm_label": "expanded"
     },
     {
@@ -7731,7 +7722,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_icon",
-      "community": 6,
+      "community": 7,
       "norm_label": "icon"
     },
     {
@@ -7740,7 +7731,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_showinfosheet",
-      "community": 6,
+      "community": 7,
       "norm_label": "_showinfosheet"
     },
     {
@@ -7749,7 +7740,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_inforow",
-      "community": 6,
+      "community": 7,
       "norm_label": "_inforow"
     },
     {
@@ -7758,7 +7749,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_presentation_dp_visualizer_page_dart_gesturedetector",
-      "community": 6,
+      "community": 7,
       "norm_label": "gesturedetector"
     },
     {
@@ -7767,7 +7758,7 @@
       "source_file": "lib/features/visualizer/presentation/dp_visualizer_page.dart",
       "source_location": null,
       "id": "algorithms_models_dp_step_dart",
-      "community": 6,
+      "community": 7,
       "norm_label": "../../../algorithms/models/dp_step.dart"
     },
     {
@@ -7776,7 +7767,7 @@
       "source_file": "lib/features/visualizer/presentation/algorithm_visualizer_page.dart",
       "source_location": null,
       "id": "algorithms_dp_dp_algorithms_dart",
-      "community": 6,
+      "community": 7,
       "norm_label": "../../../algorithms/dp/dp_algorithms.dart"
     },
     {
@@ -8811,7 +8802,7 @@
       "source_file": "lib/features/visualizer/widgets/code_viewer.dart",
       "source_location": null,
       "id": "algorithms_code_code_implementations_dart",
-      "community": 35,
+      "community": 34,
       "norm_label": "../../../algorithms/code/code_implementations.dart"
     },
     {
@@ -8856,7 +8847,7 @@
       "source_file": "lib/features/visualizer/widgets/speed_controller.dart",
       "source_location": null,
       "id": "lib_features_visualizer_widgets_speed_controller_dart",
-      "community": 34,
+      "community": 33,
       "norm_label": "speed_controller.dart"
     },
     {
@@ -8865,7 +8856,7 @@
       "source_file": "lib/features/visualizer/widgets/speed_controller.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_speed_controller_dart_speedcontroller",
-      "community": 34,
+      "community": 33,
       "norm_label": "speedcontroller"
     },
     {
@@ -8874,7 +8865,7 @@
       "source_file": "lib/features/visualizer/widgets/speed_controller.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_speed_controller_dart_speedcontrollerstate",
-      "community": 34,
+      "community": 33,
       "norm_label": "_speedcontrollerstate"
     },
     {
@@ -8883,7 +8874,7 @@
       "source_file": "lib/features/visualizer/widgets/speed_controller.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_speed_controller_dart_speedmode",
-      "community": 34,
+      "community": 33,
       "norm_label": "speedmode"
     },
     {
@@ -8892,7 +8883,7 @@
       "source_file": "lib/features/visualizer/widgets/speed_controller.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_speed_controller_dart_initstate",
-      "community": 34,
+      "community": 33,
       "norm_label": "initstate"
     },
     {
@@ -8901,7 +8892,7 @@
       "source_file": "lib/features/visualizer/widgets/speed_controller.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_speed_controller_dart_didupdatewidget",
-      "community": 34,
+      "community": 33,
       "norm_label": "didupdatewidget"
     },
     {
@@ -8910,7 +8901,7 @@
       "source_file": "lib/features/visualizer/widgets/speed_controller.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_speed_controller_dart_dispose",
-      "community": 34,
+      "community": 33,
       "norm_label": "dispose"
     },
     {
@@ -8919,7 +8910,7 @@
       "source_file": "lib/features/visualizer/widgets/speed_controller.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_speed_controller_dart_build",
-      "community": 34,
+      "community": 33,
       "norm_label": "build"
     },
     {
@@ -8928,7 +8919,7 @@
       "source_file": "lib/features/visualizer/widgets/speed_controller.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_speed_controller_dart_container",
-      "community": 34,
+      "community": 33,
       "norm_label": "container"
     },
     {
@@ -8937,7 +8928,7 @@
       "source_file": "lib/features/visualizer/widgets/speed_controller.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_speed_controller_dart_sizedbox",
-      "community": 34,
+      "community": 33,
       "norm_label": "sizedbox"
     },
     {
@@ -8946,7 +8937,7 @@
       "source_file": "lib/features/visualizer/widgets/speed_controller.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_speed_controller_dart_buildspeedmodeselector",
-      "community": 34,
+      "community": 33,
       "norm_label": "_buildspeedmodeselector"
     },
     {
@@ -8955,7 +8946,7 @@
       "source_file": "lib/features/visualizer/widgets/speed_controller.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_speed_controller_dart_row",
-      "community": 34,
+      "community": 33,
       "norm_label": "row"
     },
     {
@@ -8964,7 +8955,7 @@
       "source_file": "lib/features/visualizer/widgets/speed_controller.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_speed_controller_dart_padding",
-      "community": 34,
+      "community": 33,
       "norm_label": "padding"
     },
     {
@@ -8973,7 +8964,7 @@
       "source_file": "lib/features/visualizer/widgets/speed_controller.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_speed_controller_dart_buildplaypausebutton",
-      "community": 34,
+      "community": 33,
       "norm_label": "_buildplaypausebutton"
     },
     {
@@ -8982,7 +8973,7 @@
       "source_file": "lib/features/visualizer/widgets/speed_controller.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_speed_controller_dart_buildcontrolbutton",
-      "community": 34,
+      "community": 33,
       "norm_label": "_buildcontrolbutton"
     },
     {
@@ -8991,7 +8982,7 @@
       "source_file": "lib/features/visualizer/widgets/speed_controller.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_speed_controller_dart_builddivider",
-      "community": 34,
+      "community": 33,
       "norm_label": "_builddivider"
     },
     {
@@ -9000,7 +8991,7 @@
       "source_file": "lib/features/visualizer/widgets/speed_controller.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_speed_controller_dart_buildspeedindicator",
-      "community": 34,
+      "community": 33,
       "norm_label": "_buildspeedindicator"
     },
     {
@@ -9009,7 +9000,7 @@
       "source_file": "lib/features/visualizer/widgets/code_viewer.dart",
       "source_location": null,
       "id": "lib_features_visualizer_widgets_code_viewer_dart",
-      "community": 35,
+      "community": 34,
       "norm_label": "code_viewer.dart"
     },
     {
@@ -9018,7 +9009,7 @@
       "source_file": "lib/features/visualizer/widgets/code_viewer.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_code_viewer_dart_codeviewer",
-      "community": 35,
+      "community": 34,
       "norm_label": "codeviewer"
     },
     {
@@ -9027,7 +9018,7 @@
       "source_file": "lib/features/visualizer/widgets/code_viewer.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_code_viewer_dart_codeviewerstate",
-      "community": 35,
+      "community": 34,
       "norm_label": "_codeviewerstate"
     },
     {
@@ -9036,7 +9027,7 @@
       "source_file": "lib/features/visualizer/widgets/code_viewer.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_code_viewer_dart_topbar",
-      "community": 35,
+      "community": 34,
       "norm_label": "_topbar"
     },
     {
@@ -9045,7 +9036,7 @@
       "source_file": "lib/features/visualizer/widgets/code_viewer.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_code_viewer_dart_linenumbers",
-      "community": 35,
+      "community": 34,
       "norm_label": "_linenumbers"
     },
     {
@@ -9054,7 +9045,7 @@
       "source_file": "lib/features/visualizer/widgets/code_viewer.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_code_viewer_dart_codeblock",
-      "community": 35,
+      "community": 34,
       "norm_label": "_codeblock"
     },
     {
@@ -9063,7 +9054,7 @@
       "source_file": "lib/features/visualizer/widgets/code_viewer.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_code_viewer_dart_build",
-      "community": 35,
+      "community": 34,
       "norm_label": "build"
     },
     {
@@ -9072,7 +9063,7 @@
       "source_file": "lib/features/visualizer/widgets/code_viewer.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_code_viewer_dart_container",
-      "community": 35,
+      "community": 34,
       "norm_label": "container"
     },
     {
@@ -9081,7 +9072,7 @@
       "source_file": "lib/features/visualizer/widgets/code_viewer.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_code_viewer_dart_sizedbox",
-      "community": 35,
+      "community": 34,
       "norm_label": "sizedbox"
     },
     {
@@ -9090,7 +9081,7 @@
       "source_file": "lib/features/visualizer/widgets/code_viewer.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_code_viewer_dart_languagetab",
-      "community": 35,
+      "community": 34,
       "norm_label": "_languagetab"
     },
     {
@@ -9099,7 +9090,7 @@
       "source_file": "lib/features/visualizer/widgets/code_viewer.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_code_viewer_dart_padding",
-      "community": 35,
+      "community": 34,
       "norm_label": "padding"
     },
     {
@@ -9108,7 +9099,7 @@
       "source_file": "lib/features/visualizer/widgets/code_viewer.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_code_viewer_dart_dot",
-      "community": 35,
+      "community": 34,
       "norm_label": "_dot"
     },
     {
@@ -9117,7 +9108,7 @@
       "source_file": "lib/features/visualizer/widgets/code_viewer.dart",
       "source_location": null,
       "id": "root_algoplay_lib_features_visualizer_widgets_code_viewer_dart_badge",
-      "community": 35,
+      "community": 34,
       "norm_label": "_badge"
     },
     {
@@ -9126,7 +9117,7 @@
       "source_file": "lib/features/visualizer/widgets/code_viewer.dart",
       "source_location": null,
       "id": "package_flutter_services_dart",
-      "community": 35,
+      "community": 34,
       "norm_label": "package:flutter/services.dart"
     },
     {
@@ -9135,7 +9126,7 @@
       "source_file": "lib/features/visualizer/widgets/code_viewer.dart",
       "source_location": null,
       "id": "package_flutter_highlight_flutter_highlight_dart",
-      "community": 35,
+      "community": 34,
       "norm_label": "package:flutter_highlight/flutter_highlight.dart"
     },
     {
@@ -9144,7 +9135,7 @@
       "source_file": "lib/features/visualizer/widgets/code_viewer.dart",
       "source_location": null,
       "id": "package_flutter_highlight_themes_monokai_sublime_dart",
-      "community": 35,
+      "community": 34,
       "norm_label": "package:flutter_highlight/themes/monokai-sublime.dart"
     },
     {
@@ -9900,7 +9891,7 @@
       "source_file": "lib/shared/providers/feature_tour_provider.dart",
       "source_location": null,
       "id": "lib_shared_providers_feature_tour_provider_dart",
-      "community": 39,
+      "community": 49,
       "norm_label": "feature_tour_provider.dart"
     },
     {
@@ -9909,7 +9900,7 @@
       "source_file": "lib/shared/providers/premium_provider.dart",
       "source_location": null,
       "id": "lib_shared_providers_premium_provider_dart",
-      "community": 39,
+      "community": 49,
       "norm_label": "premium_provider.dart"
     },
     {
@@ -9918,7 +9909,7 @@
       "source_file": "lib/shared/models/game_state.dart",
       "source_location": null,
       "id": "lib_shared_models_game_state_dart",
-      "community": 37,
+      "community": 45,
       "norm_label": "game_state.dart"
     },
     {
@@ -9927,7 +9918,7 @@
       "source_file": "lib/shared/models/game_state.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_models_game_state_dart_highscores",
-      "community": 37,
+      "community": 45,
       "norm_label": "highscores"
     },
     {
@@ -9936,7 +9927,7 @@
       "source_file": "lib/shared/models/game_state.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_models_game_state_dart_gamestate",
-      "community": 37,
+      "community": 45,
       "norm_label": "gamestate"
     },
     {
@@ -9945,7 +9936,7 @@
       "source_file": "lib/shared/models/game_state.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_models_game_state_dart_copywith",
-      "community": 37,
+      "community": 45,
       "norm_label": "copywith"
     },
     {
@@ -9954,7 +9945,7 @@
       "source_file": "lib/shared/models/user_progress.dart",
       "source_location": null,
       "id": "lib_shared_models_user_progress_dart",
-      "community": 61,
+      "community": 63,
       "norm_label": "user_progress.dart"
     },
     {
@@ -9963,7 +9954,7 @@
       "source_file": "lib/shared/models/user_progress.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_models_user_progress_dart_skillnode",
-      "community": 61,
+      "community": 63,
       "norm_label": "skillnode"
     },
     {
@@ -9972,7 +9963,7 @@
       "source_file": "lib/shared/models/user_progress.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_models_user_progress_dart_quizscore",
-      "community": 61,
+      "community": 63,
       "norm_label": "quizscore"
     },
     {
@@ -9981,7 +9972,7 @@
       "source_file": "lib/shared/models/user_progress.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_models_user_progress_dart_challengecompletion",
-      "community": 61,
+      "community": 63,
       "norm_label": "challengecompletion"
     },
     {
@@ -9990,7 +9981,7 @@
       "source_file": "lib/shared/models/user_progress.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_models_user_progress_dart_algorithmmastery",
-      "community": 61,
+      "community": 63,
       "norm_label": "algorithmmastery"
     },
     {
@@ -9999,7 +9990,7 @@
       "source_file": "lib/shared/models/user_progress.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_models_user_progress_dart_userprogress",
-      "community": 61,
+      "community": 63,
       "norm_label": "userprogress"
     },
     {
@@ -10008,7 +9999,7 @@
       "source_file": "lib/shared/models/user_progress.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_models_user_progress_dart_copywith",
-      "community": 61,
+      "community": 63,
       "norm_label": "copywith"
     },
     {
@@ -10017,7 +10008,7 @@
       "source_file": "lib/shared/models/subscription_state.dart",
       "source_location": null,
       "id": "lib_shared_models_subscription_state_dart",
-      "community": 37,
+      "community": 45,
       "norm_label": "subscription_state.dart"
     },
     {
@@ -10026,7 +10017,7 @@
       "source_file": "lib/shared/models/subscription_state.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_models_subscription_state_dart_subscriptionstate",
-      "community": 37,
+      "community": 45,
       "norm_label": "subscriptionstate"
     },
     {
@@ -10035,7 +10026,7 @@
       "source_file": "lib/shared/models/subscription_state.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_models_subscription_state_dart_copywith",
-      "community": 37,
+      "community": 45,
       "norm_label": "copywith"
     },
     {
@@ -10044,7 +10035,7 @@
       "source_file": "lib/shared/widgets/algorithm_card.dart",
       "source_location": null,
       "id": "lib_shared_widgets_algorithm_card_dart",
-      "community": 50,
+      "community": 79,
       "norm_label": "algorithm_card.dart"
     },
     {
@@ -10053,7 +10044,7 @@
       "source_file": "lib/shared/widgets/algorithm_card.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_algorithm_card_dart_algorithmcard",
-      "community": 50,
+      "community": 79,
       "norm_label": "algorithmcard"
     },
     {
@@ -10062,7 +10053,7 @@
       "source_file": "lib/shared/widgets/algorithm_card.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_algorithm_card_dart_build",
-      "community": 50,
+      "community": 79,
       "norm_label": "build"
     },
     {
@@ -10071,7 +10062,7 @@
       "source_file": "lib/shared/widgets/algorithm_card.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_algorithm_card_dart_gesturedetector",
-      "community": 50,
+      "community": 79,
       "norm_label": "gesturedetector"
     },
     {
@@ -10161,7 +10152,7 @@
       "source_file": "lib/shared/widgets/empty_state.dart",
       "source_location": null,
       "id": "lib_shared_widgets_empty_state_dart",
-      "community": 50,
+      "community": 57,
       "norm_label": "empty_state.dart"
     },
     {
@@ -10170,7 +10161,7 @@
       "source_file": "lib/shared/widgets/empty_state.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_empty_state_dart_emptystate",
-      "community": 50,
+      "community": 57,
       "norm_label": "emptystate"
     },
     {
@@ -10179,7 +10170,7 @@
       "source_file": "lib/shared/widgets/empty_state.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_empty_state_dart_build",
-      "community": 50,
+      "community": 57,
       "norm_label": "build"
     },
     {
@@ -10188,7 +10179,7 @@
       "source_file": "lib/shared/widgets/empty_state.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_empty_state_dart_center",
-      "community": 50,
+      "community": 57,
       "norm_label": "center"
     },
     {
@@ -10197,7 +10188,7 @@
       "source_file": "lib/shared/widgets/game_card.dart",
       "source_location": null,
       "id": "lib_shared_widgets_game_card_dart",
-      "community": 73,
+      "community": 72,
       "norm_label": "game_card.dart"
     },
     {
@@ -10206,7 +10197,7 @@
       "source_file": "lib/shared/widgets/game_card.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_game_card_dart_gamecard",
-      "community": 73,
+      "community": 72,
       "norm_label": "gamecard"
     },
     {
@@ -10215,7 +10206,7 @@
       "source_file": "lib/shared/widgets/game_card.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_game_card_dart_build",
-      "community": 73,
+      "community": 72,
       "norm_label": "build"
     },
     {
@@ -10224,7 +10215,7 @@
       "source_file": "lib/shared/widgets/game_card.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_game_card_dart_gesturedetector",
-      "community": 73,
+      "community": 72,
       "norm_label": "gesturedetector"
     },
     {
@@ -10233,7 +10224,7 @@
       "source_file": "lib/shared/widgets/game_card.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_game_card_dart_spacer",
-      "community": 73,
+      "community": 72,
       "norm_label": "spacer"
     },
     {
@@ -10242,7 +10233,7 @@
       "source_file": "lib/shared/widgets/algoplay_feature_tour.dart",
       "source_location": null,
       "id": "lib_shared_widgets_algoplay_feature_tour_dart",
-      "community": 52,
+      "community": 53,
       "norm_label": "algoplay_feature_tour.dart"
     },
     {
@@ -10251,7 +10242,7 @@
       "source_file": "lib/shared/widgets/algoplay_feature_tour.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_algoplay_feature_tour_dart_algoplayfeaturetourcard",
-      "community": 52,
+      "community": 53,
       "norm_label": "algoplayfeaturetourcard"
     },
     {
@@ -10260,7 +10251,7 @@
       "source_file": "lib/shared/widgets/algoplay_feature_tour.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_algoplay_feature_tour_dart_build",
-      "community": 52,
+      "community": 53,
       "norm_label": "build"
     },
     {
@@ -10269,7 +10260,7 @@
       "source_file": "lib/shared/widgets/algoplay_feature_tour.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_algoplay_feature_tour_dart_padding",
-      "community": 52,
+      "community": 53,
       "norm_label": "padding"
     },
     {
@@ -10278,7 +10269,7 @@
       "source_file": "lib/shared/widgets/algoplay_feature_tour.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_algoplay_feature_tour_dart_spacer",
-      "community": 52,
+      "community": 53,
       "norm_label": "spacer"
     },
     {
@@ -10287,7 +10278,7 @@
       "source_file": "lib/shared/widgets/algoplay_feature_tour.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_algoplay_feature_tour_dart_sizedbox",
-      "community": 52,
+      "community": 53,
       "norm_label": "sizedbox"
     },
     {
@@ -10296,7 +10287,7 @@
       "source_file": "lib/shared/widgets/progress_indicator_bar.dart",
       "source_location": null,
       "id": "lib_shared_widgets_progress_indicator_bar_dart",
-      "community": 57,
+      "community": 80,
       "norm_label": "progress_indicator_bar.dart"
     },
     {
@@ -10305,7 +10296,7 @@
       "source_file": "lib/shared/widgets/progress_indicator_bar.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_progress_indicator_bar_dart_progressindicatorbar",
-      "community": 57,
+      "community": 80,
       "norm_label": "progressindicatorbar"
     },
     {
@@ -10314,7 +10305,7 @@
       "source_file": "lib/shared/widgets/progress_indicator_bar.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_progress_indicator_bar_dart_build",
-      "community": 57,
+      "community": 80,
       "norm_label": "build"
     },
     {
@@ -10323,7 +10314,7 @@
       "source_file": "lib/shared/widgets/progress_indicator_bar.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_progress_indicator_bar_dart_column",
-      "community": 57,
+      "community": 80,
       "norm_label": "column"
     },
     {
@@ -10422,7 +10413,7 @@
       "source_file": "lib/shared/widgets/stat_card.dart",
       "source_location": null,
       "id": "lib_shared_widgets_stat_card_dart",
-      "community": 78,
+      "community": 50,
       "norm_label": "stat_card.dart"
     },
     {
@@ -10431,7 +10422,7 @@
       "source_file": "lib/shared/widgets/stat_card.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_stat_card_dart_statcard",
-      "community": 78,
+      "community": 50,
       "norm_label": "statcard"
     },
     {
@@ -10440,7 +10431,7 @@
       "source_file": "lib/shared/widgets/stat_card.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_stat_card_dart_build",
-      "community": 78,
+      "community": 50,
       "norm_label": "build"
     },
     {
@@ -10449,7 +10440,7 @@
       "source_file": "lib/shared/widgets/stat_card.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_stat_card_dart_container",
-      "community": 78,
+      "community": 50,
       "norm_label": "container"
     },
     {
@@ -10458,7 +10449,7 @@
       "source_file": "lib/shared/widgets/skill_category_card.dart",
       "source_location": null,
       "id": "lib_shared_widgets_skill_category_card_dart",
-      "community": 79,
+      "community": 77,
       "norm_label": "skill_category_card.dart"
     },
     {
@@ -10467,7 +10458,7 @@
       "source_file": "lib/shared/widgets/skill_category_card.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_skill_category_card_dart_skillcategorycard",
-      "community": 79,
+      "community": 77,
       "norm_label": "skillcategorycard"
     },
     {
@@ -10476,7 +10467,7 @@
       "source_file": "lib/shared/widgets/skill_category_card.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_skill_category_card_dart_build",
-      "community": 79,
+      "community": 77,
       "norm_label": "build"
     },
     {
@@ -10485,7 +10476,7 @@
       "source_file": "lib/shared/widgets/skill_category_card.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_skill_category_card_dart_gesturedetector",
-      "community": 79,
+      "community": 77,
       "norm_label": "gesturedetector"
     },
     {
@@ -10494,7 +10485,7 @@
       "source_file": "lib/shared/widgets/xp_progress_bar.dart",
       "source_location": null,
       "id": "lib_shared_widgets_xp_progress_bar_dart",
-      "community": 77,
+      "community": 78,
       "norm_label": "xp_progress_bar.dart"
     },
     {
@@ -10503,7 +10494,7 @@
       "source_file": "lib/shared/widgets/xp_progress_bar.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_xp_progress_bar_dart_xpprogressbar",
-      "community": 77,
+      "community": 78,
       "norm_label": "xpprogressbar"
     },
     {
@@ -10512,7 +10503,7 @@
       "source_file": "lib/shared/widgets/xp_progress_bar.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_xp_progress_bar_dart_build",
-      "community": 77,
+      "community": 78,
       "norm_label": "build"
     },
     {
@@ -10521,7 +10512,7 @@
       "source_file": "lib/shared/widgets/xp_progress_bar.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_xp_progress_bar_dart_sizedbox",
-      "community": 77,
+      "community": 78,
       "norm_label": "sizedbox"
     },
     {
@@ -10530,7 +10521,7 @@
       "source_file": "lib/shared/widgets/section_header.dart",
       "source_location": null,
       "id": "lib_shared_widgets_section_header_dart",
-      "community": 80,
+      "community": 50,
       "norm_label": "section_header.dart"
     },
     {
@@ -10539,7 +10530,7 @@
       "source_file": "lib/shared/widgets/section_header.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_section_header_dart_sectionheader",
-      "community": 80,
+      "community": 50,
       "norm_label": "sectionheader"
     },
     {
@@ -10548,7 +10539,7 @@
       "source_file": "lib/shared/widgets/section_header.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_section_header_dart_build",
-      "community": 80,
+      "community": 50,
       "norm_label": "build"
     },
     {
@@ -10557,7 +10548,7 @@
       "source_file": "lib/shared/widgets/section_header.dart",
       "source_location": null,
       "id": "root_algoplay_lib_shared_widgets_section_header_dart_row",
-      "community": 80,
+      "community": 50,
       "norm_label": "row"
     },
     {
@@ -10800,7 +10791,7 @@
       "source_file": "lib/algorithms/models/pathfinding_models.dart",
       "source_location": null,
       "id": "lib_algorithms_models_pathfinding_models_dart",
-      "community": 74,
+      "community": 73,
       "norm_label": "pathfinding_models.dart"
     },
     {
@@ -10809,7 +10800,7 @@
       "source_file": "lib/algorithms/models/pathfinding_models.dart",
       "source_location": null,
       "id": "root_algoplay_lib_algorithms_models_pathfinding_models_dart_gridcell",
-      "community": 74,
+      "community": 73,
       "norm_label": "gridcell"
     },
     {
@@ -10818,7 +10809,7 @@
       "source_file": "lib/algorithms/models/pathfinding_models.dart",
       "source_location": null,
       "id": "root_algoplay_lib_algorithms_models_pathfinding_models_dart_pathfindingstep",
-      "community": 74,
+      "community": 73,
       "norm_label": "pathfindingstep"
     },
     {
@@ -10827,7 +10818,7 @@
       "source_file": "lib/algorithms/models/pathfinding_models.dart",
       "source_location": null,
       "id": "root_algoplay_lib_algorithms_models_pathfinding_models_dart_copywith",
-      "community": 74,
+      "community": 73,
       "norm_label": "copywith"
     },
     {
@@ -10836,7 +10827,7 @@
       "source_file": "lib/algorithms/models/pathfinding_models.dart",
       "source_location": null,
       "id": "root_algoplay_lib_algorithms_models_pathfinding_models_dart_tostring",
-      "community": 74,
+      "community": 73,
       "norm_label": "tostring"
     },
     {
@@ -10845,7 +10836,7 @@
       "source_file": "lib/algorithms/models/algorithm_models.dart",
       "source_location": null,
       "id": "lib_algorithms_models_algorithm_models_dart",
-      "community": 97,
+      "community": 98,
       "norm_label": "algorithm_models.dart"
     },
     {
@@ -11574,7 +11565,7 @@
       "source_file": "android/build.gradle.kts",
       "source_location": "L1",
       "id": "android_build_gradle_kts",
-      "community": 98,
+      "community": 99,
       "norm_label": "build.gradle.kts"
     },
     {
@@ -11583,7 +11574,7 @@
       "source_file": "android/settings.gradle.kts",
       "source_location": "L1",
       "id": "android_settings_gradle_kts",
-      "community": 99,
+      "community": 100,
       "norm_label": "settings.gradle.kts"
     },
     {
@@ -11592,7 +11583,7 @@
       "source_file": "android/app/build.gradle.kts",
       "source_location": "L1",
       "id": "android_app_build_gradle_kts",
-      "community": 100,
+      "community": 101,
       "norm_label": "build.gradle.kts"
     },
     {
@@ -11601,7 +11592,7 @@
       "source_file": "android/app/src/main/kotlin/com/algoplay/app/MainActivity.kt",
       "source_location": "L1",
       "id": "android_app_src_main_kotlin_com_algoplay_app_mainactivity_kt",
-      "community": 92,
+      "community": 93,
       "norm_label": "mainactivity.kt"
     },
     {
@@ -11610,7 +11601,7 @@
       "source_file": "android/app/src/main/kotlin/com/algoplay/app/MainActivity.kt",
       "source_location": "L5",
       "id": "app_mainactivity_mainactivity",
-      "community": 92,
+      "community": 93,
       "norm_label": "mainactivity"
     },
     {
@@ -11619,7 +11610,7 @@
       "source_file": "android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java",
       "source_location": "L1",
       "id": "android_app_src_main_java_io_flutter_plugins_generatedpluginregistrant_java",
-      "community": 90,
+      "community": 91,
       "norm_label": "generatedpluginregistrant.java"
     },
     {
@@ -11628,7 +11619,7 @@
       "source_file": "android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java",
       "source_location": "L14",
       "id": "plugins_generatedpluginregistrant_generatedpluginregistrant",
-      "community": 90,
+      "community": 91,
       "norm_label": "generatedpluginregistrant"
     },
     {
@@ -11637,7 +11628,7 @@
       "source_file": "android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java",
       "source_location": "L17",
       "id": "plugins_generatedpluginregistrant_generatedpluginregistrant_registerwith",
-      "community": 90,
+      "community": 91,
       "norm_label": ".registerwith()"
     },
     {
@@ -11646,7 +11637,7 @@
       "source_file": "test/widget_test.dart",
       "source_location": null,
       "id": "test_widget_test_dart",
-      "community": 33,
+      "community": 36,
       "norm_label": "widget_test.dart"
     },
     {
@@ -11655,7 +11646,7 @@
       "source_file": "test/widget_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_widget_test_dart_main",
-      "community": 33,
+      "community": 36,
       "norm_label": "main"
     },
     {
@@ -11664,7 +11655,7 @@
       "source_file": "test/algorithms/trees/tree_algorithms_test.dart",
       "source_location": null,
       "id": "package_flutter_test_flutter_test_dart",
-      "community": 33,
+      "community": 36,
       "norm_label": "package:flutter_test/flutter_test.dart"
     },
     {
@@ -11673,7 +11664,7 @@
       "source_file": "test/release_readiness_contract_test.dart",
       "source_location": null,
       "id": "test_release_readiness_contract_test_dart",
-      "community": 33,
+      "community": 36,
       "norm_label": "release_readiness_contract_test.dart"
     },
     {
@@ -11682,7 +11673,7 @@
       "source_file": "test/release_readiness_contract_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_release_readiness_contract_test_dart_main",
-      "community": 33,
+      "community": 36,
       "norm_label": "main"
     },
     {
@@ -11691,7 +11682,7 @@
       "source_file": "test/core/theme/app_theme_test.dart",
       "source_location": null,
       "id": "test_core_theme_app_theme_test_dart",
-      "community": 52,
+      "community": 53,
       "norm_label": "app_theme_test.dart"
     },
     {
@@ -11700,7 +11691,7 @@
       "source_file": "test/core/theme/app_theme_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_core_theme_app_theme_test_dart_main",
-      "community": 52,
+      "community": 53,
       "norm_label": "main"
     },
     {
@@ -11745,7 +11736,7 @@
       "source_file": "test/features/home_lessons_layout_contract_test.dart",
       "source_location": null,
       "id": "test_features_home_lessons_layout_contract_test_dart",
-      "community": 33,
+      "community": 36,
       "norm_label": "home_lessons_layout_contract_test.dart"
     },
     {
@@ -11754,7 +11745,7 @@
       "source_file": "test/features/home_lessons_layout_contract_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_home_lessons_layout_contract_test_dart_main",
-      "community": 33,
+      "community": 36,
       "norm_label": "main"
     },
     {
@@ -11763,7 +11754,7 @@
       "source_file": "test/features/safe_area_contract_test.dart",
       "source_location": null,
       "id": "test_features_safe_area_contract_test_dart",
-      "community": 33,
+      "community": 36,
       "norm_label": "safe_area_contract_test.dart"
     },
     {
@@ -11772,7 +11763,7 @@
       "source_file": "test/features/safe_area_contract_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_safe_area_contract_test_dart_main",
-      "community": 33,
+      "community": 36,
       "norm_label": "main"
     },
     {
@@ -11781,7 +11772,7 @@
       "source_file": "test/features/navigation_lifecycle_test.dart",
       "source_location": null,
       "id": "test_features_navigation_lifecycle_test_dart",
-      "community": 53,
+      "community": 55,
       "norm_label": "navigation_lifecycle_test.dart"
     },
     {
@@ -11790,7 +11781,7 @@
       "source_file": "test/features/navigation_lifecycle_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_navigation_lifecycle_test_dart_wrapwithrouter",
-      "community": 53,
+      "community": 55,
       "norm_label": "_wrapwithrouter"
     },
     {
@@ -11799,7 +11790,7 @@
       "source_file": "test/features/navigation_lifecycle_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_navigation_lifecycle_test_dart_providerscope",
-      "community": 53,
+      "community": 55,
       "norm_label": "providerscope"
     },
     {
@@ -11808,7 +11799,7 @@
       "source_file": "test/features/navigation_lifecycle_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_navigation_lifecycle_test_dart_testrouter",
-      "community": 53,
+      "community": 55,
       "norm_label": "_testrouter"
     },
     {
@@ -11817,7 +11808,7 @@
       "source_file": "test/features/navigation_lifecycle_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_navigation_lifecycle_test_dart_gorouter",
-      "community": 53,
+      "community": 55,
       "norm_label": "gorouter"
     },
     {
@@ -11826,7 +11817,7 @@
       "source_file": "test/features/navigation_lifecycle_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_navigation_lifecycle_test_dart_isignorableoverflow",
-      "community": 53,
+      "community": 55,
       "norm_label": "_isignorableoverflow"
     },
     {
@@ -11835,7 +11826,7 @@
       "source_file": "test/features/navigation_lifecycle_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_navigation_lifecycle_test_dart_expectnofatalflutterexceptions",
-      "community": 53,
+      "community": 55,
       "norm_label": "_expectnofatalflutterexceptions"
     },
     {
@@ -11844,7 +11835,7 @@
       "source_file": "test/features/navigation_lifecycle_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_navigation_lifecycle_test_dart_main",
-      "community": 53,
+      "community": 55,
       "norm_label": "main"
     },
     {
@@ -11853,7 +11844,7 @@
       "source_file": "test/features/screen_smoke_test.dart",
       "source_location": null,
       "id": "package_algoplay_features_learn_presentation_learn_page_dart",
-      "community": 53,
+      "community": 55,
       "norm_label": "package:algoplay/features/learn/presentation/learn_page.dart"
     },
     {
@@ -12015,7 +12006,7 @@
       "source_file": "test/features/profile/profile_page_test.dart",
       "source_location": null,
       "id": "package_algoplay_features_profile_presentation_profile_page_dart",
-      "community": 91,
+      "community": 92,
       "norm_label": "package:algoplay/features/profile/presentation/profile_page.dart"
     },
     {
@@ -12105,7 +12096,7 @@
       "source_file": "test/features/premium/premium_purchase_contract_test.dart",
       "source_location": null,
       "id": "test_features_premium_premium_purchase_contract_test_dart",
-      "community": 33,
+      "community": 36,
       "norm_label": "premium_purchase_contract_test.dart"
     },
     {
@@ -12114,7 +12105,7 @@
       "source_file": "test/features/premium/premium_purchase_contract_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_premium_premium_purchase_contract_test_dart_main",
-      "community": 33,
+      "community": 36,
       "norm_label": "main"
     },
     {
@@ -12204,7 +12195,7 @@
       "source_file": "test/features/grid_escape/level_generator_test.dart",
       "source_location": null,
       "id": "test_features_grid_escape_level_generator_test_dart",
-      "community": 45,
+      "community": 43,
       "norm_label": "level_generator_test.dart"
     },
     {
@@ -12213,7 +12204,7 @@
       "source_file": "test/features/grid_escape/level_generator_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_grid_escape_level_generator_test_dart_main",
-      "community": 45,
+      "community": 43,
       "norm_label": "main"
     },
     {
@@ -12222,7 +12213,7 @@
       "source_file": "test/features/grid_escape/level_generator_test.dart",
       "source_location": null,
       "id": "package_algoplay_features_grid_escape_data_level_generator_dart",
-      "community": 45,
+      "community": 43,
       "norm_label": "package:algoplay/features/grid_escape/data/level_generator.dart"
     },
     {
@@ -12366,7 +12357,7 @@
       "source_file": "test/features/learn/lesson_progress_test.dart",
       "source_location": null,
       "id": "package_algoplay_features_learn_data_lesson_content_dart",
-      "community": 42,
+      "community": 41,
       "norm_label": "package:algoplay/features/learn/data/lesson_content.dart"
     },
     {
@@ -12375,7 +12366,7 @@
       "source_file": "test/features/learn/lesson_ads_contract_test.dart",
       "source_location": null,
       "id": "test_features_learn_lesson_ads_contract_test_dart",
-      "community": 33,
+      "community": 36,
       "norm_label": "lesson_ads_contract_test.dart"
     },
     {
@@ -12384,7 +12375,7 @@
       "source_file": "test/features/learn/lesson_ads_contract_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_learn_lesson_ads_contract_test_dart_main",
-      "community": 33,
+      "community": 36,
       "norm_label": "main"
     },
     {
@@ -12393,7 +12384,7 @@
       "source_file": "test/features/learn/module_content_page_test.dart",
       "source_location": null,
       "id": "test_features_learn_module_content_page_test_dart",
-      "community": 42,
+      "community": 41,
       "norm_label": "module_content_page_test.dart"
     },
     {
@@ -12402,7 +12393,7 @@
       "source_file": "test/features/learn/module_content_page_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_learn_module_content_page_test_dart_wrap",
-      "community": 42,
+      "community": 41,
       "norm_label": "_wrap"
     },
     {
@@ -12411,7 +12402,7 @@
       "source_file": "test/features/learn/module_content_page_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_learn_module_content_page_test_dart_providerscope",
-      "community": 42,
+      "community": 41,
       "norm_label": "providerscope"
     },
     {
@@ -12420,7 +12411,7 @@
       "source_file": "test/features/learn/module_content_page_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_learn_module_content_page_test_dart_wraprouter",
-      "community": 42,
+      "community": 41,
       "norm_label": "_wraprouter"
     },
     {
@@ -12429,7 +12420,7 @@
       "source_file": "test/features/learn/module_content_page_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_learn_module_content_page_test_dart_lessonrouter",
-      "community": 42,
+      "community": 41,
       "norm_label": "_lessonrouter"
     },
     {
@@ -12438,7 +12429,7 @@
       "source_file": "test/features/learn/module_content_page_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_learn_module_content_page_test_dart_gorouter",
-      "community": 42,
+      "community": 41,
       "norm_label": "gorouter"
     },
     {
@@ -12447,7 +12438,7 @@
       "source_file": "test/features/learn/module_content_page_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_learn_module_content_page_test_dart_main",
-      "community": 42,
+      "community": 41,
       "norm_label": "main"
     },
     {
@@ -12456,7 +12447,7 @@
       "source_file": "test/features/learn/lesson_progress_test.dart",
       "source_location": null,
       "id": "package_algoplay_features_learn_data_lesson_progress_repository_dart",
-      "community": 42,
+      "community": 41,
       "norm_label": "package:algoplay/features/learn/data/lesson_progress_repository.dart"
     },
     {
@@ -12465,7 +12456,7 @@
       "source_file": "test/features/learn/module_content_page_test.dart",
       "source_location": null,
       "id": "package_algoplay_features_learn_presentation_lesson_detail_page_dart",
-      "community": 42,
+      "community": 41,
       "norm_label": "package:algoplay/features/learn/presentation/lesson_detail_page.dart"
     },
     {
@@ -12474,7 +12465,7 @@
       "source_file": "test/features/learn/module_content_page_test.dart",
       "source_location": null,
       "id": "package_algoplay_features_learn_presentation_module_content_page_dart",
-      "community": 42,
+      "community": 41,
       "norm_label": "package:algoplay/features/learn/presentation/module_content_page.dart"
     },
     {
@@ -12483,7 +12474,7 @@
       "source_file": "test/features/learn/lesson_progress_test.dart",
       "source_location": null,
       "id": "test_features_learn_lesson_progress_test_dart",
-      "community": 42,
+      "community": 41,
       "norm_label": "lesson_progress_test.dart"
     },
     {
@@ -12492,7 +12483,7 @@
       "source_file": "test/features/learn/lesson_progress_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_learn_lesson_progress_test_dart_main",
-      "community": 42,
+      "community": 41,
       "norm_label": "main"
     },
     {
@@ -12591,7 +12582,7 @@
       "source_file": "test/features/profile/profile_page_test.dart",
       "source_location": null,
       "id": "test_features_profile_profile_page_test_dart",
-      "community": 91,
+      "community": 92,
       "norm_label": "profile_page_test.dart"
     },
     {
@@ -12600,7 +12591,7 @@
       "source_file": "test/features/profile/profile_page_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_profile_profile_page_test_dart_main",
-      "community": 91,
+      "community": 92,
       "norm_label": "main"
     },
     {
@@ -12663,7 +12654,7 @@
       "source_file": "test/features/onboarding/onboarding_routing_contract_test.dart",
       "source_location": null,
       "id": "test_features_onboarding_onboarding_routing_contract_test_dart",
-      "community": 33,
+      "community": 36,
       "norm_label": "onboarding_routing_contract_test.dart"
     },
     {
@@ -12672,7 +12663,7 @@
       "source_file": "test/features/onboarding/onboarding_routing_contract_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_onboarding_onboarding_routing_contract_test_dart_main",
-      "community": 33,
+      "community": 36,
       "norm_label": "main"
     },
     {
@@ -12681,7 +12672,7 @@
       "source_file": "test/features/battle_arena/question_bank_test.dart",
       "source_location": null,
       "id": "test_features_battle_arena_question_bank_test_dart",
-      "community": 45,
+      "community": 43,
       "norm_label": "question_bank_test.dart"
     },
     {
@@ -12690,7 +12681,7 @@
       "source_file": "test/features/battle_arena/question_bank_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_battle_arena_question_bank_test_dart_main",
-      "community": 45,
+      "community": 43,
       "norm_label": "main"
     },
     {
@@ -12699,7 +12690,7 @@
       "source_file": "test/features/battle_arena/question_bank_test.dart",
       "source_location": null,
       "id": "package_algoplay_features_battle_arena_data_question_bank_dart",
-      "community": 45,
+      "community": 43,
       "norm_label": "package:algoplay/features/battle_arena/data/question_bank.dart"
     },
     {
@@ -12780,7 +12771,7 @@
       "source_file": "test/algorithms/trees/tree_algorithms_test.dart",
       "source_location": null,
       "id": "package_algoplay_algorithms_models_tree_models_dart",
-      "community": 60,
+      "community": 59,
       "norm_label": "package:algoplay/algorithms/models/tree_models.dart"
     },
     {
@@ -12789,7 +12780,7 @@
       "source_file": "test/features/visualizer/widgets/animated_sort_bar_test.dart",
       "source_location": null,
       "id": "test_features_visualizer_widgets_animated_sort_bar_test_dart",
-      "community": 46,
+      "community": 47,
       "norm_label": "animated_sort_bar_test.dart"
     },
     {
@@ -12798,7 +12789,7 @@
       "source_file": "test/features/visualizer/widgets/animated_sort_bar_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_visualizer_widgets_animated_sort_bar_test_dart_main",
-      "community": 46,
+      "community": 47,
       "norm_label": "main"
     },
     {
@@ -12807,7 +12798,7 @@
       "source_file": "test/features/visualizer/widgets/code_viewer_test.dart",
       "source_location": null,
       "id": "package_algoplay_features_visualizer_widgets_animated_sort_bar_dart",
-      "community": 46,
+      "community": 47,
       "norm_label": "package:algoplay/features/visualizer/widgets/animated_sort_bar.dart"
     },
     {
@@ -12816,7 +12807,7 @@
       "source_file": "test/features/visualizer/widgets/array_input_sheet_test.dart",
       "source_location": null,
       "id": "test_features_visualizer_widgets_array_input_sheet_test_dart",
-      "community": 33,
+      "community": 87,
       "norm_label": "array_input_sheet_test.dart"
     },
     {
@@ -12825,7 +12816,7 @@
       "source_file": "test/features/visualizer/widgets/array_input_sheet_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_visualizer_widgets_array_input_sheet_test_dart_main",
-      "community": 33,
+      "community": 87,
       "norm_label": "main"
     },
     {
@@ -12834,7 +12825,7 @@
       "source_file": "test/features/visualizer/widgets/array_input_sheet_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_visualizer_widgets_array_input_sheet_test_dart_opensheet",
-      "community": 33,
+      "community": 87,
       "norm_label": "opensheet"
     },
     {
@@ -12843,7 +12834,7 @@
       "source_file": "test/features/visualizer/widgets/array_input_sheet_test.dart",
       "source_location": null,
       "id": "package_algoplay_features_visualizer_widgets_array_input_sheet_dart",
-      "community": 33,
+      "community": 87,
       "norm_label": "package:algoplay/features/visualizer/widgets/array_input_sheet.dart"
     },
     {
@@ -12852,7 +12843,7 @@
       "source_file": "test/features/visualizer/widgets/code_viewer_test.dart",
       "source_location": null,
       "id": "test_features_visualizer_widgets_code_viewer_test_dart",
-      "community": 46,
+      "community": 47,
       "norm_label": "code_viewer_test.dart"
     },
     {
@@ -12861,7 +12852,7 @@
       "source_file": "test/features/visualizer/widgets/code_viewer_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_visualizer_widgets_code_viewer_test_dart_wrap",
-      "community": 46,
+      "community": 47,
       "norm_label": "_wrap"
     },
     {
@@ -12870,7 +12861,7 @@
       "source_file": "test/features/visualizer/widgets/code_viewer_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_visualizer_widgets_code_viewer_test_dart_providerscope",
-      "community": 46,
+      "community": 47,
       "norm_label": "providerscope"
     },
     {
@@ -12879,7 +12870,7 @@
       "source_file": "test/features/visualizer/widgets/code_viewer_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_visualizer_widgets_code_viewer_test_dart_expectnoflutterexceptions",
-      "community": 46,
+      "community": 47,
       "norm_label": "_expectnoflutterexceptions"
     },
     {
@@ -12888,7 +12879,7 @@
       "source_file": "test/features/visualizer/widgets/code_viewer_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_visualizer_widgets_code_viewer_test_dart_main",
-      "community": 46,
+      "community": 47,
       "norm_label": "main"
     },
     {
@@ -12897,7 +12888,7 @@
       "source_file": "test/features/visualizer/widgets/code_viewer_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_features_visualizer_widgets_code_viewer_test_dart_scaffold",
-      "community": 46,
+      "community": 47,
       "norm_label": "scaffold"
     },
     {
@@ -12915,7 +12906,7 @@
       "source_file": "test/features/visualizer/widgets/code_viewer_test.dart",
       "source_location": null,
       "id": "package_algoplay_features_visualizer_widgets_code_viewer_dart",
-      "community": 46,
+      "community": 47,
       "norm_label": "package:algoplay/features/visualizer/widgets/code_viewer.dart"
     },
     {
@@ -12924,7 +12915,7 @@
       "source_file": "test/shared/providers/app_providers_test.dart",
       "source_location": null,
       "id": "test_shared_providers_app_providers_test_dart",
-      "community": 7,
+      "community": 5,
       "norm_label": "app_providers_test.dart"
     },
     {
@@ -12933,7 +12924,7 @@
       "source_file": "test/shared/providers/app_providers_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_shared_providers_app_providers_test_dart_main",
-      "community": 7,
+      "community": 5,
       "norm_label": "main"
     },
     {
@@ -12942,7 +12933,7 @@
       "source_file": "test/shared/models/user_progress_test.dart",
       "source_location": null,
       "id": "test_shared_models_user_progress_test_dart",
-      "community": 45,
+      "community": 43,
       "norm_label": "user_progress_test.dart"
     },
     {
@@ -12951,7 +12942,7 @@
       "source_file": "test/shared/models/user_progress_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_shared_models_user_progress_test_dart_main",
-      "community": 45,
+      "community": 43,
       "norm_label": "main"
     },
     {
@@ -12960,7 +12951,7 @@
       "source_file": "test/shared/models/user_progress_test.dart",
       "source_location": null,
       "id": "package_algoplay_shared_models_user_progress_dart",
-      "community": 45,
+      "community": 43,
       "norm_label": "package:algoplay/shared/models/user_progress.dart"
     },
     {
@@ -12969,7 +12960,7 @@
       "source_file": "test/algorithms/pathfinding/pathfinding_algorithms_test.dart",
       "source_location": null,
       "id": "test_algorithms_pathfinding_pathfinding_algorithms_test_dart",
-      "community": 51,
+      "community": 52,
       "norm_label": "pathfinding_algorithms_test.dart"
     },
     {
@@ -12978,7 +12969,7 @@
       "source_file": "test/algorithms/pathfinding/pathfinding_algorithms_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_algorithms_pathfinding_pathfinding_algorithms_test_dart_gridcell",
-      "community": 51,
+      "community": 52,
       "norm_label": "gridcell"
     },
     {
@@ -12987,7 +12978,7 @@
       "source_file": "test/algorithms/pathfinding/pathfinding_algorithms_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_algorithms_pathfinding_pathfinding_algorithms_test_dart_expectnonemptyoperations",
-      "community": 51,
+      "community": 52,
       "norm_label": "expectnonemptyoperations"
     },
     {
@@ -12996,7 +12987,7 @@
       "source_file": "test/algorithms/pathfinding/pathfinding_algorithms_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_algorithms_pathfinding_pathfinding_algorithms_test_dart_expectvalidvisitedcoords",
-      "community": 51,
+      "community": 52,
       "norm_label": "expectvalidvisitedcoords"
     },
     {
@@ -13005,7 +12996,7 @@
       "source_file": "test/algorithms/pathfinding/pathfinding_algorithms_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_algorithms_pathfinding_pathfinding_algorithms_test_dart_testpathfindingalgorithm",
-      "community": 51,
+      "community": 52,
       "norm_label": "testpathfindingalgorithm"
     },
     {
@@ -13014,7 +13005,7 @@
       "source_file": "test/algorithms/pathfinding/pathfinding_algorithms_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_algorithms_pathfinding_pathfinding_algorithms_test_dart_testmazegenerator",
-      "community": 51,
+      "community": 52,
       "norm_label": "testmazegenerator"
     },
     {
@@ -13023,7 +13014,7 @@
       "source_file": "test/algorithms/pathfinding/pathfinding_algorithms_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_algorithms_pathfinding_pathfinding_algorithms_test_dart_main",
-      "community": 51,
+      "community": 52,
       "norm_label": "main"
     },
     {
@@ -13032,7 +13023,7 @@
       "source_file": "test/algorithms/pathfinding/pathfinding_algorithms_test.dart",
       "source_location": null,
       "id": "package_algoplay_algorithms_pathfinding_pathfinding_algorithms_dart",
-      "community": 51,
+      "community": 52,
       "norm_label": "package:algoplay/algorithms/pathfinding/pathfinding_algorithms.dart"
     },
     {
@@ -13041,7 +13032,7 @@
       "source_file": "test/algorithms/pathfinding/pathfinding_algorithms_test.dart",
       "source_location": null,
       "id": "package_algoplay_algorithms_models_pathfinding_models_dart",
-      "community": 51,
+      "community": 52,
       "norm_label": "package:algoplay/algorithms/models/pathfinding_models.dart"
     },
     {
@@ -13104,7 +13095,7 @@
       "source_file": "test/algorithms/dp/dp_algorithms_test.dart",
       "source_location": null,
       "id": "test_algorithms_dp_dp_algorithms_test_dart",
-      "community": 45,
+      "community": 43,
       "norm_label": "dp_algorithms_test.dart"
     },
     {
@@ -13113,7 +13104,7 @@
       "source_file": "test/algorithms/dp/dp_algorithms_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_algorithms_dp_dp_algorithms_test_dart_main",
-      "community": 45,
+      "community": 43,
       "norm_label": "main"
     },
     {
@@ -13122,7 +13113,7 @@
       "source_file": "test/algorithms/dp/dp_algorithms_test.dart",
       "source_location": null,
       "id": "package_algoplay_algorithms_dp_dp_algorithms_dart",
-      "community": 45,
+      "community": 43,
       "norm_label": "package:algoplay/algorithms/dp/dp_algorithms.dart"
     },
     {
@@ -13131,7 +13122,7 @@
       "source_file": "test/algorithms/sorting/sorting_algorithms_test.dart",
       "source_location": null,
       "id": "test_algorithms_sorting_sorting_algorithms_test_dart",
-      "community": 59,
+      "community": 60,
       "norm_label": "sorting_algorithms_test.dart"
     },
     {
@@ -13140,7 +13131,7 @@
       "source_file": "test/algorithms/sorting/sorting_algorithms_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_algorithms_sorting_sorting_algorithms_test_dart_expectnonemptyoperations",
-      "community": 59,
+      "community": 60,
       "norm_label": "expectnonemptyoperations"
     },
     {
@@ -13149,7 +13140,7 @@
       "source_file": "test/algorithms/sorting/sorting_algorithms_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_algorithms_sorting_sorting_algorithms_test_dart_expectvalidindices",
-      "community": 59,
+      "community": 60,
       "norm_label": "expectvalidindices"
     },
     {
@@ -13158,7 +13149,7 @@
       "source_file": "test/algorithms/sorting/sorting_algorithms_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_algorithms_sorting_sorting_algorithms_test_dart_expectfinalarraysorted",
-      "community": 59,
+      "community": 60,
       "norm_label": "expectfinalarraysorted"
     },
     {
@@ -13167,7 +13158,7 @@
       "source_file": "test/algorithms/sorting/sorting_algorithms_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_algorithms_sorting_sorting_algorithms_test_dart_testsortalgorithm",
-      "community": 59,
+      "community": 60,
       "norm_label": "testsortalgorithm"
     },
     {
@@ -13176,7 +13167,7 @@
       "source_file": "test/algorithms/sorting/sorting_algorithms_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_algorithms_sorting_sorting_algorithms_test_dart_main",
-      "community": 59,
+      "community": 60,
       "norm_label": "main"
     },
     {
@@ -13185,7 +13176,7 @@
       "source_file": "test/algorithms/sorting/sorting_algorithms_test.dart",
       "source_location": null,
       "id": "package_algoplay_algorithms_sorting_sorting_algorithms_dart",
-      "community": 59,
+      "community": 60,
       "norm_label": "package:algoplay/algorithms/sorting/sorting_algorithms.dart"
     },
     {
@@ -13194,7 +13185,7 @@
       "source_file": "test/algorithms/sorting/sorting_algorithms_test.dart",
       "source_location": null,
       "id": "package_algoplay_algorithms_models_sort_step_dart",
-      "community": 59,
+      "community": 60,
       "norm_label": "package:algoplay/algorithms/models/sort_step.dart"
     },
     {
@@ -13203,7 +13194,7 @@
       "source_file": "test/algorithms/trees/tree_algorithms_test.dart",
       "source_location": null,
       "id": "test_algorithms_trees_tree_algorithms_test_dart",
-      "community": 60,
+      "community": 59,
       "norm_label": "tree_algorithms_test.dart"
     },
     {
@@ -13212,7 +13203,7 @@
       "source_file": "test/algorithms/trees/tree_algorithms_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_algorithms_trees_tree_algorithms_test_dart_expectnonemptyoperations",
-      "community": 60,
+      "community": 59,
       "norm_label": "expectnonemptyoperations"
     },
     {
@@ -13221,7 +13212,7 @@
       "source_file": "test/algorithms/trees/tree_algorithms_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_algorithms_trees_tree_algorithms_test_dart_countnodes",
-      "community": 60,
+      "community": 59,
       "norm_label": "countnodes"
     },
     {
@@ -13230,7 +13221,7 @@
       "source_file": "test/algorithms/trees/tree_algorithms_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_algorithms_trees_tree_algorithms_test_dart_buildsamplebst",
-      "community": 60,
+      "community": 59,
       "norm_label": "buildsamplebst"
     },
     {
@@ -13239,7 +13230,7 @@
       "source_file": "test/algorithms/trees/tree_algorithms_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_algorithms_trees_tree_algorithms_test_dart_buildsmallbst",
-      "community": 60,
+      "community": 59,
       "norm_label": "buildsmallbst"
     },
     {
@@ -13248,7 +13239,7 @@
       "source_file": "test/algorithms/trees/tree_algorithms_test.dart",
       "source_location": null,
       "id": "root_algoplay_test_algorithms_trees_tree_algorithms_test_dart_main",
-      "community": 60,
+      "community": 59,
       "norm_label": "main"
     },
     {
@@ -13257,7 +13248,7 @@
       "source_file": "test/algorithms/trees/tree_algorithms_test.dart",
       "source_location": null,
       "id": "package_algoplay_algorithms_trees_tree_algorithms_dart",
-      "community": 60,
+      "community": 59,
       "norm_label": "package:algoplay/algorithms/trees/tree_algorithms.dart"
     },
     {
@@ -13527,7 +13518,7 @@
       "source_file": "AGENTS.md",
       "source_location": "L1",
       "id": "agents_md",
-      "community": 93,
+      "community": 94,
       "norm_label": "agents.md"
     },
     {
@@ -13536,7 +13527,7 @@
       "source_file": "AGENTS.md",
       "source_location": "L1",
       "id": "algoplay_agents_graphify",
-      "community": 93,
+      "community": 94,
       "norm_label": "graphify"
     },
     {
@@ -13545,7 +13536,7 @@
       "source_file": "ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md",
       "source_location": "L1",
       "id": "ios_runner_assets_xcassets_launchimage_imageset_readme_md",
-      "community": 94,
+      "community": 95,
       "norm_label": "readme.md"
     },
     {
@@ -13554,7 +13545,7 @@
       "source_file": "ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md",
       "source_location": "L1",
       "id": "launchimage_imageset_readme_launch_screen_assets",
-      "community": 94,
+      "community": 95,
       "norm_label": "launch screen assets"
     },
     {
@@ -13563,7 +13554,7 @@
       "source_file": "docs/PRODUCT.md",
       "source_location": "L1",
       "id": "docs_product_md",
-      "community": 55,
+      "community": 56,
       "norm_label": "product.md"
     },
     {
@@ -13572,7 +13563,7 @@
       "source_file": "docs/PRODUCT.md",
       "source_location": "L1",
       "id": "docs_product_product_md_algoplay",
-      "community": 55,
+      "community": 56,
       "norm_label": "product.md \u2014 algoplay"
     },
     {
@@ -13581,7 +13572,7 @@
       "source_file": "docs/PRODUCT.md",
       "source_location": "L3",
       "id": "docs_product_register",
-      "community": 55,
+      "community": 56,
       "norm_label": "register"
     },
     {
@@ -13590,7 +13581,7 @@
       "source_file": "docs/PRODUCT.md",
       "source_location": "L6",
       "id": "docs_product_users",
-      "community": 55,
+      "community": 56,
       "norm_label": "users"
     },
     {
@@ -13599,7 +13590,7 @@
       "source_file": "docs/PRODUCT.md",
       "source_location": "L9",
       "id": "docs_product_product_purpose",
-      "community": 55,
+      "community": 56,
       "norm_label": "product purpose"
     },
     {
@@ -13608,7 +13599,7 @@
       "source_file": "docs/PRODUCT.md",
       "source_location": "L12",
       "id": "docs_product_brand_personality",
-      "community": 55,
+      "community": 56,
       "norm_label": "brand personality"
     },
     {
@@ -13617,7 +13608,7 @@
       "source_file": "docs/PRODUCT.md",
       "source_location": "L15",
       "id": "docs_product_tone",
-      "community": 55,
+      "community": 56,
       "norm_label": "tone"
     },
     {
@@ -13626,7 +13617,7 @@
       "source_file": "docs/PRODUCT.md",
       "source_location": "L18",
       "id": "docs_product_anti_references",
-      "community": 55,
+      "community": 56,
       "norm_label": "anti-references"
     },
     {
@@ -13635,7 +13626,7 @@
       "source_file": "docs/PRODUCT.md",
       "source_location": "L25",
       "id": "docs_product_strategic_principles",
-      "community": 55,
+      "community": 56,
       "norm_label": "strategic principles"
     },
     {
@@ -14368,6 +14359,33 @@
       "norm_label": "state preservation"
     },
     {
+      "label": "_offerLessonRewardIfNeeded",
+      "file_type": "code",
+      "source_file": "lib/features/learn/presentation/module_content_page.dart",
+      "source_location": null,
+      "community": 1,
+      "norm_label": "_offerlessonrewardifneeded",
+      "id": "root_algoplay_lib_features_learn_presentation_module_content_page_dart_offerlessonrewardifneeded"
+    },
+    {
+      "label": "AlertDialog",
+      "file_type": "code",
+      "source_file": "lib/features/learn/presentation/module_content_page.dart",
+      "source_location": null,
+      "community": 1,
+      "norm_label": "alertdialog",
+      "id": "root_algoplay_lib_features_learn_presentation_module_content_page_dart_alertdialog"
+    },
+    {
+      "label": "StatsRepository",
+      "file_type": "code",
+      "source_file": "lib/features/learn/presentation/module_content_page.dart",
+      "source_location": null,
+      "community": 1,
+      "norm_label": "statsrepository",
+      "id": "root_algoplay_lib_features_learn_presentation_module_content_page_dart_statsrepository"
+    },
+    {
       "label": "_TourInfoCard",
       "file_type": "code",
       "source_file": "lib/features/guided_tour/guided_tour_controller.dart",
@@ -14462,7 +14480,7 @@
       "file_type": "code",
       "source_file": "lib/main.dart",
       "source_location": null,
-      "community": 39,
+      "community": 46,
       "norm_label": "providerscope",
       "id": "root_algoplay_lib_main_dart_providerscope"
     },
@@ -14471,7 +14489,7 @@
       "file_type": "code",
       "source_file": "lib/features/playground/presentation/playground_page.dart",
       "source_location": null,
-      "community": 5,
+      "community": 6,
       "norm_label": "spacer",
       "id": "root_algoplay_lib_features_playground_presentation_playground_page_dart_spacer"
     }
@@ -22645,46 +22663,6 @@
       "source_location": null,
       "weight": 1.0,
       "source": "lib_features_learn_presentation_module_content_page_dart",
-      "target": "root_algoplay_lib_features_learn_presentation_module_content_page_dart_offerlessonrewardifneeded"
-    },
-    {
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lib/features/learn/presentation/module_content_page.dart",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "lib_features_learn_presentation_module_content_page_dart",
-      "target": "root_algoplay_lib_features_learn_presentation_module_content_page_dart_alertdialog"
-    },
-    {
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lib/features/learn/presentation/module_content_page.dart",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "lib_features_learn_presentation_module_content_page_dart",
-      "target": "root_algoplay_lib_features_learn_presentation_module_content_page_dart_sizedbox"
-    },
-    {
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lib/features/learn/presentation/module_content_page.dart",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "lib_features_learn_presentation_module_content_page_dart",
-      "target": "root_algoplay_lib_features_learn_presentation_module_content_page_dart_statsrepository"
-    },
-    {
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lib/features/learn/presentation/module_content_page.dart",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "lib_features_learn_presentation_module_content_page_dart",
       "target": "root_algoplay_lib_features_learn_presentation_module_content_page_dart_build"
     },
     {
@@ -22706,6 +22684,16 @@
       "weight": 1.0,
       "source": "lib_features_learn_presentation_module_content_page_dart",
       "target": "root_algoplay_lib_features_learn_presentation_module_content_page_dart_inlinebannerad"
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lib/features/learn/presentation/module_content_page.dart",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "lib_features_learn_presentation_module_content_page_dart",
+      "target": "root_algoplay_lib_features_learn_presentation_module_content_page_dart_sizedbox"
     },
     {
       "relation": "defines",
@@ -23106,6 +23094,36 @@
       "weight": 1.0,
       "source": "lib_features_learn_presentation_module_content_page_dart",
       "target": "shared_widgets_inline_banner_ad_dart"
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lib/features/learn/presentation/module_content_page.dart",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "lib_features_learn_presentation_module_content_page_dart",
+      "target": "root_algoplay_lib_features_learn_presentation_module_content_page_dart_offerlessonrewardifneeded"
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lib/features/learn/presentation/module_content_page.dart",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "lib_features_learn_presentation_module_content_page_dart",
+      "target": "root_algoplay_lib_features_learn_presentation_module_content_page_dart_alertdialog"
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lib/features/learn/presentation/module_content_page.dart",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "lib_features_learn_presentation_module_content_page_dart",
+      "target": "root_algoplay_lib_features_learn_presentation_module_content_page_dart_statsrepository"
     },
     {
       "relation": "defines",
@@ -23585,7 +23603,27 @@
       "source_location": null,
       "weight": 1.0,
       "source": "lib_features_home_presentation_home_page_dart",
+      "target": "root_algoplay_lib_features_home_presentation_home_page_dart_snackbar"
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lib/features/home/presentation/home_page.dart",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "lib_features_home_presentation_home_page_dart",
       "target": "root_algoplay_lib_features_home_presentation_home_page_dart_padding"
+    },
+    {
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lib/features/home/presentation/home_page.dart",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "lib_features_home_presentation_home_page_dart",
+      "target": "package_algoplay_core_services_ad_strategy_service_dart"
     },
     {
       "relation": "imports",
@@ -32579,5 +32617,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "97634db93c3ac204abad66cb52d3f79c94c24ba8"
+  "built_at_commit": "37226d6d72076ee98831906280c7a1558200758f"
 }

@@ -37,15 +37,16 @@ class _TabShellWidgetState extends ConsumerState<TabShellWidget> {
     final hasSeenTour = await FeatureTourService.instance.hasSeenMainTour();
     if (!mounted || hasSeenTour) return;
 
-    if (widget.navigationShell.currentIndex != 0) {
-      widget.navigationShell.goBranch(0, initialLocation: true);
+    // Always force the first-run tour back to the Lessons branch before
+    // creating targets. This prevents the first visible coach mark from landing
+    // on Explore when the shell was restored on another branch.
+    widget.navigationShell.goBranch(0, initialLocation: true);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) _showGuidedTour();
       });
-      return;
-    }
-
-    _showGuidedTour();
+    });
   }
 
   void _showGuidedTour() {

@@ -149,16 +149,7 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
       (m) => m.id == widget.moduleId,
     );
 
-    final isLastModule =
-        currentIndex >= 0 && currentIndex == lesson.modules.length - 1;
-
-    // Last module of the lesson: offer optional rewarded XP bonus
-    if (isLastModule) {
-      await _offerLessonRewardIfNeeded();
-      return; // dialog handler already navigated back
-    }
-
-    // Show interstitial after non-last modules (cooldown enforced)
+    // Show an interstitial after every module completion, including final modules.
     await AdStrategyService.instance.showModuleInterstitialIfAllowed();
 
     if (!mounted) return;
@@ -172,86 +163,6 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
     } else {
       context.pop();
     }
-  }
-
-  Future<void> _offerLessonRewardIfNeeded() async {
-    final adStrategy = AdStrategyService.instance;
-
-    final alreadyClaimed = await adStrategy.hasClaimedLessonReward(
-      widget.lessonId,
-    );
-
-    if (!mounted) return;
-
-    if (alreadyClaimed) {
-      context.pop();
-      return;
-    }
-
-    final wantsReward =
-        await showDialog<bool>(
-          context: context,
-          barrierDismissible: true,
-          builder: (dialogContext) {
-            return AlertDialog(
-              backgroundColor: AppColors.card,
-              shape: RoundedRectangleBorder(borderRadius: AppRadius.lgBorder),
-              title: Row(
-                children: [
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: AppColors.secondary100,
-                      borderRadius: AppRadius.mdBorder,
-                    ),
-                    child: const Icon(
-                      Icons.emoji_events_rounded,
-                      color: AppColors.secondary500,
-                      size: 20,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: Text('Lesson Complete!', style: AppTypography.h3),
-                  ),
-                ],
-              ),
-              content: Text(
-                'Watch a short ad to claim +${AdStrategyService.lessonRewardBonusXp} bonus XP.',
-                style: AppTypography.body.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(false),
-                  child: const Text('No Thanks'),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () => Navigator.of(dialogContext).pop(true),
-                  icon: const Icon(Icons.play_arrow_rounded),
-                  label: const Text('Watch Ad'),
-                ),
-              ],
-            );
-          },
-        ) ??
-        false;
-
-    if (!mounted) return;
-
-    if (wantsReward) {
-      adStrategy.showLessonRewardAd(onReward: _grantLessonReward);
-    }
-
-    if (!mounted) return;
-    context.pop();
-  }
-
-  Future<void> _grantLessonReward() async {
-    await StatsRepository().addXP(AdStrategyService.lessonRewardBonusXp);
-    await AdStrategyService.instance.markLessonRewardClaimed(widget.lessonId);
   }
 
   @override
@@ -1164,11 +1075,12 @@ class _AsymptoticGraphPainter extends CustomPainter {
     final cVis = _c((progress - 0.35) / 0.3);
     final fVis = _c(progress / 0.6);
 
-    if (gVis > 0)
+    if (gVis > 0) {
       _curve(canvas, w, h, _gLinear, const Color(0xFFF97316), 1.5, [
         5,
         4,
       ], opacity: gVis);
+    }
     if (cVis > 0) {
       _curve(
         canvas,
@@ -1186,7 +1098,7 @@ class _AsymptoticGraphPainter extends CustomPainter {
         Paint()..color = const Color(0xFF22C55E),
       );
     }
-    if (fVis > 0)
+    if (fVis > 0) {
       _curve(
         canvas,
         w,
@@ -1199,6 +1111,7 @@ class _AsymptoticGraphPainter extends CustomPainter {
         shadow: true,
         fraction: fVis,
       );
+    }
   }
 
   void _drawTightBound(Canvas canvas, double w, double h, double n0X) {
@@ -1214,8 +1127,12 @@ class _AsymptoticGraphPainter extends CustomPainter {
       final pts2 = _pts(w, h, config.c2Fn!, 100);
       if (pts1.isNotEmpty && pts2.isNotEmpty) {
         final band = Path()..moveTo(pts1.first.dx, pts1.first.dy);
-        for (final p in pts1) band.lineTo(p.dx, p.dy);
-        for (final p in pts2.reversed) band.lineTo(p.dx, p.dy);
+        for (final p in pts1) {
+          band.lineTo(p.dx, p.dy);
+        }
+        for (final p in pts2.reversed) {
+          band.lineTo(p.dx, p.dy);
+        }
         band.close();
         canvas.drawPath(
           band,
@@ -1225,22 +1142,25 @@ class _AsymptoticGraphPainter extends CustomPainter {
       }
     }
 
-    if (gVis > 0)
+    if (gVis > 0) {
       _curve(canvas, w, h, _gLinear, const Color(0xFFF97316), 1.5, [
         5,
         4,
       ], opacity: gVis);
-    if (c1Vis > 0)
+    }
+    if (c1Vis > 0) {
       _curve(canvas, w, h, config.cFn, const Color(0xFF22C55E), 1.5, [
         6,
         4,
       ], opacity: c1Vis);
-    if (c2Vis > 0 && config.c2Fn != null)
+    }
+    if (c2Vis > 0 && config.c2Fn != null) {
       _curve(canvas, w, h, config.c2Fn!, const Color(0xFFA855F7), 1.5, [
         6,
         4,
       ], opacity: c2Vis);
-    if (fVis > 0)
+    }
+    if (fVis > 0) {
       _curve(
         canvas,
         w,
@@ -1253,6 +1173,7 @@ class _AsymptoticGraphPainter extends CustomPainter {
         shadow: true,
         fraction: fVis,
       );
+    }
   }
 
   void _curve(
@@ -1269,10 +1190,14 @@ class _AsymptoticGraphPainter extends CustomPainter {
   }) {
     final pts = _pts(w, h, fn, 200);
     final count = (pts.length * fraction).round().clamp(0, pts.length);
-    if (count == 0) return;
+    if (count == 0) {
+      return;
+    }
 
     final path = Path()..moveTo(pts[0].dx, pts[0].dy);
-    for (int i = 1; i < count; i++) path.lineTo(pts[i].dx, pts[i].dy);
+    for (int i = 1; i < count; i++) {
+      path.lineTo(pts[i].dx, pts[i].dy);
+    }
 
     final paint = Paint()
       ..color = color.withValues(alpha: opacity)

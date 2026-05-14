@@ -4,12 +4,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'ad_service.dart';
 import 'premium_service.dart';
 
-/// Policy layer on top of [AdService] that enforces Google-safe frequency caps,
-/// cooldown windows, and one-time lesson-reward claiming.
+/// Policy layer on top of [AdService] that enforces Google-safe frequency caps
+/// and cooldown windows.
 ///
 /// Strategy:
 /// - Interstitial: after every completed module, gated by 3-min cooldown
-/// - Rewarded lesson bonus: optional +50 XP after each completed lesson
+/// - Rewarded lesson unlock: optional early unlock for a locked lesson
 /// - Premium users: all ad methods are no-ops
 class AdStrategyService {
   AdStrategyService._();
@@ -22,9 +22,6 @@ class AdStrategyService {
   /// Cooldown between interstitial shows.
   static const Duration moduleInterstitialCooldown = Duration(minutes: 3);
 
-  /// XP reward for watching the optional lesson-completion rewarded ad.
-  static const int lessonRewardBonusXp = 50;
-
   // ── SharedPreferences keys ─────────────────────────────────────────────────
 
   static const String _completedModuleCountKey =
@@ -32,9 +29,6 @@ class AdStrategyService {
 
   static const String _lastModuleInterstitialMsKey =
       'algoplay_ads_last_module_interstitial_ms';
-
-  static const String _lessonRewardClaimPrefix =
-      'algoplay_ads_lesson_reward_claimed_';
 
   // ── Pre-loading ────────────────────────────────────────────────────────────
 
@@ -107,21 +101,9 @@ class AdStrategyService {
     return true;
   }
 
-  // ── Rewarded lesson bonus helpers ─────────────────────────────────────────
+  // ── Rewarded lesson unlock helper ──────────────────────────────────────────
 
-  /// Returns true if the lesson bonus has already been claimed.
-  Future<bool> hasClaimedLessonReward(int lessonId) async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('$_lessonRewardClaimPrefix$lessonId') ?? false;
-  }
-
-  /// Marks the lesson bonus as claimed so it cannot be offered again.
-  Future<void> markLessonRewardClaimed(int lessonId) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('$_lessonRewardClaimPrefix$lessonId', true);
-  }
-
-  /// Shows the rewarded ad for the optional lesson bonus.
+  /// Shows a rewarded ad for an explicit lesson unlock choice.
   /// Returns true if the ad was shown.
   bool showLessonRewardAd({required VoidCallback onReward}) {
     if (PremiumService.instance.isPremium) return false;

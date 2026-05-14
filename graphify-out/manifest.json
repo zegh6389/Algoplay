@@ -44,8 +44,8 @@
     "hash": "736a34c26fd80c317fad945345937025"
   },
   "/root/Algoplay/lib/core/services/ad_strategy_service.dart": {
-    "mtime": 1778771489.2053707,
-    "hash": "d162225a2a7388c0fc8d3875939f3632"
+    "mtime": 1778779091.8780484,
+    "hash": "01bccfc45c44ab13c67c363c9c7ba1a6"
   },
   "/root/Algoplay/lib/core/services/premium_service.dart": {
     "mtime": 1778704934.6470819,
@@ -60,8 +60,8 @@
     "hash": "6d2bbcaf889717d8f0005e4252c0e51a"
   },
   "/root/Algoplay/lib/core/router/tab_shell.dart": {
-    "mtime": 1778776198.7867548,
-    "hash": "3fe3da17ebefd0b30200d18630833a3e"
+    "mtime": 1778778977.5331774,
+    "hash": "537c1555dea1357a572d4f740130b365"
   },
   "/root/Algoplay/lib/core/router/app_router.dart": {
     "mtime": 1778746030.76923,
@@ -160,8 +160,8 @@
     "hash": "be4f06cd7b13e69e4f0ec903f88af8a5"
   },
   "/root/Algoplay/lib/features/learn/presentation/module_content_page.dart": {
-    "mtime": 1778771489.3173754,
-    "hash": "deefd238dda69bc701b216c21bfdadff"
+    "mtime": 1778779333.9663622,
+    "hash": "ae29eaacb0a16f8fbfd41b178e2e87d4"
   },
   "/root/Algoplay/lib/features/learn/presentation/lesson_detail_page.dart": {
     "mtime": 1778626414.1271465,
@@ -172,8 +172,8 @@
     "hash": "dfa87cd205e1cd8ab41c7c95007feb13"
   },
   "/root/Algoplay/lib/features/home/presentation/home_page.dart": {
-    "mtime": 1778742808.484917,
-    "hash": "bf7e8ae2d321fc425df1d1ae98b66755"
+    "mtime": 1778778963.9155972,
+    "hash": "cad53533644b1395d50a1a936eb17a6e"
   },
   "/root/Algoplay/lib/features/profile/data/avatar_repository.dart": {
     "mtime": 1778556430.8989167,
@@ -428,8 +428,8 @@
     "hash": "7c6c8051b3f818f6ff8fec7ea4d06865"
   },
   "/root/Algoplay/test/features/guided_tour/guided_tour_controller_test.dart": {
-    "mtime": 1778776217.1345403,
-    "hash": "5348824a1a88cd32d41155b197fae6ea"
+    "mtime": 1778779034.7316139,
+    "hash": "671a53106f6e2af495527a543faadb90"
   },
   "/root/Algoplay/test/features/grid_escape/level_generator_test.dart": {
     "mtime": 1778217558.1864305,
@@ -444,12 +444,12 @@
     "hash": "b23abed914c7b904cdad3bfc9ef434d7"
   },
   "/root/Algoplay/test/features/learn/lesson_ads_contract_test.dart": {
-    "mtime": 1778776584.6482568,
-    "hash": "cdda6db3cb47a8ca1a0aed3de394b04f"
+    "mtime": 1778779020.3099997,
+    "hash": "89328a9507e0267327a4c2d27cf952f5"
   },
   "/root/Algoplay/test/features/learn/module_content_page_test.dart": {
-    "mtime": 1778771445.2655158,
-    "hash": "7809087f274b03ec9c2ae8634a10ded2"
+    "mtime": 1778778991.1327567,
+    "hash": "ee94eac51b0295f5561cb3f5163d7388"
   },
   "/root/Algoplay/test/features/learn/lesson_progress_test.dart": {
     "mtime": 1778776570.306644,

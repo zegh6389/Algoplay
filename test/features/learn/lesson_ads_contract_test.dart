@@ -63,7 +63,7 @@ void main() {
       );
     });
 
-    test('lesson completion uses frequency-capped interstitial transition', () {
+    test('lesson completion uses interstitial transition for every module', () {
       final moduleContent = File(
         'lib/features/learn/presentation/module_content_page.dart',
       ).readAsStringSync();
@@ -71,30 +71,32 @@ void main() {
         'lib/core/services/ad_strategy_service.dart',
       ).readAsStringSync();
 
-      // New strategy service replaces the old gate
       expect(adStrategy, contains('showModuleInterstitialIfAllowed'));
       expect(adStrategy, contains('moduleInterstitialCooldown'));
       expect(adStrategy, contains('shouldShowModuleInterstitial'));
 
-      // ModuleContentPage uses strategy service
       expect(moduleContent, contains('AdStrategyService.instance'));
       expect(moduleContent, contains('preloadLearningAds'));
-
-      // Interstitial still gated per-module
       expect(moduleContent, contains('showModuleInterstitialIfAllowed'));
+      expect(
+        moduleContent,
+        contains('after every module completion, including final modules'),
+      );
 
-      // Last module offers rewarded XP bonus
-      expect(moduleContent, contains('_offerLessonRewardIfNeeded'));
-      expect(moduleContent, contains('showLessonRewardAd'));
-      expect(moduleContent, contains('lessonRewardBonusXp'));
+      expect(moduleContent, isNot(contains('_offerLessonRewardIfNeeded')));
+      expect(moduleContent, isNot(contains('Lesson Complete!')));
+      expect(moduleContent, isNot(contains('bonus XP')));
+      expect(moduleContent, isNot(contains('lessonRewardBonusXp')));
 
-      // Premium bypass on strategy
       expect(adStrategy, contains('PremiumService.instance.isPremium'));
     });
 
     test('locked lesson tap offers rewarded ad unlock path', () {
       final lessonsHome = File(
         'lib/features/learn/presentation/lessons_home_page.dart',
+      ).readAsStringSync();
+      final homePage = File(
+        'lib/features/home/presentation/home_page.dart',
       ).readAsStringSync();
       final repo = File(
         'lib/features/learn/data/lesson_progress_repository.dart',
@@ -103,12 +105,15 @@ void main() {
         'lib/features/learn/providers/lesson_providers.dart',
       ).readAsStringSync();
 
-      expect(lessonsHome, contains('Unlock Lesson'));
-      expect(lessonsHome, contains('Maybe Later'));
-      expect(lessonsHome, contains('Unlock with Ad'));
-      expect(lessonsHome, contains('showLessonRewardAd'));
-      expect(lessonsHome, contains('markLessonAdUnlocked'));
-      expect(lessonsHome, contains('ref.invalidate(lessonUnlockedProvider'));
+      for (final source in [lessonsHome, homePage]) {
+        expect(source, contains('Unlock Lesson'));
+        expect(source, contains('Maybe Later'));
+        expect(source, contains('Unlock with Ad'));
+        expect(source, contains('showLessonRewardAd'));
+        expect(source, contains('markLessonAdUnlocked'));
+        expect(source, contains('ref.invalidate(lessonUnlockedProvider'));
+        expect(source, contains("context.push('/lesson/\${lesson.id}')"));
+      }
       expect(repo, contains('isLessonAdUnlocked'));
       expect(repo, contains('markLessonAdUnlocked'));
       expect(repo, contains('PremiumService.instance.isPremium'));
