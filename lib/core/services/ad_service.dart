@@ -49,6 +49,10 @@ class AdService {
 
   bool get hasCachedInterstitialAd => _interstitialAd != null;
 
+  bool get isInterstitialReady => _interstitialAd != null;
+
+  bool get isRewardedReady => _rewardedAd != null;
+
   // ── Initialization ───────────────────────────────────────────────────────
 
   /// Initializes the Mobile Ads SDK.  Call once during app startup.
@@ -230,12 +234,13 @@ class AdService {
   /// the reward (i.e. watched the full ad).
   ///
   /// No-op for premium users or when no ad is cached.
-  void showRewardedAd({required VoidCallback onReward}) {
+  /// Returns true if the ad was shown.
+  bool showRewardedAd({required VoidCallback onReward}) {
     if (PremiumService.instance.isPremium) {
       if (kDebugMode) {
         debugPrint('[AdService] rewarded show skipped — premium user');
       }
-      return;
+      return false;
     }
 
     if (_rewardedAd == null) {
@@ -243,16 +248,18 @@ class AdService {
         debugPrint('[AdService] no rewarded ad cached — loading now');
       }
       loadRewardedAd();
-      return;
+      return false;
     }
 
-    _rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
+    final adToShow = _rewardedAd!;
+    _rewardedAd = null;
+
+    adToShow.fullScreenContentCallback = FullScreenContentCallback(
       onAdDismissedFullScreenContent: (ad) {
         if (kDebugMode) {
           debugPrint('[AdService] rewarded ad dismissed');
         }
         ad.dispose();
-        _rewardedAd = null;
         loadRewardedAd(); // pre-load next
       },
       onAdFailedToShowFullScreenContent: (ad, error) {
@@ -260,12 +267,11 @@ class AdService {
           debugPrint('[AdService] rewarded show error: $error');
         }
         ad.dispose();
-        _rewardedAd = null;
         loadRewardedAd();
       },
     );
 
-    _rewardedAd!.show(
+    adToShow.show(
       onUserEarnedReward: (ad, reward) {
         if (kDebugMode) {
           debugPrint(
@@ -275,6 +281,8 @@ class AdService {
         onReward();
       },
     );
+
+    return true;
   }
 
   // ═══════════════════════════════════════════════════════════════════════════

@@ -5,8 +5,7 @@ import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/services/ad_service.dart';
-import '../../../core/services/lesson_completion_ad_gate.dart';
+import '../../../core/services/ad_strategy_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../features/stats/data/stats_repository.dart';
 import '../../../shared/widgets/inline_banner_ad.dart';
@@ -61,7 +60,7 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
     super.initState();
     _loadModule();
     _restoreScrollPosition();
-    AdService.instance.loadInterstitialAd();
+    AdStrategyService.instance.preloadLearningAds();
   }
 
   void _loadModule() {
@@ -120,6 +119,7 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
 
   Future<void> _markCompleteAndContinue() async {
     final repo = ref.read(lessonProgressRepoProvider);
+
     await repo.markModuleComplete(widget.lessonId, widget.moduleId);
     await repo.setCurrentModule(widget.lessonId, widget.moduleId);
 
@@ -138,50 +138,140 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
     ref.invalidate(currentModuleProvider(widget.lessonId));
     ref.invalidate(lessonUnlockedProvider(widget.lessonId + 1));
 
-    final shouldShowInterstitial = await LessonCompletionAdGate.instance
-        .recordModuleCompletionAndShouldShow();
-
     if (!mounted) return;
 
-    // Try to navigate to next module after the natural completion transition.
     final lesson = _allLessons.firstWhere(
       (l) => l.id == widget.lessonId,
       orElse: () => _allLessons.first,
     );
+
     final currentIndex = lesson.modules.indexWhere(
       (m) => m.id == widget.moduleId,
     );
 
-    if (shouldShowInterstitial && AdService.instance.hasCachedInterstitialAd) {
-      var handledByInterstitialCallback = false;
-      final adShown = AdService.instance.showInterstitialAd(
-        onShown: () {
-          unawaited(LessonCompletionAdGate.instance.markInterstitialShown());
-        },
-        onDismissed: () {
-          handledByInterstitialCallback = true;
-          if (!mounted) return;
-          _navigateAfterModuleCompletion(lesson, currentIndex);
-        },
-      );
-      if (adShown || handledByInterstitialCallback) return;
+    final isLastModule =
+        currentIndex >= 0 && currentIndex == lesson.modules.length - 1;
+
+    // Last module of the lesson: offer optional rewarded XP bonus
+    if (isLastModule) {
+      await _offerLessonRewardIfNeeded();
+
+      if (!mounted) return;
+      context.pop();
+      return;
     }
 
-    AdService.instance.loadInterstitialAd();
-    _navigateAfterModuleCompletion(lesson, currentIndex);
-  }
+    // Show interstitial after non-last modules (cooldown enforced)
+    await AdStrategyService.instance.showModuleInterstitialIfAllowed();
 
-  void _navigateAfterModuleCompletion(LessonContent lesson, int currentIndex) {
+    if (!mounted) return;
+
     if (currentIndex >= 0 && currentIndex < lesson.modules.length - 1) {
       final nextModule = lesson.modules[currentIndex + 1];
-      // Replace current route with next module.
+
       context.pushReplacement(
         '/lesson/${widget.lessonId}/module/${nextModule.id}',
       );
     } else {
-      // Last module — go back to lesson detail.
       context.pop();
     }
+  }
+
+  Future<void> _offerLessonRewardIfNeeded() async {
+    final adStrategy = AdStrategyService.instance;
+
+    final alreadyClaimed =
+        await adStrategy.hasClaimedLessonReward(widget.lessonId);
+
+    if (!mounted || alreadyClaimed) return;
+
+    final wantsReward = await showDialog<bool>(
+          context: context,
+          barrierDismissible: true,
+          builder: (context) {
+            return AlertDialog(
+              backgroundColor: AppColors.card,
+              shape: RoundedRectangleBorder(
+                borderRadius: AppRadius.lgBorder,
+              ),
+              title: Row(
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: AppColors.secondary100,
+                      borderRadius: AppRadius.mdBorder,
+                    ),
+                    child: const Icon(
+                      Icons.emoji_events_rounded,
+                      color: AppColors.secondary500,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Text(
+                      'Lesson Complete!',
+                      style: AppTypography.h3,
+                    ),
+                  ),
+                ],
+              ),
+              content: Text(
+                'Watch a short ad to claim +${AdStrategyService.lessonRewardBonusXp} bonus XP.',
+                style: AppTypography.body.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text('No Thanks'),
+                ),
+                ElevatedButton.icon(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  icon: const Icon(Icons.play_arrow_rounded),
+                  label: const Text('Watch Ad'),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
+
+    if (!mounted || !wantsReward) return;
+
+    final shown = adStrategy.showLessonRewardAd(
+      onReward: () {
+        _grantLessonReward();
+      },
+    );
+
+    if (!shown && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Ad is still loading. Try again after the next lesson.',
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _grantLessonReward() async {
+    await StatsRepository().addXP(AdStrategyService.lessonRewardBonusXp);
+    await AdStrategyService.instance.markLessonRewardClaimed(widget.lessonId);
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '+${AdStrategyService.lessonRewardBonusXp} XP bonus claimed!',
+        ),
+      ),
+    );
   }
 
   @override
