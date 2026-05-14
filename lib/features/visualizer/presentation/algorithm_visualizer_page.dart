@@ -1101,9 +1101,11 @@ class _AlgorithmVisualizerPageState
           child: root == null && !hasArray
               ? const Center(child: Text('Tree is empty'))
               : root != null
-              ? CustomPaint(
-                  painter: _TreePainter(step),
-                  child: const SizedBox.expand(),
+              ? ClipRect(
+                  child: CustomPaint(
+                    painter: _TreePainter(step),
+                    child: const SizedBox.expand(),
+                  ),
                 )
               : _buildHeapArrayVisualization(step),
         ),
@@ -1738,6 +1740,81 @@ class _MetricPill extends StatelessWidget {
   }
 }
 
+class TreeCanvasLayout {
+  const TreeCanvasLayout({
+    required this.positions,
+    required this.nodeRadius,
+    required this.fontSize,
+    required this.edgeStrokeWidth,
+  });
+
+  final Map<String, Offset> positions;
+  final double nodeRadius;
+  final double fontSize;
+  final double edgeStrokeWidth;
+
+  static TreeCanvasLayout fit(TreeNode root, Size size) {
+    final width = size.width.isFinite && size.width > 0 ? size.width : 1.0;
+    final height = size.height.isFinite && size.height > 0 ? size.height : 1.0;
+
+    var nodeCount = 0;
+    var maxDepth = 0;
+    void collectMetrics(TreeNode? node, int depth) {
+      if (node == null) return;
+      nodeCount++;
+      if (depth > maxDepth) maxDepth = depth;
+      collectMetrics(node.left, depth + 1);
+      collectMetrics(node.right, depth + 1);
+    }
+
+    collectMetrics(root, 0);
+    nodeCount = nodeCount == 0 ? 1 : nodeCount;
+
+    final padding = (width < height ? width : height) * 0.035;
+    final safePadding = padding.clamp(6.0, 18.0).toDouble();
+    final drawableWidth = (width - safePadding * 2).clamp(1.0, width);
+    final drawableHeight = (height - safePadding * 2).clamp(1.0, height);
+    final horizontalSlot = drawableWidth / nodeCount;
+    final verticalSlot = drawableHeight / (maxDepth + 1);
+    final shortestSlot = horizontalSlot < verticalSlot
+        ? horizontalSlot
+        : verticalSlot;
+    final nodeRadius = (shortestSlot * 0.34).clamp(2.5, 22.0).toDouble();
+    final fontSize = (nodeRadius * 0.78).clamp(3.0, 12.0).toDouble();
+    final edgeStrokeWidth = (nodeRadius * 0.11).clamp(0.75, 2.0).toDouble();
+
+    var inorderIndex = 0;
+    final positions = <String, Offset>{};
+    void assignPositions(TreeNode? node, int depth) {
+      if (node == null) return;
+      assignPositions(node.left, depth + 1);
+      final x = safePadding + horizontalSlot * (inorderIndex + 0.5);
+      final y = safePadding + verticalSlot * (depth + 0.5);
+      positions[node.id] = Offset(x, y);
+      inorderIndex++;
+      assignPositions(node.right, depth + 1);
+    }
+
+    assignPositions(root, 0);
+
+    return TreeCanvasLayout(
+      positions: Map.unmodifiable(positions),
+      nodeRadius: nodeRadius,
+      fontSize: fontSize,
+      edgeStrokeWidth: edgeStrokeWidth,
+    );
+  }
+
+  bool fitsInside(Size size) {
+    return positions.values.every((center) {
+      return center.dx - nodeRadius >= 0 &&
+          center.dx + nodeRadius <= size.width &&
+          center.dy - nodeRadius >= 0 &&
+          center.dy + nodeRadius <= size.height;
+    });
+  }
+}
+
 class _TreePainter extends CustomPainter {
   final TreeStep step;
 
@@ -1746,48 +1823,34 @@ class _TreePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final root = step.tree;
-    if (root == null) return;
-    final positions = <String, Offset>{};
-    _layout(root, size.width / 2, 32, size.width / 4, positions);
+    if (root == null || size.isEmpty) return;
 
+    canvas.save();
+    canvas.clipRect(Offset.zero & size);
+
+    final layout = TreeCanvasLayout.fit(root, size);
     final edgePaint = Paint()
       ..color = AppColors.textMuted.withValues(alpha: 0.28)
-      ..strokeWidth = 2
+      ..strokeWidth = layout.edgeStrokeWidth
       ..style = PaintingStyle.stroke;
 
     void drawEdges(TreeNode node) {
-      final from = positions[node.id]!;
+      final from = layout.positions[node.id]!;
       for (final child in [node.left, node.right]) {
         if (child == null) continue;
-        final to = positions[child.id]!;
+        final to = layout.positions[child.id]!;
         canvas.drawLine(from, to, edgePaint);
         drawEdges(child);
       }
     }
 
     drawEdges(root);
-    _drawNodes(canvas, root, positions);
+    _drawNodes(canvas, root, layout);
+    canvas.restore();
   }
 
-  void _layout(
-    TreeNode node,
-    double x,
-    double y,
-    double xGap,
-    Map<String, Offset> positions,
-  ) {
-    positions[node.id] = Offset(x, y);
-    final nextGap = xGap * 0.58;
-    if (node.left != null) {
-      _layout(node.left!, x - xGap, y + 62, nextGap, positions);
-    }
-    if (node.right != null) {
-      _layout(node.right!, x + xGap, y + 62, nextGap, positions);
-    }
-  }
-
-  void _drawNodes(Canvas canvas, TreeNode node, Map<String, Offset> positions) {
-    final center = positions[node.id]!;
+  void _drawNodes(Canvas canvas, TreeNode node, TreeCanvasLayout layout) {
+    final center = layout.positions[node.id]!;
     final isVisited = step.visitedNodes.contains(node.id);
     final isPath = step.pathNodes.contains(node.id);
     final isHighlighted = node.isHighlighted || isVisited || isPath;
@@ -1800,40 +1863,51 @@ class _TreePainter extends CustomPainter {
         : AppColors.card;
     final border = isHighlighted ? fill : AppColors.sunken;
 
+    final radius = layout.nodeRadius;
     final shadowPaint = Paint()
       ..color = fill.withValues(alpha: isHighlighted ? 0.20 : 0.08)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
-    canvas.drawCircle(center.translate(0, 2), 24, shadowPaint);
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, radius * 0.45);
+    canvas.drawCircle(
+      center.translate(0, radius * 0.10),
+      radius * 1.12,
+      shadowPaint,
+    );
 
     final nodePaint = Paint()..color = fill;
-    canvas.drawCircle(center, 21, nodePaint);
+    canvas.drawCircle(center, radius, nodePaint);
     canvas.drawCircle(
       center,
-      21,
+      radius,
       Paint()
         ..color = border
-        ..strokeWidth = 2
+        ..strokeWidth = layout.edgeStrokeWidth
         ..style = PaintingStyle.stroke,
     );
 
+    final digits = node.value.abs().toString().length;
+    final adjustedFontSize = digits > 2
+        ? layout.fontSize * 0.82
+        : layout.fontSize;
     final textPainter = TextPainter(
       text: TextSpan(
         text: '${node.value}',
         style: TextStyle(
           color: isHighlighted ? Colors.white : AppColors.textPrimary,
-          fontSize: 12,
+          fontSize: adjustedFontSize,
           fontWeight: FontWeight.w800,
         ),
       ),
+      textAlign: TextAlign.center,
+      maxLines: 1,
       textDirection: TextDirection.ltr,
-    )..layout();
+    )..layout(maxWidth: radius * 1.75);
     textPainter.paint(
       canvas,
       center - Offset(textPainter.width / 2, textPainter.height / 2),
     );
 
-    if (node.left != null) _drawNodes(canvas, node.left!, positions);
-    if (node.right != null) _drawNodes(canvas, node.right!, positions);
+    if (node.left != null) _drawNodes(canvas, node.left!, layout);
+    if (node.right != null) _drawNodes(canvas, node.right!, layout);
   }
 
   @override

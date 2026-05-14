@@ -1,3 +1,4 @@
+import 'package:algoplay/algorithms/models/tree_models.dart';
 import 'package:algoplay/core/theme/app_theme.dart';
 import 'package:algoplay/features/visualizer/presentation/algorithm_visualizer_page.dart';
 import 'package:flutter/material.dart';
@@ -20,9 +21,42 @@ void _expectNoFlutterExceptions(WidgetTester tester) {
   expect(exceptions, isEmpty, reason: exceptions.join('\n'));
 }
 
+TreeNode _insertTestNode(TreeNode? node, int value, int depth) {
+  if (node == null) {
+    return TreeNode(id: '${value}_$depth', value: value, depth: depth);
+  }
+  if (value < node.value) {
+    node.left = _insertTestNode(node.left, value, depth + 1);
+  } else if (value > node.value) {
+    node.right = _insertTestNode(node.right, value, depth + 1);
+  }
+  return node;
+}
+
+TreeNode _buildTestTree(Iterable<int> values) {
+  TreeNode? root;
+  for (final value in values) {
+    root = _insertTestNode(root, value, 0);
+  }
+  return root!;
+}
+
 void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({});
+  });
+
+  test('tree canvas layout scales large inputs inside the viewport', () {
+    const viewport = Size(360, 210);
+    final smallTree = _buildTestTree([50, 30, 70]);
+    final largeTree = _buildTestTree(List.generate(32, (index) => index + 1));
+
+    final smallLayout = TreeCanvasLayout.fit(smallTree, viewport);
+    final largeLayout = TreeCanvasLayout.fit(largeTree, viewport);
+
+    expect(smallLayout.fitsInside(viewport), isTrue);
+    expect(largeLayout.fitsInside(viewport), isTrue);
+    expect(largeLayout.nodeRadius, lessThan(smallLayout.nodeRadius));
   });
 
   testWidgets(
