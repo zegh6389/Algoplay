@@ -29,4 +29,23 @@ class AlgoPlayTourKeys {
         return lessonsTabKey;
     }
   }
+
+  /// Maps bottom-nav tab index to StatefulNavigationShell branch index.
+  /// Bottom nav order: 0=Lessons(branch 0), 1=Explore(branch 1), 2=Play(branch 2), 3=Stats(branch 3), 4=Profile(branch 4).
+  static int branchIndexForTab(int tabIndex) {
+    switch (tabIndex) {
+      case 0:
+        return 0; // Lessons tab → Learn branch
+      case 1:
+        return 1; // Explore tab → Home branch
+      case 2:
+        return 2; // Play tab → Play branch
+      case 3:
+        return 3; // Stats tab → Stats branch
+      case 4:
+        return 4; // Profile tab → Profile branch
+      default:
+        return 0;
+    }
+  }
 }

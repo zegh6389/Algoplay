@@ -37,12 +37,16 @@ class _TabShellWidgetState extends ConsumerState<TabShellWidget> {
     final hasSeenTour = await FeatureTourService.instance.hasSeenMainTour();
     if (!mounted || hasSeenTour) return;
 
-    // Always start the first-run tour from the Lessons tab (branch 0).
+    // Always start the first-run tour from the Lessons tab (Learn branch).
+    // Bottom nav index 0 = Lessons tab → Learn branch index 0.
     widget.navigationShell.goBranch(0, initialLocation: true);
 
-    // Poll until all tab bar keys have a painted context. The double
-    // post-frame approach is not reliable because goBranch() switches the
-    // shell synchronously but the TabBarView children are built lazily.
+    // Give the nav bar time to paint before calculating overlay target positions.
+    await Future.delayed(const Duration(milliseconds: 400));
+
+    if (!mounted) return;
+
+    // Poll until all tab bar keys have a painted context.
     _pollAndShowTour(const Duration(milliseconds: 50), maxAttempts: 20);
   }
 
@@ -103,9 +107,12 @@ class _TabShellWidgetState extends ConsumerState<TabShellWidget> {
         }
       }
     }
+    // Map bottom-nav tab index to StatefulNavigationShell branch index.
+    // Bottom nav: 0=Lessons(Learn branch), 1=Explore(Home branch), 2=Play, 3=Stats, 4=Profile.
+    final branchIndex = AlgoPlayTourKeys.branchIndexForTab(index);
     widget.navigationShell.goBranch(
-      index,
-      initialLocation: index == widget.navigationShell.currentIndex,
+      branchIndex,
+      initialLocation: branchIndex == widget.navigationShell.currentIndex,
     );
   }
 
