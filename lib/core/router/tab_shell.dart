@@ -96,9 +96,11 @@ class _TabShellWidgetState extends ConsumerState<TabShellWidget> {
   }
 
   void _onTabTap(int index) {
-    if (index != widget.navigationShell.currentIndex) {
+    final isSameTab = index == widget.navigationShell.currentIndex;
+
+    if (!isSameTab) {
       _tabSwitchCount++;
-      // Show interstitial every 4th tab switch
+      // Show interstitial every 4th tab switch (skip during tour)
       if (_tabSwitchCount % 4 == 0) {
         final isPremium = ref.read(premiumProvider);
         final tourActive = ref.read(featureTourActiveProvider);
@@ -107,12 +109,11 @@ class _TabShellWidgetState extends ConsumerState<TabShellWidget> {
         }
       }
     }
-    // Map bottom-nav tab index to StatefulNavigationShell branch index.
-    // Bottom nav: 0=Lessons(Learn branch), 1=Explore(Home branch), 2=Play, 3=Stats, 4=Profile.
+
     final branchIndex = AlgoPlayTourKeys.branchIndexForTab(index);
     widget.navigationShell.goBranch(
       branchIndex,
-      initialLocation: branchIndex == widget.navigationShell.currentIndex,
+      initialLocation: isSameTab, // reset to root when tapping current tab
     );
   }
 
