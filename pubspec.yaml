@@ -1,7 +1,7 @@
 name: algoplay
 description: Algoplay — Gamified Algorithm Learning App
 publish_to: 'none'
-version: 3.0.4+60
+version: 3.0.5+61
 
 environment:
   sdk: ^3.11.0
