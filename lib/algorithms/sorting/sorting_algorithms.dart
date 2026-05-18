@@ -439,7 +439,9 @@ Stream<SortStep> selectionSort(List<int> initialArray) async* {
     sorted.add(i);
   }
 
-  sorted.add(n - 1);
+  if (n > 0) {
+    sorted.add(n - 1);
+  }
   yield SortStep(
     array: List.from(arr),
     sorted: List.from(sorted),
@@ -452,8 +454,7 @@ Stream<SortStep> selectionSort(List<int> initialArray) async* {
 Stream<SortStep> insertionSort(List<int> initialArray) async* {
   final arr = List<int>.from(initialArray);
   final n = arr.length;
-  final sorted = <int>[0]; // First element is trivially sorted
-
+  final sorted = n > 0 ? <int>[0] : <int>[]; // First element is trivially sorted if n > 0
   yield SortStep(
     array: List.from(arr),
     sorted: List.from(sorted),
