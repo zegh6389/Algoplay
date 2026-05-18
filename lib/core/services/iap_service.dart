@@ -11,7 +11,7 @@ import 'premium_service.dart';
 /// Supports both Google Play Billing (Android) and StoreKit (iOS) through
 /// the unified `InAppPurchase` plugin.
 ///
-/// Product ID: `com.algoplay.app.unlock_all`
+/// Product ID: `unlock_all_premium`
 // ═══════════════════════════════════════════════════════════════════════════════
 
 class IAPService {
@@ -21,7 +21,7 @@ class IAPService {
   // ── Constants ────────────────────────────────────────────────────────────
 
   /// The non-consumable product ID for "Unlock All" premium.
-  static const String unlockAllProductId = 'com.algoplay.app.unlock_all';
+  static const String unlockAllProductId = 'unlock_all_premium';
 
   static const Set<String> _productIds = {unlockAllProductId};
 
