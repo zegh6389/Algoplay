@@ -41,7 +41,7 @@ android {
         applicationId = "com.algoplay.app"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = 50
+        versionCode = 60
         versionName = "3.0.1"
     }
 
