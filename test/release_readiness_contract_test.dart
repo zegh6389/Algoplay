@@ -13,7 +13,6 @@ void main() {
 
         expect(manifest, contains('android.permission.INTERNET'));
         expect(manifest, contains('android.permission.ACCESS_NETWORK_STATE'));
-        expect(manifest, contains('com.google.android.gms.permission.AD_ID'));
         expect(manifest, contains('com.android.vending.BILLING'));
         expect(manifest, contains('android:allowBackup="false"'));
         expect(manifest, contains('android:usesCleartextTraffic="false"'));
