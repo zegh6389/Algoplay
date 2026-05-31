@@ -22,33 +22,24 @@ class AdService {
   // Production IDs (Android). iOS still uses test IDs until iOS release.
 
   static String get _bannerAdUnitId {
-    if (kDebugMode) {
-      return 'ca-app-pub-3940256099942544/6300978111';
-    }
     if (Platform.isAndroid) {
       return 'ca-app-pub-8157621642469961/2735757394';
     }
-    return 'ca-app-pub-3940256099942544/2934735716'; // iOS test
+    return 'ca-app-pub-3940256099942544/2934735716'; // iOS placeholder
   }
 
   static String get _interstitialAdUnitId {
-    if (kDebugMode) {
-      return 'ca-app-pub-3940256099942544/1033173712';
-    }
     if (Platform.isAndroid) {
       return 'ca-app-pub-8157621642469961/9109594050';
     }
-    return 'ca-app-pub-3940256099942544/4411468910'; // iOS test
+    return 'ca-app-pub-3940256099942544/4411468910'; // iOS placeholder
   }
 
   static String get _rewardedAdUnitId {
-    if (kDebugMode) {
-      return 'ca-app-pub-3940256099942544/5224354917';
-    }
     if (Platform.isAndroid) {
       return 'ca-app-pub-8157621642469961/6734712153';
     }
-    return 'ca-app-pub-3940256099942544/1712485313'; // iOS test
+    return 'ca-app-pub-3940256099942544/1712485313'; // iOS placeholder
   }
 
   // ── State ────────────────────────────────────────────────────────────────
