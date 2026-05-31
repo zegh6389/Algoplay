@@ -34,5 +34,34 @@ void main() {
       expect(profile, contains('AdService.instance.showPrivacyOptionsForm()'));
       expect(adService, contains('ConsentForm.showPrivacyOptionsForm'));
     });
+
+    test('Android release version stays in sync with pubspec version', () {
+      final pubspec = File('pubspec.yaml').readAsStringSync();
+      final buildGradle = File('android/app/build.gradle.kts').readAsStringSync();
+
+      final versionMatch = RegExp(
+        r'^version:\s*([^+\s]+)\+(\d+)\s*$',
+        multiLine: true,
+      ).firstMatch(pubspec);
+
+      expect(versionMatch, isNotNull);
+      final versionName = versionMatch!.group(1)!;
+      final versionCode = versionMatch.group(2)!;
+
+      expect(buildGradle, contains('versionName = "$versionName"'));
+      expect(buildGradle, contains('versionCode = $versionCode'));
+    });
+
+    test('AdMob SDK still initializes when consent is delayed or unavailable', () {
+      final adService = File(
+        'lib/core/services/ad_service.dart',
+      ).readAsStringSync();
+
+      expect(adService, contains('Future.wait<dynamic>'));
+      expect(adService, contains('MobileAds.instance.initialize()'));
+      expect(adService, contains('MobileAds initialized — canRequestAds'));
+      expect(adService, contains('consent request timed out — defaulting to true'));
+      expect(adService, isNot(contains('MobileAds skipped — consent not ready')));
+    });
   });
 }
