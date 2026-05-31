@@ -15,12 +15,16 @@ void main() async {
   // PremiumService must complete first (AdService/IAP check isPremium).
   await PremiumService.instance.initialize();
 
-  // AdService and IAP run concurrently — neither blocks app startup.
-  // AdService.init() now does fire-and-forget consent (fast).
-  // IAP may take time to query the store; we don't await it.
+  // AdService and IAP run in the background. The app starts immediately.
+  // AdService uses a Completer so ad requests automatically wait for init.
+  // Errors are caught internally — the app always renders.
   Future.wait<dynamic>([
-    AdService.instance.init(),
-    IAPService.instance.initialize(),
+    AdService.instance.init().catchError((e) {
+      debugPrint('[main] AdService.init error: $e');
+    }),
+    IAPService.instance.initialize().catchError((e) {
+      debugPrint('[main] IAPService.init error: $e');
+    }),
   ], eagerError: false);
 
   runApp(const ProviderScope(child: AlgoplayApp()));
