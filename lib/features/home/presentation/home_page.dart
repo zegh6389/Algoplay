@@ -589,7 +589,7 @@ class _LessonCard extends ConsumerWidget {
     if (!wantsUnlock || !context.mounted) return;
 
     final repo = ref.read(lessonProgressRepoProvider);
-    final shown = AdStrategyService.instance.showLessonRewardAd(
+    final shown = await AdStrategyService.instance.showLessonRewardAd(
       onReward: () {
         repo.markLessonAdUnlocked(lesson.id).then((_) {
           ref.invalidate(lessonUnlockedProvider(lesson.id));

@@ -64,6 +64,14 @@ class _BannerAdWrapperState extends State<BannerAdWrapper> {
     final banner = await AdService.instance.getBannerAd();
     if (banner != null && mounted) {
       setState(() => _bannerAd = banner);
+    } else if (mounted) {
+      // Retry once after 3 seconds if the first load failed.
+      await Future.delayed(const Duration(seconds: 3));
+      if (!mounted) return;
+      final retry = await AdService.instance.getBannerAd();
+      if (retry != null && mounted) {
+        setState(() => _bannerAd = retry);
+      }
     }
   }
 

@@ -25,8 +25,9 @@ class _TabShellWidgetState extends ConsumerState<TabShellWidget> {
   @override
   void initState() {
     super.initState();
-    // Pre-load interstitial on app start
+    // Pre-load interstitial and rewarded ads on app start
     AdService.instance.loadInterstitialAd();
+    AdService.instance.loadRewardedAd();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _maybeStartGuidedTour();

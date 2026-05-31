@@ -108,15 +108,38 @@ class AdStrategyService {
 
   /// Shows a rewarded ad for an explicit lesson unlock choice.
   /// Returns true if the ad was shown.
-  bool showLessonRewardAd({required VoidCallback onReward}) {
+  /// If the ad isn't cached yet, this will attempt to load and retry once.
+  Future<bool> showLessonRewardAd({required VoidCallback onReward}) async {
     if (PremiumService.instance.isPremium) return false;
 
-    final shown = AdService.instance.showRewardedAd(onReward: onReward);
-
-    if (!shown) {
-      AdService.instance.loadRewardedAd();
+    // If ad is already cached, show it immediately.
+    if (AdService.instance.isRewardedReady) {
+      final shown = AdService.instance.showRewardedAd(onReward: onReward);
+      if (!shown) {
+        AdService.instance.loadRewardedAd();
+      }
+      return shown;
     }
 
-    return shown;
+    // Ad not cached yet — try loading and wait briefly.
+    AdService.instance.loadRewardedAd();
+
+    // Poll for up to 3 seconds for the ad to become ready.
+    for (int i = 0; i < 15; i++) {
+      await Future.delayed(const Duration(milliseconds: 200));
+      if (AdService.instance.isRewardedReady) {
+        final shown = AdService.instance.showRewardedAd(onReward: onReward);
+        if (!shown) {
+          AdService.instance.loadRewardedAd();
+        }
+        return shown;
+      }
+    }
+
+    // Give up — ad failed to load.
+    if (kDebugMode) {
+      debugPrint('[AdStrategy] rewarded ad failed to load within 3s');
+    }
+    return false;
   }
 }

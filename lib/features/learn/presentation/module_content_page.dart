@@ -203,7 +203,7 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
 
     if (choice == 'watch') {
       final repo = ref.read(lessonProgressRepoProvider);
-      final shown = AdStrategyService.instance.showLessonRewardAd(
+      final shown = await AdStrategyService.instance.showLessonRewardAd(
         onReward: () {
           repo.markLessonAdUnlocked(nextLessonId).then((_) {
             ref.invalidate(lessonUnlockedProvider(nextLessonId));
