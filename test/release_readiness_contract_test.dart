@@ -52,16 +52,33 @@ void main() {
       expect(buildGradle, contains('versionCode = $versionCode'));
     });
 
-    test('AdMob SDK still initializes when consent is delayed or unavailable', () {
+    test('AdMob SDK initializes immediately without blocking on consent', () {
       final adService = File(
         'lib/core/services/ad_service.dart',
       ).readAsStringSync();
 
-      expect(adService, contains('Future.wait<dynamic>'));
-      expect(adService, contains('MobileAds.instance.initialize()'));
-      expect(adService, contains('MobileAds initialized — canRequestAds'));
-      expect(adService, contains('consent request timed out — defaulting to true'));
+      // SDK init is direct — no consent gate.
+      expect(adService, contains('await MobileAds.instance.initialize()'));
+      expect(adService, contains('MobileAds initialized'));
+      // Consent runs fire-and-forget in background.
+      expect(adService, contains('_requestConsentInBackground'));
+      expect(adService, contains('requestConsentInfoUpdate'));
+      // Must NOT gate SDK init on consent result.
       expect(adService, isNot(contains('MobileAds skipped — consent not ready')));
+    });
+
+    test('main.dart does not block app startup on AdService or IAP', () {
+      final mainFile = File('lib/main.dart').readAsStringSync();
+
+      // PremiumService is awaited first (AdService checks isPremium).
+      expect(mainFile, contains('await PremiumService.instance.initialize()'));
+      // AdService and IAP fire concurrently without await.
+      expect(mainFile, contains('Future.wait<dynamic>('));
+      expect(mainFile, contains('AdService.instance.init()'));
+      expect(mainFile, contains('IAPService.instance.initialize()'));
+      // No sequential await on ads/iap that blocks runApp.
+      expect(mainFile, isNot(contains('await AdService.instance.init()')));
+      expect(mainFile, isNot(contains('await IAPService.instance.initialize()')));
     });
   });
 }

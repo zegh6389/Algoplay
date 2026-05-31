@@ -12,9 +12,16 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // ── Monetisation initialisation ─────────────────────────────────────────
+  // PremiumService must complete first (AdService/IAP check isPremium).
   await PremiumService.instance.initialize();
-  await AdService.instance.init();
-  await IAPService.instance.initialize();
+
+  // AdService and IAP run concurrently — neither blocks app startup.
+  // AdService.init() now does fire-and-forget consent (fast).
+  // IAP may take time to query the store; we don't await it.
+  Future.wait<dynamic>([
+    AdService.instance.init(),
+    IAPService.instance.initialize(),
+  ], eagerError: false);
 
   runApp(const ProviderScope(child: AlgoplayApp()));
 }

@@ -64,36 +64,28 @@ class AdService {
 
   // ── Initialization ───────────────────────────────────────────────────────
 
-  /// Initializes the Mobile Ads SDK.  Call once during app startup.
+  /// Initializes the Mobile Ads SDK and fires consent in background.
   ///
-  /// The SDK is always initialized regardless of consent outcome so that ads
-  /// can still be served (the SDK respects cached consent status internally).
-  /// Consent and SDK init run concurrently to minimise wall-clock time.
+  /// The SDK is initialized immediately without waiting for consent.
+  /// Consent handling runs fire-and-forget so it never blocks startup.
+  /// The SDK uses cached consent state internally and will serve
+  /// non-personalized ads when consent is not yet determined.
   Future<void> init() async {
     if (_isInitialized) return;
-    try {
-      // Run consent request and SDK initialization concurrently.
-      // Even if consent fails/times out, the SDK should still initialize —
-      // it uses cached consent state and can serve limited ads.
-      final results = await Future.wait<dynamic>(
-        [
-          _requestConsentForAds(),
-          MobileAds.instance.initialize(),
-        ],
-        eagerError: false,
-      );
 
-      final canRequestAds = results[0] as bool;
+    try {
+      await MobileAds.instance.initialize();
       _isInitialized = true;
 
       if (kDebugMode) {
-        debugPrint(
-          '[AdService] MobileAds initialized — canRequestAds: $canRequestAds',
-        );
+        debugPrint('[AdService] MobileAds initialized');
       }
+
+      // Fire-and-forget: update consent info in background.
+      // This never blocks ad loading — the SDK handles consent internally.
+      _requestConsentInBackground();
     } catch (e) {
-      // Even on error, mark as initialized so ad methods can attempt to load.
-      // Individual ad loads will fail gracefully if the SDK is unhealthy.
+      // Mark initialized even on error so ad methods attempt to load.
       _isInitialized = true;
       if (kDebugMode) {
         debugPrint('[AdService] init error (SDK still marked ready): $e');
@@ -101,28 +93,8 @@ class AdService {
     }
   }
 
-  Future<bool> _requestConsentForAds() async {
-    final completer = Completer<bool>();
-
-    void completeWithCanRequestAds() {
-      ConsentInformation.instance
-          .canRequestAds()
-          .then((canRequestAds) {
-            if (!completer.isCompleted) {
-              completer.complete(canRequestAds);
-            }
-          })
-          .catchError((Object error) {
-            if (kDebugMode) {
-              debugPrint('[AdService] consent status error: $error');
-            }
-            if (!completer.isCompleted) {
-              // Default to true — the SDK will handle consent internally.
-              completer.complete(true);
-            }
-          });
-    }
-
+  /// Updates UMP consent info in the background without blocking ad loading.
+  void _requestConsentInBackground() {
     try {
       ConsentInformation.instance.requestConsentInfoUpdate(
         ConsentRequestParameters(tagForUnderAgeOfConsent: false),
@@ -134,12 +106,6 @@ class AdService {
                 '${formError.errorCode} ${formError.message}',
               );
             }
-            completeWithCanRequestAds();
-          }).catchError((Object error) {
-            if (kDebugMode) {
-              debugPrint('[AdService] consent form load error: $error');
-            }
-            completeWithCanRequestAds();
           });
         },
         (formError) {
@@ -149,27 +115,13 @@ class AdService {
               '${formError.errorCode} ${formError.message}',
             );
           }
-          completeWithCanRequestAds();
         },
       );
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('[AdService] consent request error: $e');
+        debugPrint('[AdService] background consent error: $e');
       }
-      completeWithCanRequestAds();
     }
-
-    return completer.future.timeout(
-      const Duration(seconds: 3),
-      onTimeout: () {
-        if (kDebugMode) {
-          debugPrint('[AdService] consent request timed out — defaulting to true');
-        }
-        // Default to true on timeout — the SDK handles consent internally
-        // and will serve non-personalized ads if no consent is cached.
-        return true;
-      },
-    );
   }
 
   // ═══════════════════════════════════════════════════════════════════════════

@@ -154,8 +154,8 @@ void main() {
         adService,
         contains('ConsentForm.loadAndShowConsentFormIfRequired'),
       );
-      expect(adService, contains('canRequestAds()'));
-      expect(adService, contains('MobileAds initialized — canRequestAds'));
+      expect(adService, contains('requestConsentInfoUpdate'));
+      expect(adService, contains('MobileAds initialized'));
       expect(
         adService,
         isNot(contains('MobileAds skipped — consent not ready')),
