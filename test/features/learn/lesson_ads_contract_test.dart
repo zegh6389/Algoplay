@@ -161,9 +161,10 @@ void main() {
         isNot(contains('MobileAds skipped — consent not ready')),
       );
       expect(adService, contains('bool get hasCachedInterstitialAd'));
-      expect(adService, contains('ca-app-pub-3940256099942544/6300978111'));
-      expect(adService, contains('ca-app-pub-3940256099942544/1033173712'));
-      expect(adService, contains('ca-app-pub-3940256099942544/5224354917'));
+      // Production ad unit IDs (Android)
+      expect(adService, contains('ca-app-pub-8157621642469961/2735757394'));
+      expect(adService, contains('ca-app-pub-8157621642469961/9109594050'));
+      expect(adService, contains('ca-app-pub-8157621642469961/6734712153'));
       expect(
         adService,
         contains(
