@@ -65,6 +65,15 @@ void main() {
       expect(adService, contains('requestConsentInfoUpdate'));
       // Must NOT gate SDK init on consent result.
       expect(adService, isNot(contains('MobileAds skipped — consent not ready')));
+      // Deferred loading — ad methods await init completer instead of failing.
+      expect(adService, contains('Future<void> get ready'));
+      expect(adService, contains('await _initCompleter.future'));
+      expect(adService, contains('_initCompleter.future.then'));
+      // No silent null returns on !initialized.
+      expect(
+        adService,
+        isNot(contains('banner skipped — MobileAds not initialized')),
+      );
     });
 
     test('main.dart does not block app startup on AdService or IAP', () {

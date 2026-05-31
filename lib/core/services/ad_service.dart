@@ -55,6 +55,7 @@ class AdService {
   InterstitialAd? _interstitialAd;
   RewardedAd? _rewardedAd;
   bool _isInitialized = false;
+  final Completer<void> _initCompleter = Completer<void>();
 
   bool get hasCachedInterstitialAd => _interstitialAd != null;
 
@@ -76,6 +77,7 @@ class AdService {
     try {
       await MobileAds.instance.initialize();
       _isInitialized = true;
+      _initCompleter.complete();
 
       if (kDebugMode) {
         debugPrint('[AdService] MobileAds initialized');
@@ -87,11 +89,16 @@ class AdService {
     } catch (e) {
       // Mark initialized even on error so ad methods attempt to load.
       _isInitialized = true;
+      if (!_initCompleter.isCompleted) _initCompleter.complete();
       if (kDebugMode) {
         debugPrint('[AdService] init error (SDK still marked ready): $e');
       }
     }
   }
+
+  /// Returns a future that completes when the SDK is ready.
+  /// Callers can await this before requesting ads.
+  Future<void> get ready => _initCompleter.future;
 
   /// Updates UMP consent info in the background without blocking ad loading.
   void _requestConsentInBackground() {
@@ -131,12 +138,11 @@ class AdService {
   /// Creates and returns a loaded [BannerAd] ready for [AdWidget].
   ///
   /// Returns `null` for premium users or on load failure.
+  /// Automatically waits for SDK initialization if needed.
   Future<BannerAd?> getBannerAd() async {
+    // Wait for SDK to be ready instead of silently failing.
     if (!_isInitialized) {
-      if (kDebugMode) {
-        debugPrint('[AdService] banner skipped — MobileAds not initialized');
-      }
-      return null;
+      await _initCompleter.future;
     }
 
     if (PremiumService.instance.isPremium) {
@@ -179,13 +185,11 @@ class AdService {
   // ═══════════════════════════════════════════════════════════════════════════
 
   /// Pre-loads a rewarded ad.  No-op for premium users.
+  /// If the SDK isn't ready yet, this will schedule the load after init.
   void loadRewardedAd() {
     if (!_isInitialized) {
-      if (kDebugMode) {
-        debugPrint(
-          '[AdService] rewarded load skipped — MobileAds not initialized',
-        );
-      }
+      // Schedule retry after init completes.
+      _initCompleter.future.then((_) => loadRewardedAd());
       return;
     }
 
@@ -283,13 +287,11 @@ class AdService {
   // ═══════════════════════════════════════════════════════════════════════════
 
   /// Pre-loads an interstitial ad.  No-op for premium users.
+  /// If the SDK isn't ready yet, this will schedule the load after init.
   void loadInterstitialAd() {
     if (!_isInitialized) {
-      if (kDebugMode) {
-        debugPrint(
-          '[AdService] interstitial load skipped — MobileAds not initialized',
-        );
-      }
+      // Schedule retry after init completes.
+      _initCompleter.future.then((_) => loadInterstitialAd());
       return;
     }
 

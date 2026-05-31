@@ -141,10 +141,10 @@ void main() {
 
       expect(inlineAd, contains('ref.watch(adFreeProvider)'));
       expect(inlineAd, contains('AdService.instance.getBannerAd()'));
-      expect(adService, contains('banner skipped — MobileAds not initialized'));
+      expect(adService, contains('banner skipped — premium user'));
       expect(
         adService,
-        contains('rewarded load skipped — MobileAds not initialized'),
+        contains('rewarded load skipped — premium user'),
       );
       expect(
         adService,
