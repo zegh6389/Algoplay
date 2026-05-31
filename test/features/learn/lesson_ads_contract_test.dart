@@ -155,7 +155,11 @@ void main() {
         contains('ConsentForm.loadAndShowConsentFormIfRequired'),
       );
       expect(adService, contains('canRequestAds()'));
-      expect(adService, contains('MobileAds skipped — consent not ready'));
+      expect(adService, contains('MobileAds initialized — canRequestAds'));
+      expect(
+        adService,
+        isNot(contains('MobileAds skipped — consent not ready')),
+      );
       expect(adService, contains('bool get hasCachedInterstitialAd'));
       expect(adService, contains('ca-app-pub-3940256099942544/6300978111'));
       expect(adService, contains('ca-app-pub-3940256099942544/1033173712'));
