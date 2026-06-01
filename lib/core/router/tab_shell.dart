@@ -21,13 +21,16 @@ class TabShellWidget extends ConsumerStatefulWidget {
 
 class _TabShellWidgetState extends ConsumerState<TabShellWidget> {
   int _tabSwitchCount = 0;
+  DateTime? _lastTabInterstitialTime;
+
+  static const int _tabInterstitialEvery = 5; // show every 5th tab switch
+  static const Duration _tabInterstitialCooldown = Duration(minutes: 5);
 
   @override
   void initState() {
     super.initState();
-    // Pre-load interstitial and rewarded ads on app start
+    // Pre-load interstitial on app start
     AdService.instance.loadInterstitialAd();
-    AdService.instance.loadRewardedAd();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _maybeStartGuidedTour();
@@ -101,11 +104,16 @@ class _TabShellWidgetState extends ConsumerState<TabShellWidget> {
 
     if (!isSameTab) {
       _tabSwitchCount++;
-      // Show interstitial every 4th tab switch (skip during tour)
-      if (_tabSwitchCount % 4 == 0) {
+      // Show interstitial every 5th tab switch with a 5-minute cooldown
+      // (skip during tour)
+      if (_tabSwitchCount % _tabInterstitialEvery == 0) {
         final isPremium = ref.read(premiumProvider);
         final tourActive = ref.read(featureTourActiveProvider);
-        if (!isPremium && !tourActive) {
+        final now = DateTime.now();
+        final cooledDown = _lastTabInterstitialTime == null ||
+            now.difference(_lastTabInterstitialTime!) >= _tabInterstitialCooldown;
+        if (!isPremium && !tourActive && cooledDown) {
+          _lastTabInterstitialTime = now;
           AdService.instance.showInterstitialAd();
         }
       }

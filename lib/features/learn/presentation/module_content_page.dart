@@ -5,6 +5,7 @@ import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/services/ad_service.dart';
 import '../../../core/services/ad_strategy_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../features/stats/data/stats_repository.dart';
@@ -203,7 +204,27 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
 
     if (choice == 'watch') {
       final repo = ref.read(lessonProgressRepoProvider);
-      final shown = await AdStrategyService.instance.showLessonRewardAd(
+      final adService = AdService.instance;
+
+      // If ad is still loading, show a brief loading snackbar and wait
+      if (!adService.isRewardedReady && adService.isRewardedLoading) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              duration: Duration(seconds: 3),
+              content: Text('Ad is loading, please wait...'),
+            ),
+          );
+        }
+        // Wait up to 10 seconds for the ad to load
+        for (int i = 0; i < 20; i++) {
+          await Future.delayed(const Duration(milliseconds: 500));
+          if (!mounted) return;
+          if (adService.isRewardedReady) break;
+        }
+      }
+
+      final shown = AdStrategyService.instance.showLessonRewardAd(
         onReward: () {
           repo.markLessonAdUnlocked(nextLessonId).then((_) {
             ref.invalidate(lessonUnlockedProvider(nextLessonId));

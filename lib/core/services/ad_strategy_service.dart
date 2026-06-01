@@ -18,8 +18,9 @@ class AdStrategyService {
 
   static final AdStrategyService instance = AdStrategyService._();
 
-  /// Show interstitial after every completed module (cooldown enforced separately).
-  static const int moduleInterstitialFrequency = 1;
+  /// Show interstitial after every 2nd completed module.
+  /// Google recommends against showing after every single interaction.
+  static const int moduleInterstitialFrequency = 2;
 
   /// Cooldown between interstitial shows.
   static const Duration moduleInterstitialCooldown = Duration(minutes: 3);
@@ -108,38 +109,15 @@ class AdStrategyService {
 
   /// Shows a rewarded ad for an explicit lesson unlock choice.
   /// Returns true if the ad was shown.
-  /// If the ad isn't cached yet, this will attempt to load and retry once.
-  Future<bool> showLessonRewardAd({required VoidCallback onReward}) async {
+  bool showLessonRewardAd({required VoidCallback onReward}) {
     if (PremiumService.instance.isPremium) return false;
 
-    // If ad is already cached, show it immediately.
-    if (AdService.instance.isRewardedReady) {
-      final shown = AdService.instance.showRewardedAd(onReward: onReward);
-      if (!shown) {
-        AdService.instance.loadRewardedAd();
-      }
-      return shown;
+    final shown = AdService.instance.showRewardedAd(onReward: onReward);
+
+    if (!shown) {
+      AdService.instance.loadRewardedAd();
     }
 
-    // Ad not cached yet — try loading and wait briefly.
-    AdService.instance.loadRewardedAd();
-
-    // Poll for up to 3 seconds for the ad to become ready.
-    for (int i = 0; i < 15; i++) {
-      await Future.delayed(const Duration(milliseconds: 200));
-      if (AdService.instance.isRewardedReady) {
-        final shown = AdService.instance.showRewardedAd(onReward: onReward);
-        if (!shown) {
-          AdService.instance.loadRewardedAd();
-        }
-        return shown;
-      }
-    }
-
-    // Give up — ad failed to load.
-    if (kDebugMode) {
-      debugPrint('[AdStrategy] rewarded ad failed to load within 3s');
-    }
-    return false;
+    return shown;
   }
 }

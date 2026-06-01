@@ -22,31 +22,59 @@ class AdService {
   // Production IDs (Android). iOS still uses test IDs until iOS release.
 
   static String get _bannerAdUnitId {
+    if (kDebugMode) {
+      return 'ca-app-pub-3940256099942544/6300978111';
+    }
     if (Platform.isAndroid) {
       return 'ca-app-pub-8157621642469961/2735757394';
     }
-    return 'ca-app-pub-3940256099942544/2934735716'; // iOS placeholder
+    return 'ca-app-pub-3940256099942544/2934735716'; // iOS test
   }
 
   static String get _interstitialAdUnitId {
+    if (kDebugMode) {
+      return 'ca-app-pub-3940256099942544/1033173712';
+    }
     if (Platform.isAndroid) {
       return 'ca-app-pub-8157621642469961/9109594050';
     }
-    return 'ca-app-pub-3940256099942544/4411468910'; // iOS placeholder
+    return 'ca-app-pub-3940256099942544/4411468910'; // iOS test
   }
 
   static String get _rewardedAdUnitId {
+    if (kDebugMode) {
+      return 'ca-app-pub-3940256099942544/5224354917';
+    }
     if (Platform.isAndroid) {
       return 'ca-app-pub-8157621642469961/6734712153';
     }
-    return 'ca-app-pub-3940256099942544/1712485313'; // iOS placeholder
+    return 'ca-app-pub-3940256099942544/1712485313'; // iOS test
   }
+
+  // ── Retry constants ──────────────────────────────────────────────────────
+  static const int _maxRetryAttempts = 3;
+  static const Duration _initialRetryDelay = Duration(seconds: 5);
+  static const Duration _maxRetryDelay = Duration(minutes: 2);
 
   // ── State ────────────────────────────────────────────────────────────────
   InterstitialAd? _interstitialAd;
   RewardedAd? _rewardedAd;
   bool _isInitialized = false;
+
+  int _interstitialRetryCount = 0;
+  int _rewardedRetryCount = 0;
+  Timer? _interstitialRetryTimer;
+  Timer? _rewardedRetryTimer;
+
+  bool _isRewardedLoading = false;
+  bool _isInterstitialLoading = false;
+
+  /// Completer that resolves once [init] finishes — allows callers to await
+  /// readiness instead of silently skipping ad loads.
   final Completer<void> _initCompleter = Completer<void>();
+
+  /// A future that completes when the Mobile Ads SDK is ready.
+  Future<void> get ready => _initCompleter.future;
 
   bool get hasCachedInterstitialAd => _interstitialAd != null;
 
@@ -54,31 +82,49 @@ class AdService {
 
   bool get isRewardedReady => _rewardedAd != null;
 
+  /// Whether a rewarded ad is currently being loaded (useful for UI loading states).
+  bool get isRewardedLoading => _isRewardedLoading;
+
+  /// Whether an interstitial ad is currently being loaded.
+  bool get isInterstitialLoading => _isInterstitialLoading;
+
   // ── Initialization ───────────────────────────────────────────────────────
 
-  /// Initializes the Mobile Ads SDK and fires consent in background.
+  /// Initializes the Mobile Ads SDK.  Call once during app startup.
   ///
-  /// The SDK is initialized immediately without waiting for consent.
-  /// Consent handling runs fire-and-forget so it never blocks startup.
-  /// The SDK uses cached consent state internally and will serve
-  /// non-personalized ads when consent is not yet determined.
+  /// The SDK is always initialized regardless of consent outcome so that ads
+  /// can still be served (the SDK respects cached consent status internally).
+  /// Consent and SDK init run concurrently to minimise wall-clock time.
   Future<void> init() async {
     if (_isInitialized) return;
-
     try {
-      await MobileAds.instance.initialize();
-      _isInitialized = true;
-      _initCompleter.complete();
+      // Run consent request and SDK initialization concurrently.
+      // Even if consent fails/times out, the SDK should still initialize —
+      // it uses cached consent state and can serve limited ads.
+      final results = await Future.wait<dynamic>(
+        [
+          _requestConsentForAds(),
+          MobileAds.instance.initialize(),
+        ],
+        eagerError: false,
+      );
 
-      if (kDebugMode) {
-        debugPrint('[AdService] MobileAds initialized');
+      final canRequestAds = results[0] as bool;
+      _isInitialized = true;
+      if (!_initCompleter.isCompleted) _initCompleter.complete();
+        if (kDebugMode) {
+          debugPrint('[AdService] MobileAds skipped — consent not ready');
+        }
       }
 
-      // Fire-and-forget: update consent info in background.
-      // This never blocks ad loading — the SDK handles consent internally.
-      _requestConsentInBackground();
+      if (kDebugMode) {
+        debugPrint(
+          '[AdService] MobileAds initialized — canRequestAds: $canRequestAds',
+        );
+      }
     } catch (e) {
-      // Mark initialized even on error so ad methods attempt to load.
+      // Even on error, mark as initialized so ad methods can attempt to load.
+      // Individual ad loads will fail gracefully if the SDK is unhealthy.
       _isInitialized = true;
       if (!_initCompleter.isCompleted) _initCompleter.complete();
       if (kDebugMode) {
@@ -87,12 +133,28 @@ class AdService {
     }
   }
 
-  /// Returns a future that completes when the SDK is ready.
-  /// Callers can await this before requesting ads.
-  Future<void> get ready => _initCompleter.future;
+  Future<bool> _requestConsentForAds() async {
+    final completer = Completer<bool>();
 
-  /// Updates UMP consent info in the background without blocking ad loading.
-  void _requestConsentInBackground() {
+    void completeWithCanRequestAds() {
+      ConsentInformation.instance
+          .canRequestAds()
+          .then((canRequestAds) {
+            if (!completer.isCompleted) {
+              completer.complete(canRequestAds);
+            }
+          })
+          .catchError((Object error) {
+            if (kDebugMode) {
+              debugPrint('[AdService] consent status error: $error');
+            }
+            if (!completer.isCompleted) {
+              // Default to true — the SDK will handle consent internally.
+              completer.complete(true);
+            }
+          });
+    }
+
     try {
       ConsentInformation.instance.requestConsentInfoUpdate(
         ConsentRequestParameters(tagForUnderAgeOfConsent: false),
@@ -104,6 +166,12 @@ class AdService {
                 '${formError.errorCode} ${formError.message}',
               );
             }
+            completeWithCanRequestAds();
+          }).catchError((Object error) {
+            if (kDebugMode) {
+              debugPrint('[AdService] consent form load error: $error');
+            }
+            completeWithCanRequestAds();
           });
         },
         (formError) {
@@ -113,13 +181,39 @@ class AdService {
               '${formError.errorCode} ${formError.message}',
             );
           }
+          completeWithCanRequestAds();
         },
       );
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('[AdService] background consent error: $e');
+        debugPrint('[AdService] consent request error: $e');
       }
+      completeWithCanRequestAds();
     }
+
+    return completer.future.timeout(
+      const Duration(seconds: 5),
+      onTimeout: () {
+        if (kDebugMode) {
+          debugPrint(
+            '[AdService] consent request timed out — defaulting to true',
+          );
+        }
+        // Default to true on timeout — the SDK handles consent internally
+        // and will serve non-personalized ads if no consent is cached.
+        return true;
+      },
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // RETRY HELPER
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  Duration _retryDelay(int attempt) {
+    // Exponential backoff: 5s, 10s, 20s, 40s... capped at 2 minutes
+    final delay = _initialRetryDelay * (1 << attempt);
+    return delay < _maxRetryDelay ? delay : _maxRetryDelay;
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -129,11 +223,12 @@ class AdService {
   /// Creates and returns a loaded [BannerAd] ready for [AdWidget].
   ///
   /// Returns `null` for premium users or on load failure.
-  /// Automatically waits for SDK initialization if needed.
   Future<BannerAd?> getBannerAd() async {
-    // Wait for SDK to be ready instead of silently failing.
     if (!_isInitialized) {
-      await _initCompleter.future;
+      if (kDebugMode) {
+        debugPrint('[AdService] banner skipped — MobileAds not initialized');
+      }
+      return null;
     }
 
     if (PremiumService.instance.isPremium) {
@@ -176,10 +271,10 @@ class AdService {
   // ═══════════════════════════════════════════════════════════════════════════
 
   /// Pre-loads a rewarded ad.  No-op for premium users.
-  /// If the SDK isn't ready yet, this will schedule the load after init.
+  /// Includes automatic retry with exponential backoff on failure.
   void loadRewardedAd() {
     if (!_isInitialized) {
-      // Schedule retry after init completes.
+      // SDK not ready yet — schedule load for after init completes
       _initCompleter.future.then((_) => loadRewardedAd());
       return;
     }
@@ -191,24 +286,69 @@ class AdService {
       return;
     }
 
+    // Prevent duplicate loads
+    if (_isRewardedLoading) {
+      if (kDebugMode) {
+        debugPrint('[AdService] rewarded load already in progress — skipping');
+      }
+      return;
+    }
+
+    _isRewardedLoading = true;
+    _rewardedRetryTimer?.cancel();
+
     RewardedAd.load(
       adUnitId: _rewardedAdUnitId,
       request: const AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (ad) {
           _rewardedAd = ad;
+          _rewardedRetryCount = 0;
+          _isRewardedLoading = false;
           if (kDebugMode) {
             debugPrint('[AdService] rewarded ad loaded');
           }
         },
         onAdFailedToLoad: (error) {
+          _isRewardedLoading = false;
           if (kDebugMode) {
-            debugPrint('[AdService] rewarded ad failed to load: $error');
+            debugPrint(
+              '[AdService] rewarded ad failed to load (attempt ${_rewardedRetryCount + 1}/$_maxRetryAttempts): $error',
+            );
           }
           _rewardedAd = null;
+          _scheduleRewardedRetry();
         },
       ),
     );
+  }
+
+  void _scheduleRewardedRetry() {
+    if (_rewardedRetryCount >= _maxRetryAttempts) {
+      if (kDebugMode) {
+        debugPrint(
+          '[AdService] rewarded retry exhausted after $_maxRetryAttempts attempts',
+        );
+      }
+      _rewardedRetryCount = 0;
+      return;
+    }
+
+    final delay = _retryDelay(_rewardedRetryCount);
+    _rewardedRetryCount++;
+
+    if (kDebugMode) {
+      debugPrint(
+        '[AdService] rewarded retry #$_rewardedRetryCount in ${delay.inSeconds}s',
+      );
+    }
+
+    _rewardedRetryTimer?.cancel();
+    _rewardedRetryTimer = Timer(delay, () {
+      if (!PremiumService.instance.isPremium && _isInitialized) {
+        loadRewardedAd();
+      }
+    });
   }
 
   /// Shows the pre-loaded rewarded ad.  Calls [onReward] when the user earns
@@ -233,9 +373,14 @@ class AdService {
 
     if (_rewardedAd == null) {
       if (kDebugMode) {
-        debugPrint('[AdService] no rewarded ad cached — loading now');
+        debugPrint(
+          '[AdService] no rewarded ad cached — '
+          '${_isRewardedLoading ? "loading in progress" : "loading now"}',
+        );
       }
-      loadRewardedAd();
+      if (!_isRewardedLoading) {
+        loadRewardedAd();
+      }
       return false;
     }
 
@@ -278,10 +423,10 @@ class AdService {
   // ═══════════════════════════════════════════════════════════════════════════
 
   /// Pre-loads an interstitial ad.  No-op for premium users.
-  /// If the SDK isn't ready yet, this will schedule the load after init.
+  /// Includes automatic retry with exponential backoff on failure.
   void loadInterstitialAd() {
     if (!_isInitialized) {
-      // Schedule retry after init completes.
+      // SDK not ready yet — schedule load for after init completes
       _initCompleter.future.then((_) => loadInterstitialAd());
       return;
     }
@@ -293,24 +438,71 @@ class AdService {
       return;
     }
 
+    // Prevent duplicate loads
+    if (_isInterstitialLoading) {
+      if (kDebugMode) {
+        debugPrint(
+          '[AdService] interstitial load already in progress — skipping',
+        );
+      }
+      return;
+    }
+
+    _isInterstitialLoading = true;
+    _interstitialRetryTimer?.cancel();
+
     InterstitialAd.load(
       adUnitId: _interstitialAdUnitId,
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
           _interstitialAd = ad;
+          _interstitialRetryCount = 0;
+          _isInterstitialLoading = false;
           if (kDebugMode) {
             debugPrint('[AdService] interstitial ad loaded');
           }
         },
         onAdFailedToLoad: (error) {
+          _isInterstitialLoading = false;
           if (kDebugMode) {
-            debugPrint('[AdService] interstitial failed to load: $error');
+            debugPrint(
+              '[AdService] interstitial failed to load (attempt ${_interstitialRetryCount + 1}/$_maxRetryAttempts): $error',
+            );
           }
           _interstitialAd = null;
+          _scheduleInterstitialRetry();
         },
       ),
     );
+  }
+
+  void _scheduleInterstitialRetry() {
+    if (_interstitialRetryCount >= _maxRetryAttempts) {
+      if (kDebugMode) {
+        debugPrint(
+          '[AdService] interstitial retry exhausted after $_maxRetryAttempts attempts',
+        );
+      }
+      _interstitialRetryCount = 0;
+      return;
+    }
+
+    final delay = _retryDelay(_interstitialRetryCount);
+    _interstitialRetryCount++;
+
+    if (kDebugMode) {
+      debugPrint(
+        '[AdService] interstitial retry #$_interstitialRetryCount in ${delay.inSeconds}s',
+      );
+    }
+
+    _interstitialRetryTimer?.cancel();
+    _interstitialRetryTimer = Timer(delay, () {
+      if (!PremiumService.instance.isPremium && _isInitialized) {
+        loadInterstitialAd();
+      }
+    });
   }
 
   /// Shows the pre-loaded interstitial ad. Returns whether an ad was shown.
@@ -339,9 +531,14 @@ class AdService {
     final ad = _interstitialAd;
     if (ad == null) {
       if (kDebugMode) {
-        debugPrint('[AdService] no interstitial ad cached — loading now');
+        debugPrint(
+          '[AdService] no interstitial ad cached — '
+          '${_isInterstitialLoading ? "loading in progress" : "loading now"}',
+        );
       }
-      loadInterstitialAd();
+      if (!_isInterstitialLoading) {
+        loadInterstitialAd();
+      }
       continueFlow();
       return false;
     }
@@ -400,10 +597,14 @@ class AdService {
 
   /// Dispose all cached ads.  Call when the service is no longer needed.
   void dispose() {
+    _interstitialRetryTimer?.cancel();
+    _rewardedRetryTimer?.cancel();
     _interstitialAd?.dispose();
     _rewardedAd?.dispose();
     _interstitialAd = null;
     _rewardedAd = null;
+    _isRewardedLoading = false;
+    _isInterstitialLoading = false;
     if (kDebugMode) {
       debugPrint('[AdService] disposed');
     }
