@@ -122,6 +122,38 @@ class AdService {
     }
   }
 
+  /// Fire-and-forget: update consent info in background.
+  /// This never blocks ad loading — the SDK handles consent internally.
+  void _requestConsentInBackground() {
+    try {
+      ConsentInformation.instance.requestConsentInfoUpdate(
+        ConsentRequestParameters(tagForUnderAgeOfConsent: false),
+        () {
+          ConsentForm.loadAndShowConsentFormIfRequired((formError) {
+            if (formError != null && kDebugMode) {
+              debugPrint(
+                '[AdService] consent form error: '
+                '${formError.errorCode} ${formError.message}',
+              );
+            }
+          });
+        },
+        (formError) {
+          if (kDebugMode) {
+            debugPrint(
+              '[AdService] consent update error: '
+              '${formError.errorCode} ${formError.message}',
+            );
+          }
+        },
+      );
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('[AdService] background consent error: $e');
+      }
+    }
+  }
+
   Future<bool> _collectConsentAsync() async {
     final completer = Completer<bool>();
 
@@ -138,7 +170,6 @@ class AdService {
               debugPrint('[AdService] consent status error: $error');
             }
             if (!completer.isCompleted) {
-              // Default to true — the SDK will handle consent internally.
               completer.complete(true);
             }
           });
@@ -182,16 +213,7 @@ class AdService {
 
     return completer.future.timeout(
       const Duration(seconds: 5),
-      onTimeout: () {
-        if (kDebugMode) {
-          debugPrint(
-            '[AdService] consent request timed out — defaulting to true',
-          );
-        }
-        // Default to true on timeout — the SDK handles consent internally
-        // and will serve non-personalized ads if no consent is cached.
-        return true;
-      },
+      onTimeout: () => true,
     );
   }
 
