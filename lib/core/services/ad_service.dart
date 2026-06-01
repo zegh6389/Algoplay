@@ -112,6 +112,8 @@ class AdService {
       final canRequestAds = results[0] as bool;
       _isInitialized = true;
       if (!_initCompleter.isCompleted) _initCompleter.complete();
+
+      if (!canRequestAds) {
         if (kDebugMode) {
           debugPrint('[AdService] MobileAds skipped — consent not ready');
         }
@@ -224,11 +226,9 @@ class AdService {
   ///
   /// Returns `null` for premium users or on load failure.
   Future<BannerAd?> getBannerAd() async {
+    // Wait for SDK to be ready instead of silently failing.
     if (!_isInitialized) {
-      if (kDebugMode) {
-        debugPrint('[AdService] banner skipped — MobileAds not initialized');
-      }
-      return null;
+      await _initCompleter.future;
     }
 
     if (PremiumService.instance.isPremium) {

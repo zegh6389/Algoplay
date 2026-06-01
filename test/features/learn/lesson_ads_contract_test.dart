@@ -87,8 +87,8 @@ void main() {
       expect(moduleContent, isNot(contains('lessonRewardBonusXp')));
       expect(moduleContent, contains('_showLessonCompleteDialog'));
 
-      // AdStrategyService: frequency = every module, cooldown = 3 min
-      expect(adStrategy, contains('moduleInterstitialFrequency = 1'));
+      // AdStrategyService: frequency = every 2nd module, cooldown = 3 min
+      expect(adStrategy, contains('moduleInterstitialFrequency = 2'));
       expect(
         adStrategy,
         contains('moduleInterstitialCooldown = Duration(minutes: 3)'),
@@ -172,7 +172,7 @@ void main() {
         ),
       );
       expect(adService, contains('onAdShowedFullScreenContent'));
-      expect(adStrategy, contains('moduleInterstitialFrequency = 1'));
+      expect(adStrategy, contains('moduleInterstitialFrequency = 2'));
       expect(
         adStrategy,
         contains('moduleInterstitialCooldown = Duration(minutes: 3)'),
