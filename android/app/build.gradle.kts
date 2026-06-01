@@ -9,6 +9,13 @@ plugins {
 }
 
 val keystoreProperties = Properties()
+
+// Extract version from pubspec.yaml
+val pubspecFile = file("../../pubspec.yaml")
+val pubspecText = pubspecFile.readText()
+val versionMatch = Regex("^version:\\s*([^+\\s]+)\\+(\\d+)", RegexOption.MULTILINE).find(pubspecText)
+val pubspecVersionName = versionMatch?.groupValues?.get(1) ?: "1.0.0"
+val pubspecVersionCode = versionMatch?.groupValues?.get(2)?.toIntOrNull() ?: 1
 val keystorePropertiesFile = rootProject.file("key.properties")
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
@@ -41,8 +48,8 @@ android {
         applicationId = "com.algoplay.app"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = 4
-        versionName = "1.0.3"
+        versionCode = pubspecVersionCode
+        versionName = "$pubspecVersionName"
     }
 
     buildTypes {

@@ -48,8 +48,10 @@ void main() {
       final versionName = versionMatch!.group(1)!;
       final versionCode = versionMatch.group(2)!;
 
-      expect(buildGradle, contains('versionName = "$versionName"'));
-      expect(buildGradle, contains('versionCode = $versionCode'));
+      expect(buildGradle, contains('versionName = "\$pubspecVersionName"'));
+      expect(buildGradle, contains('versionCode = pubspecVersionCode'));
+      expect(buildGradle, contains('val pubspecVersionName ='));
+      expect(buildGradle, contains('val pubspecVersionCode ='));
     });
 
     test('AdMob SDK initializes immediately without blocking on consent', () {

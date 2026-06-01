@@ -95,7 +95,7 @@ void main() {
         source,
         contains('final tourActive = ref.read(featureTourActiveProvider);'),
       );
-      expect(source, contains('if (!isPremium && !tourActive)'));
+      expect(source, contains('if (!isPremium && !tourActive && cooledDown)'));
       expect(source, contains('onTourStarted'));
       expect(source, contains('onTourEnded'));
     });
