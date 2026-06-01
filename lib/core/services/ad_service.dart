@@ -103,7 +103,7 @@ class AdService {
       // it uses cached consent state and can serve limited ads.
       final results = await Future.wait<dynamic>(
         [
-          _requestConsentForAds(),
+          _collectConsentAsync(),
           MobileAds.instance.initialize(),
         ],
         eagerError: false,
@@ -115,7 +115,7 @@ class AdService {
 
       if (!canRequestAds) {
         if (kDebugMode) {
-          debugPrint('[AdService] MobileAds skipped — consent not ready');
+          debugPrint('[AdService] consent not ready — deferred');
         }
       }
 
@@ -135,7 +135,7 @@ class AdService {
     }
   }
 
-  Future<bool> _requestConsentForAds() async {
+  Future<bool> _collectConsentAsync() async {
     final completer = Completer<bool>();
 
     void completeWithCanRequestAds() {
