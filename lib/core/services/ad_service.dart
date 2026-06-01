@@ -101,26 +101,15 @@ class AdService {
       // Run consent request and SDK initialization concurrently.
       // Even if consent fails/times out, the SDK should still initialize —
       // it uses cached consent state and can serve limited ads.
-      // Consent runs concurrently with SDK init (fire-and-forget pattern).
-      // SDK init runs immediately — it never waits for consent.
-      final consentFuture = _collectConsentAsync();
-      final initFuture = MobileAds.instance.initialize();
-      final results = await Future.wait<Object>([consentFuture, initFuture]);
+      // Initialize SDK immediately — never blocks on consent.
+      // Consent runs fire-and-forget in background so it never blocks.
+      await MobileAds.instance.initialize();
+      _requestConsentInBackground();
 
-      final canRequestAds = results[0] as bool;
       _isInitialized = true;
       if (!_initCompleter.isCompleted) _initCompleter.complete();
-
-      if (!canRequestAds) {
-        if (kDebugMode) {
-          debugPrint('[AdService] consent not ready — deferred');
-        }
-      }
-
       if (kDebugMode) {
-        debugPrint(
-          '[AdService] MobileAds initialized — canRequestAds: $canRequestAds',
-        );
+        debugPrint('[AdService] MobileAds initialized');
       }
     } catch (e) {
       // Even on error, mark as initialized so ad methods can attempt to load.
