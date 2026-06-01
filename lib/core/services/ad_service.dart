@@ -101,11 +101,9 @@ class AdService {
       // Run consent request and SDK initialization concurrently.
       // Even if consent fails/times out, the SDK should still initialize —
       // it uses cached consent state and can serve limited ads.
-      final results = await Future.wait<dynamic>(
-        [
-          _collectConsentAsync(),
-          MobileAds.instance.initialize(),
-        ],
+      // start both concurrently (await on the list elements — not inside)
+      final results = await Future.wait<Object>(
+        [_collectConsentAsync(), MobileAds.instance.initialize()],
         eagerError: false,
       );
 
