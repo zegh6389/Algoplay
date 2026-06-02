@@ -103,22 +103,34 @@ class AdService {
       // it uses cached consent state and can serve limited ads.
       // Initialize SDK immediately — never blocks on consent.
       // Consent runs fire-and-forget in background so it never blocks.
-      await MobileAds.instance.initialize();
+      final InitializationStatus initStatus =
+          await MobileAds.instance.initialize();
       _requestConsentInBackground();
 
       _isInitialized = true;
       if (!_initCompleter.isCompleted) _initCompleter.complete();
-      if (kDebugMode) {
-        debugPrint('[AdService] MobileAds initialized');
+      // Log adapter readiness for every build flavour so logcat always has a
+      // signal. In release, this is the only way to know which ad networks
+      // successfully initialised vs failed.
+      debugPrint('[AdService] MobileAds initialized: '
+          'adapters=${initStatus.adapterStatuses.length}');
+      for (final entry in initStatus.adapterStatuses.entries) {
+        final state = entry.value.state;
+        final desc = entry.value.description;
+        debugPrint(
+          '[AdService]   adapter ${entry.key}: $state'
+          '${desc.isNotEmpty ? " ($desc)" : ""}',
+        );
       }
-    } catch (e) {
+    } catch (e, st) {
       // Even on error, mark as initialized so ad methods can attempt to load.
       // Individual ad loads will fail gracefully if the SDK is unhealthy.
       _isInitialized = true;
       if (!_initCompleter.isCompleted) _initCompleter.complete();
-      if (kDebugMode) {
-        debugPrint('[AdService] init error (SDK still marked ready): $e');
-      }
+      // Always log (not just kDebugMode) so release-mode logcat captures
+      // init failures — critical for diagnosing "ads not showing" reports.
+      debugPrint('[AdService] init error (SDK still marked ready): $e');
+      debugPrint('[AdService] init stack: $st');
     }
   }
 
