@@ -67,7 +67,7 @@ class IAPService {
           debugPrint('[IAPService] products not found: ${response.notFoundIDs}');
         }
       }
-      _products = response.productDetails.toList();
+      _products = List<ProductDetails>.from(response.productDetails);
       if (kDebugMode) {
         debugPrint('[IAPService] found ${_products.length} product(s)');
       }
