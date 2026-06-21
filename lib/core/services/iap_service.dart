@@ -124,6 +124,7 @@ class IAPService {
       orElse: () => _products.first,
     );
 
+    debugPrint('[IAPService] buyUnlockAll invoked — products=${_products.length} isPremium=${PremiumService.instance.isPremiumUser()}');
     try {
       final purchaseParam = PurchaseParam(productDetails: product);
 
@@ -131,14 +132,11 @@ class IAPService {
       final launched = await _inAppPurchase.buyNonConsumable(
         purchaseParam: purchaseParam,
       );
-      if (kDebugMode) {
-        debugPrint('[IAPService] buyNonConsumable launched: $launched');
-      }
+      debugPrint('[IAPService] buyNonConsumable launched: $launched');
       return launched;
-    } catch (e) {
-      if (kDebugMode) {
-        debugPrint('[IAPService] buyUnlockAll error: $e');
-      }
+    } catch (e, stack) {
+      debugPrint('[IAPService] buyUnlockAll error: $e');
+      debugPrint('[IAPService] stack: $stack');
       return false;
     }
   }

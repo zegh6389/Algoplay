@@ -35,7 +35,9 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
           );
         }
       }
-    } catch (e) {
+    } catch (e, stack) {
+      debugPrint('[PremiumPage] purchase threw: $e');
+      debugPrint('[PremiumPage] stack: $stack');
       if (mounted) {
         _showErrorSnackBar('Something went wrong. Please try again.');
       }
