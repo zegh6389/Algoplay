@@ -52,50 +52,38 @@ class IAPService {
     try {
       // 1. Check store availability
       final available = await _inAppPurchase.isAvailable();
+      debugPrint('[IAPService] store available: $available');
       if (!available) {
-        if (kDebugMode) {
-          debugPrint('[IAPService] store not available');
-        }
         _isInitialized = true;
         return;
       }
 
       // 2. Fetch product details
       final response = await _inAppPurchase.queryProductDetails(_productIds);
-      if (response.notFoundIDs.isNotEmpty) {
-        if (kDebugMode) {
-          debugPrint('[IAPService] products not found: ${response.notFoundIDs}');
-        }
+      debugPrint('[IAPService] notFoundIDs: ${response.notFoundIDs}');
+      debugPrint('[IAPService] productDetails count: ${response.productDetails.length}');
+      for (final p in response.productDetails) {
+        debugPrint('[IAPService] product: id=${p.id} title=${p.title} price=${p.price}');
       }
       _products = List<ProductDetails>.from(response.productDetails);
-      if (kDebugMode) {
-        debugPrint('[IAPService] found ${_products.length} product(s)');
-      }
 
       // 3. Listen to purchase stream
       _subscription = _inAppPurchase.purchaseStream.listen(
         _handlePurchaseUpdates,
         onDone: () {
-          if (kDebugMode) {
-            debugPrint('[IAPService] purchase stream done');
-          }
+          debugPrint('[IAPService] purchase stream done');
           _subscription?.cancel();
         },
         onError: (error) {
-          if (kDebugMode) {
-            debugPrint('[IAPService] purchase stream error: $error');
-          }
+          debugPrint('[IAPService] purchase stream error: $error');
         },
       );
 
       _isInitialized = true;
-      if (kDebugMode) {
-        debugPrint('[IAPService] initialized');
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        debugPrint('[IAPService] initialize error: $e');
-      }
+      debugPrint('[IAPService] initialized — _isInitialized=$_isInitialized _products=${_products.length}');
+    } catch (e, stack) {
+      debugPrint('[IAPService] initialize error: $e');
+      debugPrint('[IAPService] initialize stack: $stack');
     }
   }
 
@@ -105,17 +93,14 @@ class IAPService {
   ///
   /// The result is handled asynchronously through the purchase stream listener.
   Future<bool> buyUnlockAll() async {
+    debugPrint('[IAPService] buyUnlockAll CALLED — isInitialized=$_isInitialized _products=${_products.length} isPremium=${PremiumService.instance.isPremiumUser()}');
     if (PremiumService.instance.isPremiumUser()) {
-      if (kDebugMode) {
-        debugPrint('[IAPService] already premium — skipping purchase');
-      }
+      debugPrint('[IAPService] already premium — skipping purchase');
       return false;
     }
 
     if (_products.isEmpty) {
-      if (kDebugMode) {
-        debugPrint('[IAPService] no products available — cannot purchase');
-      }
+      debugPrint('[IAPService] no products available — cannot purchase (initialize may have failed or not finished)');
       return false;
     }
 
@@ -123,6 +108,7 @@ class IAPService {
       (p) => p.id == unlockAllProductId,
       orElse: () => _products.first,
     );
+    debugPrint('[IAPService] selected product: id=${product.id} runtimeType=${product.runtimeType}');
 
     debugPrint('[IAPService] buyUnlockAll invoked — products=${_products.length} isPremium=${PremiumService.instance.isPremiumUser()}');
     try {
