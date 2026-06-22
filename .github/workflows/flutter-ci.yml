@@ -91,7 +91,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload AAB to Play Console (internal testing)
+      - name: Upload AAB to Play Console (production)
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: r0adkll/upload-google-play@v1
         with:
@@ -99,6 +99,6 @@ jobs:
           packageName: com.algoplay.app
           releaseFiles: build/app/outputs/bundle/release/app-release.aab
           tracks: |
-            internal
+            production
           status: completed
           releaseName: ${{ github.sha }}
