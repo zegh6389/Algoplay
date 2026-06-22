@@ -101,4 +101,4 @@ jobs:
           tracks: |
             production
           status: completed
-          releaseName: ${{ github.sha }}
+          releaseName: algoplay-ci-${{ github.run_number }}
