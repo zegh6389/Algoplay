@@ -129,7 +129,12 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
 
   void _onTimeUp() {
     Haptics.error();
-    setState(() => _lives--);
+    setState(() {
+      _lives--;
+      // Reveal the correct answer (no wrong option selected) before advancing.
+      _selectedAnswer = '';
+      _answerCorrect = false;
+    });
     if (_lives <= 0) {
       _endGame(won: false);
     } else {
@@ -139,7 +144,11 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
   }
 
   bool get _inputLocked =>
-      _levelComplete || _gameOver || _gameComplete || _timeRemaining <= 0;
+      _levelComplete ||
+      _gameOver ||
+      _gameComplete ||
+      _timeRemaining <= 0 ||
+      _answerCorrect == true;
 
   void _selectAnswer(String answer) {
     if (_inputLocked) return;

@@ -7,6 +7,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../algorithms/sorting/sorting_algorithms.dart';
 import '../../../../features/stats/data/stats_repository.dart';
 import '../../../../shared/providers/app_providers.dart';
+import '../../../../shared/services/game_result_recorder.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 /// Race Mode — timed sorting challenge.
@@ -254,8 +255,17 @@ class _RaceModePageState extends ConsumerState<RaceModePage> {
       _isRunning = false;
       _isGameOver = true;
     });
-    ref.read(userProgressProvider.notifier).addXP(_score ~/ 10);
-    StatsRepository().recordActivity(3, 'race-mode');
+    GameResultRecorder.record(
+      ref,
+      GameResult(
+        game: GameId.raceMode,
+        won: true,
+        score: _score,
+        xpReward: _score ~/ 10,
+        activityMinutes: 3,
+        category: 'race-mode',
+      ),
+    );
   }
 
   void _exitGame() {

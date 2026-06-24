@@ -8,6 +8,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../algorithms/sorting/sorting_algorithms.dart';
 import '../../../../features/stats/data/stats_repository.dart';
 import '../../../../shared/providers/app_providers.dart';
+import '../../../../shared/services/game_result_recorder.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 /// The Sorter — sorting-algorithm challenge game.
@@ -339,13 +340,17 @@ class _TheSorterPageState extends ConsumerState<TheSorterPage> {
   }
 
   void _recordGameResult(bool won) {
-    // Update user progress
-    if (won) {
-      ref.read(userProgressProvider.notifier).addXP(5);
-      StatsRepository().recordActivity(2, 'sorter');
-    }
-    // Update game state high score
-    ref.read(gameStateProvider.notifier).updateSorterBest(_score);
+    GameResultRecorder.record(
+      ref,
+      GameResult(
+        game: GameId.sorter,
+        won: won,
+        score: _score,
+        xpReward: won ? 5 : 0,
+        activityMinutes: won ? 2 : 0,
+        category: 'sorter',
+      ),
+    );
   }
 
   void _pauseGame() {

@@ -7,6 +7,7 @@ import '../../../core/services/haptics.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../algorithms/models/dp_step.dart';
 import '../../../algorithms/dp/dp_algorithms.dart';
+import '../widgets/step_stat_chip.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════════
 /// DP Visualizer Page
@@ -315,10 +316,10 @@ class _DPVisualizerPageState extends ConsumerState<DPVisualizerPage>
                     ),
                     const Spacer(),
                     if (_steps.isNotEmpty)
-                      _statChip(
-                        'cells',
-                        _currentStepIndex + 1,
-                        AppColors.catDp,
+                      StepStatChip(
+                        label: 'cells',
+                        value: _currentStepIndex + 1,
+                        color: AppColors.catDp,
                       ),
                   ],
                 ),
@@ -631,24 +632,6 @@ class _DPVisualizerPageState extends ConsumerState<DPVisualizerPage>
           ],
         ),
       ],
-    );
-  }
-
-  Widget _statChip(String label, int value, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: AppRadius.smBorder,
-      ),
-      child: Text(
-        '$label: $value',
-        style: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
-          color: color,
-        ),
-      ),
     );
   }
 

@@ -19,6 +19,7 @@ import '../../../shared/providers/premium_provider.dart';
 import '../widgets/animated_sort_bar.dart';
 import '../widgets/array_input_sheet.dart';
 import '../widgets/code_viewer.dart';
+import '../widgets/step_stat_chip.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 /// Algorithm Visualizer Page
@@ -811,6 +812,11 @@ class _AlgorithmVisualizerPageState
     if (_steps.isEmpty || _currentStepIndex < 0) return [];
     final seen = _steps.sublist(0, _currentStepIndex + 1);
 
+    Widget pad(Widget w) => Padding(
+          padding: const EdgeInsets.only(left: AppSpacing.sm),
+          child: w,
+        );
+
     if (currentStep is SortStep) {
       var comparisons = 0, swaps = 0;
       for (final s in seen) {
@@ -820,8 +826,10 @@ class _AlgorithmVisualizerPageState
         }
       }
       return [
-        _statChip('compares', comparisons, AppColors.secondary500),
-        _statChip('swaps', swaps, AppColors.error600),
+        pad(StepStatChip(
+            label: 'compares', value: comparisons, color: AppColors.secondary500)),
+        pad(StepStatChip(
+            label: 'swaps', value: swaps, color: AppColors.error600)),
       ];
     }
     if (currentStep is SearchStep) {
@@ -829,33 +837,12 @@ class _AlgorithmVisualizerPageState
       for (final s in seen) {
         if (s is SearchStep && s.comparing.isNotEmpty) comparisons++;
       }
-      return [_statChip('compares', comparisons, AppColors.secondary500)];
+      return [
+        pad(StepStatChip(
+            label: 'compares', value: comparisons, color: AppColors.secondary500)),
+      ];
     }
     return [];
-  }
-
-  Widget _statChip(String label, int value, Color color) {
-    return Padding(
-      padding: const EdgeInsets.only(left: AppSpacing.sm),
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.sm,
-          vertical: 2,
-        ),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.12),
-          borderRadius: AppRadius.smBorder,
-        ),
-        child: Text(
-          '$label: $value',
-          style: TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w700,
-            color: color,
-          ),
-        ),
-      ),
-    );
   }
 
   // ── Visualization dispatch ─────────────────────────────────────────────

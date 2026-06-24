@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/services/haptics.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../algorithms/models/tree_models.dart';
+import '../widgets/step_stat_chip.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════════
 /// Tree Visualizer Page
@@ -766,10 +767,10 @@ class _TreeVisualizerPageState extends ConsumerState<TreeVisualizerPage>
                     ),
                     const Spacer(),
                     if (currentStep != null)
-                      _statChip(
-                        'visited',
-                        currentStep.visitedNodes.length,
-                        AppColors.catTrees,
+                      StepStatChip(
+                        label: 'visited',
+                        value: currentStep.visitedNodes.length,
+                        color: AppColors.catTrees,
                       ),
                   ],
                 ),
@@ -847,24 +848,6 @@ class _TreeVisualizerPageState extends ConsumerState<TreeVisualizerPage>
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _statChip(String label, int value, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: AppRadius.smBorder,
-      ),
-      child: Text(
-        '$label: $value',
-        style: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
-          color: color,
-        ),
       ),
     );
   }

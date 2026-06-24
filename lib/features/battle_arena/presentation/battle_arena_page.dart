@@ -48,6 +48,7 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
   bool _recorded = false;
   late List<BattleQuestion> _questions;
   Timer? _timer;
+  Timer? _opponentTimer;
 
   late AnimationController _countdownController;
   late Animation<int> _countdownAnimation;
@@ -71,6 +72,7 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
   @override
   void dispose() {
     _timer?.cancel();
+    _opponentTimer?.cancel();
     _countdownController.dispose();
     super.dispose();
   }
@@ -135,10 +137,16 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
 
   /// Opponent answers after ~60% of the time limit elapses, with a fixed
   /// accuracy — independent of the player's score (no rubber-banding).
+  ///
+  /// The response is tagged with the question index so a slow opponent reply
+  /// can never bleed into the next question if the player answered fast.
   void _simulateOpponent(BattleQuestion question) {
+    final myIndex = _currentQuestionIndex;
     final delaySeconds = (question.timeLimitSeconds * 0.6).round();
-    Future.delayed(Duration(seconds: delaySeconds), () {
+    _opponentTimer?.cancel();
+    _opponentTimer = Timer(Duration(seconds: delaySeconds), () {
       if (!mounted || _state != BattleState.battle) return;
+      if (_currentQuestionIndex != myIndex) return; // advanced past this question
       setState(() {
         final correct = Random().nextDouble() < _opponentAccuracy;
         if (correct) {
@@ -235,6 +243,7 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
 
   void _resetBattle() {
     _timer?.cancel();
+    _opponentTimer?.cancel();
     setState(() => _state = BattleState.idle);
   }
 
