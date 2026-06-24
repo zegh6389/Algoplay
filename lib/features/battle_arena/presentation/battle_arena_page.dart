@@ -1,8 +1,13 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/services/haptics.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/providers/app_providers.dart';
+import '../../../shared/services/game_result_recorder.dart';
+import '../../arena/data/arena_repository.dart';
 import '../data/question_bank.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -27,6 +32,9 @@ class BattleArenaPage extends ConsumerStatefulWidget {
 
 class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
     with TickerProviderStateMixin {
+  /// Probability the simulated opponent answers a question correctly.
+  static const double _opponentAccuracy = 0.7;
+
   BattleState _state = BattleState.idle;
   int _currentQuestionIndex = 0;
   int _playerScore = 0;
@@ -37,7 +45,9 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
   bool? _answerCorrect;
   int _timeRemaining = 15;
   int _questionNumber = 1;
+  bool _recorded = false;
   late List<BattleQuestion> _questions;
+  Timer? _timer;
 
   late AnimationController _countdownController;
   late Animation<int> _countdownAnimation;
@@ -60,6 +70,7 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
 
   @override
   void dispose() {
+    _timer?.cancel();
     _countdownController.dispose();
     super.dispose();
   }
@@ -77,9 +88,11 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
       _opponentStreak = 0;
       _currentQuestionIndex = 0;
       _questionNumber = 1;
+      _recorded = false;
     });
 
     _countdownController.forward(from: 0).then((_) {
+      if (!mounted) return;
       setState(() => _state = BattleState.battle);
       _startQuestionTimer();
     });
@@ -87,33 +100,61 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
 
   void _startQuestionTimer() {
     final question = _questions[_currentQuestionIndex];
-    _timeRemaining = question.timeLimitSeconds;
-    _selectedAnswer = null;
-    _answerCorrect = null;
+    _timer?.cancel();
+    setState(() {
+      _timeRemaining = question.timeLimitSeconds;
+      _selectedAnswer = null;
+      _answerCorrect = null;
+    });
 
-    // Simulate opponent answering
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted || _state != BattleState.battle) return;
+      setState(() => _timeRemaining--);
+      if (_timeRemaining <= 0) {
+        _timer?.cancel();
+        _onTimeUp();
+      }
+    });
+
     _simulateOpponent(question);
   }
 
+  /// Player ran out of time — counts as a wrong (unanswered) guess.
+  void _onTimeUp() {
+    if (_selectedAnswer != null) return; // already answered
+    Haptics.error();
+    setState(() {
+      _selectedAnswer = ''; // sentinel locks the options
+      _answerCorrect = false;
+      _playerStreak = 0;
+    });
+    Future.delayed(const Duration(milliseconds: 1200), () {
+      if (mounted) _advanceQuestion();
+    });
+  }
+
+  /// Opponent answers after ~60% of the time limit elapses, with a fixed
+  /// accuracy — independent of the player's score (no rubber-banding).
   void _simulateOpponent(BattleQuestion question) {
-    Future.delayed(Duration(seconds: (_timeRemaining * 0.6).round()), () {
-      if (mounted && _state == BattleState.battle) {
-        setState(() {
-          final correct = _opponentScore >= _playerScore;
-          if (correct) {
-            _opponentScore += 10 + (_opponentStreak * 2);
-            _opponentStreak++;
-          } else {
-            _opponentStreak = 0;
-          }
-        });
-      }
+    final delaySeconds = (question.timeLimitSeconds * 0.6).round();
+    Future.delayed(Duration(seconds: delaySeconds), () {
+      if (!mounted || _state != BattleState.battle) return;
+      setState(() {
+        final correct = Random().nextDouble() < _opponentAccuracy;
+        if (correct) {
+          _opponentScore += 10 + (_opponentStreak * 2);
+          _opponentStreak++;
+        } else {
+          _opponentStreak = 0;
+        }
+      });
     });
   }
 
   void _selectAnswer(String answer) {
     if (_selectedAnswer != null) return;
 
+    _timer?.cancel();
     final question = _questions[_currentQuestionIndex];
     final isCorrect = answer == question.correctAnswer;
 
@@ -121,20 +162,22 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
       _selectedAnswer = answer;
       _answerCorrect = isCorrect;
       if (isCorrect) {
+        Haptics.success();
         _playerScore += 10 + (_playerStreak * 2);
         _playerStreak++;
       } else {
+        Haptics.error();
         _playerStreak = 0;
       }
     });
 
-    // Auto-advance after 1.5 seconds
     Future.delayed(const Duration(milliseconds: 1500), () {
       if (mounted) _advanceQuestion();
     });
   }
 
   void _advanceQuestion() {
+    _timer?.cancel();
     if (_currentQuestionIndex < _questions.length - 1) {
       setState(() {
         _currentQuestionIndex++;
@@ -142,11 +185,56 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
       });
       _startQuestionTimer();
     } else {
-      setState(() => _state = BattleState.finished);
+      _finishMatch();
     }
   }
 
+  void _finishMatch() {
+    _timer?.cancel();
+    final won = _playerScore > _opponentScore;
+    if (won) {
+      Haptics.heavy();
+    } else if (_playerScore == _opponentScore) {
+      Haptics.light();
+    } else {
+      Haptics.error();
+    }
+    setState(() => _state = BattleState.finished);
+    _recordResult();
+  }
+
+  void _recordResult() {
+    if (_recorded) return;
+    _recorded = true;
+    final won = _playerScore > _opponentScore; // strict — ties are not wins
+
+    // Persist to Elite Arena's match history.
+    ArenaRepository().recordMatch(
+      MatchRecord(
+        opponent: 'Rival',
+        result: won ? 'win' : 'loss',
+        score: '$_playerScore-$_opponentScore',
+        date: DateTime.now().toIso8601String(),
+        algorithm: 'Mixed',
+      ),
+    );
+
+    // Fan out XP / activity / high-score across all stores.
+    GameResultRecorder.record(
+      ref,
+      GameResult(
+        game: GameId.battleArena,
+        won: won,
+        score: _playerScore,
+        xpReward: won ? 15 + (_playerScore ~/ 10) : _playerScore ~/ 20,
+        activityMinutes: 3,
+        category: 'battle-arena',
+      ),
+    );
+  }
+
   void _resetBattle() {
+    _timer?.cancel();
     setState(() => _state = BattleState.idle);
   }
 
@@ -525,7 +613,9 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
   }
 
   Widget _buildFinishedState() {
-    final playerWon = _playerScore >= _opponentScore;
+    final isDraw = _playerScore == _opponentScore;
+    final playerWon = _playerScore > _opponentScore;
+    final bestScore = ref.watch(gameStateProvider).highScores.battleArenaBestScore;
 
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -551,14 +641,18 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
           ),
           const SizedBox(height: AppSpacing.xl),
           Text(
-            playerWon ? 'Victory!' : 'Defeat',
+            isDraw ? 'Draw!' : (playerWon ? 'Victory!' : 'Defeat'),
             style: AppTypography.display.copyWith(
               color: playerWon ? AppColors.success600 : AppColors.error600,
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            playerWon ? 'You dominated the arena!' : 'Better luck next time!',
+            isDraw
+                ? 'A dead heat — rematch?'
+                : playerWon
+                    ? 'You dominated the arena!'
+                    : 'Better luck next time!',
             style: AppTypography.body.copyWith(color: AppColors.textSecondary),
           ),
           const SizedBox(height: AppSpacing.xxl),
@@ -621,6 +715,32 @@ class _BattleArenaPageState extends ConsumerState<BattleArenaPage>
                       ),
                       Text('points', style: AppTypography.overline),
                     ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          // Best score badge
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.lg,
+              vertical: AppSpacing.sm,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.solarGold.withValues(alpha: 0.12),
+              borderRadius: AppRadius.mdBorder,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.emoji_events, size: 16, color: AppColors.solarGold),
+                const SizedBox(width: AppSpacing.xs),
+                Text(
+                  'Best: $bestScore pts',
+                  style: AppTypography.caption.copyWith(
+                    color: AppColors.solarGold,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ],

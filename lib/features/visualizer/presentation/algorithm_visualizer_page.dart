@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/services/ad_service.dart';
+import '../../../core/services/haptics.dart';
 import '../../../core/services/premium_service.dart';
 import '../../../algorithms/models/algorithm_models.dart';
 import '../../../algorithms/sorting/sorting_algorithms.dart';
@@ -306,6 +307,7 @@ class _AlgorithmVisualizerPageState
 
   void _togglePlay() {
     if (_steps.isEmpty) return;
+    Haptics.selection();
 
     setState(() {
       _isPlaying = !_isPlaying;
@@ -334,6 +336,7 @@ class _AlgorithmVisualizerPageState
       } else {
         // Reached end
         _playTimer?.cancel();
+        Haptics.success();
         setState(() {
           _isPlaying = false;
         });
@@ -344,6 +347,7 @@ class _AlgorithmVisualizerPageState
 
   void _stepForward() {
     if (_currentStepIndex < _steps.length - 1) {
+      Haptics.light();
       setState(() {
         _currentStepIndex++;
       });
@@ -352,6 +356,7 @@ class _AlgorithmVisualizerPageState
 
   void _stepBack() {
     if (_currentStepIndex > 0) {
+      Haptics.light();
       setState(() {
         _currentStepIndex--;
       });
@@ -359,6 +364,7 @@ class _AlgorithmVisualizerPageState
   }
 
   void _reset() {
+    Haptics.selection();
     _playTimer?.cancel();
     setState(() {
       _isPlaying = false;
@@ -688,16 +694,49 @@ class _AlgorithmVisualizerPageState
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  'Step ${_steps.isEmpty ? 0 : _currentStepIndex + 1} / ${_steps.length}',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.textMuted,
-                    height: 1.3,
-                    letterSpacing: 0.12,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      'Step ${_steps.isEmpty ? 0 : _currentStepIndex + 1} / ${_steps.length}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.textMuted,
+                        height: 1.3,
+                        letterSpacing: 0.12,
+                      ),
+                    ),
+                    const Spacer(),
+                    ..._buildStatsChips(currentStep),
+                  ],
                 ),
+                // ── Scrubber ──
+                if (_steps.length > 1) ...[
+                  const SizedBox(height: 4),
+                  SliderTheme(
+                    data: SliderThemeData(
+                      trackHeight: 3,
+                      thumbShape:
+                          const RoundSliderThumbShape(enabledThumbRadius: 6),
+                      overlayShape:
+                          const RoundSliderOverlayShape(overlayRadius: 12),
+                      activeTrackColor: _categoryColor,
+                      inactiveTrackColor: AppColors.sunken,
+                      thumbColor: _categoryColor,
+                    ),
+                    child: Slider(
+                      value: _currentStepIndex.toDouble(),
+                      min: 0,
+                      max: (_steps.length - 1).toDouble(),
+                      divisions: _steps.length - 1,
+                      onChanged: (v) => setState(() {
+                        _currentStepIndex = v.round();
+                        _isPlaying = false;
+                        _playTimer?.cancel();
+                      }),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -764,6 +803,61 @@ class _AlgorithmVisualizerPageState
     );
   }
 
+  // ── Stats ────────────────────────────────────────────────────────────────
+
+  /// Derives live comparison/swap counts from the materialized step list up to
+  /// the current cursor. No model changes required.
+  List<Widget> _buildStatsChips(dynamic currentStep) {
+    if (_steps.isEmpty || _currentStepIndex < 0) return [];
+    final seen = _steps.sublist(0, _currentStepIndex + 1);
+
+    if (currentStep is SortStep) {
+      var comparisons = 0, swaps = 0;
+      for (final s in seen) {
+        if (s is SortStep) {
+          if (s.comparing.isNotEmpty) comparisons++;
+          if (s.swapping.isNotEmpty) swaps++;
+        }
+      }
+      return [
+        _statChip('compares', comparisons, AppColors.secondary500),
+        _statChip('swaps', swaps, AppColors.error600),
+      ];
+    }
+    if (currentStep is SearchStep) {
+      var comparisons = 0;
+      for (final s in seen) {
+        if (s is SearchStep && s.comparing.isNotEmpty) comparisons++;
+      }
+      return [_statChip('compares', comparisons, AppColors.secondary500)];
+    }
+    return [];
+  }
+
+  Widget _statChip(String label, int value, Color color) {
+    return Padding(
+      padding: const EdgeInsets.only(left: AppSpacing.sm),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: 2,
+        ),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.12),
+          borderRadius: AppRadius.smBorder,
+        ),
+        child: Text(
+          '$label: $value',
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+            color: color,
+          ),
+        ),
+      ),
+    );
+  }
+
   // ── Visualization dispatch ─────────────────────────────────────────────
 
   Widget _buildVisualization(dynamic step) {
@@ -815,6 +909,8 @@ class _AlgorithmVisualizerPageState
         state = 'sorted';
       } else if (step.swapping.contains(i)) {
         state = 'swapping';
+      } else if (step.placements.contains(i)) {
+        state = 'placement';
       } else if (step.pivot == i) {
         state = 'pivot';
       } else if (step.comparing.contains(i)) {

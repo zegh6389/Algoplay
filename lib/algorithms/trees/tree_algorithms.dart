@@ -801,6 +801,68 @@ Stream<TreeStep> preorderTraversal(TreeNode? root) async* {
 }
 
 // ---------------------------------------------------------------------------
+// Postorder Traversal
+// ---------------------------------------------------------------------------
+
+/// Postorder traversal: left, right, root.
+Stream<TreeStep> postorderTraversal(TreeNode? root) async* {
+  if (root == null) {
+    yield TreeStep(
+      tree: null,
+      visitedNodes: [],
+      operation: 'Postorder traversal — empty tree',
+      commentary: 'Tree is empty, nothing to traverse.',
+      line: 1,
+      isComplete: true,
+    );
+    return;
+  }
+
+  final tree = root.clone();
+  final visitedIds = <String>[];
+
+  yield TreeStep(
+    tree: tree.clone(),
+    visitedNodes: [],
+    operation: 'Begin postorder traversal',
+    commentary: 'Postorder: left, right, root.',
+    line: 1,
+  );
+
+  yield* _postorderVisit(tree, tree, visitedIds);
+
+  yield TreeStep(
+    tree: tree.clone(),
+    visitedNodes: List.from(visitedIds),
+    operation: 'Postorder traversal complete',
+    commentary: 'Visited ${visitedIds.length} nodes.',
+    line: 3,
+    isComplete: true,
+  );
+}
+
+Stream<TreeStep> _postorderVisit(
+  TreeNode node,
+  TreeNode tree,
+  List<String> visitedIds,
+) async* {
+  if (node.left != null) {
+    yield* _postorderVisit(node.left!, tree, visitedIds);
+  }
+  if (node.right != null) {
+    yield* _postorderVisit(node.right!, tree, visitedIds);
+  }
+  visitedIds.add(node.id);
+  yield TreeStep(
+    tree: tree.clone(),
+    visitedNodes: List.from(visitedIds),
+    operation: 'Visit node ${node.value}',
+    commentary: 'Postorder visit: ${node.value}',
+    line: 2,
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Level Order Traversal
 // ---------------------------------------------------------------------------
 

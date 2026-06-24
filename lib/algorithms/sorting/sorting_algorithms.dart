@@ -488,7 +488,7 @@ Stream<SortStep> insertionSort(List<int> initialArray) async* {
 
       yield SortStep(
         array: List.from(arr),
-        swapping: [j + 1, j + 2],
+        placements: [j + 1, j + 2],
         sorted: List.from(sorted),
         operation: 'Shifted element right',
         line: 7,
@@ -501,7 +501,7 @@ Stream<SortStep> insertionSort(List<int> initialArray) async* {
     yield SortStep(
       array: List.from(arr),
       sorted: List.from(sorted),
-      comparing: [j + 1],
+      placements: [j + 1],
       operation: 'Inserted $key at position ${j + 1}',
       line: 9,
     );
@@ -586,7 +586,7 @@ Stream<SortStep> _merge(List<int> arr, int left, int mid, int right) async* {
 
     yield SortStep(
       array: List.from(arr),
-      swapping: [k],
+      placements: [k],
       operation: 'Placed ${arr[k]} at position $k',
       line: 18,
     );
@@ -597,7 +597,7 @@ Stream<SortStep> _merge(List<int> arr, int left, int mid, int right) async* {
     arr[k] = leftArr[i];
     yield SortStep(
       array: List.from(arr),
-      swapping: [k],
+      placements: [k],
       operation: 'Copying remaining left element ${arr[k]} to position $k',
       line: 20,
     );
@@ -609,7 +609,7 @@ Stream<SortStep> _merge(List<int> arr, int left, int mid, int right) async* {
     arr[k] = rightArr[j];
     yield SortStep(
       array: List.from(arr),
-      swapping: [k],
+      placements: [k],
       operation: 'Copying remaining right element ${arr[k]} to position $k',
       line: 20,
     );

@@ -34,6 +34,7 @@ class SortBarStatePalette {
   static const Color defaultColor = Color(0xFF2563EB);
   static const Color comparingColor = Color(0xFFD97706);
   static const Color swappingColor = Color(0xFFE11D48);
+  static const Color placementColor = Color(0xFF06B6D4); // writes/placements
   static const Color sortedColor = Color(0xFF059669);
   static const Color pivotColor = Color(0xFF7C3AED);
   static const Color foundColor = Color(0xFF047857);
@@ -59,6 +60,8 @@ class SortBarStatePalette {
         return comparingColor;
       case 'swapping':
         return swappingColor;
+      case 'placement':
+        return placementColor;
       case 'sorted':
         return sortedColor;
       case 'pivot':
@@ -76,6 +79,7 @@ class SortBarStatePalette {
     switch (state) {
       case 'comparing':
       case 'swapping':
+      case 'placement':
         return 12.0;
       case 'sorted':
       case 'pivot':

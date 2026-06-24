@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/services/haptics.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../algorithms/models/dp_step.dart';
 import '../../../algorithms/dp/dp_algorithms.dart';
@@ -93,6 +94,7 @@ class _DPVisualizerPageState extends ConsumerState<DPVisualizerPage>
 
   void _togglePlay() {
     if (_steps.isEmpty) return;
+    Haptics.selection();
     setState(() => _isPlaying = !_isPlaying);
     if (_isPlaying) {
       _startPlayTimer();
@@ -113,6 +115,7 @@ class _DPVisualizerPageState extends ConsumerState<DPVisualizerPage>
         setState(() => _currentStepIndex++);
       } else {
         _playTimer?.cancel();
+        Haptics.success();
         setState(() => _isPlaying = false);
       }
     });
@@ -120,17 +123,20 @@ class _DPVisualizerPageState extends ConsumerState<DPVisualizerPage>
 
   void _stepForward() {
     if (_currentStepIndex < _steps.length - 1) {
+      Haptics.light();
       setState(() => _currentStepIndex++);
     }
   }
 
   void _stepBack() {
     if (_currentStepIndex > 0) {
+      Haptics.light();
       setState(() => _currentStepIndex--);
     }
   }
 
   void _reset() {
+    Haptics.selection();
     _playTimer?.cancel();
     setState(() {
       _isPlaying = false;
@@ -298,13 +304,51 @@ class _DPVisualizerPageState extends ConsumerState<DPVisualizerPage>
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  'Step ${_steps.isEmpty ? 0 : _currentStepIndex + 1} / ${_steps.length}',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textMuted,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      'Step ${_steps.isEmpty ? 0 : _currentStepIndex + 1} / ${_steps.length}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textMuted,
+                      ),
+                    ),
+                    const Spacer(),
+                    if (_steps.isNotEmpty)
+                      _statChip(
+                        'cells',
+                        _currentStepIndex + 1,
+                        AppColors.catDp,
+                      ),
+                  ],
                 ),
+                // ── Scrubber ──
+                if (_steps.length > 1) ...[
+                  const SizedBox(height: 4),
+                  SliderTheme(
+                    data: SliderThemeData(
+                      trackHeight: 3,
+                      thumbShape:
+                          const RoundSliderThumbShape(enabledThumbRadius: 6),
+                      overlayShape:
+                          const RoundSliderOverlayShape(overlayRadius: 12),
+                      activeTrackColor: AppColors.catDp,
+                      inactiveTrackColor: AppColors.sunken,
+                      thumbColor: AppColors.catDp,
+                    ),
+                    child: Slider(
+                      value: _currentStepIndex.toDouble(),
+                      min: 0,
+                      max: (_steps.length - 1).toDouble(),
+                      divisions: _steps.length - 1,
+                      onChanged: (v) => setState(() {
+                        _currentStepIndex = v.round();
+                        _isPlaying = false;
+                        _playTimer?.cancel();
+                      }),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -587,6 +631,24 @@ class _DPVisualizerPageState extends ConsumerState<DPVisualizerPage>
           ],
         ),
       ],
+    );
+  }
+
+  Widget _statChip(String label, int value, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: AppRadius.smBorder,
+      ),
+      child: Text(
+        '$label: $value',
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w700,
+          color: color,
+        ),
+      ),
     );
   }
 
@@ -890,17 +952,30 @@ class _DPVisualizerPageState extends ConsumerState<DPVisualizerPage>
                       // Grid cells
                       ...List.generate(s2Len + 1, (j) {
                         final val = gridRows[i][j];
-                        final isCurrent = step.currentIndex == i * (s2Len + 1) + j;
+                        final flat = i * (s2Len + 1) + j;
+                        final isCurrent = step.currentIndex == flat;
+                        final isDependency = step.comparing.contains(flat);
+                        final isBaseCase = i == 0 || j == 0;
+                        final Color cellColor = isCurrent
+                            ? AppColors.catDp
+                            : isDependency
+                                ? AppColors.secondary500
+                                : isBaseCase
+                                    ? AppColors.sunken
+                                    : val > 0
+                                        ? AppColors.catDp
+                                            .withValues(alpha: 0.15)
+                                        : AppColors.sunken;
                         return Container(
                           width: 36,
                           height: 36,
                           margin: const EdgeInsets.all(1),
                           decoration: BoxDecoration(
-                            color: isCurrent
-                                ? AppColors.catDp
-                                : val > 0
-                                    ? AppColors.catDp.withValues(alpha: 0.15)
-                                    : AppColors.sunken,
+                            color: cellColor,
+                            border: isDependency
+                                ? Border.all(
+                                    color: AppColors.secondary500, width: 1.5)
+                                : null,
                             borderRadius: AppRadius.smBorder,
                           ),
                           alignment: Alignment.center,
@@ -911,7 +986,9 @@ class _DPVisualizerPageState extends ConsumerState<DPVisualizerPage>
                               fontWeight: FontWeight.w700,
                               color: isCurrent
                                   ? AppColors.textInverse
-                                  : AppColors.textPrimary,
+                                  : isDependency
+                                      ? AppColors.textInverse
+                                      : AppColors.textPrimary,
                             ),
                           ),
                         );

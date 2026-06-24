@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/models/user_progress.dart';
+import '../../../shared/providers/app_providers.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../../shared/widgets/game_card.dart';
 import '../../learn/data/algorithm_data.dart';
@@ -31,8 +33,8 @@ class PlayPage extends ConsumerWidget {
 
               // ── 1. Header ──
               Text('Play', style: AppTypography.h1),
-              SizedBox(height: AppSpacing.xs),
-              Text('Challenge yourself', style: AppTypography.caption),
+              SizedBox(height: AppSpacing.sm),
+              _LiveStatsBar(ref.watch(userProgressProvider)),
 
               SizedBox(height: AppSpacing.xl),
 
@@ -159,6 +161,60 @@ class PlayPage extends ConsumerWidget {
               SizedBox(height: AppSpacing.xl + MediaQuery.of(context).padding.bottom),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// ─────────────────────────────────────────────────────────────────────────────
+/// Live stats bar — shows the user's level, XP, and streak from live state.
+/// ─────────────────────────────────────────────────────────────────────────────
+class _LiveStatsBar extends StatelessWidget {
+  const _LiveStatsBar(this.progress);
+
+  final UserProgress progress;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        _stat('${progress.level}', 'Level', AppColors.primary500),
+        const SizedBox(width: AppSpacing.md),
+        _stat('${progress.totalXP}', 'XP', AppColors.solarGold),
+        const SizedBox(width: AppSpacing.md),
+        _stat('${progress.currentStreak}', 'Day Streak', AppColors.secondary500),
+      ],
+    );
+  }
+
+  Widget _stat(String value, String label, Color color) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: AppRadius.mdBorder,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+                color: color,
+              ),
+            ),
+            Text(
+              label,
+              style: AppTypography.overline.copyWith(color: AppColors.textMuted),
+            ),
+          ],
         ),
       ),
     );

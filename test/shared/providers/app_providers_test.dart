@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:algoplay/shared/models/game_state.dart';
 import 'package:algoplay/shared/providers/app_providers.dart';
 
 void main() {
@@ -139,6 +140,101 @@ void main() {
         expect(notifier.state.totalXP, 0);
         expect(notifier.state.completedAlgorithms, isEmpty);
       });
+    });
+  });
+
+  group('HighScores', () {
+    test('new fields default to 0', () {
+      const hs = HighScores();
+      expect(hs.sorterBest, 0);
+      expect(hs.gridEscapeWins, 0);
+      expect(hs.gridEscapeBestScore, 0);
+      expect(hs.battleArenaWins, 0);
+      expect(hs.battleArenaBestScore, 0);
+      expect(hs.raceModeBest, 0);
+    });
+
+    test('toJson/fromJson round-trips all fields losslessly', () {
+      const hs = HighScores(
+        sorterBest: 120,
+        gridEscapeWins: 3,
+        gridEscapeBestScore: 880,
+        battleArenaWins: 5,
+        battleArenaBestScore: 64,
+        raceModeBest: 200,
+      );
+      final restored = HighScores.fromJson(hs.toJson());
+      expect(restored, hs);
+    });
+
+    test('fromJson tolerates legacy JSON missing the new keys', () {
+      // Simulates data written before the redesign added the new fields.
+      final legacy = {
+        'sorterBest': 99,
+        'gridEscapeWins': 2,
+      };
+      final hs = HighScores.fromJson(legacy);
+      expect(hs.sorterBest, 99);
+      expect(hs.gridEscapeWins, 2);
+      expect(hs.gridEscapeBestScore, 0);
+      expect(hs.battleArenaWins, 0);
+      expect(hs.battleArenaBestScore, 0);
+      expect(hs.raceModeBest, 0);
+    });
+
+    test('equality considers all fields', () {
+      const a = HighScores(battleArenaWins: 1, battleArenaBestScore: 10);
+      final b = a.copyWith();
+      expect(a, b);
+      expect(a == a.copyWith(battleArenaWins: 2), isFalse);
+    });
+  });
+
+  group('GameStateNotifier', () {
+    late GameStateNotifier notifier;
+
+    setUp(() async {
+      SharedPreferences.setMockInitialValues({});
+      notifier = GameStateNotifier();
+    });
+
+    test('initial high scores are all zero', () {
+      final hs = notifier.state.highScores;
+      expect(hs.sorterBest, 0);
+      expect(hs.gridEscapeWins, 0);
+      expect(hs.gridEscapeBestScore, 0);
+      expect(hs.battleArenaWins, 0);
+      expect(hs.battleArenaBestScore, 0);
+      expect(hs.raceModeBest, 0);
+    });
+
+    test('updateGridEscapeBest only increases (max-wins)', () {
+      notifier.updateGridEscapeBest(500);
+      expect(notifier.state.highScores.gridEscapeBestScore, 500);
+      notifier.updateGridEscapeBest(300); // lower — ignored
+      expect(notifier.state.highScores.gridEscapeBestScore, 500);
+      notifier.updateGridEscapeBest(750); // higher — applied
+      expect(notifier.state.highScores.gridEscapeBestScore, 750);
+    });
+
+    test('incrementBattleArenaWins accumulates and persists to storage', () async {
+      notifier.incrementBattleArenaWins();
+      notifier.incrementBattleArenaWins();
+      expect(notifier.state.highScores.battleArenaWins, 2);
+
+      // Verify it was persisted and reloads from storage.
+      final reloaded = GameStateNotifier();
+      await reloaded.loadFromStorage();
+      expect(reloaded.state.highScores.battleArenaWins, 2);
+    });
+
+    test('updateBattleArenaBest and updateRaceModeBest max-win', () {
+      notifier.updateBattleArenaBest(40);
+      expect(notifier.state.highScores.battleArenaBestScore, 40);
+      notifier.updateBattleArenaBest(40); // equal — not strictly greater
+      expect(notifier.state.highScores.battleArenaBestScore, 40);
+      notifier.updateRaceModeBest(150);
+      expect(notifier.state.highScores.raceModeBest, 150);
     });
   });
 }

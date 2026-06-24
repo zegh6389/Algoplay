@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/services/haptics.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../algorithms/models/tree_models.dart';
 
@@ -515,6 +516,7 @@ class _TreeVisualizerPageState extends ConsumerState<TreeVisualizerPage>
 
   void _togglePlay() {
     if (_steps.isEmpty) return;
+    Haptics.selection();
     setState(() => _isPlaying = !_isPlaying);
     if (_isPlaying) {
       _startPlayTimer();
@@ -535,6 +537,7 @@ class _TreeVisualizerPageState extends ConsumerState<TreeVisualizerPage>
         setState(() => _currentStepIndex++);
       } else {
         _playTimer?.cancel();
+        Haptics.success();
         setState(() => _isPlaying = false);
       }
     });
@@ -542,17 +545,20 @@ class _TreeVisualizerPageState extends ConsumerState<TreeVisualizerPage>
 
   void _stepForward() {
     if (_currentStepIndex < _steps.length - 1) {
+      Haptics.light();
       setState(() => _currentStepIndex++);
     }
   }
 
   void _stepBack() {
     if (_currentStepIndex > 0) {
+      Haptics.light();
       setState(() => _currentStepIndex--);
     }
   }
 
   void _reset() {
+    Haptics.selection();
     _playTimer?.cancel();
     setState(() {
       _isPlaying = false;
@@ -749,13 +755,51 @@ class _TreeVisualizerPageState extends ConsumerState<TreeVisualizerPage>
                   ),
                 ],
                 const SizedBox(height: 4),
-                Text(
-                  'Step ${_steps.isEmpty ? 0 : _currentStepIndex + 1} / ${_steps.length}',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textMuted,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      'Step ${_steps.isEmpty ? 0 : _currentStepIndex + 1} / ${_steps.length}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textMuted,
+                      ),
+                    ),
+                    const Spacer(),
+                    if (currentStep != null)
+                      _statChip(
+                        'visited',
+                        currentStep.visitedNodes.length,
+                        AppColors.catTrees,
+                      ),
+                  ],
                 ),
+                // ── Scrubber ──
+                if (_steps.length > 1) ...[
+                  const SizedBox(height: 4),
+                  SliderTheme(
+                    data: SliderThemeData(
+                      trackHeight: 3,
+                      thumbShape:
+                          const RoundSliderThumbShape(enabledThumbRadius: 6),
+                      overlayShape:
+                          const RoundSliderOverlayShape(overlayRadius: 12),
+                      activeTrackColor: AppColors.catTrees,
+                      inactiveTrackColor: AppColors.sunken,
+                      thumbColor: AppColors.catTrees,
+                    ),
+                    child: Slider(
+                      value: _currentStepIndex.toDouble(),
+                      min: 0,
+                      max: (_steps.length - 1).toDouble(),
+                      divisions: _steps.length - 1,
+                      onChanged: (v) => setState(() {
+                        _currentStepIndex = v.round();
+                        _isPlaying = false;
+                        _playTimer?.cancel();
+                      }),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -807,6 +851,24 @@ class _TreeVisualizerPageState extends ConsumerState<TreeVisualizerPage>
     );
   }
 
+  Widget _statChip(String label, int value, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: AppRadius.smBorder,
+      ),
+      child: Text(
+        '$label: $value',
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w700,
+          color: color,
+        ),
+      ),
+    );
+  }
+
   Widget _buildTreeCanvas(TreeStep? step) {
     if (step == null || step.tree == null) {
       return Center(
@@ -843,11 +905,17 @@ class _TreeVisualizerPageState extends ConsumerState<TreeVisualizerPage>
       if (node == null) return;
       final isVisited = step.visitedNodes.contains(node.id);
       final isInPath = step.pathNodes.contains(node.id);
+      // The "current" node is the head of the path — the one being visited now.
+      final isCurrent =
+          isInPath && step.pathNodes.isNotEmpty && step.pathNodes.last == node.id;
 
       Color bgColor;
       Color textColor;
       if (step.isComplete && isVisited) {
         bgColor = AppColors.success600;
+        textColor = AppColors.textInverse;
+      } else if (isCurrent) {
+        bgColor = AppColors.secondary500;
         textColor = AppColors.textInverse;
       } else if (isVisited && isInPath) {
         bgColor = AppColors.catTrees;
@@ -871,9 +939,11 @@ class _TreeVisualizerPageState extends ConsumerState<TreeVisualizerPage>
               color: bgColor,
               borderRadius: AppRadius.fullBorder,
               border: Border.all(
-                color: isVisited && isInPath
-                    ? AppColors.catTrees
-                    : Colors.transparent,
+                color: isCurrent
+                    ? AppColors.solarGold
+                    : (isVisited && isInPath)
+                        ? AppColors.catTrees
+                        : Colors.transparent,
                 width: 2,
               ),
               boxShadow: isVisited ? AppShadows.sm : null,

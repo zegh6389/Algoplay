@@ -4,19 +4,35 @@ import 'package:flutter/foundation.dart';
 class HighScores {
   final int sorterBest;
   final int gridEscapeWins;
+  final int gridEscapeBestScore;
+  final int battleArenaWins;
+  final int battleArenaBestScore;
+  final int raceModeBest;
 
   const HighScores({
     this.sorterBest = 0,
     this.gridEscapeWins = 0,
+    this.gridEscapeBestScore = 0,
+    this.battleArenaWins = 0,
+    this.battleArenaBestScore = 0,
+    this.raceModeBest = 0,
   });
 
   HighScores copyWith({
     int? sorterBest,
     int? gridEscapeWins,
+    int? gridEscapeBestScore,
+    int? battleArenaWins,
+    int? battleArenaBestScore,
+    int? raceModeBest,
   }) {
     return HighScores(
       sorterBest: sorterBest ?? this.sorterBest,
       gridEscapeWins: gridEscapeWins ?? this.gridEscapeWins,
+      gridEscapeBestScore: gridEscapeBestScore ?? this.gridEscapeBestScore,
+      battleArenaWins: battleArenaWins ?? this.battleArenaWins,
+      battleArenaBestScore: battleArenaBestScore ?? this.battleArenaBestScore,
+      raceModeBest: raceModeBest ?? this.raceModeBest,
     );
   }
 
@@ -24,12 +40,20 @@ class HighScores {
     return HighScores(
       sorterBest: json['sorterBest'] as int? ?? 0,
       gridEscapeWins: json['gridEscapeWins'] as int? ?? 0,
+      gridEscapeBestScore: json['gridEscapeBestScore'] as int? ?? 0,
+      battleArenaWins: json['battleArenaWins'] as int? ?? 0,
+      battleArenaBestScore: json['battleArenaBestScore'] as int? ?? 0,
+      raceModeBest: json['raceModeBest'] as int? ?? 0,
     );
   }
 
   Map<String, dynamic> toJson() => {
         'sorterBest': sorterBest,
         'gridEscapeWins': gridEscapeWins,
+        'gridEscapeBestScore': gridEscapeBestScore,
+        'battleArenaWins': battleArenaWins,
+        'battleArenaBestScore': battleArenaBestScore,
+        'raceModeBest': raceModeBest,
       };
 
   @override
@@ -38,10 +62,21 @@ class HighScores {
       other is HighScores &&
           runtimeType == other.runtimeType &&
           sorterBest == other.sorterBest &&
-          gridEscapeWins == other.gridEscapeWins;
+          gridEscapeWins == other.gridEscapeWins &&
+          gridEscapeBestScore == other.gridEscapeBestScore &&
+          battleArenaWins == other.battleArenaWins &&
+          battleArenaBestScore == other.battleArenaBestScore &&
+          raceModeBest == other.raceModeBest;
 
   @override
-  int get hashCode => Object.hash(sorterBest, gridEscapeWins);
+  int get hashCode => Object.hash(
+        sorterBest,
+        gridEscapeWins,
+        gridEscapeBestScore,
+        battleArenaWins,
+        battleArenaBestScore,
+        raceModeBest,
+      );
 }
 
 @immutable

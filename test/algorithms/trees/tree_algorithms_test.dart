@@ -283,6 +283,38 @@ void main() {
   });
 
   // =========================================================================
+  // Postorder Traversal
+  // =========================================================================
+  group('postorderTraversal', () {
+    test('visits in left, right, root order on known tree', () async {
+      final tree = buildSmallBST(); // root=5, left=3, right=7
+      final steps = await collectSteps(postorderTraversal(tree));
+      final last = steps.last;
+      expect(last.isComplete, isTrue);
+      expect(last.visitedNodes.length, equals(3));
+      // Postorder visit order must be 3, 7, 5 (left, right, root).
+      final visits = steps
+          .where((s) => s.operation.startsWith('Visit node '))
+          .map((s) => s.operation.replaceAll('Visit node ', ''))
+          .toList();
+      expect(visits, equals(['3', '7', '5']));
+    });
+
+    test('every step has non-empty operation', () async {
+      final tree = buildSmallBST();
+      final steps = await collectSteps(postorderTraversal(tree));
+      expectNonEmptyOperations(steps);
+    });
+
+    test('empty tree yields single step with empty visited list', () async {
+      final steps = await collectSteps(postorderTraversal(null));
+      expect(steps, isNotEmpty);
+      expect(steps.last.visitedNodes, isEmpty);
+      expect(steps.last.isComplete, isTrue);
+    });
+  });
+
+  // =========================================================================
   // Level Order Traversal
   // =========================================================================
   group('levelOrderTraversal', () {

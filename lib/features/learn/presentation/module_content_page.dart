@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/services/ad_service.dart';
 import '../../../core/services/ad_strategy_service.dart';
+import '../../../core/services/premium_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../features/stats/data/stats_repository.dart';
 import '../../../shared/widgets/inline_banner_ad.dart';
@@ -176,6 +177,13 @@ class _ModuleContentPageState extends ConsumerState<ModuleContentPage> {
     if (!hasNextLesson) {
       // No next lesson — just pop
       if (mounted) context.pop();
+      return;
+    }
+
+    // Premium users already have every lesson unlocked — skip the ad prompt
+    // and advance directly to the next lesson.
+    if (PremiumService.instance.isPremium) {
+      if (mounted) context.pushReplacement('/lesson/$nextLessonId');
       return;
     }
 

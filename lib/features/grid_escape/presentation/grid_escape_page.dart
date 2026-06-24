@@ -1,8 +1,12 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/services/haptics.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/providers/app_providers.dart';
+import '../../../shared/services/game_result_recorder.dart';
 import '../data/level_generator.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -58,9 +62,12 @@ class GridEscapePage extends ConsumerStatefulWidget {
 }
 
 class _GridEscapePageState extends ConsumerState<GridEscapePage> {
+  static const int _maxLives = 3;
+
   int _currentLevel = 0;
   int _levelScore = 0;
   int _totalScore = 0;
+  int _lives = _maxLives;
   List<GridPos> _path = [];
   List<GridPos> _visited = [];
   GridPos? _playerPos;
@@ -68,8 +75,14 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
   bool? _answerCorrect;
   bool _levelComplete = false;
   bool _gameComplete = false;
+  bool _gameOver = false;
+  bool _hintShown = false;
   int _hintsUsed = 0;
+  int _timeRemaining = 0;
+  Timer? _timer;
+  bool _recorded = false;
   late List<LevelConfig> _levels;
+  late Set<GridPos> _wallSet;
 
   @override
   void initState() {
@@ -78,8 +91,16 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
     _loadLevel(0);
   }
 
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
   void _loadLevel(int index) {
     final level = _levels[index];
+    _wallSet = level.wallPositions.toSet();
+    _timer?.cancel();
     setState(() {
       _currentLevel = index;
       _levelScore = 100;
@@ -89,10 +110,39 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
       _selectedAnswer = null;
       _answerCorrect = null;
       _levelComplete = false;
+      _hintShown = false;
+      _timeRemaining = level.timeLimitSeconds;
+    });
+    _startTimer();
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted || _levelComplete || _gameComplete || _gameOver) return;
+      setState(() => _timeRemaining--);
+      if (_timeRemaining <= 0) {
+        _timer?.cancel();
+        _onTimeUp();
+      }
     });
   }
 
+  void _onTimeUp() {
+    Haptics.error();
+    setState(() => _lives--);
+    if (_lives <= 0) {
+      _endGame(won: false);
+    } else {
+      // Reveal the solution without awarding score, then advance.
+      _animateSolution(awardScore: false);
+    }
+  }
+
+  bool get _inputLocked =>
+      _levelComplete || _gameOver || _gameComplete || _timeRemaining <= 0;
+
   void _selectAnswer(String answer) {
+    if (_inputLocked) return;
     final level = _levels[_currentLevel];
     final isCorrect = answer == level.correctAnswer;
 
@@ -102,18 +152,20 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
     });
 
     if (isCorrect) {
-      _animateSolution();
+      Haptics.success();
+      _timer?.cancel();
+      _animateSolution(awardScore: true);
     } else {
+      Haptics.error();
       setState(() {
         _levelScore = (_levelScore - 25).clamp(0, 100);
       });
     }
   }
 
-  void _animateSolution() {
+  void _animateSolution({required bool awardScore}) {
     final level = _levels[_currentLevel];
 
-    // Simulate BFS finding the path
     Future.delayed(const Duration(milliseconds: 300), () {
       if (!mounted) return;
       setState(() {
@@ -121,10 +173,9 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
         _playerPos = level.startGridPos;
       });
 
-      // Compute simple path
       _computeBFSPath(level).then((path) {
         if (!mounted) return;
-        _animatePath(path);
+        _animatePath(path, awardScore: awardScore);
       });
     });
   }
@@ -133,7 +184,6 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
     final start = level.startGridPos;
     final goal = level.endGridPos;
 
-    // Simple BFS simulation
     final queue = <GridPos>[start];
     final visited = <GridPos>{start};
     final parent = <GridPos, GridPos>{};
@@ -157,7 +207,6 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
       }
     }
 
-    // Reconstruct path
     final path = <GridPos>[];
     var node = goal;
     while (parent.containsKey(node) || node == start) {
@@ -171,11 +220,11 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
   bool _isValid(GridPos pos, LevelConfig level) {
     if (pos.row < 0 || pos.row >= level.gridSize) return false;
     if (pos.col < 0 || pos.col >= level.gridSize) return false;
-    if (level.wallPositions.contains(pos)) return false;
+    if (_wallSet.contains(pos)) return false;
     return true;
   }
 
-  void _animatePath(List<GridPos> path) async {
+  void _animatePath(List<GridPos> path, {required bool awardScore}) async {
     for (int i = 0; i < path.length; i++) {
       if (!mounted) return;
       await Future.delayed(const Duration(milliseconds: 200));
@@ -187,19 +236,23 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
 
     if (mounted) {
       await Future.delayed(const Duration(milliseconds: 500));
-      if (mounted) {
-        setState(() {
-          _levelComplete = true;
-          _totalScore += _levelScore;
-        });
-      }
+      if (!mounted) return;
+      setState(() {
+        _levelComplete = true;
+        if (awardScore) _totalScore += _levelScore;
+      });
     }
   }
 
   void _useHint() {
+    if (_inputLocked) return;
+    Haptics.selection();
     setState(() {
-      _hintsUsed++;
-      _levelScore = (_levelScore - 10).clamp(0, 100);
+      if (!_hintShown) {
+        _hintsUsed++;
+        _levelScore = (_levelScore - 10).clamp(0, 100);
+      }
+      _hintShown = true;
     });
   }
 
@@ -207,16 +260,54 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
     if (_currentLevel < _levels.length - 1) {
       _loadLevel(_currentLevel + 1);
     } else {
-      setState(() => _gameComplete = true);
+      _endGame(won: true);
     }
   }
 
+  void _endGame({required bool won}) {
+    _timer?.cancel();
+    if (won) {
+      Haptics.heavy();
+    } else {
+      Haptics.error();
+    }
+    setState(() {
+      if (won) {
+        _gameComplete = true;
+      } else {
+        _gameOver = true;
+      }
+    });
+    _recordResult(won);
+  }
+
+  void _recordResult(bool won) {
+    if (_recorded) return;
+    _recorded = true;
+    final xp = won ? 10 + (_totalScore ~/ 50) : (_totalScore ~/ 100);
+    GameResultRecorder.record(
+      ref,
+      GameResult(
+        game: GameId.gridEscape,
+        won: won,
+        score: _totalScore,
+        xpReward: xp,
+        activityMinutes: 3,
+        category: 'grid-escape',
+      ),
+    );
+  }
+
   void _restartGame() {
+    _timer?.cancel();
     _levels = LevelGenerator.generateAll(10, seed: Random().nextInt(100000));
+    _recorded = false;
     _loadLevel(0);
     setState(() {
       _totalScore = 0;
+      _lives = _maxLives;
       _gameComplete = false;
+      _gameOver = false;
       _hintsUsed = 0;
     });
   }
@@ -235,7 +326,11 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
       ),
       body: SafeArea(
         top: false,
-        child: _gameComplete ? _buildGameComplete() : _buildLevelPlay(),
+        child: _gameOver
+            ? _buildGameOver()
+            : _gameComplete
+                ? _buildGameComplete()
+                : _buildLevelPlay(),
       ),
       bottomNavigationBar: _levelComplete
           ? SafeArea(top: false, child: _buildNextLevelBar(context))
@@ -270,20 +365,41 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
                       'Level ${_currentLevel + 1} of ${_levels.length}',
                       style: AppTypography.caption,
                     ),
-                    Text(
-                      '$_levelScore pts available',
-                      style: AppTypography.bodyBold.copyWith(
-                        color: AppColors.solarGold,
-                      ),
+                    Row(
+                      children: [
+                        Text(
+                          '$_levelScore pts',
+                          style: AppTypography.bodyBold.copyWith(
+                            color: AppColors.solarGold,
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        ...List.generate(_maxLives, (i) {
+                          final alive = i < _lives;
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 2),
+                            child: Icon(
+                              Icons.favorite,
+                              size: 14,
+                              color: alive
+                                  ? AppColors.error600
+                                  : AppColors.sunken,
+                            ),
+                          );
+                        }),
+                      ],
                     ),
                   ],
                 ),
               ),
-              if (!_levelComplete)
+              // Timer pill
+              _TimerPill(seconds: _timeRemaining),
+              if (!_levelComplete && !_gameOver) ...[
+                const SizedBox(width: AppSpacing.xs),
                 TextButton.icon(
-                  onPressed: _useHint,
+                  onPressed: _hintShown ? null : _useHint,
                   icon: const Icon(Icons.lightbulb_outline, size: 16),
-                  label: const Text('Hint -10'),
+                  label: Text(_hintShown ? 'Hint' : 'Hint -10'),
                   style: TextButton.styleFrom(
                     foregroundColor: AppColors.primary500,
                     padding: const EdgeInsets.symmetric(
@@ -291,6 +407,7 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
                     ),
                   ),
                 ),
+              ],
             ],
           ),
         ),
@@ -330,7 +447,7 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
                           final showWrong = isSelected && !_answerCorrect!;
 
                           return GestureDetector(
-                            onTap: _levelComplete
+                            onTap: _inputLocked
                                 ? null
                                 : () => _selectAnswer(option),
                             child: Container(
@@ -375,8 +492,10 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
                         }).toList(),
                       ),
 
-                      // Hint display
-                      if (_selectedAnswer != null && !_answerCorrect!) ...[
+                      // Hint display — shown after a wrong guess or when the
+                      // Hint button is pressed.
+                      if (_hintShown ||
+                          (_selectedAnswer != null && !_answerCorrect!)) ...[
                         const SizedBox(height: AppSpacing.md),
                         Container(
                           padding: const EdgeInsets.all(AppSpacing.md),
@@ -485,7 +604,7 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
       type = CellType.start;
     } else if (pos == level.endGridPos) {
       type = CellType.goal;
-    } else if (level.wallPositions.contains(pos)) {
+    } else if (_wallSet.contains(pos)) {
       type = CellType.wall;
     } else if (_visited.contains(pos)) {
       type = CellType.visited;
@@ -607,6 +726,13 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
                       value: '$_hintsUsed',
                       icon: Icons.lightbulb_outline,
                     ),
+                    const SizedBox(width: AppSpacing.sm),
+                    _StatChip(
+                      label: 'Best',
+                      value:
+                          '${ref.watch(gameStateProvider).highScores.gridEscapeBestScore}',
+                      icon: Icons.emoji_events,
+                    ),
                   ],
                 ),
               ],
@@ -624,6 +750,102 @@ class _GridEscapePageState extends ConsumerState<GridEscapePage> {
                 shape: RoundedRectangleBorder(borderRadius: AppRadius.mdBorder),
               ),
               child: const Text('Play Again'),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
+              onPressed: () => Navigator.of(context).maybePop(),
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size.fromHeight(48),
+                shape: RoundedRectangleBorder(borderRadius: AppRadius.mdBorder),
+              ),
+              child: const Text('Back to Menu'),
+            ),
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).padding.bottom + AppSpacing.lg,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGameOver() {
+    return Padding(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        children: [
+          const Spacer(),
+          Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              color: AppColors.error600.withValues(alpha: 0.12),
+              borderRadius: AppRadius.xlBorder,
+            ),
+            alignment: Alignment.center,
+            child: const Icon(
+              Icons.timer_off,
+              size: 48,
+              color: AppColors.error600,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xl),
+          Text('Out of Time!', style: AppTypography.h1),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            'You ran out of lives on Level ${_currentLevel + 1}',
+            style: AppTypography.body.copyWith(color: AppColors.textSecondary),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.xxl),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(AppSpacing.xl),
+            decoration: BoxDecoration(
+              color: AppColors.card,
+              borderRadius: AppRadius.lgBorder,
+              boxShadow: AppShadows.sm,
+            ),
+            child: Column(
+              children: [
+                Text('Score So Far', style: AppTypography.caption),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  '$_totalScore',
+                  style: AppTypography.display.copyWith(
+                    color: AppColors.solarGold,
+                    fontSize: 48,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _StatChip(
+                      label: 'Best',
+                      value:
+                          '${ref.watch(gameStateProvider).highScores.gridEscapeBestScore}',
+                      icon: Icons.emoji_events,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const Spacer(),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: _restartGame,
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.primary500,
+                minimumSize: const Size.fromHeight(52),
+                shape: RoundedRectangleBorder(borderRadius: AppRadius.mdBorder),
+              ),
+              child: const Text('Try Again'),
             ),
           ),
           const SizedBox(height: AppSpacing.md),
@@ -709,6 +931,43 @@ class _StatChip extends StatelessWidget {
           const SizedBox(width: AppSpacing.sm),
           Text('$label: ', style: AppTypography.caption),
           Text(value, style: AppTypography.bodyBold),
+        ],
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+/// Countdown timer pill — turns red and pulses when time is low.
+// ═══════════════════════════════════════════════════════════════════════════════
+class _TimerPill extends StatelessWidget {
+  const _TimerPill({required this.seconds});
+
+  final int seconds;
+
+  @override
+  Widget build(BuildContext context) {
+    final isLow = seconds <= 5;
+    final color = isLow ? AppColors.error600 : AppColors.textSecondary;
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
+      decoration: BoxDecoration(
+        color: isLow ? AppColors.error100 : AppColors.sunken,
+        borderRadius: AppRadius.mdBorder,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.timer_outlined, size: 16, color: color),
+          const SizedBox(width: AppSpacing.xs),
+          Text(
+            '${seconds}s',
+            style: AppTypography.bodyBold.copyWith(color: color),
+          ),
         ],
       ),
     );

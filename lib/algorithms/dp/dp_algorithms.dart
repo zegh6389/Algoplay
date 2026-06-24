@@ -84,10 +84,10 @@ Stream<DPStep> lcsDp(String s1, String s2) async* {
         yield DPStep(
           array: table[i],
           memo: {for (var pi = 0; pi <= m; pi++) for (var pj = 0; pj <= n; pj++) '$pi,$pj': table[pi][pj]},
-          currentIndex: i * n + j,
+          currentIndex: i * (n + 1) + j,
           operation: 'Match! "${s1[i - 1]}" → LCS[$i][$j] = ${table[i][j]}',
           line: 3,
-          comparing: [i - 1],
+          comparing: [(i - 1) * (n + 1) + (j - 1)],
           sorted: List.generate(i, (idx) => idx),
         );
       } else {
@@ -95,9 +95,11 @@ Stream<DPStep> lcsDp(String s1, String s2) async* {
         yield DPStep(
           array: table[i],
           memo: {for (var pi = 0; pi <= m; pi++) for (var pj = 0; pj <= n; pj++) '$pi,$pj': table[pi][pj]},
-          currentIndex: i * n + j,
+          currentIndex: i * (n + 1) + j,
           operation: 'No match → LCS[$i][$j] = ${table[i][j]} (max of ${table[i - 1][j]}, ${table[i][j - 1]})',
           line: 5,
+          // Dependency cells: the two candidates (up + left) this value came from.
+          comparing: [(i - 1) * (n + 1) + j, i * (n + 1) + (j - 1)],
           sorted: [],
         );
       }
@@ -107,7 +109,7 @@ Stream<DPStep> lcsDp(String s1, String s2) async* {
   yield DPStep(
     array: table[m],
     memo: {for (var pi = 0; pi <= m; pi++) for (var pj = 0; pj <= n; pj++) '$pi,$pj': table[pi][pj]},
-    currentIndex: m * n + n,
+    currentIndex: m * (n + 1) + n,
     operation: 'LCS = ${table[m][n]} — Complete!',
     line: 7,
     result: table[m][n],

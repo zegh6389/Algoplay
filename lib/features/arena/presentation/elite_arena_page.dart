@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/services/haptics.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/providers/app_providers.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../data/arena_repository.dart';
 
@@ -21,8 +24,12 @@ class EliteArenaPage extends ConsumerStatefulWidget {
 }
 
 class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
-  // Track selected rank tier
+  static const _kTierKey = 'algoplay_arena_tier';
+  static const _kUsernameKey = 'algoplay_username';
+
+  // Track selected rank tier (persisted)
   int _selectedTierIndex = 0;
+  String _username = 'Student';
 
   List<ArenaPlayer> _arenaPlayers = [];
   List<MatchRecord> _matchHistory = [];
@@ -48,15 +55,33 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
   }
 
   Future<void> _loadArenaData() async {
+    final prefs = await SharedPreferences.getInstance();
     final repo = ArenaRepository();
     final players = await repo.getPlayers();
     final history = await repo.getMatchHistory();
     if (!mounted) return;
     setState(() {
+      _username = prefs.getString(_kUsernameKey) ?? 'Student';
+      _selectedTierIndex =
+          (prefs.getInt(_kTierKey) ?? 0).clamp(0, _rankTiers.length - 1);
       _arenaPlayers = players;
       _matchHistory = history;
       _isLoading = false;
     });
+  }
+
+  Future<void> _onTierSelected(int index) async {
+    Haptics.selection();
+    setState(() => _selectedTierIndex = index);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_kTierKey, index);
+  }
+
+  String get _initials {
+    final parts = _username.trim().split(RegExp(r'\s+'));
+    if (parts.isEmpty || parts.first.isEmpty) return 'S';
+    if (parts.length == 1) return parts.first[0].toUpperCase();
+    return (parts.first[0] + parts[1][0]).toUpperCase();
   }
 
   @override
@@ -137,19 +162,21 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
                                 ],
                               ),
                             ),
-                            // Current player rank badge
+                            // Current player rank badge (follows selection)
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: AppSpacing.md,
                                 vertical: AppSpacing.sm,
                               ),
                               decoration: BoxDecoration(
-                                color: _rankTiers[2].color.withValues(
+                                color: _rankTiers[_selectedTierIndex].color
+                                    .withValues(
                                   alpha: 0.2,
                                 ),
                                 borderRadius: AppRadius.mdBorder,
                                 border: Border.all(
-                                  color: _rankTiers[2].color.withValues(
+                                  color: _rankTiers[_selectedTierIndex].color
+                                      .withValues(
                                     alpha: 0.5,
                                   ),
                                   width: 1,
@@ -159,17 +186,17 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
-                                    _rankTiers[2].icon,
-                                    color: _rankTiers[2].color,
+                                    _rankTiers[_selectedTierIndex].icon,
+                                    color: _rankTiers[_selectedTierIndex].color,
                                     size: 18,
                                   ),
                                   const SizedBox(width: AppSpacing.xs),
                                   Text(
-                                    'Gold III',
+                                    _rankTiers[_selectedTierIndex].label,
                                     style: TextStyle(
                                       fontSize: 13,
                                       fontWeight: FontWeight.w600,
-                                      color: _rankTiers[2].color,
+                                      color: _rankTiers[_selectedTierIndex].color,
                                     ),
                                   ),
                                 ],
@@ -243,6 +270,16 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
   }
 
   Widget _buildPlayerStatsCard() {
+    final high = ref.watch(gameStateProvider).highScores;
+    final matchWins =
+        _matchHistory.where((m) => m.result == 'win').length;
+    final matchLosses =
+        _matchHistory.where((m) => m.result == 'loss').length;
+    final decided = matchWins + matchLosses;
+    final winRate = decided > 0 ? ((matchWins / decided) * 100).round() : 0;
+    // Rating derived from real play: base + best score + win bonus.
+    final rating = 1000 + high.battleArenaBestScore + high.battleArenaWins * 25;
+
     return Container(
       decoration: BoxDecoration(
         gradient: const LinearGradient(
@@ -270,9 +307,9 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
                 ),
               ),
               alignment: Alignment.center,
-              child: const Text(
-                'PY',
-                style: TextStyle(
+              child: Text(
+                _initials,
+                style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
                   color: AppColors.primary500,
@@ -286,9 +323,9 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Player_Y',
-                    style: TextStyle(
+                  Text(
+                    _username,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                       color: AppColors.textInverse,
@@ -299,9 +336,13 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
                     spacing: AppSpacing.sm,
                     runSpacing: AppSpacing.xs,
                     children: [
-                      _statChip('Rating', '1,847', AppColors.solarGold),
-                      _statChip('Win Rate', '67%', AppColors.success600),
-                      _statChip('Streak', '5 🔥', AppColors.secondary500),
+                      _statChip(
+                          'Rating', rating.toString(), AppColors.solarGold),
+                      _statChip(
+                          'Win Rate', '$winRate%', AppColors.success600),
+                      _statChip(
+                          'Wins', '${high.battleArenaWins}',
+                          AppColors.secondary500),
                     ],
                   ),
                 ],
@@ -373,7 +414,7 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
           final tier = _rankTiers[index];
           final isSelected = index == _selectedTierIndex;
           return GestureDetector(
-            onTap: () => setState(() => _selectedTierIndex = index),
+            onTap: () => _onTierSelected(index),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               width: 70,
@@ -737,15 +778,25 @@ class _EliteArenaPageState extends ConsumerState<EliteArenaPage> {
               ],
             ),
             const SizedBox(height: AppSpacing.md),
-            Row(
-              children: [
-                _rewardItem('Current Rank', 'Gold III', AppColors.solarGold),
-                const SizedBox(width: AppSpacing.lg),
-                _rewardItem('Next Rank', 'Gold II', AppColors.textMuted),
-                const SizedBox(width: AppSpacing.lg),
-                _rewardItem('Progress', '65%', AppColors.primary500),
-              ],
-            ),
+            Builder(builder: (context) {
+              final high = ref.watch(gameStateProvider).highScores;
+              final currentLabel = _rankTiers[_selectedTierIndex].label;
+              final hasNext = _selectedTierIndex < _rankTiers.length - 1;
+              final nextLabel =
+                  hasNext ? _rankTiers[_selectedTierIndex + 1].label : 'Top';
+              final progress = ((high.battleArenaWins % 10) * 10).clamp(0, 100);
+              return Row(
+                children: [
+                  _rewardItem(
+                      'Current Rank', currentLabel, AppColors.solarGold),
+                  const SizedBox(width: AppSpacing.lg),
+                  _rewardItem('Next Rank', nextLabel, AppColors.textMuted),
+                  const SizedBox(width: AppSpacing.lg),
+                  _rewardItem(
+                      'Progress', '$progress%', AppColors.primary500),
+                ],
+              );
+            }),
           ],
         ),
       ),

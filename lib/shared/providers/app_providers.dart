@@ -277,6 +277,46 @@ class GameStateNotifier extends StateNotifier<GameState> {
     _persist();
   }
 
+  /// Records Grid Escape best total score (max-wins the stored value).
+  void updateGridEscapeBest(int score) {
+    if (score > state.highScores.gridEscapeBestScore) {
+      state = state.copyWith(
+        highScores:
+            state.highScores.copyWith(gridEscapeBestScore: score),
+      );
+      _persist();
+    }
+  }
+
+  void incrementBattleArenaWins() {
+    state = state.copyWith(
+      highScores: state.highScores.copyWith(
+          battleArenaWins: state.highScores.battleArenaWins + 1),
+    );
+    _persist();
+  }
+
+  /// Records Battle Arena best score (max-wins the stored value).
+  void updateBattleArenaBest(int score) {
+    if (score > state.highScores.battleArenaBestScore) {
+      state = state.copyWith(
+        highScores:
+            state.highScores.copyWith(battleArenaBestScore: score),
+      );
+      _persist();
+    }
+  }
+
+  /// Records Race Mode best score (max-wins the stored value).
+  void updateRaceModeBest(int score) {
+    if (score > state.highScores.raceModeBest) {
+      state = state.copyWith(
+        highScores: state.highScores.copyWith(raceModeBest: score),
+      );
+      _persist();
+    }
+  }
+
   void completeDailyChallenge(String date) {
     state = state.copyWith(
       dailyChallengeCompleted: true,
