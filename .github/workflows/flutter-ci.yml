@@ -100,5 +100,6 @@ jobs:
           releaseFiles: build/app/outputs/bundle/release/app-release.aab
           tracks: |
             production
-          status: completed
+          status: draft
+          changesNotSentForReview: 'true'
           releaseName: algoplay-ci-${{ github.run_number }}
