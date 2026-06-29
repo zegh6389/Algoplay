@@ -103,6 +103,22 @@ class AdService {
       // it uses cached consent state and can serve limited ads.
       // Initialize SDK immediately — never blocks on consent.
       // Consent runs fire-and-forget in background so it never blocks.
+
+      // ── Ad content rating ────────────────────────────────────────────────
+      // Algoplay is an educational app rated Everyone on Play Store. We
+      // explicitly tell AdMob to only serve ads matching that rating so
+      // Google Play policy "Ad content not consistent with content rating"
+      // is satisfied. Without this call AdMob defaults to T (Teen) which
+      // violates Play policy when the app's content rating is lower.
+      await MobileAds.instance.updateRequestConfiguration(
+        const RequestConfiguration(
+          maxAdContentRating: MaxAdContentRating.g,
+          tagForChildDirectedTreatment:
+              TagForChildDirectedTreatment.unspecified,
+          tagForUnderAgeOfConsent: TagForUnderAgeOfConsent.unspecified,
+        ),
+      );
+
       final InitializationStatus initStatus =
           await MobileAds.instance.initialize();
       _requestConsentInBackground();
