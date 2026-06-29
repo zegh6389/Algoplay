@@ -111,7 +111,7 @@ class AdService {
       // is satisfied. Without this call AdMob defaults to T (Teen) which
       // violates Play policy when the app's content rating is lower.
       await MobileAds.instance.updateRequestConfiguration(
-        const RequestConfiguration(
+        RequestConfiguration(
           maxAdContentRating: MaxAdContentRating.g,
           tagForChildDirectedTreatment:
               TagForChildDirectedTreatment.unspecified,
